@@ -83,6 +83,12 @@
   # VG-Tweak Start
   - type: WeldingSparks
   - type: WeldingSound
+  - type: EmitSoundOnPickup
+    sound:
+      path: /Audio/_VanGuard/Items/handling/weldingtool_pickup.ogg
+  - type: EmitSoundOnDrop
+    sound:
+      path: /Audio/Items/welder_drop.ogg
   # VG-Tweak End
   - type: Welder
   - type: PointLight
