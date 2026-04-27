@@ -154,7 +154,30 @@ public abstract partial class SharedHandsSystem
 
         // drop the item with heavy calculations from their hands and place it at the calculated interaction range position
         // The DoDrop is handle if there's no drop target
-        DoDrop(ent, handId, doDropInteraction: doDropInteraction, targetDropLocation: targetDropLocation);
+        DoDrop(ent, handId, doDropInteraction: doDropInteraction);
+
+        // if there's no drop location stop here
+        if (targetDropLocation == null)
+            return true;
+
+        // otherwise, also move dropped item and rotate it properly according to grid/map
+        var (itemPos, itemRot) = TransformSystem.GetWorldPositionRotation(entity.Value);
+        var origin = new MapCoordinates(itemPos, itemXform.MapID);
+        var target = TransformSystem.ToMapCoordinates(targetDropLocation.Value);
+        TransformSystem.SetWorldPositionRotation(entity.Value, GetFinalDropCoordinates(ent, origin, target, entity.Value), itemRot);
+
+        // VG-Tweak Start
+        var currentCoords = TransformSystem.GetMoverCoordinates(entity.Value);
+        var currentMapCoords = TransformSystem.GetMapCoordinates(entity.Value);
+
+        if (itemXform.MapID == userXform.MapID
+            && (currentMapCoords.Position - TransformSystem.GetMapCoordinates(ent, userXform).Position).Length() <= MaxAnimationRange
+            && MetaData(entity.Value).VisibilityMask == MetaData(ent).VisibilityMask) // Don't animate aghost pickups.
+        {
+            _storage.PlayPickupAnimation(entity.Value, userXform.Coordinates, currentCoords, itemXform.LocalRotation, ent);
+        }
+        // VG-Tweak End
+
         return true;
     }
 
