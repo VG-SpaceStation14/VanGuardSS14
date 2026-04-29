@@ -50,4 +50,15 @@ public sealed class PdaBootFinishedMessage : BoundUserInterfaceMessage
 {
     public PdaBootFinishedMessage() { }
 }
+
+[Serializable, NetSerializable]
+public sealed class PdaSetWallpaperColorMessage : BoundUserInterfaceMessage
+{
+    public Color Color;
+
+    public PdaSetWallpaperColorMessage(Color color)
+    {
+        Color = color;
+    }
+}
 // VG-Tweak End

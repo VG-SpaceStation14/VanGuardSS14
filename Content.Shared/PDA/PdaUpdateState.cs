@@ -4,9 +4,7 @@ using Robust.Shared.Serialization;
 namespace Content.Shared.PDA
 {
     [Serializable, NetSerializable]
-    public sealed class PdaUpdateState : CartridgeLoaderUiState // WTF is this. what. I ... fuck me I just want net entities to work
-        // TODO purge this shit
-        //AAAAAAAAAAAAAAAA
+    public sealed class PdaUpdateState : CartridgeLoaderUiState
     {
         public bool FlashlightEnabled;
         public bool HasPen;
@@ -16,10 +14,10 @@ namespace Content.Shared.PDA
         public bool HasUplink;
         public bool CanPlayMusic;
         public string? Address;
-        // VG-PDAScreens Start
-        public bool Booted;
-        public bool Powered;
-        // VG-PDAScreens End
+        public bool HasWallpaperColor; // VG-Tweak
+        public Color WallpaperColor; // VG-Tweak
+        public bool Booted; // VG-PDAScreens
+        public bool Powered; // VG-PDAScreens
 
         public PdaUpdateState(
             List<NetEntity> programs,
@@ -32,10 +30,10 @@ namespace Content.Shared.PDA
             bool hasUplink = false,
             bool canPlayMusic = false,
             string? address = null,
-            // VG-PDAScreens Start
+            bool hasWallpaperColor = false,
+            Color? wallpaperColor = null,
             bool booted = false,
             bool powered = true)
-            // VG-PDAScreens End
             : base(programs, activeUI)
         {
             FlashlightEnabled = flashlightEnabled;
@@ -46,10 +44,10 @@ namespace Content.Shared.PDA
             CanPlayMusic = canPlayMusic;
             StationName = stationName;
             Address = address;
-            // VG-PDAScreens Start
-            Booted = booted;
-            Powered = powered;
-            // VG-PDAScreens End
+            HasWallpaperColor = hasWallpaperColor; // VG-Tweak
+            WallpaperColor = wallpaperColor ?? Color.White; // VG-Tweak
+            Booted = booted; // VG-PDAScreens
+            Powered = powered; // VG-PDAScreens
         }
     }
 

@@ -9,6 +9,8 @@ namespace Content.Client.PDA;
 [GenerateTypedNameReferences]
 public partial class PdaWindow : BaseWindow
 {
+    private Color? _defaultWallpaperColor;
+    private Color? _wallpaperColor;
 
     public string? BorderColor
     {
@@ -39,6 +41,26 @@ public partial class PdaWindow : BaseWindow
         }
     }
 
+    public Color? WallpaperColor
+    {
+        get => _wallpaperColor;
+        set
+        {
+            _wallpaperColor = value;
+            UpdateWallpaperColor();
+        }
+    }
+
+    public Color? DefaultWallpaperColor
+    {
+        get => _defaultWallpaperColor;
+        set
+        {
+            _defaultWallpaperColor = value;
+            UpdateWallpaperColor();
+        }
+    }
+
     public PdaWindow()
     {
         RobustXamlLoader.Load(this);
@@ -53,5 +75,10 @@ public partial class PdaWindow : BaseWindow
     protected override DragMode GetDragModeFor(Vector2 relativeMousePos)
     {
         return DragMode.Move;
+    }
+
+    private void UpdateWallpaperColor()
+    {
+        ContentBackground.ModulateSelfOverride = _wallpaperColor ?? _defaultWallpaperColor;
     }
 }

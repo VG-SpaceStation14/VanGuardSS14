@@ -42,6 +42,14 @@ namespace Content.Shared.PDA
         public ProtoId<AlertLevelPrototype>? StationAlertLevel;
         [ViewVariables] public Color StationAlertColor = Color.White;
 
+        // VG-Tweak Start: Настройка цвета обоев PDA
+        [DataField]
+        public bool HasWallpaperColor;
+
+        [DataField]
+        public Color WallpaperColor = Color.White;
+        // VG-Tweak End
+
         // VG-PDAScreens Start
         [DataField, AutoNetworkedField]
         public bool Powered = false;

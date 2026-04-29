@@ -1,6 +1,7 @@
 <pda:PdaWindow  xmlns="https://spacestation14.io"
                 xmlns:pda="clr-namespace:Content.Client.PDA"
                 xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                xmlns:vg="clr-namespace:Content.Client._VanGuard.UserInterface.Controls"
                 MinSize="420 620"
                 SetSize="520 720"> <!-- VG-Tweak -->
     <!-- This: (Margin="1 1 3 0") is necessary so the navigation bar doesn't sticks into the black content border. -->
@@ -86,6 +87,9 @@
                                        Visible="False"
                                        Text="{Loc 'pda-bound-user-interface-lock-uplink-title'}"
                                        Description="{Loc 'pda-bound-user-interface-lock-uplink-description'}"/>
+                <Label Text="{Loc 'comp-pda-ui-wallpaper-color'}" Margin="8 10 8 0"/>
+                <!-- VG-Tweak: Color selector -->
+                <vg:LegacyColorSelectorSliders Name="WallpaperColorSelector" Margin="8 2 8 4"/>
             </BoxContainer>
         </ScrollContainer>
         <!-- ProgramContentView (3) -->

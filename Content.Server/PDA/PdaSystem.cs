@@ -58,6 +58,7 @@ namespace Content.Server.PDA
             SubscribeLocalEvent<PdaComponent, PdaShowMusicMessage>(OnUiMessage);
             SubscribeLocalEvent<PdaComponent, PdaShowUplinkMessage>(OnUiMessage);
             SubscribeLocalEvent<PdaComponent, PdaLockUplinkMessage>(OnUiMessage);
+            SubscribeLocalEvent<PdaComponent, PdaSetWallpaperColorMessage>(OnUiMessage); // VG-Tweak
 
             // VG-PDAScreens Start
             SubscribeLocalEvent<PdaComponent, PdaPowerOffMessage>(OnPowerOff);
@@ -202,7 +203,7 @@ namespace Content.Server.PDA
             if (!Resolve(uid, ref pda, false))
                 return;
 
-            UpdatePdaScreen(uid); // VG-Tweak
+            UpdatePdaScreen(uid); // VG-PDAScreens
 
             if (!_ui.HasUi(uid, PdaUiKey.Key))
                 return;
@@ -240,10 +241,10 @@ namespace Content.Server.PDA
                 showUplink,
                 hasInstrument,
                 address,
-                // VG-PDAScreens Start
-                pda.Booted,
-                pda.Powered);
-                // VG-PDAScreens End
+                pda.HasWallpaperColor, // VG-Tweak
+                pda.WallpaperColor, // VG-Tweak
+                pda.Booted, // VG-PDAScreens
+                pda.Powered); // VG-PDAScreens
 
             _ui.SetUiState(uid, PdaUiKey.Key, state);
         }
@@ -335,12 +336,25 @@ namespace Content.Server.PDA
             }
         }
 
+        // VG-Tweak Start: Обработчик цвета обоев
+        private void OnUiMessage(EntityUid uid, PdaComponent pda, PdaSetWallpaperColorMessage msg)
+        {
+            if (!PdaUiKey.Key.Equals(msg.UiKey))
+                return;
+
+            pda.WallpaperColor = msg.Color.WithAlpha(1f);
+            pda.HasWallpaperColor = true;
+            UpdatePdaUi(uid, pda);
+        }
+        // VG-Tweak End
+
         // VG-PDAScreens Start
         private void OnPowerOff(EntityUid uid, PdaComponent pda, PdaPowerOffMessage msg)
         {
             if (!PdaUiKey.Key.Equals(msg.UiKey))
                 return;
 
+            // Переключаем питание. Booted НЕ сбрасываем — загрузка один раз за жизнь ПДА.
             pda.Powered = !pda.Powered;
             Dirty(uid, pda);
             UpdatePdaAppearance(uid, pda);

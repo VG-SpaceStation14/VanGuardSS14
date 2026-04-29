@@ -42,6 +42,9 @@ namespace Content.Client.PDA
         private string _alertLevel = Loc.GetString("comp-pda-ui-unknown");
         private string _instructions = Loc.GetString("comp-pda-ui-unknown");
 
+        private bool _hasWallpaperColor; // VG-Tweak
+        private bool _settingWallpaperColorFromState; // VG-Tweak
+        private Color _wallpaperColor = Color.White; // VG-Tweak
 
         private int _currentView;
 
@@ -54,6 +57,7 @@ namespace Content.Client.PDA
         public event Action<EntityUid>? OnProgramItemPressed;
         public event Action<EntityUid>? OnUninstallButtonPressed;
         public event Action<EntityUid>? OnInstallButtonPressed;
+        public event Action<Color>? OnWallpaperColorSelected; // VG-Tweak
 
         public PdaMenu()
         {
@@ -144,6 +148,29 @@ namespace Content.Client.PDA
             {
                 _clipboard.SetText(_instructions);
             };
+
+            // VG-Tweak Start
+            WallpaperColorSelector.OnColorChanged += color =>
+            {
+                if (_settingWallpaperColorFromState)
+                    return;
+
+                _hasWallpaperColor = true;
+                _wallpaperColor = color.WithAlpha(1f);
+                WallpaperColor = _wallpaperColor;
+
+                if (!WallpaperColorSelector.IsGrabbed)
+                    OnWallpaperColorSelected?.Invoke(_wallpaperColor);
+            };
+
+            WallpaperColorSelector.OnColorReleased += color =>
+            {
+                _hasWallpaperColor = true;
+                _wallpaperColor = color.WithAlpha(1f);
+                WallpaperColor = _wallpaperColor;
+                OnWallpaperColorSelected?.Invoke(_wallpaperColor);
+            };
+            // VG-Tweak End
 
             // VG-PDAScreens Start
             BootView.Visible = false;
@@ -268,6 +295,26 @@ namespace Content.Client.PDA
             // VG-PDAScreens Start
             PowerOffButton.IsActive = state.Powered;
             // VG-PDAScreens End
+
+            // VG-Tweak Start
+            var effectiveWallpaperColor = state.HasWallpaperColor
+                ? state.WallpaperColor
+                : DefaultWallpaperColor ?? state.WallpaperColor;
+
+            WallpaperColor = state.HasWallpaperColor ? state.WallpaperColor : null;
+            if (!WallpaperColorSelector.IsGrabbed &&
+                (state.HasWallpaperColor != _hasWallpaperColor ||
+                !ColorsClose(effectiveWallpaperColor, _wallpaperColor))
+            )
+            {
+                _settingWallpaperColorFromState = true;
+                WallpaperColorSelector.Color = effectiveWallpaperColor;
+                _settingWallpaperColorFromState = false;
+            }
+
+            _hasWallpaperColor = state.HasWallpaperColor;
+            _wallpaperColor = effectiveWallpaperColor;
+            // VG-Tweak End
 
             if (state.PdaOwnerInfo.ActualOwnerName != null)
             {
@@ -451,6 +498,15 @@ namespace Content.Client.PDA
             {
                 view.Visible = false;
             }
+        }
+
+        private static bool ColorsClose(Color a, Color b) // VG-Tweak
+        {
+            const float epsilon = 0.001f;
+            return System.Math.Abs(a.R - b.R) < epsilon
+                && System.Math.Abs(a.G - b.G) < epsilon
+                && System.Math.Abs(a.B - b.B) < epsilon
+                && System.Math.Abs(a.A - b.A) < epsilon;
         }
 
         protected override void Draw(DrawingHandleScreen handle)
