@@ -149,6 +149,10 @@
     - Fires
     - Spacing
   - type: SyncSprite
+  # VG-Tweak Start
+  - type: WeldingSparksAnimation
+    startingOffset: -0.5, 0
+  # VG-Tweak end
 
 - type: entity
   id: Firelock
@@ -232,3 +236,6 @@
     - type: Construction
       graph: Firelock
       node: FirelockEdge
+    - type: WeldingSparksAnimation # VG-Tweak
+      startingOffset: 0, -0.2
+      endingOffset: 0, -0.5
