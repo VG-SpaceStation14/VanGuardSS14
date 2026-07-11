@@ -85,7 +85,6 @@
   - type: WiresVisuals
   - type: PowerCellSlot
     cellSlotId: charger_slot
-    # fitsInCharger is true i dont think this will ever affect anything negatively but it lets it function
   - type: ItemSlots
     slots:
       charger_slot:
@@ -101,6 +100,22 @@
   - type: Item
     size: Ginormous
   - type: MultiHandedItem
+  # VG-Tweak Start
+  - type: PowerChargerVisuals
+    emptyState: empty
+    occupiedState: full
+    cellStates:
+      PowerCellSmall: small
+      PowerCellMedium: medium
+      PowerCellHigh: high
+      PowerCellHyper: hyper
+      PowerCellAntiqueProto: antique
+    lightStates:
+      Off: light-off
+      Empty: light-empty
+      Charging: light-charging
+      Charged: light-charged
+  # VG-Tweak End
 
 - type: entity
   parent: [ BaseItemRecharger, ConstructibleMachine ]

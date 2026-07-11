@@ -17,6 +17,12 @@ public sealed partial class PowerChargerVisualsComponent : Component
     /// </summary>
     [DataField]
     public string OccupiedState = "full";
+    
+    // VG-Tweak Start
+    [DataField("cellStates")]
+    [ViewVariables(VVAccess.ReadWrite)]
+    public Dictionary<string, string> CellStates = new();
+    // VG-Tweak End
 
     /// <summary>
     /// A mapping of the indicator light overlays for the power cell charger.
