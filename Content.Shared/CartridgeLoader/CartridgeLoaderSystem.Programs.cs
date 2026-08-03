@@ -86,6 +86,7 @@ public sealed partial class CartridgeLoaderSystem
         ent.Comp.ActiveProgram = program;
         Dirty(ent);
         UpdateUiState(ent.AsNullable());
+        RaiseLocalEvent(ent, new CartridgeLoaderActiveCartridgeChangedEvent(program)); // VG-Tweak
     }
 
     public void DeactivateProgram(Entity<CartridgeLoaderComponent> ent, EntityUid program)
@@ -98,6 +99,7 @@ public sealed partial class CartridgeLoaderSystem
         ent.Comp.ActiveProgram = null;
         Dirty(ent);
         UpdateUiState(ent.AsNullable());
+        RaiseLocalEvent(ent, new CartridgeLoaderActiveCartridgeChangedEvent(null)); // VG-Tweak
     }
 
     /// <summary>

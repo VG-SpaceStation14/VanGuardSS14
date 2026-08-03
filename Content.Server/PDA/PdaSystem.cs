@@ -59,6 +59,12 @@ namespace Content.Server.PDA
             SubscribeLocalEvent<PdaComponent, PdaShowUplinkMessage>(OnUiMessage);
             SubscribeLocalEvent<PdaComponent, PdaLockUplinkMessage>(OnUiMessage);
 
+            // VG-PDAScreens Start
+            SubscribeLocalEvent<PdaComponent, PdaPowerOffMessage>(OnPowerOff);
+            SubscribeLocalEvent<PdaComponent, PdaBootFinishedMessage>(OnBootFinished);
+            SubscribeLocalEvent<PdaComponent, CartridgeLoaderActiveCartridgeChangedEvent>(OnActiveCartridgeChanged);
+            // VG-PDAScreens End
+
             SubscribeLocalEvent<PdaComponent, CartridgeLoaderNotificationSentEvent>(OnNotification);
 
             SubscribeLocalEvent<StationRenamedEvent>(OnStationRenamed);
@@ -97,6 +103,13 @@ namespace Content.Server.PDA
         protected override void OnComponentInit(EntityUid uid, PdaComponent pda, ComponentInit args)
         {
             base.OnComponentInit(uid, pda, args);
+
+            // VG-PDAScreens Start
+            pda.Powered = false;
+            pda.Booted = false;
+            Dirty(uid, pda);
+            UpdatePdaAppearance(uid, pda);
+            // VG-PDAScreens End
 
             if (!HasComp<UserInterfaceComponent>(uid))
                 return;
@@ -189,6 +202,8 @@ namespace Content.Server.PDA
             if (!Resolve(uid, ref pda, false))
                 return;
 
+            UpdatePdaScreen(uid); // VG-Tweak
+
             if (!_ui.HasUi(uid, PdaUiKey.Key))
                 return;
 
@@ -224,7 +239,11 @@ namespace Content.Server.PDA
                 pda.StationName,
                 showUplink,
                 hasInstrument,
-                address);
+                address,
+                // VG-PDAScreens Start
+                pda.Booted,
+                pda.Powered);
+                // VG-PDAScreens End
 
             _ui.SetUiState(uid, PdaUiKey.Key, state);
         }
@@ -234,7 +253,15 @@ namespace Content.Server.PDA
             if (!PdaUiKey.Key.Equals(args.UiKey))
                 return;
 
-            UpdatePdaUi(ent.Owner, ent.Comp);
+            // VG-PDAScreens Start: при открытии включаем, если выключен
+            if (!ent.Comp.Powered)
+            {
+                ent.Comp.Powered = true;
+                Dirty(ent.Owner, ent.Comp);
+                UpdatePdaAppearance(ent.Owner, ent.Comp);
+                UpdatePdaUi(ent.Owner, ent.Comp);
+            }
+            // VG-PDAScreens End
         }
 
         private void OnUiMessage(EntityUid uid, PdaComponent pda, PdaRequestUpdateInterfaceMessage msg)
@@ -249,7 +276,7 @@ namespace Content.Server.PDA
         {
             if (!PdaUiKey.Key.Equals(msg.UiKey))
                 return;
-
+            
             // TODO PREDICTION
             // When moving this to shared, fill in the user field
             _unpoweredFlashlight.TryToggleLight(uid, user: null);
@@ -307,6 +334,48 @@ namespace Content.Server.PDA
                 UpdatePdaUi(uid, pda);
             }
         }
+
+        // VG-PDAScreens Start
+        private void OnPowerOff(EntityUid uid, PdaComponent pda, PdaPowerOffMessage msg)
+        {
+            if (!PdaUiKey.Key.Equals(msg.UiKey))
+                return;
+
+            pda.Powered = !pda.Powered;
+            Dirty(uid, pda);
+            UpdatePdaAppearance(uid, pda);
+            UpdatePdaUi(uid, pda);
+
+            if (!pda.Powered && TryComp<ActorComponent>(msg.Actor, out var actor))
+                _ui.CloseUi(uid, PdaUiKey.Key, actor.PlayerSession);
+        }
+
+        private void OnBootFinished(EntityUid uid, PdaComponent pda, PdaBootFinishedMessage msg)
+        {
+            if (!PdaUiKey.Key.Equals(msg.UiKey))
+                return;
+
+            if (pda.Booted)
+                return;
+
+            pda.Booted = true;
+            Dirty(uid, pda);
+
+            _ringer.RingerPlayRingtone(uid);
+
+            UpdatePdaUi(uid, pda);
+        }
+
+        private void OnActiveCartridgeChanged(EntityUid uid, PdaComponent pda, CartridgeLoaderActiveCartridgeChangedEvent args)
+        {
+            if (!pda.Powered)
+                return;
+
+            UpdatePdaScreen(uid);
+            UpdatePdaAppearance(uid, pda);
+            UpdatePdaUi(uid, pda);
+        }
+        // VG-PDAScreens End
 
         /// <summary>
         /// Returns the currently unlocked store, if there is one.

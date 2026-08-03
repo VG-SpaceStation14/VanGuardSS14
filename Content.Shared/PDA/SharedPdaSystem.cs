@@ -2,6 +2,7 @@ using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
 using Content.Shared.Containers.ItemSlots;
 using Robust.Shared.Containers;
+using Robust.Shared.Utility;
 
 namespace Content.Shared.PDA
 {
@@ -10,6 +11,16 @@ namespace Content.Shared.PDA
         [Dependency] protected ItemSlotsSystem ItemSlotsSystem = default!;
         [Dependency] protected SharedAppearanceSystem Appearance = default!;
         [Dependency] private SharedJobStatusSystem _jobStatus = default!;
+
+        // VG-PDAScreens Start
+        protected static readonly SpriteSpecifier ScreenOff = new SpriteSpecifier.Rsi(
+            new ResPath("/Textures/_VanGuard/Objects/Devices/pda.rsi"),
+            "pda_screen_borders");
+
+        protected static readonly SpriteSpecifier ScreenMenu = new SpriteSpecifier.Rsi(
+            new ResPath("/Textures/_VanGuard/Objects/Devices/pda.rsi"),
+            "menu");
+        // VG-PDAScreens End
 
         public override void Initialize()
         {
@@ -66,15 +77,20 @@ namespace Content.Shared.PDA
                 args.Entities.Add(id);
         }
 
-        private void UpdatePdaAppearance(EntityUid uid, PdaComponent pda)
+        protected void UpdatePdaAppearance(EntityUid uid, PdaComponent pda) // VG-PDAScreens - private -> protected
         {
             Appearance.SetData(uid, PdaVisuals.IdCardInserted, pda.ContainedId != null);
+
+            // VG-PDAScreens Start
+            UpdatePdaScreen(uid);
+            // VG-PDAScreens End
+
+            // VG-PDA-Pen
+            Appearance.SetData(uid, PdaVisuals.PenInserted, pda.PenSlot.HasItem);
         }
 
-        // update the status icon of the player that has the pda currently equipped
         private void UpdateJobStatus(EntityUid uid)
         {
-            // Only the player who has the pda currently equipped can insert or remove Ids
             var parent = Transform(uid).ParentUid;
             _jobStatus.UpdateStatus(parent);
         }
@@ -84,5 +100,36 @@ namespace Content.Shared.PDA
             // This does nothing yet while I finish up PDA prediction
             // Overriden by the server
         }
+
+        // VG-PDAScreens Start
+        public virtual void UpdatePdaScreen(EntityUid uid, SpriteSpecifier? screenState = null)
+        {
+            if (!TryComp<PdaComponent>(uid, out var pda))
+                return;
+
+            if (!pda.Powered)
+            {
+                Appearance.SetData(uid, PdaVisuals.ScreenState, ScreenOff);
+                return;
+            }
+
+            if (screenState != null)
+            {
+                Appearance.SetData(uid, PdaVisuals.ScreenState, screenState);
+                return;
+            }
+
+            if (TryComp<CartridgeLoader.CartridgeLoaderComponent>(uid, out var loader) && loader.ActiveProgram != null)
+            {
+                if (TryComp<CartridgeLoader.CartridgeComponent>(loader.ActiveProgram, out var cartridge) && cartridge.ScreenState != null)
+                {
+                    Appearance.SetData(uid, PdaVisuals.ScreenState, cartridge.ScreenState);
+                    return;
+                }
+            }
+
+            Appearance.SetData(uid, PdaVisuals.ScreenState, ScreenMenu);
+        }
+        // VG-PDAScreens End
     }
 }

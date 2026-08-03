@@ -3,10 +3,11 @@ using Content.Shared.Containers.ItemSlots;
 using Robust.Shared.GameStates;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Utility; // VG-Tweak
 
 namespace Content.Shared.PDA
 {
-    [RegisterComponent, NetworkedComponent]
+    [RegisterComponent, NetworkedComponent, AutoGenerateComponentState] // VG-Tweak - AutoGenerateComponentState
     public sealed partial class PdaComponent : Component
     {
         public const string PdaIdSlotId = "PDA-id";
@@ -40,5 +41,13 @@ namespace Content.Shared.PDA
         [ViewVariables]
         public ProtoId<AlertLevelPrototype>? StationAlertLevel;
         [ViewVariables] public Color StationAlertColor = Color.White;
+
+        // VG-PDAScreens Start
+        [DataField, AutoNetworkedField]
+        public bool Powered = false;
+
+        [DataField, AutoNetworkedField]
+        public bool Booted = false;
+        // VG-PDAScreens End
     }
 }

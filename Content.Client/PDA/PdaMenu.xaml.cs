@@ -1,3 +1,7 @@
+// VG-Tweak Start
+using System.Threading;
+using System.Threading.Tasks;
+// VG-Tweak End
 using Content.Client.GameTicking.Managers;
 using Content.Shared.PDA;
 using Robust.Shared.Utility;
@@ -26,6 +30,9 @@ namespace Content.Client.PDA
         public const int ProgramListView = 1;
         public const int SettingsView = 2;
         public const int ProgramContentView = 3;
+        // VG-PDAScreens Start
+        public const int BootViewIndex = 4;
+        // VG-PDAScreens End
 
 
         private string _pdaOwner = Loc.GetString("comp-pda-ui-unknown");
@@ -38,9 +45,16 @@ namespace Content.Client.PDA
 
         private int _currentView;
 
+        // VG-PDAScreens Start
+        private bool _bootScreenVisible;
+        private CancellationTokenSource? _bootAnimationCts;
+        private CancellationTokenSource? _fadeAnimationCts;
+        // VG-PDAScreens End
+
         public event Action<EntityUid>? OnProgramItemPressed;
         public event Action<EntityUid>? OnUninstallButtonPressed;
         public event Action<EntityUid>? OnInstallButtonPressed;
+
         public PdaMenu()
         {
             IoCManager.InjectDependencies(this);
@@ -55,6 +69,9 @@ namespace Content.Client.PDA
             EjectPenButton.IconTexture = new SpriteSpecifier.Texture(new("/Textures/Interface/pencil.png"));
             EjectIdButton.IconTexture = new SpriteSpecifier.Texture(new("/Textures/Interface/eject.png"));
             EjectPaiButton.IconTexture = new SpriteSpecifier.Texture(new("/Textures/Interface/pai.png"));
+            // VG-Tweak Start
+            PowerOffButton.IconTexture = new SpriteSpecifier.Texture(new("/Textures/_VanGuard/Interface/power.png"));
+            // VG-Tweak End
             ProgramCloseButton.IconTexture = new SpriteSpecifier.Texture(new("/Textures/Interface/Nano/cross.svg.png"));
 
 
@@ -128,16 +145,129 @@ namespace Content.Client.PDA
                 _clipboard.SetText(_instructions);
             };
 
-
-
+            // VG-PDAScreens Start
+            BootView.Visible = false;
+            BootView.Modulate = Color.White;
+            // VG-PDAScreens End
 
             HideAllViews();
             ToHomeScreen();
         }
 
+        // VG-PDAScreens Start
+        public void ShowBootScreen(bool show)
+        {
+            if (show == _bootScreenVisible)
+                return;
+
+            _bootScreenVisible = show;
+            if (show)
+            {
+                _bootAnimationCts?.Cancel();
+                _bootAnimationCts = new CancellationTokenSource();
+                _ = AnimateBootIcon(_bootAnimationCts.Token);
+
+                BootWelcomeLabel.Text = Loc.GetString("pda-boot-welcome");
+                BootView.Modulate = Color.White;
+                ChangeView(BootViewIndex);
+                NavigationBar.Visible = false;
+                ContentFooter.Visible = false;
+            }
+            else
+            {
+                _bootAnimationCts?.Cancel();
+                _bootAnimationCts = null;
+                _ = FadeOutBootAndShowMain();
+            }
+        }
+
+        private async Task FadeOutBootAndShowMain()
+        {
+            _fadeAnimationCts?.Cancel();
+            _fadeAnimationCts = new CancellationTokenSource();
+            var token = _fadeAnimationCts.Token;
+
+            float opacity = 1f;
+            float step = 0.05f;
+            while (opacity > 0 && !token.IsCancellationRequested)
+            {
+                opacity -= step;
+                if (opacity < 0) opacity = 0;
+                BootView.Modulate = new Color(1f, 1f, 1f, opacity);
+                await Task.Delay(16, token);
+            }
+
+            BootView.Visible = false;
+            BootView.Modulate = Color.White;
+
+            var mainView = ViewContainer.GetChild(HomeView);
+            mainView.Visible = true;
+            mainView.Modulate = new Color(1f, 1f, 1f, 0f);
+
+            opacity = 0f;
+            while (opacity < 1f && !token.IsCancellationRequested)
+            {
+                opacity += step;
+                if (opacity > 1f) opacity = 1f;
+                mainView.Modulate = new Color(1f, 1f, 1f, opacity);
+                await Task.Delay(16, token);
+            }
+
+            for (int i = 0; i < ViewContainer.ChildCount; i++)
+            {
+                ViewContainer.GetChild(i).Modulate = Color.White;
+            }
+
+            ToHomeScreen();
+
+            NavigationBar.Visible = true;
+            ContentFooter.Visible = true;
+            _bootScreenVisible = false;
+
+            _fadeAnimationCts = null;
+        }
+
+        private async Task AnimateBootIcon(CancellationToken token)
+        {
+            float opacity = 1f;
+            float step = 0.05f;
+            bool increasing = false;
+
+            while (!token.IsCancellationRequested)
+            {
+                if (increasing)
+                {
+                    opacity += step;
+                    if (opacity >= 1f)
+                    {
+                        opacity = 1f;
+                        increasing = false;
+                    }
+                }
+                else
+                {
+                    opacity -= step;
+                    if (opacity <= 0.3f)
+                    {
+                        opacity = 0.3f;
+                        increasing = true;
+                    }
+                }
+
+                BootIcon.Modulate = new Color(1f, 1f, 1f, opacity);
+                await Task.Delay(50, token);
+            }
+
+            BootIcon.Modulate = Color.White;
+        }
+        // VG-PDAScreens End
+
         public void UpdateState(PdaUpdateState state)
         {
             FlashLightToggleButton.IsActive = state.FlashlightEnabled;
+            // VG-PDAScreens Start
+            PowerOffButton.IsActive = state.Powered;
+            // VG-PDAScreens End
 
             if (state.PdaOwnerInfo.ActualOwnerName != null)
             {
@@ -307,7 +437,9 @@ namespace Content.Client.PDA
             if (ViewContainer.ChildCount <= view)
                 return;
 
-            ViewContainer.GetChild(_currentView).Visible = false;
+            if (_currentView >= 0 && _currentView < ViewContainer.ChildCount)
+                ViewContainer.GetChild(_currentView).Visible = false;
+
             ViewContainer.GetChild(view).Visible = true;
             _currentView = view;
         }

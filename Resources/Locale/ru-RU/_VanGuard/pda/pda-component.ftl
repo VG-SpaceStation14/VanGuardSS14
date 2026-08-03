@@ -1,0 +1,1 @@
+pda-boot-welcome = Добро пожаловать

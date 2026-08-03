@@ -4,6 +4,7 @@ using Content.Shared.Containers.ItemSlots;
 using Content.Shared.PDA;
 using JetBrains.Annotations;
 using Robust.Client.UserInterface;
+using Robust.Shared.Timing; // VG-Tweak
 
 namespace Content.Client.PDA
 {
@@ -15,6 +16,11 @@ namespace Content.Client.PDA
         [ViewVariables]
         private PdaMenu? _menu;
 
+        // VG-PDAScreens Start
+        private bool _bootFinishedSent;
+        private bool _hasReceivedInitialState;
+        // VG-PDAScreens End
+
         public PdaBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
         {
             _pdaSystem = EntMan.System<PdaSystem>();
@@ -22,6 +28,14 @@ namespace Content.Client.PDA
 
         protected override void Open()
         {
+            // VG-PDAScreens Start
+            if (_menu != null && !_menu.IsOpen)
+            {
+                _menu.Dispose();
+                _menu = null;
+            }
+            // VG-PDAScreens End
+
             base.Open();
 
             if (_menu == null)
@@ -77,6 +91,13 @@ namespace Content.Client.PDA
             _menu.OnUninstallButtonPressed += UninstallCartridge;
             _menu.ProgramCloseButton.OnPressed += _ => DeactivateActiveCartridge();
 
+            // VG-Tweak Start
+            _menu.PowerOffButton.OnPressed += _ =>
+            {
+                SendMessage(new PdaPowerOffMessage());
+            };
+            // VG-Tweak End
+
             var borderColorComponent = GetBorderColorComponent();
             if (borderColorComponent == null)
                 return;
@@ -95,11 +116,38 @@ namespace Content.Client.PDA
 
             if (_menu == null)
             {
-                _pdaSystem.Log.Error("PDA state received before menu was created.");
                 return;
             }
 
             _menu.UpdateState(updateState);
+
+            // VG-PDAScreens Start
+            if (!updateState.Powered && _menu.IsOpen && _hasReceivedInitialState)
+            {
+                _menu.Close();
+                _menu = null;
+                return;
+            }
+            _hasReceivedInitialState = true;
+
+            if (!updateState.Booted && !_bootFinishedSent && _menu.IsOpen)
+            {
+                _menu.ShowBootScreen(true);
+                _bootFinishedSent = true;
+                Timer.Spawn(2000, () =>
+                {
+                    if (_menu?.IsOpen == true)
+                    {
+                        SendMessage(new PdaBootFinishedMessage());
+                        _menu.ShowBootScreen(false);
+                    }
+                });
+            }
+            else if (updateState.Booted)
+            {
+                _menu.ShowBootScreen(false);
+            }
+            // VG-PDAScreens End
         }
 
         protected override void AttachCartridgeUI(Control cartridgeUIFragment, string? title)

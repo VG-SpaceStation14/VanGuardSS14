@@ -37,3 +37,17 @@ public sealed class PdaRequestUpdateInterfaceMessage : BoundUserInterfaceMessage
 {
     public PdaRequestUpdateInterfaceMessage() { }
 }
+
+// VG-Tweak Start
+[Serializable, NetSerializable]
+public sealed class PdaPowerOffMessage : BoundUserInterfaceMessage
+{
+    public PdaPowerOffMessage() { }
+}
+
+[Serializable, NetSerializable]
+public sealed class PdaBootFinishedMessage : BoundUserInterfaceMessage
+{
+    public PdaBootFinishedMessage() { }
+}
+// VG-Tweak End

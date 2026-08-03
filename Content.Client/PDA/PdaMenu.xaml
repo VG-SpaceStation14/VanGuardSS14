@@ -1,8 +1,8 @@
 <pda:PdaWindow  xmlns="https://spacestation14.io"
                 xmlns:pda="clr-namespace:Content.Client.PDA"
                 xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
-                MinSize="576 450"
-                SetSize="576 450">
+                MinSize="420 620"
+                SetSize="520 720"> <!-- VG-Tweak -->
     <!-- This: (Margin="1 1 3 0") is necessary so the navigation bar doesn't sticks into the black content border. -->
     <BoxContainer Name="NavigationBar" HorizontalExpand="True" MinHeight="32" Margin="1 1 3 0">
         <pda:PdaNavigationButton Name="HomeButton" SetWidth="32" CurrentTabBorderThickness="0 0 2 0" IsCurrent="True"/>
@@ -21,8 +21,12 @@
         <pda:PdaNavigationButton Name="EjectPenButton" Access="Public" SetWidth="32"/>
         <pda:PdaNavigationButton Name="EjectIdButton" Access="Public" SetWidth="32"/>
         <pda:PdaNavigationButton Name="EjectPaiButton" Access="Public" SetWidth="32"/>
+        <!-- VG-Tweak Start -->
+        <pda:PdaNavigationButton Name="PowerOffButton" Access="Public" ToggleMode="True" ActiveFgColor="#EAEFBB" SetWidth="32"/>
+        <!-- VG-Tweak End -->
     </BoxContainer>
     <BoxContainer Name="ViewContainer" HorizontalExpand="True" VerticalExpand="True" Access="Public">
+        <!-- HomeView (0) -->
         <BoxContainer Orientation="Vertical"
                       VerticalExpand="True"
                       HorizontalExpand="True"
@@ -47,6 +51,7 @@
                 <RichTextLabel Name="StationAlertLevelInstructions" Access="Public"/>
             </ContainerButton>
         </BoxContainer>
+        <!-- ProgramListView (1) -->
         <ScrollContainer HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="True">
             <GridContainer VerticalExpand="True"
                            HorizontalExpand="True"
@@ -55,6 +60,7 @@
                            Margin="4"
                            Columns="2" />
         </ScrollContainer>
+        <!-- SettingsView (2) -->
         <ScrollContainer HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="True">
             <BoxContainer Orientation="Vertical"
                           VerticalExpand="True"
@@ -82,11 +88,38 @@
                                        Description="{Loc 'pda-bound-user-interface-lock-uplink-description'}"/>
             </BoxContainer>
         </ScrollContainer>
+        <!-- ProgramContentView (3) -->
         <BoxContainer Orientation="Vertical"
                       VerticalExpand="True"
                       HorizontalExpand="True"
                       Name="ProgramView"
                       Access="Public">
+        </BoxContainer>
+        <!-- VG-PDAScreens: BootView (4) -->
+        <BoxContainer Orientation="Vertical"
+                      VerticalExpand="True"
+                      HorizontalExpand="True"
+                      Name="BootView"
+                      Access="Public"
+                      Visible="False"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center">
+            <Label Text="Robust#OS ™"
+                   StyleClasses="PdaContentFooterText"
+                   HorizontalAlignment="Center"
+                   Margin="0 0 0 20"/>
+            <TextureRect Name="BootIcon"
+                         TexturePath="/Textures/Interface/VerbIcons/settings.svg.192dpi.png"
+                         Stretch="KeepCentered"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         SetWidth="64"
+                         SetHeight="64"/>
+            <Label Name="BootWelcomeLabel"
+                   Text=""
+                   StyleClasses="PdaContentFooterText"
+                   HorizontalAlignment="Center"
+                   Margin="0 20 0 0"/>
         </BoxContainer>
     </BoxContainer>
     <BoxContainer Name="ContentFooter" HorizontalExpand="True" SetHeight="28" Margin="1 0 2 1">
