@@ -16,6 +16,10 @@ namespace Content.Shared.PDA
         public string? Address;
         public bool HasWallpaperColor; // VG-Tweak
         public Color WallpaperColor; // VG-Tweak
+        // VG-Wallpaper Start
+        public string? WallpaperRsi;
+        public string? WallpaperState;
+        // VG-Wallpaper End
         public bool Booted; // VG-PDAScreens
         public bool Powered; // VG-PDAScreens
 
@@ -32,6 +36,10 @@ namespace Content.Shared.PDA
             string? address = null,
             bool hasWallpaperColor = false,
             Color? wallpaperColor = null,
+            // VG-Wallpaper Start
+            string? wallpaperRsi = null,
+            string? wallpaperState = null,
+            // VG-Wallpaper End
             bool booted = false,
             bool powered = true)
             : base(programs, activeUI)
@@ -46,6 +54,10 @@ namespace Content.Shared.PDA
             Address = address;
             HasWallpaperColor = hasWallpaperColor; // VG-Tweak
             WallpaperColor = wallpaperColor ?? Color.White; // VG-Tweak
+            // VG-Wallpaper Start
+            WallpaperRsi = wallpaperRsi;
+            WallpaperState = wallpaperState;
+            // VG-Wallpaper End
             Booted = booted; // VG-PDAScreens
             Powered = powered; // VG-PDAScreens
         }

@@ -66,6 +66,10 @@ namespace Content.Server.PDA
             SubscribeLocalEvent<PdaComponent, CartridgeLoaderActiveCartridgeChangedEvent>(OnActiveCartridgeChanged);
             // VG-PDAScreens End
 
+            // VG-Wallpaper Start
+            SubscribeLocalEvent<PdaComponent, PdaSetWallpaperRsiMessage>(OnUiMessage);
+            // VG-Wallpaper End
+
             SubscribeLocalEvent<PdaComponent, CartridgeLoaderNotificationSentEvent>(OnNotification);
 
             SubscribeLocalEvent<StationRenamedEvent>(OnStationRenamed);
@@ -243,6 +247,10 @@ namespace Content.Server.PDA
                 address,
                 pda.HasWallpaperColor, // VG-Tweak
                 pda.WallpaperColor, // VG-Tweak
+                // VG-Wallpaper Start
+                pda.WallpaperRsi,
+                pda.WallpaperState,
+                // VG-Wallpaper End
                 pda.Booted, // VG-PDAScreens
                 pda.Powered); // VG-PDAScreens
 
@@ -347,6 +355,28 @@ namespace Content.Server.PDA
             UpdatePdaUi(uid, pda);
         }
         // VG-Tweak End
+
+        // VG-Wallpaper Start
+        private void OnUiMessage(EntityUid uid, PdaComponent pda, PdaSetWallpaperRsiMessage msg)
+        {
+            if (!PdaUiKey.Key.Equals(msg.UiKey))
+                return;
+
+            if (msg.RsiPath == null || msg.State == null)
+            {
+                pda.WallpaperRsi = null;
+                pda.WallpaperState = null;
+                pda.HasWallpaperColor = false;
+            }
+            else
+            {
+                pda.WallpaperRsi = msg.RsiPath;
+                pda.WallpaperState = msg.State;
+                pda.HasWallpaperColor = false;
+            }
+            UpdatePdaUi(uid, pda);
+        }
+        // VG-Wallpaper End
 
         // VG-PDAScreens Start
         private void OnPowerOff(EntityUid uid, PdaComponent pda, PdaPowerOffMessage msg)

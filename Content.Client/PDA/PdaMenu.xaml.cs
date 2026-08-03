@@ -1,6 +1,7 @@
 // VG-Tweak Start
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 // VG-Tweak End
 using Content.Client.GameTicking.Managers;
 using Content.Shared.PDA;
@@ -14,6 +15,8 @@ using Robust.Client.Graphics;
 using Robust.Client.UserInterface.XAML;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Timing;
+using Robust.Shared.Prototypes; // VG-Wallpaper
+using Content.Shared._VanGuard.PDA; // VG-Wallpaper
 
 namespace Content.Client.PDA
 {
@@ -23,6 +26,7 @@ namespace Content.Client.PDA
         [Dependency] private IClipboardManager _clipboard = null!;
         [Dependency] private IGameTiming _gameTiming = default!;
         [Dependency] private IEntitySystemManager _entitySystem = default!;
+        [Dependency] private IPrototypeManager _protoMan = default!; // VG-Wallpaper
         private readonly AlertLevelSystem _alert = default!;
         private readonly ClientGameTicker _gameTicker;
 
@@ -46,6 +50,10 @@ namespace Content.Client.PDA
         private bool _settingWallpaperColorFromState; // VG-Tweak
         private Color _wallpaperColor = Color.White; // VG-Tweak
 
+        // VG-Wallpaper Start
+        private List<PdaWallpaperPrototype> _wallpapers = new();
+        // VG-Wallpaper End
+
         private int _currentView;
 
         // VG-PDAScreens Start
@@ -58,6 +66,10 @@ namespace Content.Client.PDA
         public event Action<EntityUid>? OnUninstallButtonPressed;
         public event Action<EntityUid>? OnInstallButtonPressed;
         public event Action<Color>? OnWallpaperColorSelected; // VG-Tweak
+
+        // VG-Wallpaper Start
+        public event Action<string?, string?>? OnWallpaperRsiSelected;
+        // VG-Wallpaper End
 
         public PdaMenu()
         {
@@ -172,6 +184,10 @@ namespace Content.Client.PDA
             };
             // VG-Tweak End
 
+            // VG-Wallpaper Start
+            InitializeWallpaperSelector();
+            // VG-Wallpaper End
+
             // VG-PDAScreens Start
             BootView.Visible = false;
             BootView.Modulate = Color.White;
@@ -180,6 +196,60 @@ namespace Content.Client.PDA
             HideAllViews();
             ToHomeScreen();
         }
+
+        // VG-Wallpaper Start
+        private void InitializeWallpaperSelector()
+        {
+            // Сортируем: сначала none, затем остальные по ID
+            _wallpapers = _protoMan.EnumeratePrototypes<PdaWallpaperPrototype>()
+                .OrderBy(w => w.ID == "PdaWallpaperNone" ? 0 : 1) // none всегда первый
+                .ThenBy(w => w.ID)
+                .ToList();
+
+            foreach (var wallpaper in _wallpapers)
+            {
+                WallpaperDropdown.AddItem(Loc.GetString(wallpaper.Name));
+            }
+
+            WallpaperDropdown.OnItemSelected += OnWallpaperDropdownSelected;
+        }
+
+        private void OnWallpaperDropdownSelected(OptionButton.ItemSelectedEventArgs args)
+        {
+            WallpaperDropdown.SelectId(args.Id);
+            var wallpaper = _wallpapers[args.Id];
+            
+            // Если выбран none - отправляем null, чтобы отключить обои
+            if (wallpaper.ID == "PdaWallpaperNone")
+            {
+                OnWallpaperRsiSelected?.Invoke(null, null);
+            }
+            else
+            {
+                OnWallpaperRsiSelected?.Invoke(wallpaper.RsiPath, wallpaper.State);
+            }
+        }
+
+        private void UpdateDropdownSelection(string? rsiPath, string? state)
+        {
+            if (rsiPath == null || state == null)
+            {
+                WallpaperDropdown.SelectId(0);
+                return;
+            }
+
+            for (int i = 0; i < _wallpapers.Count; i++)
+            {
+                var wallpaper = _wallpapers[i];
+                if (wallpaper.RsiPath == rsiPath && wallpaper.State == state)
+                {
+                    WallpaperDropdown.SelectId(i);
+                    return;
+                }
+            }
+            WallpaperDropdown.SelectId(0);
+        }
+        // VG-Wallpaper End
 
         // VG-PDAScreens Start
         public void ShowBootScreen(bool show)
@@ -296,25 +366,34 @@ namespace Content.Client.PDA
             PowerOffButton.IsActive = state.Powered;
             // VG-PDAScreens End
 
-            // VG-Tweak Start
-            var effectiveWallpaperColor = state.HasWallpaperColor
-                ? state.WallpaperColor
-                : DefaultWallpaperColor ?? state.WallpaperColor;
-
-            WallpaperColor = state.HasWallpaperColor ? state.WallpaperColor : null;
-            if (!WallpaperColorSelector.IsGrabbed &&
-                (state.HasWallpaperColor != _hasWallpaperColor ||
-                !ColorsClose(effectiveWallpaperColor, _wallpaperColor))
-            )
+            // VG-Wallpaper Start
+            if (state.WallpaperRsi != null && state.WallpaperState != null)
             {
-                _settingWallpaperColorFromState = true;
-                WallpaperColorSelector.Color = effectiveWallpaperColor;
-                _settingWallpaperColorFromState = false;
+                Wallpaper = (state.WallpaperRsi, state.WallpaperState);
+                UpdateDropdownSelection(state.WallpaperRsi, state.WallpaperState);
             }
+            else
+            {
+                Wallpaper = null;
+                WallpaperDropdown.SelectId(0);
+                var effectiveWallpaperColor = state.HasWallpaperColor
+                    ? state.WallpaperColor
+                    : DefaultWallpaperColor ?? state.WallpaperColor;
 
-            _hasWallpaperColor = state.HasWallpaperColor;
-            _wallpaperColor = effectiveWallpaperColor;
-            // VG-Tweak End
+                WallpaperColor = state.HasWallpaperColor ? state.WallpaperColor : null;
+                if (!WallpaperColorSelector.IsGrabbed &&
+                    (state.HasWallpaperColor != _hasWallpaperColor ||
+                    !ColorsClose(effectiveWallpaperColor, _wallpaperColor)))
+                {
+                    _settingWallpaperColorFromState = true;
+                    WallpaperColorSelector.Color = effectiveWallpaperColor;
+                    _settingWallpaperColorFromState = false;
+                }
+
+                _hasWallpaperColor = state.HasWallpaperColor;
+                _wallpaperColor = effectiveWallpaperColor;
+            }
+            // VG-Wallpaper End
 
             if (state.PdaOwnerInfo.ActualOwnerName != null)
             {

@@ -62,3 +62,18 @@ public sealed class PdaSetWallpaperColorMessage : BoundUserInterfaceMessage
     }
 }
 // VG-Tweak End
+
+// VG-Wallpaper Start
+[Serializable, NetSerializable]
+public sealed class PdaSetWallpaperRsiMessage : BoundUserInterfaceMessage
+{
+    public string? RsiPath;
+    public string? State;
+
+    public PdaSetWallpaperRsiMessage(string? rsiPath, string? state)
+    {
+        RsiPath = rsiPath;
+        State = state;
+    }
+}
+// VG-Wallpaper End

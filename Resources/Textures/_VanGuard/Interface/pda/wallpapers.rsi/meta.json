@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Created by Aworkiq(github) for VanGuard",
+  "size": {
+    "x": 576,
+    "y": 750
+  },
+  "states": [
+    { "name": "none" },
+    { "name": "space1" },
+    { "name": "space2" },
+    { "name": "blackhole" },
+    { "name": "forest" },
+    { "name": "smile" },
+    { "name": "nanotrasen1" },
+    { "name": "science" }
+  ]
+}

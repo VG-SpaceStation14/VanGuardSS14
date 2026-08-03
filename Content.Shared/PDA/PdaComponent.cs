@@ -50,6 +50,14 @@ namespace Content.Shared.PDA
         public Color WallpaperColor = Color.White;
         // VG-Tweak End
 
+        // VG-Wallpaper Start
+        [DataField, AutoNetworkedField]
+        public string? WallpaperRsi { get; set; }
+
+        [DataField, AutoNetworkedField]
+        public string? WallpaperState { get; set; }
+        // VG-Wallpaper End
+
         // VG-PDAScreens Start
         [DataField, AutoNetworkedField]
         public bool Powered = false;

@@ -91,6 +91,13 @@ namespace Content.Client.PDA
                 SendMessage(new PdaSetWallpaperColorMessage(color));
             };
 
+            // VG-Wallpaper Start
+            _menu.OnWallpaperRsiSelected += (rsi, state) =>
+            {
+                SendMessage(new PdaSetWallpaperRsiMessage(rsi, state));
+            };
+            // VG-Wallpaper End
+
             _menu.OnProgramItemPressed += ActivateCartridge;
             _menu.OnInstallButtonPressed += InstallCartridge;
             _menu.OnUninstallButtonPressed += UninstallCartridge;

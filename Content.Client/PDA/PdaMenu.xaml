@@ -90,6 +90,14 @@
                 <Label Text="{Loc 'comp-pda-ui-wallpaper-color'}" Margin="8 10 8 0"/>
                 <!-- VG-Tweak: Color selector -->
                 <vg:LegacyColorSelectorSliders Name="WallpaperColorSelector" Margin="8 2 8 4"/>
+                <!-- VG-Wallpaper Start -->
+                <Label Text="{Loc 'pda-wallpaper-title'}" Margin="8 15 8 0"/>
+                <OptionButton Name="WallpaperDropdown" 
+                              Access="Public" 
+                              Margin="8 4 8 4" 
+                              MinWidth="200" 
+                              HorizontalExpand="True" />
+                <!-- VG-Wallpaper End -->
             </BoxContainer>
         </ScrollContainer>
         <!-- ProgramContentView (3) -->
