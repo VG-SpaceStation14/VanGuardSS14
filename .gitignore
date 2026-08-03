@@ -327,3 +327,8 @@ error.glsl
 
 # C# Dev Kit cache file
 *.lscache
+
+# backupbd
+bin/Content.Server/Database/
+DatabaseBackups/
+buildRelise.bat
