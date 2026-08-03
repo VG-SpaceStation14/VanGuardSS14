@@ -5,16 +5,20 @@
   name: PDA
   description: Personal Data Assistant.
   components:
+  # VG-Tweak Start
   - type: Appearance
     appearanceDataInit:
      enum.PdaVisuals.PdaType:
        !type:String
-       pda
+       pda_base
   - type: Sprite
-    sprite: Objects/Devices/pda.rsi
+    sprite: _VanGuard/Objects/Devices/pda.rsi
     layers:
     - map: [ "enum.PdaVisualLayers.Base" ]
-      state: "pda"
+      state: "pda_base"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
     - state: "light_overlay"
       map: [ "enum.PdaVisualLayers.Flashlight" ]
       shader: "unshaded"
@@ -23,9 +27,12 @@
       map: [ "enum.PdaVisualLayers.IdLight" ]
       shader: "unshaded"
       visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: Icon
-    sprite: Objects/Devices/pda.rsi
-    state: pda
+    sprite: _VanGuard/Objects/Devices/pda.rsi
+    state: icon
+  # VG-Tweak End
   - type: Pda
     paiSlot:
       priority: -2
@@ -64,9 +71,9 @@
     - Belt
   - type: UnpoweredFlashlight
   - type: PointLight
+    mask: /Textures/Effects/LightMasks/cone.png
     enabled: false
-    radius: 1.7
-    falloff: 3
+    radius: 2
     softness: 5
     autoRot: true
   - type: Ringer
@@ -111,7 +118,7 @@
         type: InstrumentBoundUserInterface
       enum.HealthAnalyzerUiKey.Key:
         type: HealthAnalyzerBoundUserInterface
-  - type: RemoteStore # PDAs can access uplinks so they need this component.
+  - type: RemoteStore
   - type: Tag
     tags:
     - DoorBumpOpener
@@ -119,11 +126,11 @@
     - WhitelistChameleonPDA
   - type: Input
     context: "human"
-  - type: SentienceTarget # sentient PDA = pAI lite
+  - type: SentienceTarget
     flavorKind: station-event-random-sentience-flavor-mechanical
-    weight: 0.001 # 1,000 PDAs = as likely to be picked as 1 regular animal
+    weight: 0.001
   - type: BlockMovement
-    blockInteraction: false # lets the PDA toggle its own flashlight
+    blockInteraction: false
   - type: TypingIndicator
     proto: robot
   - type: Speech
@@ -135,10 +142,10 @@
   abstract: true
   components:
   - type: Sprite
-    sprite: Objects/Devices/pda.rsi
+    sprite: _VanGuard/Objects/Devices/pda.rsi
     layers:
     - map: [ "enum.PdaVisualLayers.Base" ]
-      state: "pda"
+      state: "pda-library"
     - state: "light_overlay_wide"
       map: [ "enum.PdaVisualLayers.Flashlight" ]
       shader: "unshaded"
@@ -184,10 +191,30 @@
   name: passenger PDA
   description: Why isn't it gray?
   components:
-  - type: Pda
-    id: PassengerIDCard
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#717059"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#717059"
+  # VG-Tweak End
+  - type: Pda
+    id: PassengerIDCard
 
 - type: entity
   parent: BasePDA
@@ -195,18 +222,33 @@
   name: technical assistant PDA
   description: Why isn't it yellow?
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#FFA500"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#FFFF00"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#FFA500"
+    accentVColor: "#FFFF00"
+  # VG-Tweak End
   - type: Pda
     id: TechnicalAssistantIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-interntech
-  - type: PdaBorderColor
-    borderColor: "#717059"
-    accentVColor: "#949137"
-  - type: Icon
-    state: pda-interntech
 
 - type: entity
   parent: BaseMedicalPDA
@@ -214,18 +256,33 @@
   name: medical intern PDA
   description: Why isn't it white?
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#E0FFFF"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#00BFFF"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#E0FFFF"
+    accentVColor: "#00BFFF"
+  # VG-Tweak End
   - type: Pda
     id: MedicalInternIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-internmed
-  - type: PdaBorderColor
-    borderColor: "#717059"
-    accentVColor: "#447987"
-  - type: Icon
-    state: pda-internmed
   - type: GuideHelp
     guides:
     - MedicalDoctor
@@ -236,18 +293,30 @@
   name: security cadet PDA
   description: Why isn't it red?
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#A32D26"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#A32D26"
+  # VG-Tweak End
   - type: Pda
     id: SecurityCadetIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-interncadet
-  - type: PdaBorderColor
-    borderColor: "#717059"
-    accentVColor: "#A32D26"
-  - type: Icon
-    state: pda-interncadet
 
 - type: entity
   parent: BasePDA
@@ -255,18 +324,33 @@
   name: research assistant PDA
   description: Why isn't it purple?
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#E0FFFF"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#9932CC"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#E0FFFF"
+    accentVColor: "#9932CC"
+  # VG-Tweak End
   - type: Pda
     id: ResearchAssistantIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-internsci
-  - type: PdaBorderColor
-    borderColor: "#717059"
-    accentVColor: "#8900c9"
-  - type: Icon
-    state: pda-internsci
 
 - type: entity
   parent: BasePDA
@@ -274,18 +358,33 @@
   name: service worker PDA
   description: Why isn't it gray?
   components:
-  - type: Pda
-    id: ServiceWorkerIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-internservice
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#717059"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#00cc35"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#717059"
     accentVColor: "#00cc35"
-  - type: Icon
-    state: pda-internservice
+  # VG-Tweak End
+  - type: Pda
+    id: ServiceWorkerIDCard
 
 - type: entity
   parent: BasePDA
@@ -293,17 +392,30 @@
   name: chef PDA
   description: Covered in grease and flour.
   components:
-  - type: Pda
-    id: ChefIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-cook
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#d7d7d0"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#d7d7d0"
-  - type: Icon
-    state: pda-cook
+  # VG-Tweak End
+  - type: Pda
+    id: ChefIDCard
 
 - type: entity
   parent: BasePDA
@@ -311,18 +423,33 @@
   name: botanist PDA
   description: Has an earthy scent.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#32CD32"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#87CEEB"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#32CD32"
+    accentVColor: "#87CEEB"
+  # VG-Tweak End
   - type: Pda
     id: BotanistIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-hydro
-  - type: PdaBorderColor
-    borderColor: "#44843c"
-    accentVColor: "#00cc35"
-  - type: Icon
-    state: pda-hydro
 
 - type: entity
   parent: BasePDA
@@ -330,27 +457,39 @@
   name: clown PDA
   description: Looks can be deceiving.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#dc428f"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: pda_stripe_clown
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#dc428f"
+  # VG-Tweak End
   - type: Pda
     id: ClownIDCard
     penSlot:
-      startingItem: CrayonOrange # no pink crayon?!?
-      # ^ Still unacceptable.
-      # ^ I would have to concur.
+      startingItem: CrayonOrange
       ejectSound: /Audio/Items/bikehorn.ogg
       priority: -1
       whitelist:
         tags:
         - Write
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-clown
-  - type: PdaBorderColor
-    borderColor: "#C18199"
-  - type: Icon
-    state: pda-clown
-  - type: Slippery # secretly made of bananium
+  - type: Slippery
   - type: StepTrigger
   - type: CollisionWake
     enabled: false
@@ -380,7 +519,7 @@
   components:
   - type: Pda
     id: VisitorIDCard
-  - type: Tag #  Ignore Chameleon tags
+  - type: Tag
     tags:
     - DoorBumpOpener
 
@@ -390,6 +529,30 @@
   name: mime PDA
   description: Suprisingly not on mute.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#d7d7d0"
+    - state: pda_buttons
+    - state: pda_stripe_mime
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#d7d7d0"
+    accentHColor: "#333333"
+  # VG-Tweak End
   - type: Pda
     id: MimeIDCard
     paiSlot:
@@ -401,7 +564,7 @@
         - PAI
     idSlot:
       name: access-id-card-component-default
-      ejectSound: null # mime is silent
+      ejectSound: null
       insertSound: null
       whitelist:
         components:
@@ -421,17 +584,7 @@
       whitelist:
         components:
         - Cartridge
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-mime
-  - type: PdaBorderColor
-    borderColor: "#d7d7d0"
-    accentHColor: "#333333"
-  - type: Icon
-    state: pda-mime
-  - type: Muted # for random sentience event
+  - type: Muted
   - type: EntityTableContainerFill
     containers:
       preinstalled-program-container: !type:AllSelector
@@ -445,17 +598,32 @@
   id: ChaplainPDA
   description: God's chosen PDA.
   components:
-  - type: Pda
-    id: ChaplainIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-chaplain
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#333333"
+    - state: pda_buttons
+    - state: pda_cross
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#333333"
-  - type: Icon
-    state: pda-chaplain
+    accentVColor: "#FFD700"
+  # VG-Tweak End
+  - type: Pda
+    id: ChaplainIDCard
 
 - type: entity
   parent: ChaplainPDA
@@ -464,7 +632,7 @@
   components:
   - type: Pda
     id: VisitorIDCard
-  - type: Tag #  Ignore Chameleon tags
+  - type: Tag
     tags:
     - DoorBumpOpener
 
@@ -474,18 +642,33 @@
   id: QuartermasterPDA
   description: PDA for the guy that orders the guns.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#B8860B"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#8B4513"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#B8860B"
+    accentVColor: "#8B4513"
+  # VG-Tweak End
   - type: Pda
     id: QuartermasterIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-qm
-  - type: PdaBorderColor
-    borderColor: "#e39751"
-    accentVColor: "#a23e3e"
-  - type: Icon
-    state: pda-qm
   - type: EntityTableContainerFill
     containers:
       preinstalled-program-container: !type:AllSelector
@@ -502,17 +685,30 @@
   name: cargo PDA
   description: PDA for the guys that order the pizzas.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#B8860B"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#B8860B"
+  # VG-Tweak End
   - type: Pda
     id: CargoIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-cargo
-  - type: PdaBorderColor
-    borderColor: "#e39751"
-  - type: Icon
-    state: pda-cargo
 
 - type: entity
   parent: BasePDA
@@ -520,18 +716,33 @@
   name: salvage PDA
   description: Smells like ash.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#B8860B"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#9932CC"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#B8860B"
+    accentVColor: "#9932CC"
+  # VG-Tweak End
   - type: Pda
     id: SalvageIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-miner
-  - type: PdaBorderColor
-    borderColor: "#af9366"
-    accentVColor: "#8900c9"
-  - type: Icon
-    state: pda-miner
   - type: EntityTableContainerFill
     containers:
       preinstalled-program-container: !type:AllSelector
@@ -548,17 +759,30 @@
   name: bartender PDA
   description: Smells like beer.
   components:
-  - type: Pda
-    id: BartenderIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-bartender
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#333333"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#333333"
-  - type: Icon
-    state: pda-bartender
+  # VG-Tweak End
+  - type: Pda
+    id: BartenderIDCard
 
 - type: entity
   parent: BaseWidePDA
@@ -566,6 +790,28 @@
   name: librarian PDA
   description: Smells like books.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda-library
+      color: "#858585"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#858585"
+  # VG-Tweak End
   - type: Pda
     id: LibrarianIDCard
     penSlot:
@@ -574,15 +820,6 @@
       whitelist:
         tags:
         - Write
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-library
-  - type: PdaBorderColor
-    borderColor: "#858585"
-  - type: Icon
-    state: pda-library
 
 - type: entity
   parent: LibrarianPDA
@@ -591,7 +828,7 @@
   components:
   - type: Pda
     id: VisitorIDCard
-  - type: Tag #  Ignore Chameleon tags
+  - type: Tag
     tags:
     - DoorBumpOpener
 
@@ -601,6 +838,28 @@
   name: lawyer PDA
   description: For lawyers to poach dubious clients.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#003153"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#003153"
+  # VG-Tweak End
   - type: Pda
     id: LawyerIDCard
     penSlot:
@@ -609,15 +868,6 @@
       whitelist:
         tags:
         - Write
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-lawyer
-  - type: PdaBorderColor
-    borderColor: "#6f6192"
-  - type: Icon
-    state: pda-lawyer
 
 - type: entity
   parent: LawyerPDA
@@ -626,7 +876,7 @@
   components:
   - type: Pda
     id: VisitorIDCard
-  - type: Tag #  Ignore Chameleon tags
+  - type: Tag
     tags:
     - DoorBumpOpener
 
@@ -636,17 +886,30 @@
   name: janitor PDA
   description: Smells like bleach.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#9932CC"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#9932CC"
+  # VG-Tweak End
   - type: Pda
     id: JanitorIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-janitor
-  - type: PdaBorderColor
-    borderColor: "#5D2D56"
-  - type: Icon
-    state: pda-janitor
 
 - type: entity
   parent: BasePDA
@@ -654,6 +917,31 @@
   name: captain PDA
   description: Surprisingly no different from your PDA.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#E0FFFF"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#FFD700"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#E0FFFF"
+    accentVColor: "#FFD700"
+  # VG-Tweak End
   - type: Pda
     id: CaptainIDCard
     penSlot:
@@ -662,15 +950,6 @@
       whitelist:
         tags:
         - Write
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-captain
-  - type: PdaBorderColor
-    borderColor: "#7C5D00"
-  - type: Icon
-    state: pda-captain
 
 - type: entity
   parent: BasePDA
@@ -678,6 +957,32 @@
   name: head of personnel PDA
   description: Looks like it's been chewed on.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#003153"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#A32D26"
+    - state: pda_stripe_head
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#003153"
+    accentVColor: "#A32D26"
+  # VG-Tweak End
   - type: Pda
     id: HoPIDCard
     penSlot:
@@ -686,16 +991,6 @@
       whitelist:
         tags:
         - Write
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-hop
-  - type: PdaBorderColor
-    borderColor: "#789876"
-    accentHColor: "#447987"
-  - type: Icon
-    state: pda-hop
 
 - type: entity
   parent: BasePDA
@@ -703,18 +998,34 @@
   name: chief engineer PDA
   description: Looks like it's barely been used.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#FFA500"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#E0FFFF"
+    - state: pda_stripe_head
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#FFA500"
+    accentVColor: "#E0FFFF"
+  # VG-Tweak End
   - type: Pda
     id: CEIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-ce
-  - type: PdaBorderColor
-    borderColor: "#949137"
-    accentHColor: "#447987"
-  - type: Icon
-    state: pda-ce
 
 - type: entity
   parent: BasePDA
@@ -722,18 +1033,33 @@
   name: engineer PDA
   description: Rugged and well-worn.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#FFA500"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#FFFF00"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#FFA500"
+    accentVColor: "#FFFF00"
+  # VG-Tweak End
   - type: Pda
     id: EngineeringIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-engineer
-  - type: PdaBorderColor
-    borderColor: "#949137"
-    accentVColor: "#A32D26"
-  - type: Icon
-    state: pda-engineer
 
 - type: entity
   parent: BaseMedicalPDA
@@ -741,19 +1067,35 @@
   name: chief medical officer PDA
   description: Extraordinarily shiny and sterile.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#E0FFFF"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#00BFFF"
+    - state: pda_stripe_head
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#E0FFFF"
+    accentHColor: "#00BFFF"
+    accentVColor: "#447987"
+  # VG-Tweak End
   - type: Pda
     id: CMOIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-cmo
-  - type: PdaBorderColor
-    borderColor: "#d7d7d0"
-    accentHColor: "#447987"
-    accentVColor: "#447987"
-  - type: Icon
-    state: pda-cmo
 
 - type: entity
   parent: BaseMedicalPDA
@@ -761,18 +1103,33 @@
   name: medical PDA
   description: Shiny and sterile.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#E0FFFF"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#00BFFF"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#E0FFFF"
+    accentVColor: "#00BFFF"
+  # VG-Tweak End
   - type: Pda
     id: MedicalIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-medical
-  - type: PdaBorderColor
-    borderColor: "#d7d7d0"
-    accentVColor: "#447987"
-  - type: Icon
-    state: pda-medical
   - type: GuideHelp
     guides:
     - MedicalDoctor
@@ -784,7 +1141,7 @@
   components:
   - type: Pda
     id: VisitorIDCard
-  - type: Tag #  Ignore Chameleon tags
+  - type: Tag
     tags:
     - DoorBumpOpener
 
@@ -794,18 +1151,33 @@
   name: paramedic PDA
   description: Shiny and sterile.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#E0FFFF"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#00BFFF"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#E0FFFF"
+    accentVColor: "#00BFFF"
+  # VG-Tweak End
   - type: Pda
     id: ParamedicIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-paramedic
-  - type: PdaBorderColor
-    borderColor: "#d7d7d0"
-    accentVColor: "#2a4b5b"
-  - type: Icon
-    state: pda-paramedic
 
 - type: entity
   parent: BaseMedicalPDA
@@ -813,18 +1185,33 @@
   name: chemistry PDA
   description: It has a few discolored blotches here and there.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#E0FFFF"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#FF4500"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#E0FFFF"
+    accentVColor: "#FF4500"
+  # VG-Tweak End
   - type: Pda
     id: ChemistIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-chemistry
-  - type: PdaBorderColor
-    borderColor: "#d7d7d0"
-    accentVColor: "#B34200"
-  - type: Icon
-    state: pda-chemistry
 
 - type: entity
   parent: BasePDA
@@ -832,19 +1219,35 @@
   name: research director PDA
   description: It appears surprisingly ordinary.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#E0FFFF"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#9932CC"
+    - state: pda_stripe_head
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#E0FFFF"
+    accentHColor: "#9932CC"
+    accentVColor: "#8900c9"
+  # VG-Tweak End
   - type: Pda
     id: RDIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-rd
-  - type: PdaBorderColor
-    borderColor: "#d7d7d0"
-    accentHColor: "#447987"
-    accentVColor: "#8900c9"
-  - type: Icon
-    state: pda-rd
 
 - type: entity
   parent: BasePDA
@@ -852,18 +1255,33 @@
   name: science PDA
   description: It's covered with an unknown gooey substance.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#E0FFFF"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#9932CC"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#E0FFFF"
+    accentVColor: "#9932CC"
+  # VG-Tweak End
   - type: Pda
     id: ResearchIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-science
-  - type: PdaBorderColor
-    borderColor: "#d7d7d0"
-    accentVColor: "#8900c9"
-  - type: Icon
-    state: pda-science
 
 - type: entity
   parent: BaseSecurityPDA
@@ -871,18 +1289,32 @@
   name: head of security PDA
   description: Whosoever bears this PDA is the law.
   components:
-  - type: Pda
-    id: HoSIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-hos
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#A32D26"
+    - state: pda_buttons
+    - state: pda_stripe_head
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#A32D26"
     accentHColor: "#447987"
-  - type: Icon
-    state: pda-hos
+  # VG-Tweak End
+  - type: Pda
+    id: HoSIDCard
   - type: EntityTableContainerFill
     containers:
       preinstalled-program-container: !type:AllSelector
@@ -900,18 +1332,33 @@
   name: warden PDA
   description: The OS appears to have been jailbroken.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#A32D26"
+    - state: pda_buttons
+    - state: pda_stripe_split
+      color: "#293133"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#293133"
+    accentVColor: "#A32D26"
+  # VG-Tweak End
   - type: Pda
     id: WardenIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-warden
-  - type: PdaBorderColor
-    borderColor: "#A32D26"
-    accentVColor: "#949137"
-  - type: Icon
-    state: pda-warden
 
 - type: entity
   parent: BaseSecurityPDA
@@ -919,17 +1366,30 @@
   name: security PDA
   description: Red to hide the stains of passenger blood.
   components:
-  - type: Pda
-    id: SecurityIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-security
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#A32D26"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#A32D26"
-  - type: Icon
-    state: pda-security
+  # VG-Tweak End
+  - type: Pda
+    id: SecurityIDCard
 
 - type: entity
   parent: BaseSecurityPDA
@@ -937,6 +1397,28 @@
   name: CentComm PDA
   description: Light green sign of walking bureaucracy.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#00842e"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#00842e"
+  # VG-Tweak End
   - type: Pda
     id: CentcomIDCard
     penSlot:
@@ -945,15 +1427,6 @@
       whitelist:
         tags:
         - Write
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-centcom
-  - type: PdaBorderColor
-    borderColor: "#00842e"
-  - type: Icon
-    state: pda-centcom
   - type: EntityTableContainerFill
     containers:
       preinstalled-program-container: !type:AllSelector
@@ -994,7 +1467,7 @@
         - id: WantedListCartridge
         - id: MedTekCartridge
         - id: AstroNavCartridge
-  - type: Tag #  Ignore Chameleon tags
+  - type: Tag
     tags:
     - DoorBumpOpener
 
@@ -1005,7 +1478,7 @@
   components:
   - type: Pda
     id: CentcomIDCardDeathsquad
-  - type: Tag #  Ignore Chameleon tags
+  - type: Tag
     tags:
     - DoorBumpOpener
 
@@ -1015,22 +1488,35 @@
   name: musician PDA
   description: It fills you with inspiration.
   components:
-  - type: Pda
-    id: MusicianIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-musician
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#333333"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#333333"
-  - type: Icon
-    state: pda-musician
+  # VG-Tweak End
+  - type: Pda
+    id: MusicianIDCard
   - type: Instrument
     allowPercussion: false
     handheld: true
     program: 2
-    bank: 100 # Defined in space-station-14.sf2
+    bank: 100
 
 - type: entity
   parent: MusicianPDA
@@ -1039,7 +1525,7 @@
   components:
   - type: Pda
     id: VisitorIDCard
-  - type: Tag #  Ignore Chameleon tags
+  - type: Tag
     tags:
     - DoorBumpOpener
 
@@ -1049,18 +1535,33 @@
   name: atmos PDA
   description: Still smells like plasma.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#FFD700"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#808080"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#FFD700"
+    accentVColor: "#808080"
+  # VG-Tweak End
   - type: Pda
     id: AtmosIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-atmos
-  - type: PdaBorderColor
-    borderColor: "#949137"
-    accentVColor: "#447987"
-  - type: Icon
-    state: pda-atmos
 
 - type: entity
   parent: BasePDA
@@ -1068,17 +1569,30 @@
   name: clear PDA
   description: 99 and 44/100ths percent pure plastic.
   components:
-  - type: Pda
-    id: PassengerIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-clear
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda-clear
+      color: "#288e4d"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#288e4d"
-  - type: Icon
-    state: pda-clear
+  # VG-Tweak End
+  - type: Pda
+    id: PassengerIDCard
 
 - type: entity
   parent: ClearPDA
@@ -1086,7 +1600,7 @@
   components:
   - type: Pda
     id: VisitorIDCard
-  - type: Tag #  Ignore Chameleon tags
+  - type: Tag
     tags:
     - DoorBumpOpener
 
@@ -1096,17 +1610,30 @@
   name: syndicate PDA
   description: Ok, time to be a productive member of- oh cool I'm a bad guy time to kill people!
   components:
-  - type: Pda
-    id: SyndicateIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-syndi
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#891417"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#891417"
-  - type: Icon
-    state: pda-syndi
+  # VG-Tweak End
+  - type: Pda
+    id: SyndicateIDCard
   - type: EntityTableContainerFill
     containers:
       preinstalled-program-container: !type:AllSelector
@@ -1120,15 +1647,30 @@
   name: syndicate operative PDA
   description: Death to NT!
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#891417"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#FFD700"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  # VG-Tweak End
   - type: Pda
     id: SyndiOperativeIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-syndi-operative
-  - type: Icon
-    state: pda-syndi-operative
 
 - type: entity
   parent: [ SyndiOperativePDA, BaseSyndicateContraband ]
@@ -1136,15 +1678,30 @@
   name: syndicate corpsman PDA
   description: Commander... I need to cook!
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#891417"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#d7d7d0"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  # VG-Tweak End
   - type: Pda
     id: SyndiCorpsmanIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-syndi-corpsman
-  - type: Icon
-    state: pda-syndi-corpsman
   - type: EntityTableContainerFill
     containers:
       preinstalled-program-container: !type:AllSelector
@@ -1159,15 +1716,32 @@
   name: syndicate commander PDA
   description: So what are we, some kind of Nukie squad?
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#891417"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#FFD700"
+    - state: pda_stripe_double
+      color: "#FFD700"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  # VG-Tweak End
   - type: Pda
     id: SyndiCommanderIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-syndi-commander
-  - type: Icon
-    state: pda-syndi-commander
 
 - type: entity
   parent: BaseSecurityPDA
@@ -1176,19 +1750,36 @@
   suffix: Leader
   description: Red for firepower.
   components:
-  - type: Pda
-    id: ERTLeaderIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-ert
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#A32D26"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#447987"
+    - state: pda_stripe_double
+      color: "#447987"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#A32D26"
     accentHColor: "#447987"
     accentVColor: "#447987"
-  - type: Icon
-    state: pda-ert
+  # VG-Tweak End
+  - type: Pda
+    id: ERTLeaderIDCard
   - type: EntityTableContainerFill
     containers:
       preinstalled-program-container: !type:AllSelector
@@ -1258,12 +1849,36 @@
   name: CBURN PDA
   description: Smells like rotten flesh.
   components:
-  - type: Pda
-    id: CBURNIDcard
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#A32D26"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#447987"
+    - state: pda_stripe_double
+      color: "#447987"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#A32D26"
     accentHColor: "#447987"
     accentVColor: "#447987"
+  # VG-Tweak End
+  - type: Pda
+    id: CBURNIDcard
 
 - type: entity
   parent: BasePDA
@@ -1271,18 +1886,33 @@
   name: psychologist PDA
   description: Looks immaculately cleaned.
   components:
-  - type: Pda
-    id: PsychologistIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-medical
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#d7d7d0"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#447987"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#d7d7d0"
     accentVColor: "#447987"
-  - type: Icon
-    state: pda-medical
+  # VG-Tweak End
+  - type: Pda
+    id: PsychologistIDCard
 
 - type: entity
   parent: BasePDA
@@ -1290,6 +1920,28 @@
   name: reporter PDA
   description: Smells like freshly printed press.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#3f3f74"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#3f3f74"
+  # VG-Tweak End
   - type: Pda
     id: ReporterIDCard
     penSlot:
@@ -1298,15 +1950,6 @@
       whitelist:
         tags:
         - Write
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-reporter
-  - type: PdaBorderColor
-    borderColor: "#3f3f74"
-  - type: Icon
-    state: pda-reporter
 
 - type: entity
   parent: BasePDA
@@ -1314,17 +1957,30 @@
   name: zookeeper PDA
   description: Made with genuine synthetic leather. Crikey!
   components:
-  - type: Pda
-    id: ZookeeperIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-zookeeper
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#ffe685"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#ffe685"
-  - type: Icon
-    state: pda-zookeeper
+  # VG-Tweak End
+  - type: Pda
+    id: ZookeeperIDCard
 
 - type: entity
   parent: BasePDA
@@ -1332,18 +1988,33 @@
   name: boxer PDA
   description: Float like a butterfly, ringtone like a bee.
   components:
-  - type: Pda
-    id: BoxerIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-boxer
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#333333"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#390504"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#333333"
     accentVColor: "#390504"
-  - type: Icon
-    state: pda-boxer
+  # VG-Tweak End
+  - type: Pda
+    id: BoxerIDCard
 
 - type: entity
   parent: BaseSecurityPDA
@@ -1351,17 +2022,30 @@
   name: detective PDA
   description: Smells like rain... pouring down the rooftops...
   components:
-  - type: Pda
-    id: DetectiveIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-detective
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#774705"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#774705"
-  - type: Icon
-    state: pda-detective
+  # VG-Tweak End
+  - type: Pda
+    id: DetectiveIDCard
   - type: EntityTableContainerFill
     containers:
       preinstalled-program-container: !type:AllSelector
@@ -1379,19 +2063,36 @@
   name: brigmedic PDA
   description: I wonder whose pulse is on the screen? I hope it doesn't stop...
   components:
-  - type: Pda
-    id: BrigmedicIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-brigmedic
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#A32D26"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#d7d7d0"
+    - state: pda_stripe_double
+      color: "#d7d7d0"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#A32D26"
     accentHColor: "#d7d7d0"
     accentVColor: "#d7d7d0"
-  - type: Icon
-    state: pda-brigmedic
+  # VG-Tweak End
+  - type: Pda
+    id: BrigmedicIDCard
   - type: EntityTableContainerFill
     containers:
       preinstalled-program-container: !type:AllSelector
@@ -1410,6 +2111,29 @@
   suffix: Unremoveable
   description: Cursed cluwne PDA.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#1c8f4d"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: pda_stripe_clown
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#1c8f4d"
+  # VG-Tweak End
   - type: Pda
     id: CluwneIDCard
     penSlot:
@@ -1419,15 +2143,6 @@
       whitelist:
         tags:
         - Write
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-cluwne
-  - type: PdaBorderColor
-    borderColor: "#1c8f4d"
-  - type: Icon
-    state: pda-cluwne
   - type: Unremoveable
 
 - type: entity
@@ -1436,18 +2151,33 @@
   name: senior engineer PDA
   description: Seems to have been taken apart and put back together several times.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#FFA500"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#CD6900"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#FFA500"
+    accentVColor: "#CD6900"
+  # VG-Tweak End
   - type: Pda
     id: SeniorEngineerIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-seniorengineer
-  - type: PdaBorderColor
-    borderColor: "#949137"
-    accentVColor: "#CD6900"
-  - type: Icon
-    state: pda-seniorengineer
 
 - type: entity
   parent: BasePDA
@@ -1455,19 +2185,36 @@
   name: senior researcher PDA
   description: Looks like it's been through years of chemical burns and explosions.
   components:
-  - type: Pda
-    id: SeniorResearcherIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-seniorresearcher
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#d7d7d0"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#8900c9"
+    - state: pda_stripe_double
+      color: "#8900c9"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#d7d7d0"
     accentHColor: "#8900c9"
     accentVColor: "#8900c9"
-  - type: Icon
-    state: pda-seniorresearcher
+  # VG-Tweak End
+  - type: Pda
+    id: SeniorResearcherIDCard
 
 - type: entity
   parent: BaseMedicalPDA
@@ -1475,19 +2222,36 @@
   name: senior physician PDA
   description: Smells faintly like iron and chemicals.
   components:
-  - type: Pda
-    id: SeniorPhysicianIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-seniorphysician
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#d7d7d0"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#B34200"
+    - state: pda_stripe_double
+      color: "#447987"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#d7d7d0"
     accentHColor: "#447987"
     accentVColor: "#B34200"
-  - type: Icon
-    state: pda-seniorphysician
+  # VG-Tweak End
+  - type: Pda
+    id: SeniorPhysicianIDCard
 
 - type: entity
   parent: BaseSecurityPDA
@@ -1495,18 +2259,33 @@
   name: senior officer PDA
   description: Beaten, battered and broken, but just barely useable.
   components:
-  - type: Pda
-    id: SeniorOfficerIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-seniorofficer
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#A32D26"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#DFDFDF"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#A32D26"
     accentVColor: "#DFDFDF"
-  - type: Icon
-    state: pda-seniorofficer
+  # VG-Tweak End
+  - type: Pda
+    id: SeniorOfficerIDCard
 
 - type: entity
   parent: BasePDA
@@ -1514,18 +2293,33 @@
   name: senior courier PDA
   description: Smells like postage stamps and shuttle fuel.
   components:
-  - type: Pda
-    id: SeniorCourierIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-seniorcourier
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#e39751"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#DFDFDF"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#e39751"
     accentVColor: "#DFDFDF"
-  - type: Icon
-    state: pda-seniorcourier
+  # VG-Tweak End
+  - type: Pda
+    id: SeniorCourierIDCard
 
 - type: entity
   parent: [ BaseHighlyIllegalContraband, BasePDA ]
@@ -1533,15 +2327,28 @@
   name: ninja PDA
   description: You stealthy bastard, you!
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#333333"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  # VG-Tweak End
   - type: Pda
     id: NinjaIDCard
-  - type: Appearance
-    appearanceDataInit:
-      enum.PdaVisuals.PdaType:
-        !type:String
-        pda-ninja
-  - type: Icon
-    state: pda-ninja
 
 - type: entity
   parent: [ BaseMajorContraband, SyndiPDA ]
@@ -1549,15 +2356,28 @@
   name: pirate PDA
   description: Yargh!
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#891417"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  # VG-Tweak End
   - type: Pda
     id: PirateIDCard
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-pirate
-  - type: Icon
-    state: pda-pirate
 
 - type: entity
   parent: [BasePDA, SelectableLock]
@@ -1566,10 +2386,30 @@
   description: Why isn't it gray?
   suffix: Chameleon
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#717059"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#717059"
+  # VG-Tweak End
   - type: Tag
-    tags: # ignore "WhitelistChameleon" tag
+    tags:
     - DoorBumpOpener
   - type: ChameleonClothing
     slot: [idcard]
@@ -1604,6 +2444,28 @@
   name: wizard PDA
   description: You hear faint whispers coming from it.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda-library
+      color: "#6A5ACD"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#6A5ACD"
+  # VG-Tweak End
   - type: Pda
     id: WizardIDCard
     penSlot:
@@ -1612,15 +2474,6 @@
       whitelist:
         tags:
         - Write
-  - type: Appearance
-    appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-wizard
-  - type: PdaBorderColor
-    borderColor: "#7F3300"
-  - type: Icon
-    state: pda-wizard
 
 - type: entity
   parent: ClearPDA
@@ -1629,6 +2482,6 @@
   components:
   - type: Pda
     id: VisitorIDCard
-  - type: Tag #  Ignore Chameleon tags
+  - type: Tag
     tags:
     - DoorBumpOpener

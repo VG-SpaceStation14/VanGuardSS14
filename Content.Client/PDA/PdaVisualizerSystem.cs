@@ -25,6 +25,10 @@ public sealed class PdaVisualizerSystem : VisualizerSystem<PdaVisualsComponent>
     {
         Base,
         Flashlight,
-        IdLight
+        IdLight,
+        // VG-Tweak Start
+        Screen,
+        Pen
+        // VG-Tweak End
     }
 }
