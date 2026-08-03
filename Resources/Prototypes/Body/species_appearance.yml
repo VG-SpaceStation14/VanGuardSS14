@@ -75,6 +75,9 @@
   abstract: true
   save: false
   components:
+  # VG-Tweak Start
+  - type: VanGuardMovement
+  # VG-Tweak End
   - type: Body
   - type: VisualBody
   - type: Hands
