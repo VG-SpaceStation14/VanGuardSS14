@@ -6,11 +6,11 @@
   abstract: true
   components:
   - type: Sprite
-    sprite: Objects/Misc/id_cards.rsi
+    sprite: _VanGuard/Objects/Misc/id_cards.rsi # VG-Tweak - New IDs
   - type: Clothing
     slots:
     - idcard
-    sprite: Objects/Misc/id_cards.rsi
+    sprite: _VanGuard/Objects/Misc/id_cards.rsi # VG-Tweak - New IDs
   - type: Item
     size: Small
     heldPrefix: default
@@ -37,7 +37,7 @@
     layers:
     - state: default
     - sprite: &icon-rsi Interface/Misc/job_icons.rsi
-      offset: &icon-offset -0.09375, 0.0625 #3 pixels left, 2 pixels up
+      offset: &icon-offset -0.17475, 0.02025 # VG-Tweak
       state: Passenger
   - type: PresetIdCard
     job: Passenger
@@ -52,10 +52,12 @@
   - type: Sprite
     layers:
     - state: gold
-    - state: stripe_top
-      color: "#1b67a5"
-    - state: stripe_bottom
-      color: "#0e4069"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: "#1b67a5"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: "#0e4069"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Captain
@@ -80,10 +82,12 @@
   - type: Sprite
     layers:
     - state: silver
-    - state: stripe_top
-      color: &color-service-top "#639137"
-    - state: stripe_bottom
-      color: &color-service-bottom "#446326"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: &color-service-top "#639137"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: &color-service-bottom "#446326"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: HeadOfPersonnel
@@ -100,10 +104,12 @@
   - type: Sprite
     layers:
     - state: silver
-    - state: stripe_top
-      color: &color-engineering-top "#ffa62b"
-    - state: stripe_bottom
-      color: &color-engineering-bottom "#bc5b00"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: &color-engineering-top "#ffa62b"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: &color-engineering-bottom "#bc5b00"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ChiefEngineer
@@ -120,10 +126,12 @@
   - type: Sprite
     layers:
     - state: silver
-    - state: stripe_top
-      color: &color-medical-top "#68aed6"
-    - state: stripe_bottom
-      color: &color-medical-bottom "#325f7a"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: &color-medical-top "#68aed6"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: &color-medical-bottom "#325f7a"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ChiefMedicalOfficer
@@ -140,10 +148,12 @@
   - type: Sprite
     layers:
     - state: silver
-    - state: stripe_top
-      color: &color-science-top "#a53aaa"
-    - state: stripe_bottom
-      color: &color-science-bottom "#652368"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: &color-science-top "#a53aaa"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: &color-science-bottom "#652368"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ResearchDirector
@@ -160,10 +170,12 @@
   - type: Sprite
     layers:
     - state: silver
-    - state: stripe_top
-      color: &color-security-top "#cb0000"
-    - state: stripe_bottom
-      color: &color-security-bottom "#830000"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: &color-security-top "#cb0000"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: &color-security-bottom "#830000"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: HeadOfSecurity
@@ -180,10 +192,12 @@
   - type: Sprite
     layers:
     - state: silver
-    - state: stripe_top
-      color: &color-supply-top "#b18644"
-    - state: stripe_bottom
-      color: &color-supply-bottom "#5b4523"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: &color-supply-top "#b18644"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: &color-supply-bottom "#5b4523"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: QuarterMaster
@@ -202,10 +216,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-engineering-top
-    - state: stripe_bottom
-      color: *color-engineering-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-engineering-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-engineering-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: TechnicalAssistant
@@ -220,10 +236,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-engineering-top
-    - state: stripe_bottom
-      color: *color-engineering-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-engineering-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-engineering-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: StationEngineer
@@ -238,10 +256,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-engineering-top
-    - state: stripe_bottom
-      color: *color-engineering-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-engineering-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-engineering-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: AtmosphericTechnician
@@ -256,10 +276,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-engineering-top
-    - state: stripe_bottom
-      color: *color-engineering-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-engineering-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-engineering-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SeniorEngineer
@@ -274,10 +296,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-medical-top
-    - state: stripe_bottom
-      color: *color-medical-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-medical-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-medical-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: MedicalIntern
@@ -292,10 +316,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-medical-top
-    - state: stripe_bottom
-      color: *color-medical-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-medical-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-medical-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: MedicalDoctor
@@ -310,10 +336,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-medical-top
-    - state: stripe_bottom
-      color: *color-medical-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-medical-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-medical-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Paramedic
@@ -327,11 +355,13 @@
   components:
   - type: Sprite
     layers:
-    - state: default
-    - state: stripe_top
-      color: *color-medical-top
-    - state: stripe_bottom
-      color: *color-medical-bottom
+    - state: chemist # VG-Tweak
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-medical-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-medical-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Chemist
@@ -346,10 +376,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-medical-top
-    - state: stripe_bottom
-      color: *color-medical-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-medical-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-medical-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Psychologist
@@ -364,10 +396,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-medical-top
-    - state: stripe_bottom
-      color: *color-medical-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-medical-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-medical-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SeniorPhysician
@@ -382,10 +416,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-science-top
-    - state: stripe_bottom
-      color: *color-science-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-science-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-science-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ResearchAssistant
@@ -400,10 +436,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-science-top
-    - state: stripe_bottom
-      color: *color-science-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-science-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-science-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Scientist
@@ -418,10 +456,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-science-top
-    - state: stripe_bottom
-      color: *color-science-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-science-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-science-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SeniorResearcher
@@ -436,10 +476,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-security-top
-    - state: stripe_bottom
-      color: *color-security-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-security-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-security-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SecurityCadet
@@ -454,10 +496,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-security-top
-    - state: stripe_bottom
-      color: *color-security-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-security-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-security-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SecurityOfficer
@@ -472,10 +516,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-security-top
-    - state: stripe_bottom
-      color: *color-security-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-security-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-security-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Warden
@@ -490,10 +536,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-security-top
-    - state: stripe_bottom
-      color: *color-security-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-security-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-security-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Detective
@@ -508,10 +556,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-security-top
-    - state: stripe_bottom
-      color: *color-security-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-security-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-security-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Brigmedic
@@ -524,10 +574,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-security-top
-    - state: stripe_bottom
-      color: *color-security-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-security-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-security-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SeniorOfficer
@@ -542,10 +594,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ServiceWorker
@@ -560,7 +614,8 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_clown
+    # VG-Tweak - stripe_clown commented
+    # - state: stripe_clown
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Clown
@@ -575,10 +630,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: "#2d2d2d"
-    - state: stripe_bottom
-      color: "#1d1d1d"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: "#2d2d2d"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: "#1d1d1d"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Mime
@@ -593,10 +650,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: "#6f56b8"
-    - state: stripe_bottom
-      color: "#524089"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: "#6f56b8"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: "#524089"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Musician
@@ -611,10 +670,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Chaplain
@@ -629,10 +690,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Janitor
@@ -647,10 +710,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Bartender
@@ -665,10 +730,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Bartender
@@ -687,10 +754,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Chef
@@ -705,10 +774,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Botanist
@@ -723,10 +794,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Librarian
@@ -741,10 +814,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Lawyer
@@ -759,10 +834,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Reporter
@@ -777,10 +854,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Boxer
@@ -793,10 +872,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Zookeeper
@@ -811,10 +892,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-supply-top
-    - state: stripe_bottom
-      color: *color-supply-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-supply-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-supply-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: CargoTechnician
@@ -829,10 +912,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-supply-top
-    - state: stripe_bottom
-      color: *color-supply-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-supply-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-supply-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SeniorCourier
@@ -845,10 +930,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-supply-top
-    - state: stripe_bottom
-      color: *color-supply-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-supply-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-supply-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ShaftMiner
@@ -903,10 +990,12 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: "#5dc574"
-    - state: stripe_bottom
-      color: "#3f9b53"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: "#5dc574"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: "#3f9b53"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Cluwne
@@ -994,11 +1083,13 @@
   components:
   - type: Sprite
     layers:
-    - state: black
-    - state: stripe_top
-      color: &color-syndicate-top "#e80c0c"
-    - state: stripe_bottom
-      color: &color-syndicate-bottom "#960606"
+    - state: syndie # VG-Tweak
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: &color-syndicate-top "#e80c0c"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: &color-syndicate-bottom "#960606"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Syndicate
@@ -1018,11 +1109,13 @@
   components:
   - type: Sprite
     layers:
-    - state: black
-    - state: stripe_top
-      color: *color-syndicate-top
-    - state: stripe_bottom
-      color: *color-syndicate-bottom
+    - state: syndie # VG-Tweak
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-syndicate-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-syndicate-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SyndicateOperative
@@ -1037,11 +1130,13 @@
   components:
   - type: Sprite
     layers:
-    - state: black
-    - state: stripe_top
-      color: *color-syndicate-top
-    - state: stripe_bottom
-      color: *color-syndicate-bottom
+    - state: syndie # VG-Tweak
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-syndicate-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-syndicate-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SyndicateCorpsman
@@ -1055,11 +1150,13 @@
   components:
   - type: Sprite
     layers:
-    - state: black
-    - state: stripe_top
-      color: *color-syndicate-top
-    - state: stripe_bottom
-      color: *color-syndicate-bottom
+    - state: syndie # VG-Tweak
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-syndicate-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-syndicate-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SyndicateCommander
@@ -1074,11 +1171,13 @@
   components:
   - type: Sprite
     layers:
-    - state: ninja
-    - state: stripe_top
-      color: "#38D848"
-    - state: stripe_bottom
-      color: "#309000"
+    - state: syndie # VG-Tweak
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: "#38D848"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: "#309000"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Ninja
@@ -1126,7 +1225,7 @@
   components:
   - type: Sprite
     layers:
-    - state: wizard
+    - state: silver # VG-Tweak
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Wizard
@@ -1150,10 +1249,12 @@
   - type: Sprite
     layers:
     - state: centcom
-    - state: stripe_top
-      color: &color-centcomm-top "#134975"
-    - state: stripe_bottom
-      color: &color-centcomm-bottom "#0d304d"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: &color-centcomm-top "#134975"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: &color-centcomm-bottom "#0d304d"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Nanotrasen
@@ -1170,10 +1271,12 @@
   - type: Sprite
     layers:
     - state: gold
-    - state: stripe_top
-      color: *color-centcomm-top
-    - state: stripe_bottom
-      color: *color-centcomm-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-centcomm-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-centcomm-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ERTLeader
@@ -1190,10 +1293,12 @@
   - type: Sprite
     layers:
     - state: centcom
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ERTChaplain
@@ -1210,10 +1315,12 @@
   - type: Sprite
     layers:
     - state: centcom
-    - state: stripe_top
-      color: *color-engineering-top
-    - state: stripe_bottom
-      color: *color-engineering-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-engineering-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-engineering-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ERTEngineer
@@ -1230,10 +1337,12 @@
   - type: Sprite
     layers:
     - state: centcom
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ERTJanitor
@@ -1250,10 +1359,12 @@
   - type: Sprite
     layers:
     - state: centcom
-    - state: stripe_top
-      color: *color-medical-top
-    - state: stripe_bottom
-      color: *color-medical-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-medical-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-medical-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ERTMedical
@@ -1270,10 +1381,12 @@
   - type: Sprite
     layers:
     - state: centcom
-    - state: stripe_top
-      color: *color-security-top
-    - state: stripe_bottom
-      color: *color-security-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-security-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-security-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ERTSecurity
@@ -1290,10 +1403,12 @@
   - type: Sprite
     layers:
     - state: centcom
-    - state: stripe_top
-      color: *color-centcomm-top
-    - state: stripe_bottom
-      color: *color-centcomm-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-centcomm-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-centcomm-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: DeathSquad
@@ -1309,10 +1424,12 @@
   - type: Sprite
     layers:
     - state: centcom
-    - state: stripe_top
-      color: *color-centcomm-top
-    - state: stripe_bottom
-      color: *color-centcomm-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-centcomm-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-centcomm-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: CBURN
@@ -1329,14 +1446,14 @@
   description: An ID card that gives you access beyond your wildest dreams.
   components:
   - type: Sprite
-    sprite: Objects/Misc/id_cards.rsi
+    sprite: _VanGuard/Objects/Misc/id_cards.rsi # VG-Tweak - New IDs
     layers:
     - state: admin
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Admin
   - type: Clothing
-    sprite: Objects/Misc/id_cards.rsi
+    sprite: _VanGuard/Objects/Misc/id_cards.rsi # VG-Tweak - New IDs
   - type: Item
     heldPrefix: green
   - type: IdCard
