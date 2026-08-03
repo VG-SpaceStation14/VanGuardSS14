@@ -1,17 +1,21 @@
 using Content.Server.Access.Systems;
 using Content.Server.Humanoid;
+using Content.Server.Inventory;
 using Content.Server.Mind;
 using Content.Server.PDA;
 using Content.Server.Station.Components;
+using Content.Server._VanGuard.Sticker;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
-using Content.Shared.Body;
 using Content.Shared.CCVar;
 using Content.Shared.Clothing;
 using Content.Shared.DetailExaminable;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Prototypes;
 using Content.Shared.IdentityManagement;
+using Content.Shared.Inventory;
+using Content.Shared.Body;
+using Content.Shared._VanGuard.Sticker;
 using Content.Shared.PDA;
 using Content.Shared.Preferences;
 using Content.Shared.Preferences.Loadouts;
@@ -23,6 +27,7 @@ using Robust.Shared.Map;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
+using Robust.Shared.Timing;
 
 namespace Content.Server.Station.Systems;
 
@@ -43,6 +48,8 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
     [Dependency] private MetaDataSystem _metaSystem = default!;
     [Dependency] private PdaSystem _pdaSystem = default!;
     [Dependency] private MindSystem _mindSystem = default!;
+    [Dependency] private InventorySystem _inventory = default!;
+    [Dependency] private StickerSystem _stickerSystem = default!;
 
     /// <summary>
     /// Attempts to spawn a player character onto the given station.
@@ -131,41 +138,92 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
             throw new ArgumentException($"Invalid species prototype was used: {speciesId}");
 
         entity ??= Spawn(species.Prototype, coordinates);
+        var spawnedEntity = entity.Value;
 
         if (profile != null)
         {
-            _visualBody.ApplyProfileTo(entity.Value, profile);
-            _humanoidProfile.ApplyProfileTo(entity.Value, profile);
-            _metaSystem.SetEntityName(entity.Value, profile.Name);
+            _visualBody.ApplyProfileTo(spawnedEntity, profile);
+            _humanoidProfile.ApplyProfileTo(spawnedEntity, profile);
+            _metaSystem.SetEntityName(spawnedEntity, profile.Name);
 
             if (profile.FlavorText != "" && _configurationManager.GetCVar(CCVars.FlavorText))
             {
-                AddComp<DetailExaminableComponent>(entity.Value).Content = profile.FlavorText;
+                AddComp<DetailExaminableComponent>(spawnedEntity).Content = profile.FlavorText;
             }
         }
 
         if (loadout != null)
         {
-            EquipRoleLoadout(entity.Value, loadout, roleProto!);
+            EquipRoleLoadout(spawnedEntity, loadout, roleProto!);
         }
 
         if (prototype?.StartingGear != null)
         {
             var startingGear = ProtoMan.Index<StartingGearPrototype>(prototype.StartingGear);
-            EquipStartingGear(entity.Value, startingGear, raiseEvent: false);
+            EquipStartingGear(spawnedEntity, startingGear, raiseEvent: false);
         }
 
-        var gearEquippedEv = new StartingGearEquippedEvent(entity.Value);
-        RaiseLocalEvent(entity.Value, ref gearEquippedEv);
-
-        if (prototype != null && TryComp(entity.Value, out MetaDataComponent? metaData))
+        // VanGuard-Sticker-Start
+        if (loadout != null)
         {
-            SetPdaAndIdCardData(entity.Value, metaData.EntityName, prototype, station);
+            foreach (var (groupId, loadoutList) in loadout.SelectedLoadouts)
+            {
+                foreach (var selectedLoadout in loadoutList)
+                {
+                    if (!ProtoMan.TryIndex(selectedLoadout.Prototype, out var loadoutProto))
+                        continue;
+
+                    foreach (var effect in loadoutProto.Effects)
+                    {
+                        if (effect is StickerLoadoutEffect stickerEffect)
+                        {
+                            var sticker = Spawn(stickerEffect.StickerProto, Transform(spawnedEntity).Coordinates);
+
+                            Timer.Spawn(TimeSpan.Zero, () =>
+                            {
+                                if (Deleted(spawnedEntity) || Deleted(sticker))
+                                {
+                                    if (!Deleted(sticker))
+                                        Del(sticker);
+                                    return;
+                                }
+
+                                EntityUid? idCard = null;
+                                if (_inventory.TryGetSlotEntity(spawnedEntity, "id", out var idSlotEntity) && idSlotEntity != null)
+                                {
+                                    if (TryComp<PdaComponent>(idSlotEntity, out var pda) && pda.ContainedId != null)
+                                        idCard = pda.ContainedId.Value;
+                                    else if (HasComp<IdCardComponent>(idSlotEntity))
+                                        idCard = idSlotEntity;
+                                }
+
+                                if (idCard != null)
+                                {
+                                    _stickerSystem.SetSticker(idCard.Value, sticker);
+                                }
+                                else
+                                {
+                                    Del(sticker);
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        }
+        // VanGuard-Sticker-End
+
+        var gearEquippedEv = new StartingGearEquippedEvent(spawnedEntity);
+        RaiseLocalEvent(spawnedEntity, ref gearEquippedEv);
+
+        if (prototype != null && TryComp(spawnedEntity, out MetaDataComponent? metaData))
+        {
+            SetPdaAndIdCardData(spawnedEntity, metaData.EntityName, prototype, station);
         }
 
-        DoJobSpecials(job, entity.Value);
-        _identity.QueueIdentityUpdate(entity.Value);
-        return entity.Value;
+        DoJobSpecials(job, spawnedEntity);
+        _identity.QueueIdentityUpdate(spawnedEntity);
+        return spawnedEntity;
     }
 
     private void DoJobSpecials(ProtoId<JobPrototype>? job, EntityUid entity)
@@ -188,7 +246,7 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
     /// <param name="station">The station this player is being spawned on.</param>
     public void SetPdaAndIdCardData(EntityUid entity, string characterName, JobPrototype jobPrototype, EntityUid? station)
     {
-        if (!InventorySystem.TryGetSlotEntity(entity, "id", out var idUid))
+        if (!_inventory.TryGetSlotEntity(entity, "id", out var idUid))
             return;
 
         var cardId = idUid.Value;

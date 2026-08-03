@@ -9,6 +9,7 @@
   - Survival
   - Trinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 #Law
 
@@ -23,6 +24,7 @@
   - Survival
   - Trinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 # Engineering
 - type: roleLoadout
@@ -38,6 +40,7 @@
   - SurvivalExtended
   - Trinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 # Science
 - type: roleLoadout
@@ -55,6 +58,7 @@
   - Survival
   - Trinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 # Security
 - type: roleLoadout
@@ -70,6 +74,7 @@
   - SurvivalSecurity
   - Trinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobBrigmedic
@@ -85,6 +90,7 @@
   - SurvivalMedical
   - Trinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobSeniorOfficer
@@ -99,6 +105,7 @@
   - SurvivalSecurity
   - Trinkets
   - GroupSpeciesBreathToolSecurity
+  - VGStickers  # VanGuard-Sticker
 
 # Medical
 - type: roleLoadout
@@ -116,3 +123,4 @@
   - SurvivalMedical
   - Trinkets
   - GroupSpeciesBreathToolMedical
+  - VGStickers  # VanGuard-Sticker

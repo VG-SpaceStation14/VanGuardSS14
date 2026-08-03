@@ -25,6 +25,17 @@
     - WhitelistChameleonIdCard
   - type: StealTarget
     stealGroup: IDCard
+  # VanGuard-Sticker-Start
+  - type: ItemSlots
+    slots:
+      sticker:
+        name: sticker-slot
+        startingItem: null
+        whitelist:
+          tags:
+          - Sticker
+  - type: Appearance
+  # VanGuard-Sticker-End
 
 #IDs with layers
 
@@ -39,6 +50,12 @@
     - sprite: &icon-rsi Interface/Misc/job_icons.rsi
       offset: &icon-offset -0.17475, 0.02025 # VG-Tweak
       state: Passenger
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Passenger
 
@@ -61,6 +78,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Captain
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: gold
   - type: PresetIdCard
@@ -91,6 +114,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: HeadOfPersonnel
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: silver
   - type: PresetIdCard
@@ -113,6 +142,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ChiefEngineer
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: silver
   - type: PresetIdCard
@@ -135,6 +170,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ChiefMedicalOfficer
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: silver
   - type: PresetIdCard
@@ -157,6 +198,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ResearchDirector
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: silver
   - type: PresetIdCard
@@ -179,6 +226,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: HeadOfSecurity
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: silver
   - type: PresetIdCard
@@ -201,6 +254,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: QuarterMaster
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: silver
   - type: PresetIdCard
@@ -225,6 +284,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: TechnicalAssistant
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: TechnicalAssistant
 
@@ -245,6 +310,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: StationEngineer
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: StationEngineer
 
@@ -265,6 +336,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: AtmosphericTechnician
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: AtmosphericTechnician
 
@@ -285,6 +362,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SeniorEngineer
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
 
 #Medical
 
@@ -305,6 +388,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: MedicalIntern
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: MedicalIntern
 
@@ -325,6 +414,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: MedicalDoctor
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: MedicalDoctor
 
@@ -345,6 +440,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Paramedic
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Paramedic
 
@@ -365,6 +466,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Chemist
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Chemist
 
@@ -385,6 +492,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Psychologist
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Psychologist
 
@@ -405,6 +518,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SeniorPhysician
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
 
 #Science
 
@@ -425,6 +544,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ResearchAssistant
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: ResearchAssistant
 
@@ -445,6 +570,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Scientist
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Scientist
 
@@ -465,6 +596,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SeniorResearcher
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
 
 #Security
 
@@ -485,6 +622,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SecurityCadet
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: SecurityCadet
 
@@ -505,6 +648,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SecurityOfficer
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: SecurityOfficer
 
@@ -525,6 +674,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Warden
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Warden
 
@@ -545,6 +700,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Detective
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Detective
 
@@ -565,6 +726,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Brigmedic
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
 
 - type: entity
   parent: SecurityIDCard
@@ -583,6 +750,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SeniorOfficer
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
 
 #Service
 
@@ -603,6 +776,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ServiceWorker
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: ServiceWorker
 
@@ -619,6 +798,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Clown
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Clown
 
@@ -639,6 +824,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Mime
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Mime
 
@@ -659,6 +850,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Musician
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Musician
 
@@ -679,6 +876,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Chaplain
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Chaplain
 
@@ -699,6 +902,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Janitor
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Janitor
 
@@ -719,6 +928,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Bartender
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Bartender
 
@@ -739,6 +954,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Bartender
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Bartender
     name: Pun Pun
@@ -763,6 +984,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Chef
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Chef
 
@@ -783,6 +1010,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Botanist
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Botanist
 
@@ -803,6 +1036,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Librarian
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Librarian
 
@@ -823,6 +1062,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Lawyer
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Lawyer
 
@@ -843,6 +1088,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Reporter
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Reporter
 
@@ -863,6 +1114,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Boxer
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
 
 - type: entity
   parent: IDCardStandard
@@ -881,6 +1138,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Zookeeper
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
 
 #Supply
 
@@ -901,6 +1164,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: CargoTechnician
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: CargoTechnician
 
@@ -921,6 +1190,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SeniorCourier
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
 
 - type: entity
   parent: IDCardStandard
@@ -939,6 +1214,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ShaftMiner
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: SalvageSpecialist
 
@@ -956,6 +1237,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Prisoner
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: orange
   - type: Access
@@ -999,6 +1286,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Cluwne
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: IdCard
     jobTitle: job-title-cluwne
     jobIcon: JobIconCluwne
@@ -1015,6 +1308,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Visitor
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: IdCard
     jobTitle: job-title-visitor
     jobIcon: JobIconVisitor
@@ -1093,6 +1392,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Syndicate
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: IdCard
     jobIcon: JobIconSyndicate
   - type: Item
@@ -1119,6 +1424,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SyndicateOperative
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: AgentIDCard
   - type: IdCard
     jobIcon: JobIconSyndicateOperative
@@ -1140,6 +1451,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SyndicateCorpsman
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: IdCard
     jobIcon: JobIconSyndicateCorpsman
 
@@ -1160,6 +1477,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SyndicateCommander
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: IdCard
     jobIcon: JobIconSyndicateCommander
 
@@ -1181,6 +1504,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Ninja
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: green
   - type: AgentIDCard
@@ -1201,6 +1530,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Pirate
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: orange #this is close enough to the weird puce color pirate IDs have going on
   - type: IdCard
@@ -1214,6 +1549,12 @@
   - type: Sprite
     layers:
     - state: default
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Access
     tags:
     - Xenoborg
@@ -1229,6 +1570,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Wizard
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: green
   - type: Access
@@ -1258,6 +1605,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Nanotrasen
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: blue
   - type: PresetIdCard
@@ -1280,6 +1633,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ERTLeader
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: gold
   - type: PresetIdCard
@@ -1302,6 +1661,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ERTChaplain
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: blue
   - type: PresetIdCard
@@ -1324,6 +1689,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ERTEngineer
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: blue
   - type: PresetIdCard
@@ -1346,6 +1717,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ERTJanitor
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: blue
   - type: PresetIdCard
@@ -1368,6 +1745,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ERTMedical
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: blue
   - type: PresetIdCard
@@ -1390,6 +1773,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ERTSecurity
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: blue
   - type: PresetIdCard
@@ -1412,6 +1801,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: DeathSquad
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: DeathSquad
 
@@ -1433,6 +1828,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: CBURN
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: blue
   - type: PresetIdCard
@@ -1452,6 +1853,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Admin
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Clothing
     sprite: _VanGuard/Objects/Misc/id_cards.rsi # VG-Tweak - New IDs
   - type: Item

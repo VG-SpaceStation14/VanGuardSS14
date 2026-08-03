@@ -13,6 +13,7 @@
   - Trinkets
   #- CaptainJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobHeadOfPersonnel
@@ -30,17 +31,20 @@
   - Trinkets
   #- HoPJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 # Silicons
 - type: roleLoadout
   id: JobBorg
   nameDataset: NamesBorg
   canCustomizeName: true
+  # No groups, no stickers
 
 - type: roleLoadout
   id: JobStationAi
   nameDataset: NamesAI
   canCustomizeName: true
+  # No groups, no stickers
 
 # Civilian
 - type: roleLoadout
@@ -61,6 +65,7 @@
   - Trinkets
   #- PassengerJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobBartender
@@ -77,6 +82,7 @@
   - Trinkets
   - BartenderJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobServiceWorker
@@ -91,6 +97,7 @@
   - Trinkets
   #- ServiceWorkerJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobChef
@@ -108,6 +115,7 @@
   - Trinkets
   #- ChefJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobLibrarian
@@ -122,6 +130,7 @@
   - Trinkets
   #- LibrarianJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobLawyer
@@ -137,6 +146,7 @@
   - Trinkets
   #- LawyerJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobChaplain
@@ -157,6 +167,7 @@
   - Trinkets
   #- ChaplainJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobJanitor
@@ -174,6 +185,7 @@
   - Trinkets
   - JanitorJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobBotanist
@@ -190,6 +202,7 @@
   - Trinkets
   #- BotanistJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobClown
@@ -207,6 +220,7 @@
   - SurvivalClown
   - Trinkets
   - ClownJobTrinkets
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobMime
@@ -225,6 +239,7 @@
   - Survival
   - Trinkets
   #- MimeJobTrinkets
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobMusician
@@ -242,6 +257,7 @@
   - Trinkets
   #- MusicianJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 # Cargo
 - type: roleLoadout
@@ -261,6 +277,7 @@
   - Trinkets
   #- QuartermasterJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobCargoTechnician
@@ -279,6 +296,7 @@
   - Trinkets
   #- CargoTechnicianJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobSalvageSpecialist
@@ -294,6 +312,7 @@
   - Trinkets
   #- SalvageSpecialistJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 # Engineering
 - type: roleLoadout
@@ -312,6 +331,7 @@
   - Trinkets
   #- ChiefEngineerJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobTechnicalAssistant
@@ -325,6 +345,7 @@
   - Trinkets
   #- TechnicalAssistantJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobStationEngineer
@@ -342,6 +363,7 @@
   - Trinkets
   #- StationEngineerJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobAtmosphericTechnician
@@ -357,6 +379,7 @@
   - Trinkets
   #- AtmosphericTechnicianJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 # Science
 - type: roleLoadout
@@ -377,6 +400,7 @@
   - Trinkets
   #- ResearchDirectorJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobScientist
@@ -397,6 +421,7 @@
   - Trinkets
   #- ScientistJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobResearchAssistant
@@ -411,6 +436,7 @@
   - Trinkets
   #- ResearchAssistantJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 # Security
 - type: roleLoadout
@@ -429,6 +455,7 @@
   - Trinkets
   - HeadofSecurityJobTrinkets
   - GroupSpeciesBreathToolSecurity
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobWarden
@@ -445,6 +472,7 @@
   - Trinkets
   - WardenJobTrinkets
   - GroupSpeciesBreathToolSecurity
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobSecurityOfficer
@@ -462,6 +490,7 @@
   - Trinkets
   - SecurityJobTrinkets
   - GroupSpeciesBreathToolSecurity
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobDetective
@@ -478,6 +507,7 @@
   - Trinkets
   - DetectiveJobTrinkets
   - GroupSpeciesBreathToolSecurity
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobSecurityCadet
@@ -490,6 +520,7 @@
   - Trinkets
   #- SecurityCadetJobTrinkets
   - GroupSpeciesBreathToolSecurity
+  - VGStickers  # VanGuard-Sticker
 
 # Wildcards
 - type: roleLoadout
@@ -507,6 +538,7 @@
   - Trinkets
   #- ReporterJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobPsychologist
@@ -521,6 +553,7 @@
   - Trinkets
   #- PsychologistJobTrinkets
   - GroupSpeciesBreathTool
+  - VGStickers  # VanGuard-Sticker
 
 # These loadouts are used for non-crew spawns, like off-station antags and event mobs
 # They will be used without player configuration, thus they will only ever apply what is forced by MinLimit
