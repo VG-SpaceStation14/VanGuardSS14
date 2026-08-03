@@ -476,7 +476,7 @@
     - id: SolarPanelDamageVariationPass
     - id: SolarPanelEmptyVariationPass
     - id: BasicDecalDirtVariationPass
-    - id: BasicDecalGraffitiVariationPass
+    #- id: BasicDecalGraffitiVariationPass # VG-Tweak
     - id: BasicDecalBurnsVariationPass
       prob: 0.50
       orGroup: monospaceDecals
