@@ -128,3 +128,4 @@
     spread: 90
   - type: Paintable
     group: CrateSecure
+  - type: BindableLock # VG-Tweak
