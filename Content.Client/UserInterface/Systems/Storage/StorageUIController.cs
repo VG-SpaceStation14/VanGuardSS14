@@ -289,6 +289,18 @@ public sealed partial class StorageUIController : UIController, IOnSystemChanged
             _pointing.TryPointAtEntity(EntityManager.GetNetEntity(control.Entity));
             args.Handle();
         }
+        // VG-Tweak Start
+        else if (args.Function == ContentKeyFunctions.TryPullObject)
+        {
+            if (!EntityManager.HasComponent<Shared.PDA.PdaComponent>(control.Entity))
+                return;
+
+            EntityManager.RaisePredictiveEvent(new InteractInventorySlotEvent(
+                EntityManager.GetNetEntity(control.Entity), 
+                ctrlInteract: true));
+            args.Handle();
+        }
+        // VG-Tweak End
 
         window.FlagDirty();
     }

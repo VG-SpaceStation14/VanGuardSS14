@@ -4,9 +4,7 @@ using Robust.Shared.Serialization;
 namespace Content.Shared.PDA
 {
     [Serializable, NetSerializable]
-    public sealed class PdaUpdateState : CartridgeLoaderUiState // WTF is this. what. I ... fuck me I just want net entities to work
-        // TODO purge this shit
-        //AAAAAAAAAAAAAAAA
+    public sealed class PdaUpdateState : CartridgeLoaderUiState
     {
         public bool FlashlightEnabled;
         public bool HasPen;
@@ -16,6 +14,14 @@ namespace Content.Shared.PDA
         public bool HasUplink;
         public bool CanPlayMusic;
         public string? Address;
+        public bool HasWallpaperColor; // VG-Tweak
+        public Color WallpaperColor; // VG-Tweak
+        // VG-Wallpaper Start
+        public string? WallpaperRsi;
+        public string? WallpaperState;
+        // VG-Wallpaper End
+        public bool Booted; // VG-PDAScreens
+        public bool Powered; // VG-PDAScreens
 
         public PdaUpdateState(
             List<NetEntity> programs,
@@ -27,7 +33,15 @@ namespace Content.Shared.PDA
             string? stationName,
             bool hasUplink = false,
             bool canPlayMusic = false,
-            string? address = null)
+            string? address = null,
+            bool hasWallpaperColor = false,
+            Color? wallpaperColor = null,
+            // VG-Wallpaper Start
+            string? wallpaperRsi = null,
+            string? wallpaperState = null,
+            // VG-Wallpaper End
+            bool booted = false,
+            bool powered = true)
             : base(programs, activeUI)
         {
             FlashlightEnabled = flashlightEnabled;
@@ -38,6 +52,14 @@ namespace Content.Shared.PDA
             CanPlayMusic = canPlayMusic;
             StationName = stationName;
             Address = address;
+            HasWallpaperColor = hasWallpaperColor; // VG-Tweak
+            WallpaperColor = wallpaperColor ?? Color.White; // VG-Tweak
+            // VG-Wallpaper Start
+            WallpaperRsi = wallpaperRsi;
+            WallpaperState = wallpaperState;
+            // VG-Wallpaper End
+            Booted = booted; // VG-PDAScreens
+            Powered = powered; // VG-PDAScreens
         }
     }
 

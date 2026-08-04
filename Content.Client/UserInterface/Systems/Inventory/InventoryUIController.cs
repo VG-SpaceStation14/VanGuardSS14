@@ -14,6 +14,7 @@ using Content.Shared.Hands.Components;
 using Content.Shared.Input;
 using Content.Shared.Inventory.VirtualItem;
 using Content.Shared.Storage;
+using Content.Shared.Interaction; // VG-Tweak
 using Robust.Client.GameObjects;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controllers;
@@ -308,6 +309,20 @@ public sealed partial class InventoryUIController : UIController, IOnStateEntere
             case var _ when args.Function == ContentKeyFunctions.Point:
                 _inventorySystem.UIInventoryPointAt(slot, _playerUid.Value);
                 break;
+
+            // VG-Tweak Start
+            case var _ when args.Function == ContentKeyFunctions.TryPullObject:
+                if (!_inventorySystem.TryGetSlotEntity(_playerUid.Value, slot, out var item))
+                    return;
+            
+                if (!_entities.HasComponent<Shared.PDA.PdaComponent>(item.Value))
+                    return;
+
+                _entities.RaisePredictiveEvent(new InteractInventorySlotEvent(
+                    _entities.GetNetEntity(item.Value), 
+                    ctrlInteract: true));
+                break;
+            // VG-Tweak End
 
             default:
                 return;

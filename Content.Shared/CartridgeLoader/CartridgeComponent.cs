@@ -22,6 +22,11 @@ public sealed partial class CartridgeComponent : Component
 
     [DataField, AutoNetworkedField]
     public InstallationStatus InstallationStatus = InstallationStatus.Cartridge;
+
+    // VG-PDAScreens Start
+    [DataField]
+    public SpriteSpecifier? ScreenState;
+    // VG-PDAScreens End
 }
 
 [Serializable, NetSerializable]

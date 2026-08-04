@@ -1,3 +1,8 @@
+// VG-Tweak Start
+using System.Threading;
+using System.Threading.Tasks;
+using System.Linq;
+// VG-Tweak End
 using Content.Client.GameTicking.Managers;
 using Content.Shared.PDA;
 using Robust.Shared.Utility;
@@ -10,6 +15,8 @@ using Robust.Client.Graphics;
 using Robust.Client.UserInterface.XAML;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Timing;
+using Robust.Shared.Prototypes; // VG-Wallpaper
+using Content.Shared._VanGuard.PDA; // VG-Wallpaper
 
 namespace Content.Client.PDA
 {
@@ -19,6 +26,7 @@ namespace Content.Client.PDA
         [Dependency] private IClipboardManager _clipboard = null!;
         [Dependency] private IGameTiming _gameTiming = default!;
         [Dependency] private IEntitySystemManager _entitySystem = default!;
+        [Dependency] private IPrototypeManager _protoMan = default!; // VG-Wallpaper
         private readonly AlertLevelSystem _alert = default!;
         private readonly ClientGameTicker _gameTicker;
 
@@ -26,6 +34,9 @@ namespace Content.Client.PDA
         public const int ProgramListView = 1;
         public const int SettingsView = 2;
         public const int ProgramContentView = 3;
+        // VG-PDAScreens Start
+        public const int BootViewIndex = 4;
+        // VG-PDAScreens End
 
 
         private string _pdaOwner = Loc.GetString("comp-pda-ui-unknown");
@@ -35,12 +46,31 @@ namespace Content.Client.PDA
         private string _alertLevel = Loc.GetString("comp-pda-ui-unknown");
         private string _instructions = Loc.GetString("comp-pda-ui-unknown");
 
+        private bool _hasWallpaperColor; // VG-Tweak
+        private bool _settingWallpaperColorFromState; // VG-Tweak
+        private Color _wallpaperColor = Color.White; // VG-Tweak
+
+        // VG-Wallpaper Start
+        private List<PdaWallpaperPrototype> _wallpapers = new();
+        // VG-Wallpaper End
 
         private int _currentView;
+
+        // VG-PDAScreens Start
+        private bool _bootScreenVisible;
+        private CancellationTokenSource? _bootAnimationCts;
+        private CancellationTokenSource? _fadeAnimationCts;
+        // VG-PDAScreens End
 
         public event Action<EntityUid>? OnProgramItemPressed;
         public event Action<EntityUid>? OnUninstallButtonPressed;
         public event Action<EntityUid>? OnInstallButtonPressed;
+        public event Action<Color>? OnWallpaperColorSelected; // VG-Tweak
+
+        // VG-Wallpaper Start
+        public event Action<string?, string?>? OnWallpaperRsiSelected;
+        // VG-Wallpaper End
+
         public PdaMenu()
         {
             IoCManager.InjectDependencies(this);
@@ -55,6 +85,9 @@ namespace Content.Client.PDA
             EjectPenButton.IconTexture = new SpriteSpecifier.Texture(new("/Textures/Interface/pencil.png"));
             EjectIdButton.IconTexture = new SpriteSpecifier.Texture(new("/Textures/Interface/eject.png"));
             EjectPaiButton.IconTexture = new SpriteSpecifier.Texture(new("/Textures/Interface/pai.png"));
+            // VG-Tweak Start
+            PowerOffButton.IconTexture = new SpriteSpecifier.Texture(new("/Textures/_VanGuard/Interface/power.png"));
+            // VG-Tweak End
             ProgramCloseButton.IconTexture = new SpriteSpecifier.Texture(new("/Textures/Interface/Nano/cross.svg.png"));
 
 
@@ -128,16 +161,239 @@ namespace Content.Client.PDA
                 _clipboard.SetText(_instructions);
             };
 
+            // VG-Tweak Start
+            WallpaperColorSelector.OnColorChanged += color =>
+            {
+                if (_settingWallpaperColorFromState)
+                    return;
 
+                _hasWallpaperColor = true;
+                _wallpaperColor = color.WithAlpha(1f);
+                WallpaperColor = _wallpaperColor;
 
+                if (!WallpaperColorSelector.IsGrabbed)
+                    OnWallpaperColorSelected?.Invoke(_wallpaperColor);
+            };
+
+            WallpaperColorSelector.OnColorReleased += color =>
+            {
+                _hasWallpaperColor = true;
+                _wallpaperColor = color.WithAlpha(1f);
+                WallpaperColor = _wallpaperColor;
+                OnWallpaperColorSelected?.Invoke(_wallpaperColor);
+            };
+            // VG-Tweak End
+
+            // VG-Wallpaper Start
+            InitializeWallpaperSelector();
+            // VG-Wallpaper End
+
+            // VG-PDAScreens Start
+            BootView.Visible = false;
+            BootView.Modulate = Color.White;
+            // VG-PDAScreens End
 
             HideAllViews();
             ToHomeScreen();
         }
 
+        // VG-Wallpaper Start
+        private void InitializeWallpaperSelector()
+        {
+            // Сортируем: сначала none, затем остальные по ID
+            _wallpapers = _protoMan.EnumeratePrototypes<PdaWallpaperPrototype>()
+                .OrderBy(w => w.ID == "PdaWallpaperNone" ? 0 : 1) // none всегда первый
+                .ThenBy(w => w.ID)
+                .ToList();
+
+            foreach (var wallpaper in _wallpapers)
+            {
+                WallpaperDropdown.AddItem(Loc.GetString(wallpaper.Name));
+            }
+
+            WallpaperDropdown.OnItemSelected += OnWallpaperDropdownSelected;
+        }
+
+        private void OnWallpaperDropdownSelected(OptionButton.ItemSelectedEventArgs args)
+        {
+            WallpaperDropdown.SelectId(args.Id);
+            var wallpaper = _wallpapers[args.Id];
+            
+            // Если выбран none - отправляем null, чтобы отключить обои
+            if (wallpaper.ID == "PdaWallpaperNone")
+            {
+                OnWallpaperRsiSelected?.Invoke(null, null);
+            }
+            else
+            {
+                OnWallpaperRsiSelected?.Invoke(wallpaper.RsiPath, wallpaper.State);
+            }
+        }
+
+        private void UpdateDropdownSelection(string? rsiPath, string? state)
+        {
+            if (rsiPath == null || state == null)
+            {
+                WallpaperDropdown.SelectId(0);
+                return;
+            }
+
+            for (int i = 0; i < _wallpapers.Count; i++)
+            {
+                var wallpaper = _wallpapers[i];
+                if (wallpaper.RsiPath == rsiPath && wallpaper.State == state)
+                {
+                    WallpaperDropdown.SelectId(i);
+                    return;
+                }
+            }
+            WallpaperDropdown.SelectId(0);
+        }
+        // VG-Wallpaper End
+
+        // VG-PDAScreens Start
+        public void ShowBootScreen(bool show)
+        {
+            if (show == _bootScreenVisible)
+                return;
+
+            _bootScreenVisible = show;
+            if (show)
+            {
+                _bootAnimationCts?.Cancel();
+                _bootAnimationCts = new CancellationTokenSource();
+                _ = AnimateBootIcon(_bootAnimationCts.Token);
+
+                BootWelcomeLabel.Text = Loc.GetString("pda-boot-welcome");
+                BootView.Modulate = Color.White;
+                ChangeView(BootViewIndex);
+                NavigationBar.Visible = false;
+                ContentFooter.Visible = false;
+            }
+            else
+            {
+                _bootAnimationCts?.Cancel();
+                _bootAnimationCts = null;
+                _ = FadeOutBootAndShowMain();
+            }
+        }
+
+        private async Task FadeOutBootAndShowMain()
+        {
+            _fadeAnimationCts?.Cancel();
+            _fadeAnimationCts = new CancellationTokenSource();
+            var token = _fadeAnimationCts.Token;
+
+            float opacity = 1f;
+            float step = 0.05f;
+            while (opacity > 0 && !token.IsCancellationRequested)
+            {
+                opacity -= step;
+                if (opacity < 0) opacity = 0;
+                BootView.Modulate = new Color(1f, 1f, 1f, opacity);
+                await Task.Delay(16, token);
+            }
+
+            BootView.Visible = false;
+            BootView.Modulate = Color.White;
+
+            var mainView = ViewContainer.GetChild(HomeView);
+            mainView.Visible = true;
+            mainView.Modulate = new Color(1f, 1f, 1f, 0f);
+
+            opacity = 0f;
+            while (opacity < 1f && !token.IsCancellationRequested)
+            {
+                opacity += step;
+                if (opacity > 1f) opacity = 1f;
+                mainView.Modulate = new Color(1f, 1f, 1f, opacity);
+                await Task.Delay(16, token);
+            }
+
+            for (int i = 0; i < ViewContainer.ChildCount; i++)
+            {
+                ViewContainer.GetChild(i).Modulate = Color.White;
+            }
+
+            ToHomeScreen();
+
+            NavigationBar.Visible = true;
+            ContentFooter.Visible = true;
+            _bootScreenVisible = false;
+
+            _fadeAnimationCts = null;
+        }
+
+        private async Task AnimateBootIcon(CancellationToken token)
+        {
+            float opacity = 1f;
+            float step = 0.05f;
+            bool increasing = false;
+
+            while (!token.IsCancellationRequested)
+            {
+                if (increasing)
+                {
+                    opacity += step;
+                    if (opacity >= 1f)
+                    {
+                        opacity = 1f;
+                        increasing = false;
+                    }
+                }
+                else
+                {
+                    opacity -= step;
+                    if (opacity <= 0.3f)
+                    {
+                        opacity = 0.3f;
+                        increasing = true;
+                    }
+                }
+
+                BootIcon.Modulate = new Color(1f, 1f, 1f, opacity);
+                await Task.Delay(50, token);
+            }
+
+            BootIcon.Modulate = Color.White;
+        }
+        // VG-PDAScreens End
+
         public void UpdateState(PdaUpdateState state)
         {
             FlashLightToggleButton.IsActive = state.FlashlightEnabled;
+            // VG-PDAScreens Start
+            PowerOffButton.IsActive = state.Powered;
+            // VG-PDAScreens End
+
+            // VG-Wallpaper Start
+            if (state.WallpaperRsi != null && state.WallpaperState != null)
+            {
+                Wallpaper = (state.WallpaperRsi, state.WallpaperState);
+                UpdateDropdownSelection(state.WallpaperRsi, state.WallpaperState);
+            }
+            else
+            {
+                Wallpaper = null;
+                WallpaperDropdown.SelectId(0);
+                var effectiveWallpaperColor = state.HasWallpaperColor
+                    ? state.WallpaperColor
+                    : DefaultWallpaperColor ?? state.WallpaperColor;
+
+                WallpaperColor = state.HasWallpaperColor ? state.WallpaperColor : null;
+                if (!WallpaperColorSelector.IsGrabbed &&
+                    (state.HasWallpaperColor != _hasWallpaperColor ||
+                    !ColorsClose(effectiveWallpaperColor, _wallpaperColor)))
+                {
+                    _settingWallpaperColorFromState = true;
+                    WallpaperColorSelector.Color = effectiveWallpaperColor;
+                    _settingWallpaperColorFromState = false;
+                }
+
+                _hasWallpaperColor = state.HasWallpaperColor;
+                _wallpaperColor = effectiveWallpaperColor;
+            }
+            // VG-Wallpaper End
 
             if (state.PdaOwnerInfo.ActualOwnerName != null)
             {
@@ -307,7 +563,9 @@ namespace Content.Client.PDA
             if (ViewContainer.ChildCount <= view)
                 return;
 
-            ViewContainer.GetChild(_currentView).Visible = false;
+            if (_currentView >= 0 && _currentView < ViewContainer.ChildCount)
+                ViewContainer.GetChild(_currentView).Visible = false;
+
             ViewContainer.GetChild(view).Visible = true;
             _currentView = view;
         }
@@ -319,6 +577,15 @@ namespace Content.Client.PDA
             {
                 view.Visible = false;
             }
+        }
+
+        private static bool ColorsClose(Color a, Color b) // VG-Tweak
+        {
+            const float epsilon = 0.001f;
+            return System.Math.Abs(a.R - b.R) < epsilon
+                && System.Math.Abs(a.G - b.G) < epsilon
+                && System.Math.Abs(a.B - b.B) < epsilon
+                && System.Math.Abs(a.A - b.A) < epsilon;
         }
 
         protected override void Draw(DrawingHandleScreen handle)

@@ -18,6 +18,7 @@
   - Trinkets
 #  - ChiefMedicalOfficerJobTrinkets
   - GroupSpeciesBreathToolMedical
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobMedicalDoctor
@@ -37,6 +38,7 @@
   - Trinkets
 #  - MedicalDoctorJobTrinkets
   - GroupSpeciesBreathToolMedical
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobMedicalIntern
@@ -51,6 +53,7 @@
   - Trinkets
 #  - MedicalInternJobTrinkets
   - GroupSpeciesBreathToolMedical
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobChemist
@@ -68,6 +71,7 @@
   - Trinkets
 #  - ChemistJobTrinkets
   - GroupSpeciesBreathToolMedical
+  - VGStickers  # VanGuard-Sticker
 
 - type: roleLoadout
   id: JobParamedic
@@ -86,3 +90,4 @@
   - Trinkets
 #  - ParamedicJobTrinkets
   - GroupSpeciesBreathToolMedical
+  - VGStickers  # VanGuard-Sticker

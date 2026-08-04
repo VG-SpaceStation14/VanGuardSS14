@@ -37,3 +37,43 @@ public sealed class PdaRequestUpdateInterfaceMessage : BoundUserInterfaceMessage
 {
     public PdaRequestUpdateInterfaceMessage() { }
 }
+
+// VG-Tweak Start
+[Serializable, NetSerializable]
+public sealed class PdaPowerOffMessage : BoundUserInterfaceMessage
+{
+    public PdaPowerOffMessage() { }
+}
+
+[Serializable, NetSerializable]
+public sealed class PdaBootFinishedMessage : BoundUserInterfaceMessage
+{
+    public PdaBootFinishedMessage() { }
+}
+
+[Serializable, NetSerializable]
+public sealed class PdaSetWallpaperColorMessage : BoundUserInterfaceMessage
+{
+    public Color Color;
+
+    public PdaSetWallpaperColorMessage(Color color)
+    {
+        Color = color;
+    }
+}
+// VG-Tweak End
+
+// VG-Wallpaper Start
+[Serializable, NetSerializable]
+public sealed class PdaSetWallpaperRsiMessage : BoundUserInterfaceMessage
+{
+    public string? RsiPath;
+    public string? State;
+
+    public PdaSetWallpaperRsiMessage(string? rsiPath, string? state)
+    {
+        RsiPath = rsiPath;
+        State = state;
+    }
+}
+// VG-Wallpaper End

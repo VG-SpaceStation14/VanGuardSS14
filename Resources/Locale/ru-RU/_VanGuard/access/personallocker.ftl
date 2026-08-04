@@ -1,0 +1,1 @@
+personal-locker-access = Персональный доступ

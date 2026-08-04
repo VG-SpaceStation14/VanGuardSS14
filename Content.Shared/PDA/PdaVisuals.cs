@@ -6,7 +6,11 @@ namespace Content.Shared.PDA
     public enum PdaVisuals
     {
         IdCardInserted,
-        PdaType
+        PdaType,
+        // VG-PDAScreens Start
+        ScreenState,
+        PenInserted
+        // VG-PDAScreens End
     }
 
     [Serializable, NetSerializable]

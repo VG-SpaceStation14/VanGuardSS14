@@ -1,0 +1,37 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "Sprites by Albuka, Aworkiq, forkwork for VanGuard",
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "states": [
+
+        {
+            "name": "sticker"
+        },
+        {
+            "name": "plastic"
+        },
+        {
+            "name": "glass"
+        },
+        {
+            "name": "spaceship"
+        },
+        {
+            "name": "bloody"
+        },
+        {
+            "name": "money"
+        },
+        {
+            "name": "ocean"
+        },
+        {
+            "name": "gray"
+        }
+   
+    ]
+}

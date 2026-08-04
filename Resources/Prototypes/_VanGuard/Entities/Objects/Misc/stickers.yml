@@ -1,0 +1,97 @@
+- type: entity
+  parent: BaseItem
+  id: VGStickerBase
+  abstract: true
+  name: sticker
+  description: A decorative sticker for your ID card.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Objects/Misc/stickers.rsi
+  - type: Sticker
+  - type: Tag
+    tags:
+    - Sticker
+
+- type: entity
+  parent: VGStickerBase
+  id: VGStickerGray
+  name: gray sticker
+  description: A simple sticker to personalize your ID card.
+  components:
+  - type: Sprite
+    layers:
+    - state: gray
+  - type: Sticker
+    overlayState: gray
+
+- type: entity
+  parent: VGStickerBase
+  id: VGStickerPlastic
+  name: plastic case
+  description: A case for your ID card. Protects from scratches.
+  components:
+  - type: Sprite
+    layers:
+    - state: plastic
+  - type: Sticker
+    overlayState: plastic
+
+- type: entity
+  parent: VGStickerBase
+  id: VGStickerGlass
+  name: glass case
+  description: A case for your ID card. Reminds me of something...
+  components:
+  - type: Sprite
+    layers:
+    - state: glass
+  - type: Sticker
+    overlayState: glass
+
+- type: entity
+  parent: VGStickerBase
+  id: VGStickerSpaceship
+  name: spaceship sticker
+  description: A sticker with a spaceship.
+  components:
+  - type: Sprite
+    layers:
+    - state: spaceship
+  - type: Sticker
+    overlayState: spaceship
+
+- type: entity
+  parent: VGStickerBase
+  id: VGStickerBloody
+  name: dark red sticker
+  description: A dark red sticker. Think it looks cool?
+  components:
+  - type: Sprite
+    layers:
+    - state: bloody
+  - type: Sticker
+    overlayState: bloody
+
+- type: entity
+  parent: VGStickerBase
+  id: VGStickerOcean
+  name: ocean sticker
+  description: A blue sticker.
+  components:
+  - type: Sprite
+    layers:
+    - state: ocean
+  - type: Sticker
+    overlayState: ocean
+
+- type: entity
+  parent: VGStickerBase
+  id: VGStickerMoney
+  name: money sticker
+  description: A green sticker.
+  components:
+  - type: Sprite
+    layers:
+    - state: money
+  - type: Sticker
+    overlayState: money

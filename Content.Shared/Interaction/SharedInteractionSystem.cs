@@ -29,6 +29,10 @@ using Content.Shared.Timing;
 using Content.Shared.UserInterface;
 using Content.Shared.Verbs;
 using Content.Shared.Wall;
+// VG-Tweak Start
+using Content.Shared.PDA;
+using Content.Shared._VanGuard.PDA.Events;
+// VG-Tweak End
 using JetBrains.Annotations;
 using Robust.Shared.Containers;
 using Robust.Shared.Input;
@@ -300,6 +304,19 @@ namespace Content.Shared.Interaction
             // InteractionActivate() should check that the item is accessible. So.. if a user wants to lie about an
             // in-reach item being used in a slot... that should have no impact. This is functionally the same as if
             // they had somehow directly clicked on that item.
+
+            // VG-Tweak Start
+            if (msg.CtrlInteract)
+            {
+                if (HasComp<PdaComponent>(item))
+                {
+                    var ev = new PdaCtrlClickEvent(user.Value, item);
+                    RaiseLocalEvent(item, ref ev);
+                    if (ev.Handled)
+                        return;
+                }
+            }
+            // VG-Tweak End
 
             if (msg.AltInteract)
                 // Use 'UserInteraction' function - behaves as if the user alt-clicked the item in the world.
@@ -1517,6 +1534,20 @@ namespace Content.Shared.Interaction
             ItemUid = itemUid;
             AltInteract = altInteract;
         }
+
+        // VG-Tweak Start
+        /// <summary>
+        ///     Whether the interaction used the ctrl-modifier.
+        /// </summary>
+        public bool CtrlInteract { get; }
+
+        public InteractInventorySlotEvent(NetEntity itemUid, bool altInteract = false, bool ctrlInteract = false)
+        {
+            ItemUid = itemUid;
+            AltInteract = altInteract;
+            CtrlInteract = ctrlInteract;
+        }
+        // VG-Tweak End
     }
 
     /// <summary>

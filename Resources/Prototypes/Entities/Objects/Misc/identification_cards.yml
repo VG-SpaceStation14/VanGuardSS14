@@ -6,11 +6,11 @@
   abstract: true
   components:
   - type: Sprite
-    sprite: Objects/Misc/id_cards.rsi
+    sprite: _VanGuard/Objects/Misc/id_cards.rsi # VG-Tweak - New IDs
   - type: Clothing
     slots:
     - idcard
-    sprite: Objects/Misc/id_cards.rsi
+    sprite: _VanGuard/Objects/Misc/id_cards.rsi # VG-Tweak - New IDs
   - type: Item
     size: Small
     heldPrefix: default
@@ -25,6 +25,17 @@
     - WhitelistChameleonIdCard
   - type: StealTarget
     stealGroup: IDCard
+  # VanGuard-Sticker-Start
+  - type: ItemSlots
+    slots:
+      sticker:
+        name: sticker-slot
+        startingItem: null
+        whitelist:
+          tags:
+          - Sticker
+  - type: Appearance
+  # VanGuard-Sticker-End
 
 #IDs with layers
 
@@ -37,8 +48,14 @@
     layers:
     - state: default
     - sprite: &icon-rsi Interface/Misc/job_icons.rsi
-      offset: &icon-offset -0.09375, 0.0625 #3 pixels left, 2 pixels up
+      offset: &icon-offset -0.17475, 0.02025 # VG-Tweak
       state: Passenger
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Passenger
 
@@ -52,13 +69,21 @@
   - type: Sprite
     layers:
     - state: gold
-    - state: stripe_top
-      color: "#1b67a5"
-    - state: stripe_bottom
-      color: "#0e4069"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: "#1b67a5"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: "#0e4069"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Captain
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: gold
   - type: PresetIdCard
@@ -80,13 +105,21 @@
   - type: Sprite
     layers:
     - state: silver
-    - state: stripe_top
-      color: &color-service-top "#639137"
-    - state: stripe_bottom
-      color: &color-service-bottom "#446326"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: &color-service-top "#639137"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: &color-service-bottom "#446326"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: HeadOfPersonnel
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: silver
   - type: PresetIdCard
@@ -100,13 +133,21 @@
   - type: Sprite
     layers:
     - state: silver
-    - state: stripe_top
-      color: &color-engineering-top "#ffa62b"
-    - state: stripe_bottom
-      color: &color-engineering-bottom "#bc5b00"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: &color-engineering-top "#ffa62b"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: &color-engineering-bottom "#bc5b00"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ChiefEngineer
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: silver
   - type: PresetIdCard
@@ -120,13 +161,21 @@
   - type: Sprite
     layers:
     - state: silver
-    - state: stripe_top
-      color: &color-medical-top "#68aed6"
-    - state: stripe_bottom
-      color: &color-medical-bottom "#325f7a"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: &color-medical-top "#68aed6"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: &color-medical-bottom "#325f7a"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ChiefMedicalOfficer
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: silver
   - type: PresetIdCard
@@ -140,13 +189,21 @@
   - type: Sprite
     layers:
     - state: silver
-    - state: stripe_top
-      color: &color-science-top "#a53aaa"
-    - state: stripe_bottom
-      color: &color-science-bottom "#652368"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: &color-science-top "#a53aaa"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: &color-science-bottom "#652368"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ResearchDirector
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: silver
   - type: PresetIdCard
@@ -160,13 +217,21 @@
   - type: Sprite
     layers:
     - state: silver
-    - state: stripe_top
-      color: &color-security-top "#cb0000"
-    - state: stripe_bottom
-      color: &color-security-bottom "#830000"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: &color-security-top "#cb0000"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: &color-security-bottom "#830000"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: HeadOfSecurity
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: silver
   - type: PresetIdCard
@@ -180,13 +245,21 @@
   - type: Sprite
     layers:
     - state: silver
-    - state: stripe_top
-      color: &color-supply-top "#b18644"
-    - state: stripe_bottom
-      color: &color-supply-bottom "#5b4523"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: &color-supply-top "#b18644"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: &color-supply-bottom "#5b4523"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: QuarterMaster
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: silver
   - type: PresetIdCard
@@ -202,13 +275,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-engineering-top
-    - state: stripe_bottom
-      color: *color-engineering-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-engineering-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-engineering-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: TechnicalAssistant
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: TechnicalAssistant
 
@@ -220,13 +301,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-engineering-top
-    - state: stripe_bottom
-      color: *color-engineering-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-engineering-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-engineering-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: StationEngineer
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: StationEngineer
 
@@ -238,13 +327,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-engineering-top
-    - state: stripe_bottom
-      color: *color-engineering-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-engineering-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-engineering-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: AtmosphericTechnician
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: AtmosphericTechnician
 
@@ -256,13 +353,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-engineering-top
-    - state: stripe_bottom
-      color: *color-engineering-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-engineering-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-engineering-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SeniorEngineer
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
 
 #Medical
 
@@ -274,13 +379,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-medical-top
-    - state: stripe_bottom
-      color: *color-medical-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-medical-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-medical-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: MedicalIntern
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: MedicalIntern
 
@@ -292,13 +405,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-medical-top
-    - state: stripe_bottom
-      color: *color-medical-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-medical-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-medical-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: MedicalDoctor
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: MedicalDoctor
 
@@ -310,13 +431,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-medical-top
-    - state: stripe_bottom
-      color: *color-medical-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-medical-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-medical-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Paramedic
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Paramedic
 
@@ -327,14 +456,22 @@
   components:
   - type: Sprite
     layers:
-    - state: default
-    - state: stripe_top
-      color: *color-medical-top
-    - state: stripe_bottom
-      color: *color-medical-bottom
+    - state: chemist # VG-Tweak
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-medical-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-medical-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Chemist
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Chemist
 
@@ -346,13 +483,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-medical-top
-    - state: stripe_bottom
-      color: *color-medical-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-medical-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-medical-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Psychologist
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Psychologist
 
@@ -364,13 +509,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-medical-top
-    - state: stripe_bottom
-      color: *color-medical-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-medical-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-medical-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SeniorPhysician
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
 
 #Science
 
@@ -382,13 +535,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-science-top
-    - state: stripe_bottom
-      color: *color-science-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-science-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-science-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ResearchAssistant
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: ResearchAssistant
 
@@ -400,13 +561,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-science-top
-    - state: stripe_bottom
-      color: *color-science-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-science-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-science-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Scientist
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Scientist
 
@@ -418,13 +587,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-science-top
-    - state: stripe_bottom
-      color: *color-science-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-science-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-science-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SeniorResearcher
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
 
 #Security
 
@@ -436,13 +613,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-security-top
-    - state: stripe_bottom
-      color: *color-security-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-security-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-security-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SecurityCadet
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: SecurityCadet
 
@@ -454,13 +639,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-security-top
-    - state: stripe_bottom
-      color: *color-security-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-security-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-security-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SecurityOfficer
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: SecurityOfficer
 
@@ -472,13 +665,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-security-top
-    - state: stripe_bottom
-      color: *color-security-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-security-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-security-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Warden
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Warden
 
@@ -490,13 +691,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-security-top
-    - state: stripe_bottom
-      color: *color-security-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-security-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-security-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Detective
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Detective
 
@@ -508,13 +717,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-security-top
-    - state: stripe_bottom
-      color: *color-security-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-security-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-security-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Brigmedic
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
 
 - type: entity
   parent: SecurityIDCard
@@ -524,13 +741,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-security-top
-    - state: stripe_bottom
-      color: *color-security-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-security-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-security-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SeniorOfficer
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
 
 #Service
 
@@ -542,13 +767,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ServiceWorker
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: ServiceWorker
 
@@ -560,10 +793,17 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_clown
+    # VG-Tweak - stripe_clown commented
+    # - state: stripe_clown
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Clown
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Clown
 
@@ -575,13 +815,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: "#2d2d2d"
-    - state: stripe_bottom
-      color: "#1d1d1d"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: "#2d2d2d"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: "#1d1d1d"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Mime
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Mime
 
@@ -593,13 +841,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: "#6f56b8"
-    - state: stripe_bottom
-      color: "#524089"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: "#6f56b8"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: "#524089"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Musician
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Musician
 
@@ -611,13 +867,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Chaplain
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Chaplain
 
@@ -629,13 +893,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Janitor
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Janitor
 
@@ -647,13 +919,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Bartender
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Bartender
 
@@ -665,13 +945,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Bartender
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Bartender
     name: Pun Pun
@@ -687,13 +975,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Chef
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Chef
 
@@ -705,13 +1001,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Botanist
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Botanist
 
@@ -723,13 +1027,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Librarian
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Librarian
 
@@ -741,13 +1053,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Lawyer
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Lawyer
 
@@ -759,13 +1079,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Reporter
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: Reporter
 
@@ -777,13 +1105,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Boxer
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
 
 - type: entity
   parent: IDCardStandard
@@ -793,13 +1129,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Zookeeper
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
 
 #Supply
 
@@ -811,13 +1155,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-supply-top
-    - state: stripe_bottom
-      color: *color-supply-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-supply-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-supply-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: CargoTechnician
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: CargoTechnician
 
@@ -829,13 +1181,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-supply-top
-    - state: stripe_bottom
-      color: *color-supply-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-supply-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-supply-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SeniorCourier
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
 
 - type: entity
   parent: IDCardStandard
@@ -845,13 +1205,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: *color-supply-top
-    - state: stripe_bottom
-      color: *color-supply-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-supply-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-supply-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ShaftMiner
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: SalvageSpecialist
 
@@ -869,6 +1237,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Prisoner
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: orange
   - type: Access
@@ -903,13 +1277,21 @@
   - type: Sprite
     layers:
     - state: default
-    - state: stripe_top
-      color: "#5dc574"
-    - state: stripe_bottom
-      color: "#3f9b53"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: "#5dc574"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: "#3f9b53"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Cluwne
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: IdCard
     jobTitle: job-title-cluwne
     jobIcon: JobIconCluwne
@@ -926,6 +1308,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Visitor
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: IdCard
     jobTitle: job-title-visitor
     jobIcon: JobIconVisitor
@@ -994,14 +1382,22 @@
   components:
   - type: Sprite
     layers:
-    - state: black
-    - state: stripe_top
-      color: &color-syndicate-top "#e80c0c"
-    - state: stripe_bottom
-      color: &color-syndicate-bottom "#960606"
+    - state: syndie # VG-Tweak
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: &color-syndicate-top "#e80c0c"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: &color-syndicate-bottom "#960606"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Syndicate
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: IdCard
     jobIcon: JobIconSyndicate
   - type: Item
@@ -1018,14 +1414,22 @@
   components:
   - type: Sprite
     layers:
-    - state: black
-    - state: stripe_top
-      color: *color-syndicate-top
-    - state: stripe_bottom
-      color: *color-syndicate-bottom
+    - state: syndie # VG-Tweak
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-syndicate-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-syndicate-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SyndicateOperative
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: AgentIDCard
   - type: IdCard
     jobIcon: JobIconSyndicateOperative
@@ -1037,14 +1441,22 @@
   components:
   - type: Sprite
     layers:
-    - state: black
-    - state: stripe_top
-      color: *color-syndicate-top
-    - state: stripe_bottom
-      color: *color-syndicate-bottom
+    - state: syndie # VG-Tweak
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-syndicate-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-syndicate-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SyndicateCorpsman
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: IdCard
     jobIcon: JobIconSyndicateCorpsman
 
@@ -1055,14 +1467,22 @@
   components:
   - type: Sprite
     layers:
-    - state: black
-    - state: stripe_top
-      color: *color-syndicate-top
-    - state: stripe_bottom
-      color: *color-syndicate-bottom
+    - state: syndie # VG-Tweak
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-syndicate-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-syndicate-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: SyndicateCommander
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: IdCard
     jobIcon: JobIconSyndicateCommander
 
@@ -1074,14 +1494,22 @@
   components:
   - type: Sprite
     layers:
-    - state: ninja
-    - state: stripe_top
-      color: "#38D848"
-    - state: stripe_bottom
-      color: "#309000"
+    - state: syndie # VG-Tweak
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: "#38D848"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: "#309000"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Ninja
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: green
   - type: AgentIDCard
@@ -1102,6 +1530,12 @@
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Pirate
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: orange #this is close enough to the weird puce color pirate IDs have going on
   - type: IdCard
@@ -1115,6 +1549,12 @@
   - type: Sprite
     layers:
     - state: default
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Access
     tags:
     - Xenoborg
@@ -1126,10 +1566,16 @@
   components:
   - type: Sprite
     layers:
-    - state: wizard
+    - state: silver # VG-Tweak
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Wizard
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: green
   - type: Access
@@ -1150,13 +1596,21 @@
   - type: Sprite
     layers:
     - state: centcom
-    - state: stripe_top
-      color: &color-centcomm-top "#134975"
-    - state: stripe_bottom
-      color: &color-centcomm-bottom "#0d304d"
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: &color-centcomm-top "#134975"
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: &color-centcomm-bottom "#0d304d"
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Nanotrasen
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: blue
   - type: PresetIdCard
@@ -1170,13 +1624,21 @@
   - type: Sprite
     layers:
     - state: gold
-    - state: stripe_top
-      color: *color-centcomm-top
-    - state: stripe_bottom
-      color: *color-centcomm-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-centcomm-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-centcomm-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ERTLeader
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: gold
   - type: PresetIdCard
@@ -1190,13 +1652,21 @@
   - type: Sprite
     layers:
     - state: centcom
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ERTChaplain
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: blue
   - type: PresetIdCard
@@ -1210,13 +1680,21 @@
   - type: Sprite
     layers:
     - state: centcom
-    - state: stripe_top
-      color: *color-engineering-top
-    - state: stripe_bottom
-      color: *color-engineering-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-engineering-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-engineering-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ERTEngineer
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: blue
   - type: PresetIdCard
@@ -1230,13 +1708,21 @@
   - type: Sprite
     layers:
     - state: centcom
-    - state: stripe_top
-      color: *color-service-top
-    - state: stripe_bottom
-      color: *color-service-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-service-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-service-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ERTJanitor
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: blue
   - type: PresetIdCard
@@ -1250,13 +1736,21 @@
   - type: Sprite
     layers:
     - state: centcom
-    - state: stripe_top
-      color: *color-medical-top
-    - state: stripe_bottom
-      color: *color-medical-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-medical-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-medical-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ERTMedical
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: blue
   - type: PresetIdCard
@@ -1270,13 +1764,21 @@
   - type: Sprite
     layers:
     - state: centcom
-    - state: stripe_top
-      color: *color-security-top
-    - state: stripe_bottom
-      color: *color-security-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-security-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-security-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: ERTSecurity
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: blue
   - type: PresetIdCard
@@ -1290,13 +1792,21 @@
   - type: Sprite
     layers:
     - state: centcom
-    - state: stripe_top
-      color: *color-centcomm-top
-    - state: stripe_bottom
-      color: *color-centcomm-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-centcomm-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-centcomm-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: DeathSquad
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: PresetIdCard
     job: DeathSquad
 
@@ -1309,13 +1819,21 @@
   - type: Sprite
     layers:
     - state: centcom
-    - state: stripe_top
-      color: *color-centcomm-top
-    - state: stripe_bottom
-      color: *color-centcomm-bottom
+    # VG-Tweak - stripe_top commented
+    # - state: stripe_top
+    #   color: *color-centcomm-top
+    # VG-Tweak - stripe_bottom commented
+    # - state: stripe_bottom
+    #   color: *color-centcomm-bottom
     - sprite: *icon-rsi
       offset: *icon-offset
       state: CBURN
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Item
     heldPrefix: blue
   - type: PresetIdCard
@@ -1329,14 +1847,20 @@
   description: An ID card that gives you access beyond your wildest dreams.
   components:
   - type: Sprite
-    sprite: Objects/Misc/id_cards.rsi
+    sprite: _VanGuard/Objects/Misc/id_cards.rsi # VG-Tweak - New IDs
     layers:
     - state: admin
     - sprite: *icon-rsi
       offset: *icon-offset
       state: Admin
+    # VanGuard-Sticker-Start
+    - state: sticker
+      map: ["Sticker"]
+      visible: false
+      sprite: _VanGuard/Objects/Misc/stickers.rsi
+    # VanGuard-Sticker-End
   - type: Clothing
-    sprite: Objects/Misc/id_cards.rsi
+    sprite: _VanGuard/Objects/Misc/id_cards.rsi # VG-Tweak - New IDs
   - type: Item
     heldPrefix: green
   - type: IdCard

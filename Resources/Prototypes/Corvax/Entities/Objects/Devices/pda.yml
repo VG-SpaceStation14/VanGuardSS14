@@ -4,38 +4,68 @@
   name: internal affairs agent PDA
   description: Corporation and profit are best friends.
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#6f6192"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  # VG-Tweak End
   - type: Pda
     id: IAAIDCard
     penSlot:
       startingItem: PenLegal
-  - type: Appearance
-    appearanceDataInit:
-      enum.PdaVisuals.PdaType:
-        !type:String
-        pda-lawyer
+  # VG-Tweak Start
   - type: PdaBorderColor
     borderColor: "#6f6192"
-  - type: Icon
-    state: pda-lawyer
+  # VG-Tweak End
 
 - type: entity
   parent: BaseSecurityPDA
   id: PilotPDA
   name: pilot PDA
-  description: Нas protection from cosmic radiation.
+  description: Has protection from cosmic radiation.
   components:
-  - type: Pda
-    id: PilotIDCard
-  - type: Appearance
-    appearanceDataInit:
-      enum.PdaVisuals.PdaType:
-        !type:String
-        pda-seniorofficer
+  # VG-Tweak Start
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#A32D26"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#DFDFDF"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
   - type: PdaBorderColor
     borderColor: "#A32D26"
     accentVColor: "#DFDFDF"
-  - type: Icon
-    state: pda-seniorofficer
+  # VG-Tweak End
+  - type: Pda
+    id: PilotIDCard
   - type: EntityTableContainerFill
     containers:
       preinstalled-program-container: !type:AllSelector
@@ -53,9 +83,28 @@
   name: magistrate's PDA
   description: Corporation and profit are best friends.
   components:
+  # VG-Tweak Start
   - type: Sprite
-    sprite: Corvax/Objects/Devices/pda.rsi
-    state: pda-magistrate
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#6f6192"
+    - state: pda_buttons
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#6f6192"
+  # VG-Tweak End
   - type: Pda
     id: MagistrateIDCard
     penSlot:
@@ -63,13 +112,3 @@
       whitelist:
         tags:
         - Write
-  - type: Appearance
-    appearanceDataInit:
-      enum.PdaVisuals.PdaType:
-        !type:String
-        pda-magistrate
-  - type: PdaBorderColor
-    borderColor: "#6f6192"
-  - type: Icon
-    sprite: Corvax/Objects/Devices/pda.rsi
-    state: pda-magistrate

@@ -1,0 +1,62 @@
+- type: loadoutGroup
+  id: VGStickers
+  name: loadout-group-stickers
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - VGStickerGray
+  - VGStickerPlastic
+  - VGStickerGlass
+  - VGStickerSpaceship
+  - VGStickerBloody
+  - VGStickerOcean
+  - VGStickerMoney
+
+- type: loadout
+  id: VGStickerGray
+  dummyEntity: VGStickerGray
+  effects:
+  - !type:StickerLoadoutEffect
+    stickerProto: VGStickerGray
+
+- type: loadout
+  id: VGStickerPlastic
+  dummyEntity: VGStickerPlastic
+  effects:
+  - !type:StickerLoadoutEffect
+    stickerProto: VGStickerPlastic
+
+- type: loadout
+  id: VGStickerGlass
+  dummyEntity: VGStickerGlass
+  effects:
+  - !type:StickerLoadoutEffect
+    stickerProto: VGStickerGlass
+
+- type: loadout
+  id: VGStickerSpaceship
+  dummyEntity: VGStickerSpaceship
+  effects:
+  - !type:StickerLoadoutEffect
+    stickerProto: VGStickerSpaceship
+
+- type: loadout
+  id: VGStickerBloody
+  dummyEntity: VGStickerBloody
+  effects:
+  - !type:StickerLoadoutEffect
+    stickerProto: VGStickerBloody
+
+- type: loadout
+  id: VGStickerOcean
+  dummyEntity: VGStickerOcean
+  effects:
+  - !type:StickerLoadoutEffect
+    stickerProto: VGStickerOcean
+
+- type: loadout
+  id: VGStickerMoney
+  dummyEntity: VGStickerMoney
+  effects:
+  - !type:StickerLoadoutEffect
+    stickerProto: VGStickerMoney

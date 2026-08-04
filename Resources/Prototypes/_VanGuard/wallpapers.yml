@@ -1,0 +1,39 @@
+- type: pdaWallpaper
+  id: PdaWallpaperNone
+  name: pda-wallpaper-none
+  state: none
+
+- type: pdaWallpaper
+  id: PdaWallpaperSpace1
+  name: pda-wallpaper-space
+  state: space1
+
+- type: pdaWallpaper
+  id: PdaWallpaperSpace2
+  name: pda-wallpaper-space2
+  state: space2
+
+- type: pdaWallpaper
+  id: PdaWallpaperBlackHole
+  name: pda-wallpaper-blackhole
+  state: blackhole
+
+- type: pdaWallpaper
+  id: PdaWallpaperForest
+  name: pda-wallpaper-forest
+  state: forest
+
+- type: pdaWallpaper
+  id: PdaWallpaperSmile
+  name: pda-wallpaper-smile
+  state: smile
+
+- type: pdaWallpaper
+  id: PdaWallpaperNT1
+  name: pda-wallpaper-nanotrasen1
+  state: nanotrasen1
+
+- type: pdaWallpaper
+  id: PdaWallpaperScience
+  name: pda-wallpaper-science
+  state: science
