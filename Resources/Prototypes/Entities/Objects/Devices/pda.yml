@@ -71,7 +71,7 @@
     - Belt
   - type: UnpoweredFlashlight
   - type: PointLight
-    mask: /Textures/Effects/LightMasks/cone.png
+    lightMask: ConeSingle
     enabled: false
     radius: 2
     softness: 5
