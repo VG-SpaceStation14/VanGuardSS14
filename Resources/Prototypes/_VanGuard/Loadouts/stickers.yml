@@ -9,6 +9,8 @@
   - VGStickerGlass
   - VGStickerSpaceship
   - VGStickerBloody
+  - VGStickerOcean
+  - VGStickerMoney
 
 - type: loadout
   id: VGStickerGray
@@ -44,3 +46,17 @@
   effects:
   - !type:StickerLoadoutEffect
     stickerProto: VGStickerBloody
+
+- type: loadout
+  id: VGStickerOcean
+  dummyEntity: VGStickerOcean
+  effects:
+  - !type:StickerLoadoutEffect
+    stickerProto: VGStickerOcean
+
+- type: loadout
+  id: VGStickerMoney
+  dummyEntity: VGStickerMoney
+  effects:
+  - !type:StickerLoadoutEffect
+    stickerProto: VGStickerMoney

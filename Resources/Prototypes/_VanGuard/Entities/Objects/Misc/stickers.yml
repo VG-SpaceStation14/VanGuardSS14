@@ -71,3 +71,27 @@
     - state: bloody
   - type: Sticker
     overlayState: bloody
+
+- type: entity
+  parent: VGStickerBase
+  id: VGStickerOcean
+  name: ocean sticker
+  description: A blue sticker.
+  components:
+  - type: Sprite
+    layers:
+    - state: ocean
+  - type: Sticker
+    overlayState: ocean
+
+- type: entity
+  parent: VGStickerBase
+  id: VGStickerMoney
+  name: money sticker
+  description: A green sticker.
+  components:
+  - type: Sprite
+    layers:
+    - state: money
+  - type: Sticker
+    overlayState: money

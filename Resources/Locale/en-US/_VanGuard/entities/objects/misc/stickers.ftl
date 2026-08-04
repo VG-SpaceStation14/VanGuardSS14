@@ -12,3 +12,9 @@ ent-VGStickerSpaceship = spaceship sticker
 
 ent-VGStickerBloody = dark red sticker
     .desc = { ent-VGStickerGray.desc } Think it looks cool?
+
+ent-VGStickerOcean = ocean sticker
+    .desc = { ent-VGStickerGray.desc }
+
+ent-VGStickerMoney = money sticker
+    .desc = { ent-VGStickerGray.desc }

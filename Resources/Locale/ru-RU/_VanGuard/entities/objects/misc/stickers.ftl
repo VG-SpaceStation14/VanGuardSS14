@@ -12,3 +12,9 @@ ent-VGStickerSpaceship = наклейка с космическим корабл
 
 ent-VGStickerBloody = наклейка в тёмно-красных тонах
     .desc = { ent-VGStickerGray.desc } Думаете, это выглядит круто?
+
+ent-VGStickerOcean = наклейка с океаном
+    .desc = { ent-VGStickerGray.desc }
+
+ent-VGStickerMoney = наклейка с изображением доллара
+    .desc = { ent-VGStickerGray.desc }
