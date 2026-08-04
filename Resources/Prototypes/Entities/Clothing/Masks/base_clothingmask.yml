@@ -9,6 +9,16 @@
     size: Small
   - type: Clothing
     slots: [mask]
+  # VG-Tweak Start 
+    equipSound:
+      collection: GenericEquip
+  - type: EmitSoundOnPickup
+    sound:
+      path: /Audio/_VanGuard/Items/handling/generic_small_pickup.ogg
+  - type: EmitSoundOnDrop
+    sound:
+      path: /Audio/_VanGuard/Items/handling/generic_small_drop.ogg
+  # VG-Tweak End
   - type: StaticPrice
     price: 25
 

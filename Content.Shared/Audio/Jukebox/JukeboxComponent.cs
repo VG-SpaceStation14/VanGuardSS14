@@ -37,6 +37,34 @@ public sealed partial class JukeboxComponent : Component
 
     [ViewVariables]
     public float SelectAccumulator;
+
+    // VG-Tweak start
+    [ViewVariables, AutoNetworkedField]
+    public float Volume = 50f;
+
+    public float MinVolume = -30f;
+    public float MaxVolume = 0f;
+    public float MinSlider = 0f;
+    public float MaxSlider = 100f;
+
+    [ViewVariables, AutoNetworkedField]
+    public JukeboxRepeatMode RepeatMode = JukeboxRepeatMode.NoRepeat;
+
+    [ViewVariables, AutoNetworkedField]
+    public bool ShuffleEnabled;
+
+    [ViewVariables, AutoNetworkedField]
+    public List<ProtoId<JukeboxPrototype>> Playlist = new();
+
+    [ViewVariables]
+    public List<ProtoId<JukeboxPrototype>> Queue = new();
+
+    [ViewVariables, AutoNetworkedField]
+    public int CurrentQueueIndex = -1;
+
+    [ViewVariables]
+    public bool AutoAdvance;
+    // VG-Tweak end
 }
 
 [Serializable, NetSerializable]
@@ -59,6 +87,46 @@ public sealed class JukeboxSetTimeMessage(float songTime) : BoundUserInterfaceMe
 {
     public float SongTime { get; } = songTime;
 }
+
+// VG-Tweak start
+[Serializable, NetSerializable]
+public sealed class JukeboxSetVolumeMessage(float volume) : BoundUserInterfaceMessage
+{
+    public float Volume { get; } = volume;
+}
+
+[Serializable, NetSerializable]
+public sealed class JukeboxSetRepeatMessage(JukeboxRepeatMode mode) : BoundUserInterfaceMessage
+{
+    public JukeboxRepeatMode Mode { get; } = mode;
+}
+
+[Serializable, NetSerializable]
+public sealed class JukeboxSetShuffleMessage(bool enabled) : BoundUserInterfaceMessage
+{
+    public bool Enabled { get; } = enabled;
+}
+
+[Serializable, NetSerializable]
+public enum JukeboxRepeatMode : byte
+{
+    NoRepeat,
+    RepeatOne,
+    RepeatAll
+}
+
+[Serializable, NetSerializable]
+public sealed class JukeboxNextTrackMessage : BoundUserInterfaceMessage;
+
+[Serializable, NetSerializable]
+public sealed class JukeboxPrevTrackMessage : BoundUserInterfaceMessage;
+
+[Serializable, NetSerializable]
+public sealed class JukeboxPlaySelectedMessage(ProtoId<JukeboxPrototype> songId) : BoundUserInterfaceMessage
+{
+    public ProtoId<JukeboxPrototype> SongId { get; } = songId;
+}
+// VG-Tweak end
 
 [Serializable, NetSerializable]
 public enum JukeboxVisuals : byte

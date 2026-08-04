@@ -68,6 +68,17 @@
   - type: Appearance
   - type: StaticPrice
     price: 500
+  # VG-Tweak Start
+  - type: EmitSoundOnPickup
+    sound:
+      collection: PistolsPickUp
+  - type: EmitSoundOnDrop
+    sound:
+      collection: PistolsDrop
+  - type: EmitSoundOnLand
+    sound:
+      collection: PistolsDrop
+  # VG-Tweak End
 
 - type: entity
   name: viper

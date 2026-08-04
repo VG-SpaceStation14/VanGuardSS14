@@ -29,6 +29,23 @@
     receiveFrequencyId: BasicDevice
   - type: WirelessNetworkConnection
     range: 15
+  # VG-Tweak Start
+  - type: EmitSoundOnPickup
+    sound:
+      path: /Audio/_VanGuard/Items/handling/component_pickup.ogg
+      params:
+        volume: -2
+  - type: EmitSoundOnDrop
+    sound:
+      path: /Audio/_VanGuard/Items/handling/component_drop.ogg
+      params:
+        volume: -2
+  - type: EmitSoundOnLand
+    sound:
+      path: /Audio/_VanGuard/Items/handling/component_drop.ogg
+      params:
+        volume: -2
+  # VG-Tweak End
 
 - type: entity
   parent: RemoteSignaller

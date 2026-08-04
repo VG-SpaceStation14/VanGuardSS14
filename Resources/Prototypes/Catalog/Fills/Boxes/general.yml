@@ -12,6 +12,31 @@
   - type: PhysicalComposition
     materialComposition:
       Cardboard: 100
+  # VG-Tweak Start
+  - type: EmitSoundOnPickup
+    sound:
+      path: /Audio/_VanGuard/Items/handling/cardboardbox_pickup.ogg
+      params:
+        volume: -3
+  - type: EmitSoundOnDrop
+    sound:
+      path: /Audio/_VanGuard/Items/handling/cardboardbox_drop.ogg
+      params:
+        volume: -3
+  - type: EmitSoundOnLand
+    sound:
+      path: /Audio/_VanGuard/Items/handling/cardboardbox_drop.ogg
+      params:
+        volume: -3
+  - type: Item
+    size: Large
+    shape:
+    - 0,0,2,2
+  - type: Storage
+    maxItemSize: Small
+    grid:
+    - 0,0,3,2
+  # VG-Tweak End
   - type: Sprite
     state: box
   - type: Tag

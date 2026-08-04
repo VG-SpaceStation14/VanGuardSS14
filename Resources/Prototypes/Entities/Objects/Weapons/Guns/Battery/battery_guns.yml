@@ -25,6 +25,17 @@
     startingCharge: 1000
   - type: StaticPrice
     price: 500
+  # VG-Tweak Start
+  - type: EmitSoundOnPickup
+    sound:
+      collection: LasersPickUp
+  - type: EmitSoundOnDrop
+    sound:
+      collection: LasersDrop
+  - type: EmitSoundOnLand
+    sound:
+      collection: LasersDrop
+  # VG-Tweak End
 
 - type: entity
   parent: [BaseWeaponBattery, BaseGunWieldable]

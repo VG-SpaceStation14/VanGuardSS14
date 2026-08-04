@@ -63,6 +63,17 @@
     price: 500
   - type: UseDelay
     delay: 1
+  # VG-Tweak Start
+  - type: EmitSoundOnPickup
+    sound:
+      collection: RiflesPickUp
+  - type: EmitSoundOnDrop
+    sound:
+      collection: RiflesDrop
+  - type: EmitSoundOnLand
+    sound:
+      collection: RiflesDrop
+  # VG-Tweak End
 
 - type: entity
   name: L6 SAW
