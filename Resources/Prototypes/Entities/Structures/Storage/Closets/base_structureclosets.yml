@@ -45,6 +45,13 @@
         layer:
         - MachineLayer
   - type: EntityStorage
+    # VG-Tweak Start
+    masksToRemove: 84
+    closeSound:
+      path: /Audio/_VanGuard/Entities/closet_close.ogg
+    openSound:
+      path: /Audio/_VanGuard/Entities/closet_open.ogg
+    # VG-Tweak End
   - type: ContainerContainer
     containers:
       entity_storage: !type:Container
