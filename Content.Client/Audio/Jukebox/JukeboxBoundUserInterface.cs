@@ -42,10 +42,32 @@ public sealed partial class JukeboxBoundUserInterface : BoundUserInterface
         };
 
         _menu.OnSongSelected += SelectSong;
+        // VG-Tweak start
+        _menu.OnPlaySelected += PlaySelectedSong;
+        _menu.SetVolume += SetVolume;
+        _menu.OnRepeatModeChanged += mode =>
+        {
+            SendMessage(new JukeboxSetRepeatMessage(mode));
+        };
+        _menu.OnShuffleToggled += enabled =>
+        {
+            SendMessage(new JukeboxSetShuffleMessage(enabled));
+        };
+        _menu.OnNextTrack += () =>
+        {
+            SendMessage(new JukeboxNextTrackMessage());
+        };
+        _menu.OnPrevTrack += () =>
+        {
+            SendMessage(new JukeboxPrevTrackMessage());
+        };
+        // VG-Tweak end
 
         _menu.SetTime += SetTime;
+        // VG-Tweak start
         PopulateMusic();
         Reload();
+        // VG-Tweak end
     }
 
     /// <summary>
@@ -57,6 +79,11 @@ public sealed partial class JukeboxBoundUserInterface : BoundUserInterface
             return;
 
         _menu.SetAudioStream(jukebox.AudioStream);
+        // VG-Tweak start
+        _menu.SetVolumeSlider(jukebox.Volume);
+        _menu.SetRepeatMode(jukebox.RepeatMode);
+        _menu.SetShuffleEnabled(jukebox.ShuffleEnabled);
+        // VG-Tweak end
 
         if (_protoManager.Resolve(jukebox.SelectedSongId, out var songProto))
         {
@@ -79,6 +106,26 @@ public sealed partial class JukeboxBoundUserInterface : BoundUserInterface
         SendMessage(new JukeboxSelectedMessage(songid));
     }
 
+    // VG-Tweak start
+    private void PlaySelectedSong(ProtoId<JukeboxPrototype> songid)
+    {
+        SendMessage(new JukeboxPlaySelectedMessage(songid));
+    }
+
+    public void SetVolume(float volume)
+    {
+        var sentVolume = volume;
+
+        if (EntMan.TryGetComponent(Owner, out JukeboxComponent? jukebox) &&
+            EntMan.TryGetComponent(jukebox.AudioStream, out AudioComponent? audioComp))
+        {
+            audioComp.Volume = SharedJukeboxSystem.MapToRange(volume, jukebox.MinSlider, jukebox.MaxSlider, jukebox.MinVolume, jukebox.MaxVolume);
+        }
+
+        SendMessage(new JukeboxSetVolumeMessage(sentVolume));
+    }
+    // VG-Tweak end
+
     public void SetTime(float time)
     {
         var sentTime = time;
@@ -98,4 +145,3 @@ public sealed partial class JukeboxBoundUserInterface : BoundUserInterface
         SendMessage(new JukeboxSetTimeMessage(sentTime));
     }
 }
-
