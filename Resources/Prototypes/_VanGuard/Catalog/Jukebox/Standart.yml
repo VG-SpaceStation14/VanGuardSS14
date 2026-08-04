@@ -1,0 +1,395 @@
+- type: jukebox
+  id: ABeautifulLull
+  name: Conjurerq - A beautiful lull
+  path:
+    path: /Audio/_VanGuard/Jukebox/A_beautiful_lull.ogg
+
+- type: jukebox
+  id: ATenseAdventure
+  name: Conjurerq - A Tense Adventure
+  path:
+    path: /Audio/_VanGuard/Jukebox/A_Tense_Adventure.ogg
+
+- type: jukebox
+  id: SpaceAsshole
+  name: Space Asshole - Chris Remo
+  path:
+    path: /Audio/_VanGuard/Jukebox/space_asshole_mono_jukebox.ogg
+
+- type: jukebox
+  id: phoenixright
+  name: Noriyuki Iwadare - Corner the Culprit
+  path:
+    path: /Audio/_VanGuard/Lobby/Pursuit_Corner_the_Culprit_2004.ogg
+
+- type: jukebox
+  id: HotlineDaisuke
+  name: Hotline Miami - Daisuke
+  path:
+    path: /Audio/_VanGuard/Jukebox/HM_Daisuke.ogg
+
+- type: jukebox
+  id: DOS
+  name: Ampient(Polaroid studios) - Dream of Somewhere
+  path:
+    path: /Audio/_VanGuard/Lobby/DOS.ogg
+
+- type: jukebox
+  id: FSMTeamEagle
+  name: FSM team - Eagle
+  path:
+    path: /Audio/_VanGuard/Jukebox/fsm-team-eagle.ogg
+
+- type: jukebox
+  id: GiftOfAdventureFromConjurer
+  name: Conjurerq - Gift of Adventure from Conjurer
+  path:
+    path: /Audio/_VanGuard/Lobby/Gift_of_Adventure_from_Conjurer.ogg
+
+- type: jukebox
+  id: HappyEnding
+  name: Conjurerq - Happy ending
+  path:
+    path: /Audio/_VanGuard/Jukebox/Happy_ending.ogg
+
+- type: jukebox
+  id: horn
+  name: Scruq - horn
+  path:
+    path: /Audio/_VanGuard/Lobby/horn.ogg
+
+- type: jukebox
+  id: InTheLandOfMagnolias
+  name: Ариэль - В краю магнолий
+  path:
+    path: /Audio/_VanGuard/Jukebox/In_the_land_of_magnolias.ogg
+
+- type: jukebox
+  id: IHYVA
+  name: Zeroh - I Hear Your Voice Again
+  path:
+    path: /Audio/_VanGuard/Lobby/IHYVA.ogg
+
+- type: jukebox
+  id: HotlineItsSafeNow
+  name: Hotline Miami - It's Safe Now
+  path:
+    path: /Audio/_VanGuard/Jukebox/HM_ItsSafeNow.ogg
+
+- type: jukebox
+  id: lateraligator
+  name: Silverman Sound Studios - Later Alligator
+  path:
+    path: /Audio/_VanGuard/Jukebox/lateraligator.ogg
+
+- type: jukebox
+  id: MJSC
+  name: Michael Jackson - Smooth Criminal
+  path:
+    path: /Audio/_VanGuard/Jukebox/MJSC.ogg
+
+- type: jukebox
+  id: ESCPMidnightRoom
+  name: < e s c p > - Midnight Room
+  path:
+    path: /Audio/_VanGuard/Jukebox/fsm-team-escp-midnight-room.ogg
+
+- type: jukebox
+  id: Hotline2MsMinnie
+  name: Hotline Miami 2 - Ms. Minnie
+  path:
+    path: /Audio/_VanGuard/Jukebox/HM2_MsMinnie.ogg
+
+- type: jukebox
+  id: HotlineMusik
+  name: Hotline Miami - Musik
+  path:
+    path: /Audio/_VanGuard/Jukebox/HM_Musik.ogg
+
+- type: jukebox
+  id: Nebula
+  name: Grey Room - Nebula
+  path:
+    path: /Audio/_VanGuard/Lobby/Nebula.ogg
+
+- type: jukebox
+  id: ESCPNeonscapes
+  name: < e s c p > - Neonscapes
+  path:
+    path: /Audio/_VanGuard/Jukebox/fsm-team-escp-neonscapes.ogg
+
+- type: jukebox
+  id: HotlineParis
+  name: Hotline Miami - Paris
+  path:
+    path: /Audio/_VanGuard/Jukebox/HM_Paris.ogg
+
+- type: jukebox
+  id: Oh_Its_You
+  name: Oh Its You - Pascal Michael Stiefel
+  path:
+    path: /Audio/_VanGuard/Lobby/Oh_Its_You.ogg
+
+- type: jukebox
+  id: Hotline2Sexualizer
+  name: Hotline Miami 2 - Sexualizer
+  path:
+    path: /Audio/_VanGuard/Jukebox/HM2_Sexualizer.ogg
+
+- type: jukebox
+  id: EOFTTS
+  name: Eye Of The Tiger - Survivor
+  path:
+    path: /Audio/_VanGuard/Jukebox/EOFTTS.ogg
+
+- type: jukebox
+  id: EWTRTWTFF
+  name: Everybody Wants To Rule The World - Tears For Fears
+  path:
+    path: /Audio/_VanGuard/Jukebox/EWTRTWTFF.ogg
+
+- type: jukebox
+  id: TheFallOfTheCorporation
+  name: Conjurerq - The fall of the corporation
+  path:
+    path: /Audio/_VanGuard/Jukebox/The_fall_of_the_corporation.ogg
+
+- type: jukebox
+  id: WaitingForTheMeeting
+  name: Conjurerq - Waiting for the meeting
+  path:
+    path: /Audio/_VanGuard/Jukebox/Waiting_for_the_meeting.ogg
+
+- type: jukebox
+  id: TidalTempestPresent
+  name: Spencer Nilsen, David Young - Tidal Tempest Zone Present (Sonic CD)
+  path:
+    path: /Audio/_VanGuard/Lobby/Tidal_Tempest_Zone_Present_US_Sonic_The_Hedgehog_CD.ogg
+
+- type: jukebox
+  id: MetallicMadnessBadFuture
+  name: DiabolosPheonix - Metallic Madness Bad Future [JP EU] (Sonic CD)
+  path:
+    path: /Audio/_VanGuard/Lobby/Sonic_CD_Metallic_Madness_Bad_Future_[JP_EU].ogg
+
+- type: jukebox
+  id: MetallicMadnessBadFutureRemix
+  name: Kamex - Metallic Madness Bad Future JP Remix (Sonic CD) # Если что разрешения он не давал. Так что будьте готовы это убрать или скажите мне. (Визарды дали разрешение без лицензии добавлять, если не будет доёбов)
+  path:
+    path: /Audio/_VanGuard/Lobby/Kamex_Sonic_CD-Metallic_Madness_Bad_Future_JP_Remix.ogg
+
+- type: jukebox
+  id: MetallicMadnessAct2
+  name: Tee Lopes, Naofumi Hataya - Metallic Madness Act 2 (Sonic Mania)
+  path:
+    path: /Audio/_VanGuard/Lobby/Sonic_Mania-Metallic_Madness_Act_2.ogg
+
+- type: jukebox
+  id: CollisionChaosGood
+  name: Naofumi Hataya; Masafumi Ogata - Collision Chaos Good Future (Sonic the Hedgehog CD)
+  path:
+    path: /Audio/_VanGuard/Lobby/Sonic_The_Hedgehog_CD_Naofumi_Hataya_Masafumi_Ogata-Collision_Chaos_Good_Future.ogg
+
+- type: jukebox
+  id: MetallicMadnessPresent
+  name: Naofumi Hataya; Masafumi Ogata - Metallic Madness Present (Sonic the Hedgehog CD)
+  path:
+    path: /Audio/_VanGuard/Lobby/Sonic_The_Hedgehog_CD_Naofumi_Hataya_Masafumi_Ogata-Metallic_Madness_Present.ogg
+
+- type: jukebox
+  id: PalmtreePanicPast
+  name: Naofumi Hataya; Masafumi Ogata - PalmtreePanicPast (Sonic the Hedgehog CD)
+  path:
+    path: /Audio/_VanGuard/Lobby/Sonic_The_Hedgehog_CD_Naofumi_Hataya_Masafumi_Ogata-Palmtree_Panic_Past.ogg
+
+- type: jukebox
+  id: QuartzQuadrantPast
+  name: Naofumi Hataya; Masafumi Ogata - QuartzQuadrantPast (Sonic the Hedgehog CD)
+  path:
+    path: /Audio/_VanGuard/Lobby/Sonic_The_Hedgehog_CD_Naofumi_Hataya_Masafumi_Ogata-Quartz_Quadrant_Past.ogg
+
+- type: jukebox
+  id: SuperSonicRacing
+  name: Richard Jacques - Super Sonic Racing (Sonic R.; Sega)
+  path:
+    path: /Audio/_VanGuard/Lobby/Super_Sonic_Racing.ogg
+
+- type: jukebox
+  id: TidalTempestJPRemix
+  name: MegaBaz - Tidal Tempest JP Remix (Sonic the Hedgehog CD)
+  path:
+    path: /Audio/_VanGuard/Lobby/Tidal_Tempest_Sonic_CD_JP.ogg
+
+- type: jukebox
+  id: WereFinallyLanding
+  name: Home - We're Finally Landing
+  path:
+    path: /Audio/_VanGuard/Lobby/Home_-_Were_Finally_Landing.ogg
+
+- type: jukebox
+  id: TheWizard
+  name: The Wizard
+  path:
+    path: /Audio/_VanGuard/Jukebox/the_wizard.ogg
+
+- type: jukebox
+  id: SpaceOddity
+  name: Space Oddity - Chris Hadfield
+  path:
+    path: /Audio/_VanGuard/Jukebox/space_oddity.ogg
+
+- type: jukebox
+  id: SiliconDreams
+  name: Silicon Dreams
+  path:
+    path: /Audio/_VanGuard/Jukebox/silicon-dreams.ogg
+
+- type: jukebox
+  id: CCTRFKAP
+  name: Chris Christodoulou - The Rain Formerly Known as Purple
+  path:
+    path: /Audio/_VanGuard/Jukebox/CCTRFKAP.ogg
+
+- type: jukebox
+  id: CCCLP
+  name: Chris Christodoulou - …con lentitud poderosa
+  path:
+    path: /Audio/_VanGuard/Jukebox/CCCLP.ogg
+
+- type: jukebox
+  id: MJB
+  name: Michael Jackson - Bad
+  path:
+    path: /Audio/_VanGuard/Jukebox/MJB.ogg
+
+- type: jukebox
+  id: GTBTTB
+  name: George Thorogood - Bad To The Bone
+  path:
+    path: /Audio/_VanGuard/Jukebox/GTBTTB.ogg
+
+- type: jukebox
+  id: ACDCBIB
+  name: "AC/DC - Back In Black"
+  path:
+    path: /Audio/_VanGuard/Jukebox/ACDCBIB.ogg
+
+- type: jukebox
+  id: ACDCHTH
+  name: "AC/DC - Highway To Hell"
+  path:
+    path: /Audio/_VanGuard/Jukebox/ACDCHTH.ogg
+
+- type: jukebox
+  id: PhantomLiberty
+  name: Adamczyk - PhantomLiberty
+  path:
+    path: /Audio/_VanGuard/Jukebox/Adamczyk/Adamczyk_PhantomLiberty.ogg
+
+- type: jukebox
+  id: TheRebelPath
+  name: Adamczyk - The Rebel Path
+  path:
+    path: /Audio/_VanGuard/Jukebox/Adamczyk/Adamczyk_TheRebelPath.ogg
+
+- type: jukebox
+  id: EcstaticVibrations
+  name: British Sea Power - Ecstatic Vibrations
+  path:
+    path: /Audio/_VanGuard/Jukebox/BritishSeaPower/BritishSeaPower_EcstaticVibrations.ogg
+
+- type: jukebox
+  id: Starman
+  name: David Bowie - Starman
+  path:
+    path: /Audio/_VanGuard/Jukebox/DavidBowie/DavidBowie_Starman.ogg
+
+- type: jukebox
+  id: TheManWhoSoldTheWorld
+  name: David Bowie - The Man Who Sold The World
+  path:
+    path: /Audio/_VanGuard/Jukebox/DavidBowie/DavidBowie_TheManWhoSoldTheWorld.ogg
+
+- type: jukebox
+  id: Drown
+  name: Karen O - Drown
+  path:
+    path: /Audio/_VanGuard/Jukebox/KarenO/KarenO_Drown.ogg
+
+- type: jukebox
+  id: DIAMANT
+  name: Rammstein - DIAMANT
+  path:
+    path: /Audio/_VanGuard/Jukebox/Rammstein/Rammstein_DIAMANT.ogg
+
+- type: jukebox
+  id: WhosReadyForTomorrow
+  name: Rat Boy - Whos Ready For Tomorrow
+  path:
+    path: /Audio/_VanGuard/Jukebox/RatBoy/RatBoy_WhosReadyForTomorrow.ogg
+
+- type: jukebox
+  id: Freaks
+  name: Surf Curse - Freaks
+  path:
+    path: /Audio/_VanGuard/Jukebox/SurfCurse/SurfCurse_Freaks.ogg
+
+- type: jukebox
+  id: ItsJustBurningMemory
+  name: The Caretaker - Its Just a Burning Memory
+  path:
+    path: /Audio/_VanGuard/Jukebox/TheCaretaker/TheCaretaker_ItsJustBurningMemory.ogg
+
+- type: jukebox
+  id: Notion
+  name: The Rare Occasions - Notion
+  path:
+    path: /Audio/_VanGuard/Jukebox/TheRareOccasions/TheRareOccasions_Notion.ogg
+
+- type: jukebox
+  id: UbersMeer
+  name: Till Lindermann - Ubers Meer
+  path:
+    path: /Audio/_VanGuard/Jukebox/TillLindermann/TillLindemann_UbersMeer.ogg
+
+- type: jukebox
+  id: OceanMan
+  name: Ween - Ocean Man
+  path:
+    path: /Audio/_VanGuard/Jukebox/Ween/Ween_OceanMan.ogg
+
+- type: jukebox
+  id: Omen
+  name: Ryan Amon - Omen
+  path:
+    path: /Audio/_VanGuard/Jukebox/RyanAmon/RyanAmon_Omen.ogg
+
+- type: jukebox
+  id: TheHunter
+  name: Ryan Amon - The Hunter
+  path:
+    path: /Audio/_VanGuard/Jukebox/RyanAmon/RyanAmon_TheHunter.ogg
+
+- type: jukebox
+  id: CityOfChildhood
+  name: Гражданская оборона - Город детства
+  path:
+    path: /Audio/_VanGuard/Jukebox/GrazhdanskayaOborona/GrazhdanskayaOborona_CityOfChildhood.ogg
+
+- type: jukebox
+  id: MyDefense
+  name: Гражданская оборона - Моя оборона
+  path:
+    path: /Audio/_VanGuard/Jukebox/GrazhdanskayaOborona/GrazhdanskayaOborona_MyDefense.ogg
+
+- type: jukebox
+  id: VsePiPlanu
+  name: Гражданская оборона - Всё идёт по плану
+  path:
+    path: /Audio/_VanGuard/Jukebox/GrazhdanskayaOborona/GrazhdanskayaOborona_VseIdetPoPlanu.ogg
+
+- type: jukebox
+  id: INeedSomeSleep
+  name: Eels - I Need Some Sleep
+  path:
+    path: /Audio/_VanGuard/Jukebox/Eels_I-Need-Some-Sleep.ogg
