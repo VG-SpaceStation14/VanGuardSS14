@@ -78,6 +78,7 @@
     containers:
       storagebase: !type:Container
         ents: []
+  - type: ContainerInteractionAnimation # VG-ReAnimate
 
 - type: entity
   id: BaseBagOpenClose

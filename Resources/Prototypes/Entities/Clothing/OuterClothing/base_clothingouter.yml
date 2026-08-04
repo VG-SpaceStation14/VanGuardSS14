@@ -60,6 +60,7 @@
         type: StorageBoundUserInterface
   - type: StaticPrice
     price: 70
+  - type: ContainerInteractionAnimation # VG-ReAnimate
 
 - type: entity
   abstract: true

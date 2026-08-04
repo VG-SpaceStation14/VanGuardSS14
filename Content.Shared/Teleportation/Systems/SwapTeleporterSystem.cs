@@ -12,6 +12,7 @@ using Robust.Shared.Network;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Timing;
+using Content.Shared._VanGuard.Effects; // VG-Tweak
 
 namespace Content.Shared.Teleportation.Systems;
 
@@ -28,6 +29,7 @@ public sealed partial class SwapTeleporterSystem : EntitySystem
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private EntityWhitelistSystem _whitelistSystem = default!;
+    [Dependency] private SparksSystem _sparks = default!; // VG-Tweak
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -168,6 +170,11 @@ public sealed partial class SwapTeleporterSystem : EntitySystem
             otherTeleEnt,
             PopupType.MediumCaution);
         _transform.SwapPositions(teleEnt, otherTeleEnt);
+
+        // VG-Tweak Start
+        _sparks.DoSparks(Transform(teleEnt).Coordinates);
+        _sparks.DoSparks(Transform(otherTeleEnt).Coordinates);
+        // VG-Tweak End
     }
 
     /// <summary>

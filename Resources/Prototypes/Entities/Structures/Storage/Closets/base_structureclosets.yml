@@ -75,6 +75,7 @@
     stateDoorClosed: generic_door
   - type: StaticPrice
     price: 75
+  - type: ClosetInteractionAnimation # VG-ReAnimate
 
 # steel closet base (that can be constructed/deconstructed)
 - type: entity
@@ -177,6 +178,7 @@
     - entity_storage
   - type: Paintable
     group: WallCloset
+  - type: ClosetInteractionAnimation # VG-ReAnimate
 
 #Wall locker
 - type: entity
@@ -289,3 +291,4 @@
     stateDoorOpen: base
     stateDoorClosed: door
   - type: LockVisuals
+  - type: ClosetInteractionAnimation # VG-ReAnimate

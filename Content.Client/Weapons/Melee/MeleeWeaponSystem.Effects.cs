@@ -67,19 +67,24 @@ public sealed partial class MeleeWeaponSystem
         var xform = Transform(animationUid);
         TrackUserComponent track;
 
+        // VG-Reanimation Start
+        var distance = Math.Clamp(localPos.Length() / 1.5f, 0.3f, 1.2f);
+        var slashOffset = Math.Clamp(localPos.Length() / 1.2f, 0.5f, 1.5f);
+        // VG-Reanimation End
+
         switch (arcComponent.Animation)
         {
             case WeaponArcAnimation.Slash:
                 track = EnsureComp<TrackUserComponent>(animationUid);
                 track.User = user;
-                _animation.Play(animationUid, GetSlashAnimation((animationUid, sprite), angle, spriteRotation, length, offset), SlashAnimationKey);
+                _animation.Play(animationUid, GetSlashAnimation((animationUid, sprite), angle, spriteRotation, length, slashOffset), SlashAnimationKey); // VG-Reanimation
                 if (arcComponent.Fadeout)
                     _animation.Play(animationUid, GetFadeAnimation(sprite, length * 0.5f, length + 0.15f), FadeAnimationKey);
                 break;
             case WeaponArcAnimation.Thrust:
                 track = EnsureComp<TrackUserComponent>(animationUid);
                 track.User = user;
-                _animation.Play(animationUid, GetThrustAnimation((animationUid, sprite), offset, spriteRotation, length), ThrustAnimationKey);
+                _animation.Play(animationUid, GetThrustAnimation((animationUid, sprite), distance, spriteRotation, length), ThrustAnimationKey); // VG-Reanimation
                 if (arcComponent.Fadeout)
                     _animation.Play(animationUid, GetFadeAnimation(sprite, length * 0.5f, length + 0.15f), FadeAnimationKey);
                 break;
@@ -122,7 +127,7 @@ public sealed partial class MeleeWeaponSystem
                     KeyFrames =
                     {
                         new AnimationTrackProperty.KeyFrame(Angle.Lerp(startRotation,endRotation,0.0f), length * 0.0f),
-                        new AnimationTrackProperty.KeyFrame(Angle.Lerp(startRotation,endRotation,0.5f), length * 0.10f),
+                        new AnimationTrackProperty.KeyFrame(Angle.Lerp(startRotation,endRotation,0.5f), length * 0.10f, Easings.OutCubic), // VG-Reanimation
                         new AnimationTrackProperty.KeyFrame(Angle.Lerp(startRotation,endRotation,1.0f), length * 0.15f),
                         new AnimationTrackProperty.KeyFrame(Angle.Lerp(startRotation,endRotation,0.9f), length * 0.20f),
                         new AnimationTrackProperty.KeyFrame(Angle.Lerp(startRotation,endRotation,0.80f), length * 0.6f, Easings.OutQuart)
@@ -135,7 +140,7 @@ public sealed partial class MeleeWeaponSystem
                     KeyFrames =
                     {
                         new AnimationTrackProperty.KeyFrame(Vector2.Lerp(startRotationOffset,endRotationOffset,0.0f), length * 0.0f),
-                        new AnimationTrackProperty.KeyFrame(minRotationOffset, length * 0.10f),
+                        new AnimationTrackProperty.KeyFrame(minRotationOffset, length * 0.10f, Easings.OutCubic), // VG-Reanimation
                         new AnimationTrackProperty.KeyFrame(Vector2.Lerp(startRotationOffset,endRotationOffset,1.0f), length * 0.15f),
                         new AnimationTrackProperty.KeyFrame(Vector2.Lerp(startRotationOffset,endRotationOffset,0.80f), length * 0.6f, Easings.OutQuart)
                     }
@@ -151,8 +156,12 @@ public sealed partial class MeleeWeaponSystem
     private Animation GetThrustAnimation(Entity<SpriteComponent> sprite, float offset, Angle spriteRotation, float length)
     {
         var startOffset = sprite.Comp.Rotation.RotateVec(new Vector2(0f, 0f));
-        var endOffset = sprite.Comp.Rotation.RotateVec(new Vector2(0f, -offset * 1.2f));
-
+        // VG-Reanimation Start
+        var midOffset = sprite.Comp.Rotation.RotateVec(new Vector2(0f, -offset * 0.8f));
+        var endOffset = sprite.Comp.Rotation.RotateVec(new Vector2(0f, -offset * 1.3f));
+        var backOffset = sprite.Comp.Rotation.RotateVec(new Vector2(0f, -offset * 0.5f));
+        // VG-Reanimation End
+        
         _sprite.SetRotation(sprite.AsNullable(), sprite.Comp.Rotation + spriteRotation);
 
         return new Animation()
@@ -166,11 +175,13 @@ public sealed partial class MeleeWeaponSystem
                     Property = nameof(SpriteComponent.Offset),
                     KeyFrames =
                     {
-                        new AnimationTrackProperty.KeyFrame(Vector2.Lerp(startOffset, endOffset, 0f), length * 0f),
-                        new AnimationTrackProperty.KeyFrame(Vector2.Lerp(startOffset, endOffset, 0.65f), length * 0.10f),
-                        new AnimationTrackProperty.KeyFrame(Vector2.Lerp(startOffset, endOffset, 1f), length * 0.20f),
-                        new AnimationTrackProperty.KeyFrame(Vector2.Lerp(startOffset, endOffset, 0.9f), length * 0.30f),
-                        new AnimationTrackProperty.KeyFrame(Vector2.Lerp(startOffset, endOffset, 0.7f), length * 0.60f, Easings.OutQuart)
+                        // VG-Reanimation Start
+                        new AnimationTrackProperty.KeyFrame(startOffset, 0f),
+                        new AnimationTrackProperty.KeyFrame(midOffset, length * 0.1f, Easings.OutCubic),
+                        new AnimationTrackProperty.KeyFrame(endOffset, length * 0.25f, Easings.OutQuad),
+                        new AnimationTrackProperty.KeyFrame(backOffset, length * 0.45f, Easings.InQuad),
+                        new AnimationTrackProperty.KeyFrame(startOffset, length * 0.7f, Easings.OutExpo),
+                        // VG-Reanimation End
                     }
                 },
             }
@@ -194,8 +205,10 @@ public sealed partial class MeleeWeaponSystem
                     Property = nameof(SpriteComponent.Color),
                     KeyFrames =
                     {
+                        // VG-Reanimation Start
                         new AnimationTrackProperty.KeyFrame(sprite.Color, start),
-                        new AnimationTrackProperty.KeyFrame(sprite.Color.WithAlpha(0f), end)
+                        new AnimationTrackProperty.KeyFrame(sprite.Color.WithAlpha(0f), end, Easings.OutQuad)
+                        // VG-Reanimation End
                     }
                 }
             }
@@ -222,9 +235,11 @@ public sealed partial class MeleeWeaponSystem
                     InterpolationMode = AnimationInterpolationMode.Linear,
                     KeyFrames =
                     {
+                        // VG-Reanimation Start
                         new AnimationTrackProperty.KeyFrame(Vector2.Zero, 0f),
-                        new AnimationTrackProperty.KeyFrame(direction.Normalized() * 0.15f, length*0.4f),
-                        new AnimationTrackProperty.KeyFrame(Vector2.Zero, length*0.6f),
+                        new AnimationTrackProperty.KeyFrame(direction.Normalized() * 0.15f, length*0.4f, Easings.OutQuad),
+                        new AnimationTrackProperty.KeyFrame(Vector2.Zero, length*0.6f, Easings.InQuad),
+                        // VG-Reanimation End
                     },
                 },
             },

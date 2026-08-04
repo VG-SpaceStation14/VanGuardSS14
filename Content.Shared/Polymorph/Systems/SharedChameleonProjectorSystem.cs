@@ -16,6 +16,7 @@ using System.Diagnostics.CodeAnalysis;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Item.ItemToggle;
 using Content.Shared.Item.ItemToggle.Components;
+using Content.Shared._VanGuard.Effects; // VG-Tweak
 
 namespace Content.Shared.Polymorph.Systems;
 
@@ -36,6 +37,7 @@ public abstract partial class SharedChameleonProjectorSystem : EntitySystem
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedTransformSystem _xform = default!;
     [Dependency] private ItemToggleSystem _toggle = default!;
+    [Dependency] private SparksSystem _sparks = default!; // VG-Tweak
 
     public override void Initialize()
     {
@@ -263,6 +265,7 @@ public abstract partial class SharedChameleonProjectorSystem : EntitySystem
         CopyComp<ItemComponent>((disguise, comp));
 
         _appearance.CopyData(entity, disguise);
+        _sparks.DoSparks(Transform(user).Coordinates); // VG-Tweak
     }
 
     /// <summary>
@@ -281,6 +284,7 @@ public abstract partial class SharedChameleonProjectorSystem : EntitySystem
         _toggle.TryDeactivate(disguise.Projector);
 
         RemComp<ChameleonDisguisedComponent>(ent);
+        _sparks.DoSparks(Transform(ent).Coordinates); // VG-Tweak
         return true;
     }
 

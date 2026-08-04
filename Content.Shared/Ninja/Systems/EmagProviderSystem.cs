@@ -6,6 +6,7 @@ using Content.Shared.Ninja.Components;
 using Content.Shared.Tag;
 using Content.Shared.Whitelist;
 using Robust.Shared.Audio.Systems;
+using Content.Shared._VanGuard.Effects; // VG-Tweak
 
 namespace Content.Shared.Ninja.Systems;
 
@@ -19,6 +20,7 @@ public sealed partial class EmagProviderSystem : EntitySystem
     [Dependency] private ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private SharedNinjaGlovesSystem _gloves = default!;
     [Dependency] private TagSystem _tag = default!;
+    [Dependency] private SparksSystem _sparks = default!; // VG-Tweak
 
     public override void Initialize()
     {
@@ -53,6 +55,7 @@ public sealed partial class EmagProviderSystem : EntitySystem
             return;
 
         _audio.PlayPredicted(comp.EmagSound, uid, uid);
+        _sparks.DoSparks(Transform(args.Target).Coordinates); // VG-Tweak
 
         _adminLogger.Add(LogType.Emag, LogImpact.High, $"{ToPrettyString(uid):player} emagged {ToPrettyString(target):target} with flag(s): {ent.Comp.EmagType}");
         var ev = new EmaggedSomethingEvent(target);
