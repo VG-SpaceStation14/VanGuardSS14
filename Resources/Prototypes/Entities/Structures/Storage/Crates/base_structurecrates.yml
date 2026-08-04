@@ -78,6 +78,7 @@
     node: crategenericsteel
     containers:
     - entity_storage
+  - type: ClosetInteractionAnimation # VG-ReAnimate
 
 - type: entity
   parent: CrateGeneric

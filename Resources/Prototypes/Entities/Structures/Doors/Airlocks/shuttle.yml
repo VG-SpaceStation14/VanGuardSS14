@@ -86,6 +86,10 @@
     price: 350
   - type: Paintable
     group: null
+  # VG-Tweak Start
+  - type: WeldingSparksAnimation
+    startingOffset: -0.5, -0.2
+  # VG-Tweak End
 
 - type: entity
   id: AirlockGlassShuttle

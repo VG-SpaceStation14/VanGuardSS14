@@ -38,6 +38,7 @@
     tags:
     - WhitelistChameleon
     - Backpack
+  - type: ContainerInteractionAnimation # VG-ReAnimate
 
 - type: entity
   parent: ClothingBackpack

@@ -80,6 +80,10 @@
     useSound:
       collection: Welder
     qualities: Welding
+  # VG-Tweak Start
+  - type: WeldingSparks
+  - type: WeldingSound
+  # VG-Tweak End
   - type: Welder
   - type: PointLight
     enabled: false
@@ -172,6 +176,8 @@
     fuelReagent: Plasma
   - type: RequiresEyeProtection
     statusEffectTime: 5 # less harmful; sunglasses can block it
+  - type: WeldingSparks # VG-Tweak
+    effectPrototype: EffectWeldingSparksExp
 
 - type: entity
   parent: [SolutionWelder, SolutionToolGinormous] # Bluespace technology

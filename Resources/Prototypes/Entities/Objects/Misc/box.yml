@@ -19,6 +19,7 @@
       storagebase: !type:Container
   - type: StaticPrice
     price: 10
+  - type: ContainerInteractionAnimation # VG-ReAnimate
 
 - type: entity
   abstract: true

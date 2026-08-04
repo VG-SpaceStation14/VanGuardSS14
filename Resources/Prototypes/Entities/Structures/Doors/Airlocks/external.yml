@@ -20,6 +20,10 @@
     layoutId: AirlockExternal
   - type: Paintable
     group: null
+  # VG-Tweak Start
+  - type: WeldingSparksAnimation
+    startingOffset: -0.5, 0
+  # VG-Tweak End
 
 - type: entity
   parent: AirlockExternal

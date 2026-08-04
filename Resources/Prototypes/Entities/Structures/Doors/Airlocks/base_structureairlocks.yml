@@ -188,6 +188,10 @@
     - Airlocks
     - WirePanels
     - Networking
+  # VG-Tweak Start
+  - type: WeldingSparksAnimation
+    startingOffset: 0, 0.5
+  # VG-Tweak End
   placement:
     mode: SnapgridCenter
 
