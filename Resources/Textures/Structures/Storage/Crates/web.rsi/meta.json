@@ -1,10 +1,10 @@
 {
   "version": 1,
   "license": "CC-BY-SA-3.0",
-  "copyright": "Made by PixelTheKermit (github) for SS14",
+  "copyright": "Taken from ADT at commit https://github.com/AdventureTimeSS14/space_station_ADT/commit/91c2b013bcbe3f97a9b980e0dfe5467b8661a94d, Make by Tamioki.",
   "size": {
     "x": 32,
-    "y": 32
+    "y": 48
   },
   "states": [
     {
