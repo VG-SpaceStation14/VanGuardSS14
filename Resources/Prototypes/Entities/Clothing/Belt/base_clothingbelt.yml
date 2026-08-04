@@ -40,6 +40,7 @@
     interfaces:
       enum.StorageUiKey.Key:
         type: StorageBoundUserInterface
+  - type: ContainerInteractionAnimation # VG-ReAnimate
 
 - type: entity
   abstract: true
