@@ -479,7 +479,7 @@
   - type: Sprite
     layers:
     - state: green
-    - sprite: Structures/Storage/tanks.rsi
+    - sprite: _VanGuard/Structures/Storage/tanks.rsi # VG-Tweak
       state: fueltank-2
   - type: EntityTableSpawner
     table: !type:GroupSelector
