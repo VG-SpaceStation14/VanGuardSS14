@@ -177,7 +177,7 @@
   - type: RequiresEyeProtection
     statusEffectTime: 5 # less harmful; sunglasses can block it
   - type: WeldingSparks # VG-Tweak
-    effectPrototype:: EffectWeldingSparksExp
+    effectPrototype: EffectWeldingSparksExp
 
 - type: entity
   parent: [SolutionWelder, SolutionToolGinormous] # Bluespace technology
