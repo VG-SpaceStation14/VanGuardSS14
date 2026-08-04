@@ -17,7 +17,7 @@
       fix1:
         shape:
           !type:PhysShapeAabb
-          bounds: "-0.4,-0.4,0.4,0.29"
+          bounds: "-0.4,-0.4625,0.4,0.2275" # VG-Tweak -0.4,-0.4,0.4,0.29
         density: 50
         mask:
         - CrateMask #this is so they can go under plastic flaps
@@ -46,6 +46,7 @@
     sprite: Structures/Storage/Crates/generic.rsi
     state: icon
   - type: Sprite
+    offset: "0.0,0.25" # VG-Tweak
     sprite: Structures/Storage/Crates/generic.rsi
     layers:
     - state: base
@@ -56,6 +57,7 @@
       visible: false
       map: ["enum.WeldableLayers.BaseWelded"]
     - state: paper
+      offset: "0.0,-0.31" # VG-Tweak
       sprite: Structures/Storage/Crates/labels.rsi
       map: ["enum.PaperLabelVisuals.Layer"]
   - type: Damageable

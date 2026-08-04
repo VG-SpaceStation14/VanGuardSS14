@@ -2,22 +2,22 @@
   "version": 1,
   "size": {
     "x": 32,
-    "y": 48
+    "y": 32
   },
   "license": "CC-BY-SA-3.0",
-  "copyright": "Taken from ADT at commit https://github.com/AdventureTimeSS14/space_station_ADT/commit/91c2b013bcbe3f97a9b980e0dfe5467b8661a94d, Make by Tamioki.",
+  "copyright": "Taken from baystation at commit https://github.com/Baystation12/Baystation12/commit/a929584d9db319eb7484113221be25cfa1d5dc09. Label sprites by Vermidia.",
   "states": [
     {
-      "name": "base"
+      "name": "artifact_container"
     },
     {
-      "name": "closed"
+      "name": "artifact_container_door"
     },
     {
-      "name": "icon"
+      "name": "artifact_container_open"
     },
     {
-      "name": "open"
+      "name": "artifact_container_icon"
     },
     {
       "name": "locked"
