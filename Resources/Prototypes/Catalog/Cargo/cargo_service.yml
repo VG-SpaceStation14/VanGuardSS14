@@ -81,7 +81,7 @@
 - type: cargoProduct
   id: ServiceFaxMachine
   icon:
-    sprite: Structures/Machines/fax_machine.rsi
+    sprite: _VanGuard/Structures/Machines/fax_machine.rsi
     state: icon
   product: CrateServiceFaxMachine
   cost: 2000
