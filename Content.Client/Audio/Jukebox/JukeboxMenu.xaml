@@ -1,18 +1,58 @@
-<ui:FancyWindow xmlns="https://spacestation14.io" xmlns:ui="clr-namespace:Content.Client.UserInterface.Controls"
-                SetSize="400 500" Title="{Loc 'jukebox-menu-title'}">
-    <BoxContainer Margin="4 0" Orientation="Vertical">
-        <ItemList Name="MusicList" SelectMode="Button" Margin="3 3 3 3"
-        HorizontalExpand="True" VerticalExpand="True" SizeFlagsStretchRatio="8"/>
-        <BoxContainer Orientation="Vertical">
-            <Label Name="SongSelected" Text="{Loc 'jukebox-menu-selectedsong'}" />
-            <Label Name="SongName" Text="---" />
+<ui:FancyWindow xmlns="https://spacestation14.io" 
+                xmlns:ui="clr-namespace:Content.Client.UserInterface.Controls"
+                xmlns:cc="clr-namespace:Content.Client.Administration.UI.CustomControls"
+                MinSize="480 420"
+                SetSize="480 420"
+                Title="{Loc 'jukebox-menu-title'}">
+    <BoxContainer Margin="6" Orientation="Vertical" SeparationOverride="4">
+        
+        <!-- VG-Tweak start - Поиск -->
+        <LineEdit Name="SearchBar" PlaceHolder="{Loc 'jukebox-menu-search'}" HorizontalExpand="True" />
+        <!-- VG-Tweak end -->
+        
+        <!-- Плейлист -->
+        <ItemList Name="MusicList" SelectMode="Button" 
+                  HorizontalExpand="True" VerticalExpand="True" 
+                  SizeFlagsStretchRatio="8" Margin="0 2 0 2" />
+        
+        <!-- Инфо о треке -->
+        <BoxContainer Orientation="Vertical" Margin="0 2 0 2">
+            <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+                <Label Name="SongName" Text="---" ClipText="True" HorizontalExpand="True" />
+                <Label Name="DurationLabel" Text="00:00 / 00:00" HorizontalAlignment="Right" MinWidth="90" />
+            </BoxContainer>
             <Slider Name="PlaybackSlider" HorizontalExpand="True" />
         </BoxContainer>
-        <BoxContainer Orientation="Horizontal" HorizontalExpand="True"
-        VerticalExpand="False" SizeFlagsStretchRatio="1">
-            <Button Name="PlayButton" Text="{Loc 'jukebox-menu-buttonplay'}" />
-            <Button Name="StopButton" Text="{Loc 'jukebox-menu-buttonstop'}" />
-            <Label Name="DurationLabel" Text="00:00 / 00:00" HorizontalAlignment="Right" HorizontalExpand="True"/>
+        
+        <!-- VG-Tweak start - Убираем Color, оставляем только разделитель -->
+        <cc:HSeparator Margin="0 2 0 2" />
+        <!-- VG-Tweak end -->
+        
+        <!-- VG-Tweak start - Плеер с prev/next -->
+        <BoxContainer Orientation="Horizontal" HorizontalExpand="True" SeparationOverride="4" HorizontalAlignment="Center">
+            <Button Name="PrevButton" Text="⏮" StyleClasses="ButtonSquare" ToolTip="{Loc 'jukebox-menu-buttonprev'}" />
+            <Button Name="PlayButton" Text="▶" StyleClasses="ButtonSquare" MinWidth="50" />
+            <Button Name="StopButton" Text="⏹" StyleClasses="ButtonSquare" ToolTip="{Loc 'jukebox-menu-buttonstop'}" />
+            <Button Name="NextButton" Text="⏭" StyleClasses="ButtonSquare" ToolTip="{Loc 'jukebox-menu-buttonnext'}" />
         </BoxContainer>
+        <!-- VG-Tweak end -->
+        
+        <!-- VG-Tweak start - Режимы repeat/shuffle -->
+        <BoxContainer Orientation="Horizontal" HorizontalExpand="True" SeparationOverride="4" HorizontalAlignment="Center">
+            <Button Name="RepeatButton" Text="{Loc 'jukebox-menu-buttonrepeat-off'}" 
+                    StyleClasses="ButtonSquare" MinWidth="80" />
+            <Button Name="ShuffleButton" Text="{Loc 'jukebox-menu-buttonshuffle'}" 
+                    ToggleMode="True" StyleClasses="ButtonSquare" MinWidth="80" />
+        </BoxContainer>
+        <!-- VG-Tweak end -->
+        
+        <!-- VG-Tweak start - Громкость -->
+        <BoxContainer Orientation="Horizontal" HorizontalExpand="True" SeparationOverride="6">
+            <Label Name="VolumeLabel" Text="{Loc 'jukebox-menu-volume'}" MinWidth="60" />
+            <Slider Name="VolumeSlider" HorizontalExpand="True" />
+            <Label Name="VolumeNumberLabel" Text="0%" MinWidth="45" HorizontalAlignment="Right" />
+        </BoxContainer>
+        <!-- VG-Tweak end -->
+        
     </BoxContainer>
 </ui:FancyWindow>

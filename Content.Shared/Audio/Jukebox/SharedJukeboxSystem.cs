@@ -16,4 +16,18 @@ public abstract partial class SharedJukeboxSystem : EntitySystem
 
         return entity.Comp.AudioStream is { } audio && Audio.IsPlaying(audio);
     }
+
+    // VG-Tweak start
+    /// <summary>
+    /// Maps a value from one range to another.
+    /// </summary>
+    public static float MapToRange(float value, float fromMin, float fromMax, float toMin, float toMax)
+    {
+        var fromRange = fromMax - fromMin;
+        var toRange = toMax - toMin;
+        if (fromRange == 0)
+            return toMin;
+        return (value - fromMin) / fromRange * toRange + toMin;
+    }
+    // VG-Tweak end
 }

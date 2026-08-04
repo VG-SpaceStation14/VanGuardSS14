@@ -13,6 +13,14 @@
     maxTransferAmount: 10
   - type: StaticPrice
     price: 10
+  # VG-Tweak Start
+  - type: EmitSoundOnPickup
+    sound:
+      path: /Audio/_VanGuard/Items/other/Cup/pickup.ogg
+  - type: EmitSoundOnDrop
+    sound:
+      path: /Audio/_VanGuard/Items/other/Cup/drop.ogg
+  # VG-Tweak End
 
 # A mug is a type of cup.[2]
 - type: entity
