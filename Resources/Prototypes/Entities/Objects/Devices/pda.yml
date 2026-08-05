@@ -584,7 +584,6 @@
       whitelist:
         components:
         - Cartridge
-  - type: Muted
   - type: EntityTableContainerFill
     containers:
       preinstalled-program-container: !type:AllSelector
