@@ -508,7 +508,7 @@
   - type: Sprite
     layers:
     - state: base
-    - state: overlay
+    - state: overlay-open
       color: "#ad8c27"
     - state: closed
       map: ["enum.StorageVisualLayers.Door"]
@@ -538,7 +538,7 @@
   - type: Sprite
     layers:
     - state: base
-    - state: overlay
+    - state: overlay-open
       color: "#92c7e8"
     - state: closed
       map: ["enum.StorageVisualLayers.Door"]
@@ -568,7 +568,7 @@
   - type: Sprite
     layers:
     - state: base
-    - state: overlay
+    - state: overlay-open
       color: "#ba4bf0"
     - state: closed
       map: ["enum.StorageVisualLayers.Door"]
@@ -598,7 +598,7 @@
   - type: Sprite
     layers:
     - state: base
-    - state: overlay
+    - state: overlay-open
       color: "#c12d30"
     - state: closed
       map: ["enum.StorageVisualLayers.Door"]
@@ -628,7 +628,7 @@
   - type: Sprite
     layers:
     - state: base
-    - state: overlay
+    - state: overlay-open
       color: "#53b723"
     - state: closed
       map: ["enum.StorageVisualLayers.Door"]
