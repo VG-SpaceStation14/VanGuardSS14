@@ -61,6 +61,17 @@
           ShardGlass:
             min: 1
             max: 1
+  # VG-Tweak Start
+  - type: EmitSoundOnPickup
+    sound:
+      path: /Audio/_VanGuard/Entities/glass_pickup.ogg
+  - type: EmitSoundOnDrop
+    sound:
+      path: /Audio/_VanGuard/Entities/glass_drop.ogg
+  - type: EmitSoundOnLand
+    sound:
+      path: /Audio/_VanGuard/Entities/glass_drop.ogg
+  # VG-Tweak End
 
 - type: entity
   parent: SheetGlass
