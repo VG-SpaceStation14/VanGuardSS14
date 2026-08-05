@@ -141,7 +141,7 @@ public sealed partial class DungeonJob
                     }
                 }
 
-                if (groupSize > 0)
+                if (groupSize > 0 && availableTiles.Count > 0)
                 {
                     _sawmill.Warning($"Found remaining group size for ore veins of {gen.Replacement ?? "null"}!");
                 }
