@@ -1,0 +1,14 @@
+<DefaultWindow xmlns="https://spacestation14.io"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               x:Class="Content.Client._VanGuard.LobbyMessage.VGMessageWindow"
+               Title="Сообщение в лобби"
+               MinSize="400 140">
+    <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="8">
+        <Label Text="Введите текст сообщения (до 100 символов):" />
+        <LineEdit Name="MessageInput" HorizontalExpand="True" />
+        <BoxContainer Orientation="Horizontal" SeparationOverride="4" HorizontalAlignment="Right">
+            <Button Name="CancelButton" Text="Отмена" />
+            <Button Name="SendButton" Text="Вывести" StyleClasses="ButtonBig" />
+        </BoxContainer>
+    </BoxContainer>
+</DefaultWindow>

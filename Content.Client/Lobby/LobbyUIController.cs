@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Client.Guidebook;
 using Content.Client.Corvax.TTS;
 using Content.Client.Humanoid;
@@ -5,8 +6,9 @@ using Content.Client.Inventory;
 using Content.Client.Lobby.UI;
 using Content.Client.Players.PlayTimeTracking;
 using Content.Shared.CCVar;
-using Content.Shared.Humanoid.Markings;
+using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Prototypes;
+using Content.Shared.Humanoid.Markings;
 using Content.Shared.Preferences;
 using Content.Shared.Preferences.Loadouts;
 using Content.Shared.Roles;
@@ -125,6 +127,7 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
     private void PreferencesDataLoaded()
     {
         PreviewPanel?.SetLoaded(true);
+        PreviewPanel?.UpdateCharacterSelector();
 
         if (_stateManager.CurrentState is not LobbyState)
             return;
@@ -154,11 +157,20 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
     public void ReloadCharacterSetup()
     {
         RefreshLobbyPreview();
+        PreviewPanel?.UpdateCharacterSelector();
         var (characterGui, profileEditor) = EnsureGui();
         characterGui.ReloadCharacterPickers();
+
+        // VG-Tweak Start
+        var preferences = _preferencesManager.Preferences;
+        var selectedProfile = preferences is { } prefs
+            && prefs.Characters.TryGetValue(prefs.SelectedCharacterIndex, out var selected)
+                ? selected
+                : null;
         profileEditor.SetProfile(
-            _preferencesManager.Preferences?.SelectedCharacter,
-            _preferencesManager.Preferences?.SelectedCharacterIndex);
+            selectedProfile,
+            preferences?.SelectedCharacterIndex);
+        // VG-Tweak End
     }
 
     /// <summary>
@@ -169,8 +181,12 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
         if (PreviewPanel == null)
             return;
 
-        // Get selected character, load it, then set it
-        var character = _preferencesManager.Preferences?.SelectedCharacter;
+        // VG-Tweak Start
+        var character = _preferencesManager.Preferences is { } prefs
+            && prefs.Characters.TryGetValue(prefs.SelectedCharacterIndex, out var selected)
+                ? selected
+                : null;
+        // VG-Tweak End
 
         if (character is not HumanoidCharacterProfile humanoid)
         {
@@ -204,6 +220,39 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
 
         _preferencesManager.UpdateCharacter(EditedProfile, EditedSlot.Value);
         ReloadCharacterSetup();
+    }
+
+    public void OpenCharacterSetup()
+    {
+        if (_stateManager.CurrentState is LobbyState lobby)
+        {
+            EnsureGui();
+            lobby.SwitchState(LobbyGui.LobbyGuiState.CharacterSetup);
+        }
+    }
+
+    public void RequestCharacterSwitch(int slot)
+    {
+        _preferencesManager.SelectCharacter(slot);
+        ReloadCharacterSetup();
+        PreviewPanel?.UpdateCharacterSelector();
+    }
+
+    public void CreateCharacterAndOpenSetup()
+    {
+        if (!_preferencesManager.ServerDataLoaded)
+            return;
+
+        _preferencesManager.CreateCharacter(HumanoidCharacterProfile.Random());
+
+        var characters = _preferencesManager.Preferences?.Characters;
+        if (characters != null && characters.Count > 0)
+        {
+            int maxSlot = characters.Keys.Max();
+            _preferencesManager.SelectCharacter(maxSlot);
+        }
+
+        OpenCharacterSetup();
     }
 
     private void CloseProfileEditor()
@@ -297,7 +346,12 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
         {
             _preferencesManager.DeleteCharacter(args);
 
-            // Reload everything
+            // VG-Tweak Start
+            RefreshLobbyPreview();
+            PreviewPanel?.UpdateCharacterSelector();
+            // VG-Tweak End
+
+            // Reload the editor
             if (EditedSlot == args)
             {
                 ReloadCharacterSetup();
