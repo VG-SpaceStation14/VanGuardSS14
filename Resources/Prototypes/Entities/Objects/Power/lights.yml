@@ -80,6 +80,10 @@
   parent: BaseReplacementLight
   id: BaseLightTube
   components:
+  # VG-Tweak Start
+  - type: Sprite
+    sprite:  Objects/Power/light_tube.rsi
+  # VG-Tweak End
   - type: Destructible
     thresholds:
     - trigger: *DamageTrigger10
