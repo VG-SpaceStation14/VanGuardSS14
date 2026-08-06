@@ -28,6 +28,10 @@ public sealed class DoAfterOverlay : Overlay
     private readonly Texture _barTexture;
     private readonly ShaderInstance _unshadedShader;
 
+    // VG-Tweak Start
+    private readonly SpriteSpecifier _cogTexture;
+    // VG-Tweak End
+
     /// <summary>
     ///     Flash time for cancelled DoAfters
     /// </summary>
@@ -60,6 +64,10 @@ public sealed class DoAfterOverlay : Overlay
         _sprite = _entManager.System<SpriteSystem>();
         var sprite = new SpriteSpecifier.Rsi(new("/Textures/Interface/Misc/progress_bar.rsi"), "icon");
         _barTexture = _entManager.EntitySysManager.GetEntitySystem<SpriteSystem>().Frame0(sprite);
+
+        // VG-Tweak Start
+        _cogTexture = new SpriteSpecifier.Rsi(new("/Textures/_VanGuard/Interface/Misc/progress_cog.rsi"), "cog");
+        // VG-Tweak End
 
         _unshadedShader = protoManager.Index(UnshadedShader).Instance();
     }
@@ -112,14 +120,35 @@ public sealed class DoAfterOverlay : Overlay
             var matty = Matrix3x2.Multiply(rotationMatrix, scaledWorld);
             handle.SetTransform(matty);
 
-            var offset = 0f;
-
+            // VG-Tweak Start
             var isInContainer = _container.IsEntityOrParentInContainer(uid, meta, xform);
+
+            if (uid != localEnt && isInContainer)
+                continue;
+
+            var spriteBounds = _sprite.GetLocalBounds((uid, sprite));
+            var yFinished = spriteBounds.Height / 2f + 0.05f;
+
+            // Show cog icon for other players
+            if (uid != localEnt)
+            {
+                var position = new Vector2(
+                    -_barTexture.Width / 2f / EyeManager.PixelsPerMeter,
+                    yFinished / scale
+                );
+                var cogFrame = _sprite.GetFrame(_cogTexture, curTime);
+                handle.DrawTexture(cogFrame, position);
+                continue;
+            }
+            // VG-Tweak End
+
+            var offset = 0f;
 
             foreach (var doAfter in comp.DoAfters.Values)
             {
                 // Hide some DoAfters from other players for stealthy actions (ie: thieving gloves)
                 var maxAlpha = 1f;
+                // VG-Tweak Start
                 if (doAfter.Args.Hidden || isInContainer)
                 {
                     if (uid != localEnt)
@@ -128,6 +157,7 @@ public sealed class DoAfterOverlay : Overlay
                     // Hints to the local player that this do-after is not visible to other players.
                     maxAlpha = 0.5f;
                 }
+                // VG-Tweak End
 
                 var elapsed = time - doAfter.StartTime;
 
@@ -138,10 +168,10 @@ public sealed class DoAfterOverlay : Overlay
 
                 // Use the sprite itself if we know its bounds. This means short or tall sprites don't get overlapped
                 // by the bar.
-                var spriteBounds = _sprite.GetLocalBounds((uid, sprite));
-                var yFinished = spriteBounds.Height / 2f + 0.05f;
+                // VG-Tweak Start
                 var yStart = yFinished / 6f;
                 var yOffset = MathHelper.Lerp(yStart, yFinished, Easings.OutSine((float)Math.Clamp(elapsed / MaxYPosTime, 0.0, 1.0)));
+                // VG-Tweak End
 
                 // Position above the entity (we've already applied the matrix transform to the entity itself)
                 // Offset by the texture size for every do_after we have.
