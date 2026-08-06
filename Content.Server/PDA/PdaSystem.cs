@@ -207,8 +207,6 @@ namespace Content.Server.PDA
             if (!Resolve(uid, ref pda, false))
                 return;
 
-            UpdatePdaScreen(uid); // VG-PDAScreens
-
             if (!_ui.HasUi(uid, PdaUiKey.Key))
                 return;
 
@@ -262,14 +260,15 @@ namespace Content.Server.PDA
             if (!PdaUiKey.Key.Equals(args.UiKey))
                 return;
 
-            // VG-PDAScreens Start: при открытии включаем, если выключен
+            // VG-PDAScreens Start
             if (!ent.Comp.Powered)
             {
                 ent.Comp.Powered = true;
                 Dirty(ent.Owner, ent.Comp);
                 UpdatePdaAppearance(ent.Owner, ent.Comp);
-                UpdatePdaUi(ent.Owner, ent.Comp);
             }
+
+            UpdatePdaUi(ent.Owner, ent.Comp);
             // VG-PDAScreens End
         }
 
@@ -285,7 +284,7 @@ namespace Content.Server.PDA
         {
             if (!PdaUiKey.Key.Equals(msg.UiKey))
                 return;
-            
+
             // TODO PREDICTION
             // When moving this to shared, fill in the user field
             _unpoweredFlashlight.TryToggleLight(uid, user: null);
@@ -344,7 +343,7 @@ namespace Content.Server.PDA
             }
         }
 
-        // VG-Tweak Start: Обработчик цвета обоев
+        // VG-Tweak Start
         private void OnUiMessage(EntityUid uid, PdaComponent pda, PdaSetWallpaperColorMessage msg)
         {
             if (!PdaUiKey.Key.Equals(msg.UiKey))
@@ -384,7 +383,6 @@ namespace Content.Server.PDA
             if (!PdaUiKey.Key.Equals(msg.UiKey))
                 return;
 
-            // Переключаем питание. Booted НЕ сбрасываем — загрузка один раз за жизнь ПДА.
             pda.Powered = !pda.Powered;
             Dirty(uid, pda);
             UpdatePdaAppearance(uid, pda);
@@ -458,7 +456,7 @@ namespace Content.Server.PDA
             {
                 address = deviceNetworkComponent?.Address;
             }
-
+            
             return address;
         }
     }

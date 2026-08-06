@@ -33,6 +33,7 @@ namespace Content.Client.PDA
             {
                 _menu.Dispose();
                 _menu = null;
+                ResetActiveCartridgeUi();
             }
             // VG-PDAScreens End
 
@@ -40,6 +41,11 @@ namespace Content.Client.PDA
 
             if (_menu == null)
                 CreateMenu();
+
+            // VG-Tweak Start
+            _bootFinishedSent = false;
+            _hasReceivedInitialState = false;
+            // VG-Tweak End
         }
 
         private void CreateMenu()
