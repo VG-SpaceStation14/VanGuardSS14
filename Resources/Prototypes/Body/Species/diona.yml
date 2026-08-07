@@ -38,6 +38,13 @@
   categories: [ HideSpawnMenu ]
   name: diona appearance
   components:
+  # VG-Tweak Start
+  - type: FootprintEmitter
+    leftBareFootState:
+      - "footprint-left-bare-diona"
+    rightBareFootState:
+      - "footprint-right-bare-diona"
+  # VG-Tweak End
   - type: Inventory
     templateId: diona
     femaleDisplacements:

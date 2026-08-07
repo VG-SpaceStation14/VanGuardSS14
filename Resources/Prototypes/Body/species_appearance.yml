@@ -80,6 +80,7 @@
   - type: Blink
   - type: CritHeartbeat
   - type: ExaminableCharacter
+  - type: FootprintEmitter
   # VG-Tweak End
   - type: Body
   - type: VisualBody

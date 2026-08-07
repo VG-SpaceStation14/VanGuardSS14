@@ -39,6 +39,13 @@
   categories: [ HideSpawnMenu ]
   name: arachnid appearance
   components:
+  # VG-Tweak Start
+  - type: FootprintEmitter
+    leftBareFootState:
+      - "footprint-left-bare-spider"
+    rightBareFootState:
+      - "footprint-right-bare-spider"
+  # VG-Tweak End
   - type: Inventory
     templateId: arachnid
     speciesId: arachnid

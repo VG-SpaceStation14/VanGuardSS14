@@ -66,6 +66,17 @@
   categories: [ HideSpawnMenu ]
   name: vulpkanin appearance
   components:
+  # VG-Tweak Start
+  - type: FootprintEmitter
+    leftBareFootState:
+      - "footprint-left-bare-fluffy"
+    rightBareFootState:
+      - "footprint-right-bare-fluffy"
+    shoeFootState:
+      - "footprint-shoes-fluffy"
+    pressureSuitFootState:
+      - "footprint-suit-fluffy"
+  # VG-Tweak End
   - type: InitialBody
     organs:
       Torso: OrganVulpkaninTorso
