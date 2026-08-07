@@ -367,6 +367,11 @@ namespace Content.Server.Database
             bool includeUnbanned,
             BanType type);
 
+        /// <summary>
+        ///     Returns the most recently created ban (by id), or null if none exist.
+        /// </summary>
+        public abstract Task<BanDef?> GetLastBanAsync();
+
         public abstract Task<BanDef> AddBanAsync(BanDef ban);
         public abstract Task AddUnbanAsync(UnbanDef unban);
 

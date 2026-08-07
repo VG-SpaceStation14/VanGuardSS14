@@ -106,6 +106,19 @@ namespace Content.Server.Database
             return (await GetBanQueryAsync(db, address, userId, hwId, modernHWIds, includeUnbanned, type)).ToList();
         }
 
+        public override async Task<BanDef?> GetLastBanAsync()
+        {
+            await using var db = await GetDbImpl();
+
+            var ban = await db.SqliteDbContext.Ban
+                .ApplyIncludes(GetBanDefIncludes())
+                .OrderByDescending(p => p.Id)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync();
+
+            return ConvertBan(ban);
+        }
+
         private async Task<IEnumerable<BanDef>> GetBanQueryAsync(
             DbGuardImpl db,
             IPAddress? address,

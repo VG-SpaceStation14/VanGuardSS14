@@ -25,6 +25,7 @@ using Content.Server.Preferences.Managers;
 using Content.Server.ServerInfo;
 using Content.Server.ServerUpdates;
 using Content.Server.Voting.Managers;
+using Content.Server._VanGuard.Discord;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Administration.Managers;
 using Content.Shared.Chat;
@@ -85,5 +86,6 @@ internal static class ServerContentIoC
         deps.Register<ISharedFeedbackManager, ServerFeedbackManager>();
         deps.Register<WhitelistManager>();
         IoCManager.Register<TTSManager>(); // Corvax-TTS
+        IoCManager.Register<VgBanWebhookSender>(); // VG-Tweak
     }
 }

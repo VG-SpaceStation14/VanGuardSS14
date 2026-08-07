@@ -105,6 +105,11 @@ namespace Content.Server.Database
             bool includeUnbanned=true,
             BanType type = BanType.Server);
 
+        /// <summary>
+        ///     Returns the most recently created ban (by id), or null if none exist.
+        /// </summary>
+        Task<BanDef?> GetLastBanAsync();
+
         Task<BanDef> AddBanAsync(BanDef ban);
         Task AddUnbanAsync(UnbanDef ban);
 
@@ -556,6 +561,12 @@ namespace Content.Server.Database
         {
             DbReadOpsMetric.Inc();
             return RunDbCommand(() => _db.GetBansAsync(address, userId, hwId, modernHWIds, includeUnbanned, type));
+        }
+
+        public Task<BanDef?> GetLastBanAsync()
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetLastBanAsync());
         }
 
         public Task<BanDef> AddBanAsync(BanDef ban)

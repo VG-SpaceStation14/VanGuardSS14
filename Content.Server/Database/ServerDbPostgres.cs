@@ -131,6 +131,19 @@ namespace Content.Server.Database
             return bans;
         }
 
+        public override async Task<BanDef?> GetLastBanAsync()
+        {
+            await using var db = await GetDbImpl();
+
+            var ban = await db.PgDbContext.Ban
+                .ApplyIncludes(GetBanDefIncludes())
+                .OrderByDescending(p => p.Id)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync();
+
+            return ConvertBan(ban);
+        }
+
         // This has to return IDs instead of direct objects because otherwise all the includes are too complicated.
         private static IQueryable<Ban> MakeBanLookupQuery(
             IPAddress? address,
