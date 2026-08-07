@@ -196,19 +196,19 @@
     },
     {
       "name": "teg-oc00",
-      "directions": 4
+      "directions": 1
     },
     {
       "name": "teg-oc01",
-      "directions": 4
+      "directions": 1
     },
     {
       "name": "teg-oc10",
-      "directions": 4
+      "directions": 1
     },
     {
       "name": "teg-oc11",
-      "directions": 4
+      "directions": 1
     },
     {
       "name": "teg_mid",
