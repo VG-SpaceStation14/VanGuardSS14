@@ -1,0 +1,207 @@
+- type: guideEntry
+  id: VanGuardRuleset
+  name: guide-entry-vanguard-ruleset
+  priority: 0
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Ruleset.xml"
+  children:
+  - VanGuardRule0-0
+  - VanGuardRule0-1
+  - VanGuardRule0-2
+  - VanGuardRule0-3
+  - VanGuardRule1-0
+  - VanGuardRule1-1
+  - VanGuardRule1-2
+  - VanGuardRule1-3
+  - VanGuardRule1-4
+  - VanGuardRule1-5
+  - VanGuardRule1-6
+  - VanGuardRule1-7
+  - VanGuardRule1-8
+  - VanGuardRule1-9
+  - VanGuardRule1-10
+  - VanGuardRule1-11
+  - VanGuardRule1-12
+  - VanGuardRule1-13
+  - VanGuardRule1-14
+  - VanGuardRule1-15
+  - VanGuardRule2-0
+  - VanGuardRule2-1
+  - VanGuardRule2-2
+  - VanGuardRule2-3
+  - VanGuardRule2-4
+
+- type: guideEntry
+  id: VanGuardRule0-0
+  name: guide-entry-vanguard-rule0-0
+  priority: 1
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule0-0.xml"
+
+- type: guideEntry
+  id: VanGuardRule0-1
+  name: guide-entry-vanguard-rule0-1
+  priority: 2
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule0-1.xml"
+
+- type: guideEntry
+  id: VanGuardRule0-2
+  name: guide-entry-vanguard-rule0-2
+  priority: 3
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule0-2.xml"
+
+- type: guideEntry
+  id: VanGuardRule0-3
+  name: guide-entry-vanguard-rule0-3
+  priority: 4
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule0-3.xml"
+
+- type: guideEntry
+  id: VanGuardRule1-0
+  name: guide-entry-vanguard-rule1-0
+  priority: 5
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule1-0.xml"
+
+- type: guideEntry
+  id: VanGuardRule1-1
+  name: guide-entry-vanguard-rule1-1
+  priority: 6
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule1-1.xml"
+
+- type: guideEntry
+  id: VanGuardRule1-2
+  name: guide-entry-vanguard-rule1-2
+  priority: 7
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule1-2.xml"
+
+- type: guideEntry
+  id: VanGuardRule1-3
+  name: guide-entry-vanguard-rule1-3
+  priority: 8
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule1-3.xml"
+
+- type: guideEntry
+  id: VanGuardRule1-4
+  name: guide-entry-vanguard-rule1-4
+  priority: 9
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule1-4.xml"
+
+- type: guideEntry
+  id: VanGuardRule1-5
+  name: guide-entry-vanguard-rule1-5
+  priority: 10
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule1-5.xml"
+
+- type: guideEntry
+  id: VanGuardRule1-6
+  name: guide-entry-vanguard-rule1-6
+  priority: 11
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule1-6.xml"
+
+- type: guideEntry
+  id: VanGuardRule1-7
+  name: guide-entry-vanguard-rule1-7
+  priority: 12
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule1-7.xml"
+
+- type: guideEntry
+  id: VanGuardRule1-8
+  name: guide-entry-vanguard-rule1-8
+  priority: 13
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule1-8.xml"
+
+- type: guideEntry
+  id: VanGuardRule1-9
+  name: guide-entry-vanguard-rule1-9
+  priority: 14
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule1-9.xml"
+
+- type: guideEntry
+  id: VanGuardRule1-10
+  name: guide-entry-vanguard-rule1-10
+  priority: 15
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule1-10.xml"
+
+- type: guideEntry
+  id: VanGuardRule1-11
+  name: guide-entry-vanguard-rule1-11
+  priority: 16
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule1-11.xml"
+
+- type: guideEntry
+  id: VanGuardRule1-12
+  name: guide-entry-vanguard-rule1-12
+  priority: 17
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule1-12.xml"
+
+- type: guideEntry
+  id: VanGuardRule1-13
+  name: guide-entry-vanguard-rule1-13
+  priority: 18
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule1-13.xml"
+
+- type: guideEntry
+  id: VanGuardRule1-14
+  name: guide-entry-vanguard-rule1-14
+  priority: 19
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule1-14.xml"
+
+- type: guideEntry
+  id: VanGuardRule1-15
+  name: guide-entry-vanguard-rule1-15
+  priority: 20
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule1-15.xml"
+
+- type: guideEntry
+  id: VanGuardRule2-0
+  name: guide-entry-vanguard-rule2-0
+  priority: 21
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule2-0.xml"
+
+- type: guideEntry
+  id: VanGuardRule2-1
+  name: guide-entry-vanguard-rule2-1
+  priority: 22
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule2-1.xml"
+
+- type: guideEntry
+  id: VanGuardRule2-2
+  name: guide-entry-vanguard-rule2-2
+  priority: 23
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule2-2.xml"
+
+- type: guideEntry
+  id: VanGuardRule2-3
+  name: guide-entry-vanguard-rule2-3
+  priority: 24
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule2-3.xml"
+
+- type: guideEntry
+  id: VanGuardRule2-4
+  name: guide-entry-vanguard-rule2-4
+  priority: 25
+  ruleEntry: true
+  text: "/ServerInfo/_VanGuard/Guidebook/ServerRules/Rule2-4.xml"
