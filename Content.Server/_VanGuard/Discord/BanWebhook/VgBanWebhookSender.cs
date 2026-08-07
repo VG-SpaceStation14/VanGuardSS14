@@ -24,13 +24,21 @@ public sealed partial class VgBanWebhookSender : IPostInjectInit
     {
         _sawmill = Logger.GetSawmill("vg_ban_webhook");
 
-        _cfg.OnValueChanged(VGCCVars.DiscordBanWebhook,
-            value => _webhookUrl = value, true);
-        _cfg.OnValueChanged(VGCCVars.DiscordBanWebhookEnabled,
-            value => _isEnabled = value, true);
+        // These CVars are SERVERONLY and may not be registered yet when PostInject runs
+        // (unit tests build the IoC graph before loading CVars), so guard the subscriptions.
+        if (_cfg.IsCVarRegistered(VGCCVars.DiscordBanWebhook.Name))
+        {
+            _cfg.OnValueChanged(VGCCVars.DiscordBanWebhook,
+                value => _webhookUrl = value, true);
+            _webhookUrl = _cfg.GetCVar(VGCCVars.DiscordBanWebhook);
+        }
 
-        _webhookUrl = _cfg.GetCVar(VGCCVars.DiscordBanWebhook);
-        _isEnabled = _cfg.GetCVar(VGCCVars.DiscordBanWebhookEnabled);
+        if (_cfg.IsCVarRegistered(VGCCVars.DiscordBanWebhookEnabled.Name))
+        {
+            _cfg.OnValueChanged(VGCCVars.DiscordBanWebhookEnabled,
+                value => _isEnabled = value, true);
+            _isEnabled = _cfg.GetCVar(VGCCVars.DiscordBanWebhookEnabled);
+        }
 
         _sawmill.Info($"VgBanWebhookSender initialized. Enabled: {_isEnabled}, Webhook: {(string.IsNullOrEmpty(_webhookUrl) ? "not set" : "set")}");
     }
