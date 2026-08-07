@@ -2,6 +2,7 @@ using System.Linq;
 using Content.IntegrationTests.Fixtures;
 using Content.Server.Antag.Components;
 using Content.Server.GameTicking;
+using Content.Server.GameTicking.Presets;
 using Content.Server.GameTicking.Rules;
 using Content.Server.GameTicking.Rules.Components;
 using Content.Server.Mind;
@@ -81,6 +82,16 @@ public sealed class TraitorRuleTest : GameTest
 
         // Opt-in the player for the traitor role
         await pair.SetAntagPreference(TraitorAntagRoleName, true);
+
+        // VG-Tweak Start: Clear existing game rules and disable the preset so that the
+        // pooled pair's default preset (e.g. Secret) can't add its own conflicting rules
+        // that may steal the pre-selected traitor before this test's rule assigns one.
+        await server.WaitAssertion(() =>
+        {
+            ticker.ClearGameRules();
+            ticker.SetGamePreset((GamePresetPrototype) null);
+        });
+        // VG-Tweak End
 
         // Add the game rule
         TraitorRuleComponent traitorRule = null;

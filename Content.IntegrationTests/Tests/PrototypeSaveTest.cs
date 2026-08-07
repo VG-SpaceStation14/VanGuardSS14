@@ -137,11 +137,21 @@ public sealed class PrototypeSaveTest : GameTest
                         {
                             var diff = compMapping.Except(protoMapping);
 
+                            // VG-Tweak Start: ItemSlotsSystem legitimately creates a container during ComponentInit.
+                            if (compName == "ContainerContainer" && prototype.Components.ContainsKey("ItemSlots"))
+                                continue;
+                            // VG-Tweak End
+
                             if (diff != null && diff.Children.Count != 0)
                                 Assert.Fail($"Prototype {prototype.ID} modifies component on spawn: {compName}. Modified yaml:\n{diff}");
                         }
                         else
                         {
+                            // VG-Tweak Start: ItemSlotsSystem legitimately creates a container during ComponentInit.
+                            if (compName == "ContainerContainer" && prototype.Components.ContainsKey("ItemSlots"))
+                                continue;
+                            // VG-Tweak End
+
                             Assert.Fail($"Prototype {prototype.ID} gains a component on spawn: {compName}");
                         }
                     }

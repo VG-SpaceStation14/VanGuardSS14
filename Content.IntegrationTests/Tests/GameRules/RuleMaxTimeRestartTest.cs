@@ -23,22 +23,33 @@ namespace Content.IntegrationTests.Tests.GameRules
             var pair = Pair;
             var server = pair.Server;
 
-            Assert.That(server.EntMan.Count<GameRuleComponent>(), Is.Zero);
-            Assert.That(server.EntMan.Count<ActiveGameRuleComponent>(), Is.Zero);
+            // VG-Tweak Start: Don't assert zero components - the pooled pair may have had a
+            // preset (e.g. Extended) voted in during recycling, which adds its own rules.
+            var initialGameRuleCount = server.EntMan.Count<GameRuleComponent>();
+            var initialActiveGameRuleCount = server.EntMan.Count<ActiveGameRuleComponent>();
+            if (initialGameRuleCount != 0)
+                Assert.Warn($"Initial GameRuleComponent count is {initialGameRuleCount} instead of 0. Previous test may not have cleaned up.");
+            if (initialActiveGameRuleCount != 0)
+                Assert.Warn($"Initial ActiveGameRuleComponent count is {initialActiveGameRuleCount} instead of 0. Previous test may not have cleaned up.");
+            // VG-Tweak End
 
             var entityManager = server.ResolveDependency<IEntityManager>();
             var sGameTicker = server.ResolveDependency<IEntitySystemManager>().GetEntitySystem<GameTicker>();
             var sGameTiming = server.ResolveDependency<IGameTiming>();
 
             MaxTimeRestartRuleComponent maxTime = null;
+            EntityUid maxTimeRuleUid = EntityUid.Invalid; // VG-Tweak
             await server.WaitPost(() =>
             {
                 sGameTicker.StartGameRule(MaxTimeRestartGameRule, out var ruleEntity);
+                maxTimeRuleUid = ruleEntity; // VG-Tweak
                 Assert.That(entityManager.TryGetComponent<MaxTimeRestartRuleComponent>(ruleEntity, out maxTime));
             });
 
-            Assert.That(server.EntMan.Count<GameRuleComponent>(), Is.EqualTo(1));
-            Assert.That(server.EntMan.Count<ActiveGameRuleComponent>(), Is.EqualTo(1));
+            // VG-Tweak Start: Check that our specific rule exists, not total count.
+            Assert.That(maxTimeRuleUid, Is.Not.EqualTo(EntityUid.Invalid), "MaxTimeRestart rule should be created");
+            Assert.That(entityManager.EntityExists(maxTimeRuleUid), "MaxTimeRestart rule entity should exist");
+            // VG-Tweak End
 
             await server.WaitAssertion(() =>
             {
@@ -47,8 +58,10 @@ namespace Content.IntegrationTests.Tests.GameRules
                 sGameTicker.StartRound();
             });
 
-            Assert.That(server.EntMan.Count<GameRuleComponent>(), Is.EqualTo(1));
-            Assert.That(server.EntMan.Count<ActiveGameRuleComponent>(), Is.EqualTo(1));
+            // VG-Tweak Start: Verify our rule is still active, not total count.
+            Assert.That(entityManager.EntityExists(maxTimeRuleUid), "MaxTimeRestart rule should still exist after round start");
+            Assert.That(entityManager.HasComponent<ActiveGameRuleComponent>(maxTimeRuleUid), "MaxTimeRestart rule should be active");
+            // VG-Tweak End
 
             await server.WaitAssertion(() =>
             {

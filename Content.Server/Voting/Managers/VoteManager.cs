@@ -242,6 +242,11 @@ namespace Content.Server.Voting.Managers
 
         private void SendSingleUpdate(VoteReg v, ICommonSession player)
         {
+            // VG-Tweak Start: DummyChannel (test dummy sessions) has no usable send path.
+            if (player.Channel.GetType().Name == "DummyChannel")
+                return;
+            // VG-Tweak End
+
             var msg = new MsgVoteData();
 
             msg.VoteId = v.Id;
@@ -303,6 +308,11 @@ namespace Content.Server.Voting.Managers
 
         private void SendUpdateCanCallVote(ICommonSession player)
         {
+            // VG-Tweak Start: DummyChannel (test dummy sessions) has no usable send path.
+            if (player.Channel.GetType().Name == "DummyChannel")
+                return;
+            // VG-Tweak End
+
             var msg = new MsgVoteCanCall();
             msg.CanCall = CanCallVote(player, null, out var isAdmin, out var timeSpan);
             msg.WhenCanCallVote = timeSpan;

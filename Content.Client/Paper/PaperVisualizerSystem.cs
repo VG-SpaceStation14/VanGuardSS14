@@ -30,11 +30,15 @@ public sealed class PaperVisualizerSystem : VisualizerSystem<PaperVisualizerComp
         }
 
         // VG-Tweak Start
-        var tint = Color.White;
-        if (AppearanceSystem.TryGetData<Color>(uid, PaperVisuals.StampTint, out var stampTint, args.Component))
-            tint = stampTint;
+        // Only tint the stamp layer if it actually exists (e.g. unstamped PaperWritten has no Stamp layer).
+        if (SpriteSystem.LayerMapTryGet((uid, args.Sprite), PaperVisualLayers.Stamp, out _, false))
+        {
+            var tint = Color.White;
+            if (AppearanceSystem.TryGetData<Color>(uid, PaperVisuals.StampTint, out var stampTint, args.Component))
+                tint = stampTint;
 
-        SpriteSystem.LayerSetColor((uid, args.Sprite), PaperVisualLayers.Stamp, tint);
+            SpriteSystem.LayerSetColor((uid, args.Sprite), PaperVisualLayers.Stamp, tint);
+        }
         // VG-Tweak End
     }
 }

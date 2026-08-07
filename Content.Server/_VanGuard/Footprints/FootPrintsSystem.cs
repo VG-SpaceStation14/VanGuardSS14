@@ -103,6 +103,12 @@ public sealed partial class FootprintSystem : EntitySystem
     /// </summary>
     private void OnEntityMove(Entity<FootprintEmitterComponent> ent, ref MoveEvent args)
     {
+        // VG-Tweak: Skip entities that are being deleted. Recursive deletion detaches
+        // children (raising a MoveEvent) after marking them as terminating, and querying
+        // components on such an entity asserts in debug builds.
+        if (TerminatingOrDeleted(ent.Owner))
+            return;
+
         if (!_solutionQuery.TryComp(ent, out var container))
             return;
 
