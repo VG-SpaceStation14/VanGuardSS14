@@ -58,6 +58,13 @@
   categories: [ HideSpawnMenu ]
   name: SlimePerson appearance
   components:
+  # VG-Tweak Start
+  - type: FootprintEmitter
+    leftBareFootState:
+      - "footprint-left-bare-slime"
+    rightBareFootState:
+      - "footprint-right-bare-slime"
+  # VG-Tweak End
   - type: Inventory
     femaleDisplacements:
       jumpsuit:

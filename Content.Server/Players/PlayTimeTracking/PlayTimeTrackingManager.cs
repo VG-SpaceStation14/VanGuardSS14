@@ -402,6 +402,93 @@ public sealed partial class PlayTimeTrackingManager : ISharedPlaytimeManager, IP
         return data.TrackerTimes.GetValueOrDefault(tracker);
     }
 
+    // VG-Tweak Start: offline/reset operations for the admin playtime panel.
+    private async Task<Dictionary<string, TimeSpan>> LoadStoredTimesAsync(NetUserId userId)
+    {
+        var stored = new Dictionary<string, TimeSpan>();
+        foreach (var entry in await _db.GetPlayTimes(userId, CancellationToken.None))
+            stored[entry.Tracker] = entry.TimeSpent;
+        return stored;
+    }
+
+    private async Task StoreTimesAsync(NetUserId userId, Dictionary<string, TimeSpan> times)
+    {
+        var updates = new List<PlayTimeUpdate>(times.Count);
+        foreach (var (tracker, spent) in times)
+            updates.Add(new PlayTimeUpdate(userId, tracker, spent));
+        await _db.UpdatePlayTimes(updates);
+    }
+
+    public async Task GrantTrackerTimeAsync(NetUserId userId, string tracker, TimeSpan amount)
+    {
+        var times = await LoadStoredTimesAsync(userId);
+        times.TryGetValue(tracker, out var current);
+        times[tracker] = current + amount;
+        await StoreTimesAsync(userId, times);
+    }
+
+    public async Task GrantOverallTimeAsync(NetUserId userId, TimeSpan amount)
+    {
+        await GrantTrackerTimeAsync(userId, PlayTimeTrackingShared.TrackerOverall, amount);
+    }
+
+    public async Task<TimeSpan> ReadOverallTimeAsync(NetUserId userId)
+    {
+        var times = await LoadStoredTimesAsync(userId);
+        return times.GetValueOrDefault(PlayTimeTrackingShared.TrackerOverall);
+    }
+
+    public async Task<TimeSpan> ReadTrackerTimeAsync(NetUserId userId, string tracker)
+    {
+        var times = await LoadStoredTimesAsync(userId);
+        return times.GetValueOrDefault(tracker);
+    }
+
+    public void ClearOverallTime(ICommonSession id)
+    {
+        var data = RequireData(id);
+        data.TrackerTimes[PlayTimeTrackingShared.TrackerOverall] = TimeSpan.Zero;
+        data.DbTrackersDirty.Add(PlayTimeTrackingShared.TrackerOverall);
+    }
+
+    public void ClearTrackerTime(ICommonSession id, string tracker)
+    {
+        var data = RequireData(id);
+        data.TrackerTimes[tracker] = TimeSpan.Zero;
+        data.DbTrackersDirty.Add(tracker);
+    }
+
+    public async Task ClearOverallTimeAsync(NetUserId userId)
+    {
+        var times = await LoadStoredTimesAsync(userId);
+        times[PlayTimeTrackingShared.TrackerOverall] = TimeSpan.Zero;
+        await StoreTimesAsync(userId, times);
+    }
+
+    public async Task ClearTrackerTimeAsync(NetUserId userId, string tracker)
+    {
+        var times = await LoadStoredTimesAsync(userId);
+        if (times.ContainsKey(tracker))
+            times[tracker] = TimeSpan.Zero;
+        await StoreTimesAsync(userId, times);
+    }
+
+    public async Task ClearAllTimeAsync(NetUserId userId)
+    {
+        var times = await LoadStoredTimesAsync(userId);
+        foreach (var tracker in times.Keys)
+            times[tracker] = TimeSpan.Zero;
+        await StoreTimesAsync(userId, times);
+    }
+
+    private PlayTimeData RequireData(ICommonSession id)
+    {
+        if (!_playTimeData.TryGetValue(id, out var data) || !data.Initialized)
+            throw new InvalidOperationException("Play time info is not yet loaded for this player!");
+        return data;
+    }
+    // VG-Tweak End
+
     /// <summary>
     /// Queue for play time trackers to be refreshed on a player, in case the set of active trackers may have changed.
     /// </summary>

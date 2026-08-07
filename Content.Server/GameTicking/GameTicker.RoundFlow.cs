@@ -13,6 +13,8 @@ using Content.Shared.Mind;
 using Content.Shared.Players;
 using Content.Shared.Preferences;
 using Content.Shared.Roles.Components;
+using Content.Server.Voting.Managers;
+using Content.Shared.Voting;
 using JetBrains.Annotations;
 using Prometheus;
 using Robust.Shared.Asynchronous;
@@ -31,6 +33,7 @@ namespace Content.Server.GameTicking
     {
         [Dependency] private DiscordWebhook _discord = default!;
         [Dependency] private RoleSystem _role = default!;
+        [Dependency] private IVoteManager _voteManager = default!; // VG-Tweak
         [Dependency] private ITaskManager _taskManager = default!;
 
         private static readonly Counter RoundNumberMetric = Metrics.CreateCounter(
@@ -683,6 +686,14 @@ namespace Content.Server.GameTicking
                 UpdateInfoText();
 
                 ReqWindowAttentionAll();
+
+                // VG-Tweak Start
+                if (_cfg.GetCVar(CCVars.LobbyAutoVotes))
+                {
+                    _voteManager.CreateStandardVote(initiator: null, voteType: StandardVoteType.Map);
+                    _voteManager.CreateStandardVote(initiator: null, voteType: StandardVoteType.Preset);
+                }
+                // VG-Tweak End
             }
         }
 

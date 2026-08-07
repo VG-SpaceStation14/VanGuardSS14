@@ -20,6 +20,21 @@
             "name": "open"
         },
         {
+            "name": "small"
+        },
+        {
+            "name": "medium"
+        },
+        {
+            "name": "high"
+        },
+        {
+            "name": "hyper"
+        },
+        {
+            "name": "antique"
+        },
+        {
             "name": "light-charging",
             "delays": [
                 [
@@ -34,6 +49,8 @@
             "name": "light-charged",
             "delays": [
                 [
+                    0.6,
+                    0.6,
                     0.6,
                     0.6
                 ]

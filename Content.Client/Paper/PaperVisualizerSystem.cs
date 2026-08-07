@@ -28,6 +28,14 @@ public sealed class PaperVisualizerSystem : VisualizerSystem<PaperVisualizerComp
             }
 
         }
+
+        // VG-Tweak Start
+        var tint = Color.White;
+        if (AppearanceSystem.TryGetData<Color>(uid, PaperVisuals.StampTint, out var stampTint, args.Component))
+            tint = stampTint;
+
+        SpriteSystem.LayerSetColor((uid, args.Sprite), PaperVisualLayers.Stamp, tint);
+        // VG-Tweak End
     }
 }
 

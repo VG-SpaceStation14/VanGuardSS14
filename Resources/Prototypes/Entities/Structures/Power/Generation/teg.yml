@@ -12,19 +12,27 @@
       sprite: Structures/Power/Generation/teg.rsi
       layers:
         - state: teg
-        - state: teg_mid
-          shader: unshaded
-          map: [ "enum.PowerDeviceVisualLayers.Powered" ]
+        # VG-Tweak Start
+        #- state: teg_mid
+        #  shader: unshaded
+        #  map: [ "enum.PowerDeviceVisualLayers.Powered" ]
+        # VG-Tweak End
         - state: teg-op1
           shader: unshaded
           visible: false
           map: [ "enum.TegVisualLayers.PowerOutput" ]
     - type: GenericVisualizer
       visuals:
-        enum.PowerDeviceVisuals.Powered:
-          enum.PowerDeviceVisualLayers.Powered:
-            True: { visible: true }
-            False: { visible: false }
+        # VG-Tweak Start
+        #enum.PowerDeviceVisuals.Powered:
+        #  enum.PowerDeviceVisualLayers.Powered:
+        #    True: { visible: true }
+        #    False: { visible: false }
+        enum.AnchorVisuals.Anchored:
+          center:
+            False: { state: teg-unassembled }
+            True: { state: teg }
+        # VG-Tweak End
         enum.TegVisuals.PowerOutput:
           enum.TegVisualLayers.PowerOutput:
             0: { visible: false }

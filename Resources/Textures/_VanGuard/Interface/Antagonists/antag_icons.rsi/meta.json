@@ -1,0 +1,173 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "by Albuka, VanGuard Project",
+    "size": {
+        "x": 104,
+        "y": 104
+    },
+    "states": [
+        {
+            "name": "Heretic-disable"
+        },
+        {
+            "name": "Heretic-off"
+        },
+        {
+            "name": "Heretic-on"
+        },
+        {
+            "name": "Nukeops-disable"
+        },
+        {
+            "name": "Nukeops-off"
+        },
+        {
+            "name": "Nukeops-on"
+        },
+        {
+            "name": "NukeopsMedic-disable"
+        },
+        {
+            "name": "NukeopsMedic-off"
+        },
+        {
+            "name": "NukeopsMedic-on"
+        },
+        {
+            "name": "NukeopsCommander-disable"
+        },
+        {
+            "name": "NukeopsCommander-off"
+        },
+        {
+            "name": "NukeopsCommander-on"
+        },
+        {
+            "name": "Traitor-disable"
+        },
+        {
+            "name": "Traitor-off"
+        },
+        {
+            "name": "Traitor-on"
+        },
+        {
+            "name": "TraitorSleeper-disable"
+        },
+        {
+            "name": "TraitorSleeper-off"
+        },
+        {
+            "name": "TraitorSleeper-on"
+        },
+        {
+            "name": "Thief-disable"
+        },
+        {
+            "name": "Thief-off"
+        },
+        {
+            "name": "Thief-on"
+        },
+        {
+            "name": "Conspirator-disable"
+        },
+        {
+            "name": "Conspirator-off"
+        },
+        {
+            "name": "Conspirator-on"
+        },
+        {
+            "name": "HeadRev-disable"
+        },
+        {
+            "name": "HeadRev-off"
+        },
+        {
+            "name": "HeadRev-on"
+        },
+        {
+            "name": "MothershipCore-disable"
+        },
+        {
+            "name": "MothershipCore-off"
+        },
+        {
+            "name": "MothershipCore-on"
+        },
+        {
+            "name": "Xenoborg-disable"
+        },
+        {
+            "name": "Xenoborg-off"
+        },
+        {
+            "name": "Xenoborg-on"
+        },
+        {
+            "name": "MalfunctioningAI-disable"
+        },
+        {
+            "name": "MalfunctioningAI-off"
+        },
+        {
+            "name": "MalfunctioningAI-on"
+        },
+        {
+            "name": "BloodWorm-disable"
+        },
+        {
+            "name": "BloodWorm-off"
+        },
+        {
+            "name": "BloodWorm-on"
+        },
+        {
+            "name": "Changeling-disable"
+        },
+        {
+            "name": "Changeling-off"
+        },
+        {
+            "name": "Changeling-on"
+        },
+        {
+            "name": "Wizard-disable"
+        },
+        {
+            "name": "Wizard-off"
+        },
+        {
+            "name": "Wizard-on"
+        },
+        {
+            "name": "BloodBrotherLeader-disable"
+        },
+        {
+            "name": "BloodBrotherLeader-off"
+        },
+        {
+            "name": "BloodBrotherLeader-on"
+        },
+        {
+            "name": "Blob-disable"
+        },
+        {
+            "name": "Blob-off"
+        },
+        {
+            "name": "Blob-on"
+        },
+        {
+            "name": "InitialInfected-disable"
+        },
+        {
+            "name": "InitialInfected-off"
+        },
+        {
+            "name": "InitialInfected-on"
+        }
+    ]
+}

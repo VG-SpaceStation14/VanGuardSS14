@@ -15,6 +15,11 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Replays;
 using Robust.Shared.Utility;
+// VG-Tweak Start
+using Content.Shared.Inventory;
+using Content.Shared.PDA;
+using Content.Shared.Access.Components;
+// VG-Tweak End
 
 namespace Content.Server.Radio.EntitySystems;
 
@@ -28,8 +33,11 @@ public sealed partial class RadioSystem : EntitySystem
     [Dependency] private IAdminLogManager _adminLogger = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private ChatSystem _chat = default!;
+    // VG-Tweak Start
+    [Dependency] private InventorySystem _inventory = default!;
     [Dependency] private IChatManager _chatManager = default!;
     [Dependency] private GhostSystem _ghost = default!;
+    // VG-Tweak End
     [Dependency] private EntityQuery<TelecomExemptComponent> _exemptQuery = default!;
 
     // set used to prevent radio feedback loops.
@@ -73,6 +81,7 @@ public sealed partial class RadioSystem : EntitySystem
 
         _netMan.ServerSendMessage(msg, actor.PlayerSession.Channel);
     }
+    // VG-Tweak End
 
     /// <summary>
     /// Send radio message to all active radio listeners
@@ -109,6 +118,13 @@ public sealed partial class RadioSystem : EntitySystem
             ? FormattedMessage.EscapeText(message)
             : message;
 
+        // VG-Tweak Start
+        var jobTitle = GetJobTitle(messageSource);
+        var jobDisplay = string.IsNullOrEmpty(jobTitle) 
+            ? string.Empty 
+            : $"\\[{jobTitle}\\] ";
+        // VG-Tweak End
+
         var wrappedMessage = Loc.GetString(speech.Bold ? "chat-radio-message-wrap-bold" : "chat-radio-message-wrap",
             ("color", channel.Color),
             ("fontType", speech.FontId),
@@ -116,6 +132,9 @@ public sealed partial class RadioSystem : EntitySystem
             ("verb", Loc.GetString(_random.Pick(speech.SpeechVerbStrings))),
             ("channel", $"\\[{channel.LocalizedName}\\]"),
             ("name", name),
+            // VG-Tweak Start
+            ("job", jobDisplay),
+            // VG-Tweak End
             ("message", content));
 
         // most radios are relayed to chat, so lets parse the chat message beforehand
@@ -174,6 +193,28 @@ public sealed partial class RadioSystem : EntitySystem
         _replay.RecordServerMessage(chat);
         _messages.Remove(message);
     }
+
+    // VG-Tweak Start
+    private string GetJobTitle(EntityUid entity)
+    {
+        if (!_inventory.HasSlot(entity, "id"))
+            return string.Empty;
+
+        if (!_inventory.TryGetSlotEntity(entity, "id", out var idSlotEntity))
+            return string.Empty;
+
+        if (TryComp<PdaComponent>(idSlotEntity, out var pda))
+            idSlotEntity = pda.ContainedId;
+
+        if (TryComp<IdCardComponent>(idSlotEntity, out var idCard) && 
+            !string.IsNullOrEmpty(idCard.LocalizedJobTitle))
+        {
+            return idCard.LocalizedJobTitle;
+        }
+
+        return string.Empty;
+    }
+    // VG-Tweak End
 
     /// <inheritdoc cref="TelecomServerComponent"/>
     private bool HasActiveServer(MapId mapId, string channelId)

@@ -1,4 +1,5 @@
 ﻿using Content.Server.Administration.Managers;
+using Content.Server._VanGuard.Discord;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
 using Content.Shared.Database;
@@ -120,6 +121,33 @@ public sealed partial class RoleBanCommand : IConsoleCommand
         }
 
         _bans.CreateRoleBan(banInfo);
+
+        // VG-Tweak: send role ban to Discord webhook
+        var expires = minutes > 0 ? DateTimeOffset.UtcNow.AddMinutes(minutes) : (DateTimeOffset?)null;
+        if (_proto.HasIndex<JobPrototype>(role))
+        {
+            await VgRoleBanHelper.SendRoleBanToDiscord(
+                targetUid,
+                located.Username,
+                shell.Player?.UserId,
+                new ProtoId<JobPrototype>(role),
+                minutes,
+                reason,
+                expires,
+                "Role");
+        }
+        else if (_proto.HasIndex<AntagPrototype>(role))
+        {
+            await VgRoleBanHelper.SendRoleBanToDiscord(
+                targetUid,
+                located.Username,
+                shell.Player?.UserId,
+                new ProtoId<AntagPrototype>(role),
+                minutes,
+                reason,
+                expires,
+                "Role");
+        }
     }
 
     public CompletionResult GetCompletion(IConsoleShell shell, string[] args)

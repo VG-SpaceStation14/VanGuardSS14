@@ -77,6 +77,17 @@
   categories: [ HideSpawnMenu ]
   name: vox appearance
   components:
+  # VG-Tweak Start
+  - type: FootprintEmitter
+    leftBareFootState:
+      - "footprint-left-bare-lizard"
+    rightBareFootState:
+      - "footprint-right-bare-lizard"
+    shoeFootState:
+      - "footprint-shoes-lizard"
+    pressureSuitFootState:
+      - "footprint-suit-lizard"
+  # VG-Tweak End
   - type: Inventory
     speciesId: vox
     displacements:

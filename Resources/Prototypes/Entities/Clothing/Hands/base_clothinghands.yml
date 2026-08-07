@@ -7,6 +7,10 @@
     state: icon
   - type: Clothing
     slots: [gloves]
+    # VG-Tweak Start
+    equipSound:
+      path: /Audio/_VanGuard/Entities/glove_equip.ogg
+    # VG-Tweak End
   - type: Edible
     requiresSpecialDigestion: true
   - type: Item

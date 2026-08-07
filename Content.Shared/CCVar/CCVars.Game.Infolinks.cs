@@ -8,7 +8,7 @@ public sealed partial class CCVars
     ///     Link to Discord server to show in the launcher.
     /// </summary>
     public static readonly CVarDef<string> InfoLinksDiscord =
-        CVarDef.Create("infolinks.discord", "", CVar.SERVER | CVar.REPLICATED);
+        CVarDef.Create("infolinks.discord", "https://discord.gg/nW73CdBYkg", CVar.SERVER | CVar.REPLICATED); // VG-Tweak
 
     /// <summary>
     ///     Link to website to show in the launcher.
@@ -20,19 +20,19 @@ public sealed partial class CCVars
     ///     Link to GitHub page to show in the launcher.
     /// </summary>
     public static readonly CVarDef<string> InfoLinksGithub =
-        CVarDef.Create("infolinks.github", "", CVar.SERVER | CVar.REPLICATED);
+        CVarDef.Create("infolinks.github", "https://github.com/VG-SpaceStation14/VanGuardSS14", CVar.SERVER | CVar.REPLICATED); // VG-Tweak
 
     /// <summary>
     ///     Link to website to show in the launcher.
     /// </summary>
     public static readonly CVarDef<string> InfoLinksWebsite =
-        CVarDef.Create("infolinks.website", "", CVar.SERVER | CVar.REPLICATED);
+        CVarDef.Create("infolinks.website", "https://boosty.to/vanguardalbuka", CVar.SERVER | CVar.REPLICATED); // VG-Tweak
 
     /// <summary>
     ///     Link to wiki to show in the launcher.
     /// </summary>
     public static readonly CVarDef<string> InfoLinksWiki =
-        CVarDef.Create("infolinks.wiki", "", CVar.SERVER | CVar.REPLICATED);
+        CVarDef.Create("infolinks.wiki", "https://vanguardproject.ru", CVar.SERVER | CVar.REPLICATED); // VG-Tweak
 
     /// <summary>
     ///     Link to Patreon. Not shown in the launcher currently.
@@ -44,13 +44,13 @@ public sealed partial class CCVars
     ///     Link to the bug report form.
     /// </summary>
     public static readonly CVarDef<string> InfoLinksBugReport =
-        CVarDef.Create("infolinks.bug_report", "", CVar.SERVER | CVar.REPLICATED);
+        CVarDef.Create("infolinks.bug_report", "https://discord.com/channels/1476194828185239595/1480344699469300023", CVar.SERVER | CVar.REPLICATED); // VG-Tweak
 
     /// <summary>
     ///     Link to site handling ban appeals. Shown in ban disconnect messages.
     /// </summary>
     public static readonly CVarDef<string> InfoLinksAppeal =
-        CVarDef.Create("infolinks.appeal", "", CVar.SERVER | CVar.REPLICATED);
+        CVarDef.Create("infolinks.appeal", "https://discord.com/channels/1476194828185239595/1476922279660228682", CVar.SERVER | CVar.REPLICATED); // VG-Tweak
 
     /// <summary>
     ///     Link to Telegram channel to show in the launcher.

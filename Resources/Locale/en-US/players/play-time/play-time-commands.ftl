@@ -54,3 +54,30 @@ cmd-playtime_flush-help = Usage: {$command} [user name]
 
 cmd-playtime_flush-error-args = Expected zero or one arguments
 cmd-playtime_flush-arg-user = [user name]
+# VG-Tweak Start
+# PlayTime Reset All Command
+cmd-playtime_resetall-desc = Resets all playtime (overall and all roles) for a player
+cmd-playtime_resetall-help = Usage: { $command } <username/guid>
+cmd-playtime_resetall-arg-user = Username or GUID
+cmd-playtime_resetall-error-args = Invalid number of arguments. Expected: <username/guid>
+cmd-playtime_resetall-succeed = Successfully reset ALL playtime for { $username }\nRoles trackers reset: { $rolescount }\nOverall time now: { $overall } minutes
+cmd-playtime_resetall-failed = Failed to reset { $count } trackers: { $trackers }
+cmd-playtime_resetall-more =  and { $count } more...
+
+# PlayTime Reset Roles Command
+cmd-playtime_resetroles-desc = Resets all role playtime for a player (keeps overall time)
+cmd-playtime_resetroles-help = Usage: { $command } <username/guid>
+cmd-playtime_resetroles-arg-user = Username or GUID
+cmd-playtime_resetroles-error-args = Invalid number of arguments. Expected: <username/guid>
+cmd-playtime_resetroles-succeed = Successfully reset role playtime for { $username }\nRoles trackers reset: { $rolescount }\nOverall time kept: { $overall } minutes
+cmd-playtime_resetroles-failed = Failed to reset { $count } trackers: { $trackers }
+cmd-playtime_resetroles-more =  and { $count } more...
+
+# PlayTime Reset Overall Command
+cmd-playtime_resetoverall-desc = Resets overall playtime for a player (keeps role time)
+cmd-playtime_resetoverall-help = Usage: { $command } <username/guid>
+cmd-playtime_resetoverall-arg-user = Username or GUID
+cmd-playtime_resetoverall-error-args = Invalid number of arguments. Expected: <username/guid>
+cmd-playtime_resetoverall-succeed = Successfully reset overall time for { $username }\nPrevious overall time: { $before } minutes\nCurrent overall time: { $after } minutes\nRole time kept
+
+# VG-Tweak End

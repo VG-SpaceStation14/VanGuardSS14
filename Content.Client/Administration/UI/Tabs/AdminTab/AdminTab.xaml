@@ -16,6 +16,9 @@
             <cc:CommandButton Command="adminlogs" Text="{Loc admin-player-actions-window-admin-logs}"/>
             <cc:CommandButton Command="faxui" Text="{Loc admin-player-actions-window-admin-fax}"/>
             <cc:CommandButton Command="achatwindow" Text="{Loc admin-player-actions-window-admin-chat}"/>
+            <!-- VG-Tweak Start -->
+            <Button Name="PlaytimePanelButton" Text="{Loc admin-player-actions-window-playtime-panel}"/>
+            <!-- VG-Tweak End -->
         </GridContainer>
     </BoxContainer>
 </Control>

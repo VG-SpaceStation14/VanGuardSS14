@@ -80,7 +80,7 @@
                                 <BoxContainer HorizontalExpand="True">
                                     <Label Text="{Loc 'humanoid-profile-editor-age-label'}" />
                                     <Control HorizontalExpand="True"/>
-                                    <LineEdit Name="AgeEdit" MinSize="60 0" HorizontalAlignment="Right" /> <!-- Corvax-SpeciesAgeLore -->
+                                    <LineEdit Name="AgeEdit" MinSize="60 0" HorizontalAlignment="Right" />
                                 </BoxContainer>
                                 <!-- Sex -->
                                 <BoxContainer HorizontalExpand="True">
@@ -127,17 +127,21 @@
                         </BoxContainer>
                     </ScrollContainer>
                 </BoxContainer>
+                <!-- Jobs Tab - изменен на два столбца -->
                 <BoxContainer Orientation="Vertical">
-                    <!-- Jobs -->
                     <OptionButton Name="PreferenceUnavailableButton" />
                     <ScrollContainer VerticalExpand="True">
-                        <BoxContainer Name="JobList" Orientation="Vertical" />
+                        <GridContainer Name="JobsGrid" Columns="2" HorizontalExpand="True">
+                            <BoxContainer Name="LeftJobsColumn" Orientation="Vertical" HorizontalExpand="True" Margin="5" />
+                            <BoxContainer Name="RightJobsColumn" Orientation="Vertical" HorizontalExpand="True" Margin="5" />
+                        </GridContainer>
                     </ScrollContainer>
                 </BoxContainer>
+                <!-- Antags Tab - изменен на сетку иконок -->
                 <BoxContainer Orientation="Vertical" Margin="10">
-                    <!-- Antags -->
-                    <ScrollContainer VerticalExpand="True">
-                        <BoxContainer Name="AntagList" Orientation="Vertical" />
+                    <Label Text="{Loc 'humanoid-profile-editor-antags-tab'}" StyleClasses="LabelHeading" Margin="0 0 0 10" />
+                    <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+                        <BoxContainer Name="AntagGrid" Orientation="Vertical" SeparationOverride="8" />
                     </ScrollContainer>
                 </BoxContainer>
                 <BoxContainer Orientation="Vertical" Margin="10">

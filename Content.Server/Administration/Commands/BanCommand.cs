@@ -1,5 +1,7 @@
 using System.Linq;
 using Content.Server.Administration.Managers;
+using Content.Server.Database;
+using Content.Server._VanGuard.Discord;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
 using Content.Shared.Database;
@@ -19,6 +21,7 @@ public sealed partial class BanCommand : LocalizedCommands
     [Dependency] private IConfigurationManager _cfg = default!;
     [Dependency] private IPlayerManager _playerManager = default!;
     [Dependency] private ILogManager _logManager = default!;
+    [Dependency] private IServerDbManager _db = default!;
 
     public override string Command => "ban";
 
@@ -99,6 +102,27 @@ public sealed partial class BanCommand : LocalizedCommands
         banInfo.WithSeverity(severity);
 
         _bans.CreateServerBan(banInfo);
+
+        // VG-Tweak: send server ban to Discord webhook
+        var lastBan = await _db.GetLastBanAsync();
+        var newBanId = lastBan is not null ? lastBan.Id + 1 : 1;
+
+        var vgSender = IoCManager.Resolve<VgBanWebhookSender>();
+        if (vgSender != null)
+        {
+            var vgBanInfo = new VgBanInfo
+            {
+                BanId = newBanId.ToString() ?? "0",
+                Target = located.Username,
+                AdminName = player?.Name ?? "System",
+                Reason = reason,
+                Minutes = minutes,
+                Expires = minutes > 0 ? DateTimeOffset.UtcNow.AddMinutes(minutes) : null,
+                Player = player,
+                BanType = "Server"
+            };
+            await vgSender.SendBanAsync(vgBanInfo);
+        }
     }
 
     public override CompletionResult GetCompletion(IConsoleShell shell, string[] args)

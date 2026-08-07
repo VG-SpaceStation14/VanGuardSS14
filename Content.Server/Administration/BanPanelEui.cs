@@ -4,6 +4,7 @@ using Content.Server.Administration.Managers;
 using Content.Server.Administration.Systems;
 using Content.Server.Chat.Managers;
 using Content.Server.EUI;
+using Content.Server._VanGuard.Discord;
 using Content.Shared.Administration;
 using Content.Shared.Database;
 using Content.Shared.Eui;
@@ -19,6 +20,7 @@ public sealed partial class BanPanelEui : BaseEui
     [Dependency] private IPlayerLocator _playerLocator = default!;
     [Dependency] private IChatManager _chat = default!;
     [Dependency] private IAdminManager _admins = default!;
+    [Dependency] private Content.Server.Database.IServerDbManager _dbManager = default!;
 
     private readonly ISawmill _sawmill;
 
@@ -144,6 +146,37 @@ public sealed partial class BanPanelEui : BaseEui
             }
 
             _banManager.CreateRoleBan(roleBanInfo);
+
+            // VG-Tweak: send role ban to Discord webhook
+            var lastBan = await _dbManager.GetLastBanAsync();
+            var newRoleBanId = lastBan is not null ? lastBan.Id + 1 : 1;
+
+            var rolesList = new List<string>();
+            foreach (var job in ban.BannedJobs ?? [])
+                rolesList.Add(job.ToString());
+            foreach (var antag in ban.BannedAntags ?? [])
+                rolesList.Add(antag.ToString());
+            var rolesString = string.Join(", ", rolesList);
+
+            var vgSender = IoCManager.Resolve<VgBanWebhookSender>();
+            if (vgSender != null)
+            {
+                var vgBanInfo = new VgBanInfo
+                {
+                    BanId = newRoleBanId.ToString() ?? "0",
+                    Target = string.IsNullOrEmpty(PlayerName) ? (ban.Target ?? "Unknown") : PlayerName,
+                    AdminName = Player.Name,
+                    Reason = ban.Reason ?? string.Empty,
+                    Minutes = ban.BanDurationMinutes,
+                    Expires = ban.BanDurationMinutes > 0 ? DateTimeOffset.UtcNow.AddMinutes(ban.BanDurationMinutes) : null,
+                    BanType = "Role",
+                    AdditionalInfo = new Dictionary<string, string>
+                    {
+                        ["role"] = rolesString
+                    }
+                };
+                await vgSender.SendBanAsync(vgBanInfo);
+            }
         }
         else
         {
@@ -161,6 +194,26 @@ public sealed partial class BanPanelEui : BaseEui
             }
 
             _banManager.CreateServerBan((CreateServerBanInfo)banInfo);
+
+            // VG-Tweak: send server ban to Discord webhook
+            var lastServerBan = await _dbManager.GetLastBanAsync();
+            var newServerBanId = lastServerBan is not null ? lastServerBan.Id + 1 : 1;
+
+            var vgSender = IoCManager.Resolve<VgBanWebhookSender>();
+            if (vgSender != null)
+            {
+                var vgBanInfo = new VgBanInfo
+                {
+                    BanId = newServerBanId.ToString() ?? "0",
+                    Target = string.IsNullOrEmpty(PlayerName) ? (ban.Target ?? "Unknown") : PlayerName,
+                    AdminName = Player.Name,
+                    Reason = ban.Reason ?? string.Empty,
+                    Minutes = ban.BanDurationMinutes,
+                    Expires = ban.BanDurationMinutes > 0 ? DateTimeOffset.UtcNow.AddMinutes(ban.BanDurationMinutes) : null,
+                    BanType = "Server"
+                };
+                await vgSender.SendBanAsync(vgBanInfo);
+            }
         }
 
         Close();

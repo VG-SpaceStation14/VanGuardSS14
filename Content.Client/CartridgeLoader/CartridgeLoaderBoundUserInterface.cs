@@ -45,8 +45,8 @@ public abstract class CartridgeLoaderBoundUserInterface : BoundUserInterface
         var comp = RetrieveCartridgeComponent(activeUI);
         var control = ui?.GetUIFragmentRoot();
 
-        //Prevent the same UI fragment from getting disposed and attached multiple times
-        if (_activeUiFragment?.GetType() == control?.GetType())
+        // VG-Tweak: не пропускаем привязку картриджа после пересоздания меню
+        if (_activeUiFragment != null && _activeUiFragment.GetType() == control?.GetType())
             return;
 
         if (_activeUiFragment is not null)
@@ -115,6 +115,14 @@ public abstract class CartridgeLoaderBoundUserInterface : BoundUserInterface
     protected abstract void DetachCartridgeUI(Control cartridgeUIFragment);
 
     protected abstract void UpdateAvailablePrograms(List<(EntityUid, CartridgeComponent)> programs);
+
+    // VG-Tweak: сброс активного картриджа при пересоздании окна
+    protected void ResetActiveCartridgeUi()
+    {
+        _activeProgram = null;
+        _activeCartridgeUI = null;
+        _activeUiFragment = null;
+    }
 
     protected override void Dispose(bool disposing)
     {

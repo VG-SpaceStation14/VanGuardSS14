@@ -1,10 +1,10 @@
 {
   "version": 1,
   "license": "CC-BY-SA-3.0",
-  "copyright": "Created by EmoGarbage404 (github) for Space Station 14.",
+  "copyright": "Taken from /tg/station | Edited by PuroSlavKing (Github)",
   "size": {
     "x": 32,
-    "y": 32
+    "y": 48
   },
   "states": [
     {
@@ -17,22 +17,16 @@
       "name": "closed"
     },
     {
-      "name": "overlay"
+      "name": "overlay-closed"
     },
     {
-      "name": "overlay-closed"
+      "name": "overlay-open"
     },
     {
       "name": "open"
     },
     {
       "name": "welded"
-    },
-    {
-      "name": "locked"
-    },
-    {
-      "name": "unlocked"
     },
     {
       "name": "sparking",
@@ -43,9 +37,16 @@
           0.1,
           0.1,
           0.1,
+          0.1,
           0.1
         ]
       ]
+    },
+    {
+      "name": "locked"
+    },
+    {
+      "name": "unlocked"
     }
   ]
 }

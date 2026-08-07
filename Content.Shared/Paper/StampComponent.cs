@@ -1,5 +1,6 @@
 using Robust.Shared.Serialization;
 using Robust.Shared.Audio;
+using Content.Shared._VanGuard.Paper;
 
 namespace Content.Shared.Paper;
 
@@ -22,6 +23,14 @@ public partial struct StampDisplayInfo
 
     [DataField("stampedColor")]
     public Color StampedColor;
+
+    // VG-Tweak Start
+    [DataField("kind")]
+    public PaperMarkType Kind = PaperMarkType.Stamp;
+
+    [DataField("typeface")]
+    public string? Typeface = "/Fonts/NotoSans/NotoSans-Regular.ttf";
+    // VG-Tweak End
 };
 
 [RegisterComponent]

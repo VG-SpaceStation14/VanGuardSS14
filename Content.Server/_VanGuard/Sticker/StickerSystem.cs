@@ -32,7 +32,8 @@ public sealed partial class StickerSystem : EntitySystem
 
     private void UpdateCardAppearance(EntityUid uid, IdCardComponent card)
     {
-        if (!_itemSlots.TryGetSlot(uid, "sticker", out var slot))
+        if (!TryComp<ItemSlotsComponent>(uid, out var itemSlots)
+            || !_itemSlots.TryGetSlot(uid, "sticker", out var slot, itemSlots))
             return;
 
         if (slot.Item is { } item && TryComp<StickerComponent>(item, out var sticker))
@@ -48,7 +49,8 @@ public sealed partial class StickerSystem : EntitySystem
 
         if (TryComp<StickerComponent>(args.Used, out var sticker))
         {
-            if (!_itemSlots.TryGetSlot(uid, "sticker", out var slot))
+            if (!TryComp<ItemSlotsComponent>(uid, out var itemSlots)
+                || !_itemSlots.TryGetSlot(uid, "sticker", out var slot, itemSlots))
                 return;
 
             if (slot.HasItem && slot.ContainerSlot != null && slot.Item != null)
@@ -89,7 +91,8 @@ public sealed partial class StickerSystem : EntitySystem
         if (!Resolve(cardUid, ref card))
             return;
 
-        if (!_itemSlots.TryGetSlot(cardUid, "sticker", out var slot))
+        if (!TryComp<ItemSlotsComponent>(cardUid, out var itemSlots)
+            || !_itemSlots.TryGetSlot(cardUid, "sticker", out var slot, itemSlots))
             return;
 
         if (slot.HasItem && slot.ContainerSlot != null && slot.Item != null)
