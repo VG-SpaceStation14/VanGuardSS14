@@ -1,0 +1,58 @@
+<DefaultWindow
+    x:Class="Content.Client.Administration.UI.Tabs.AdminTab.PlayTimeEditorWindow"
+    xmlns="https://spacestation14.io"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cc="clr-namespace:Content.Client.Administration.UI.CustomControls"
+    Title="{Loc admin-player-actions-window-playtime-panel}" MinSize="560 620">
+
+    <TabContainer Name="Tabs" VerticalExpand="True">
+
+        <BoxContainer Name="GrantTab" Orientation="Vertical" SeparationOverride="6" Margin="10">
+            <GridContainer Columns="2" Margin="0 0 0 8">
+                <Label Text="{Loc admin-time-panel-window-player}" VerticalAlignment="Center" />
+                <LineEdit Name="UserLine" HorizontalExpand="True" PlaceHolder="{Loc admin-time-panel-window-player}" />
+                <Label Text="{Loc admin-time-panel-window-minutes}" VerticalAlignment="Center" />
+                <LineEdit Name="AmountLine" HorizontalExpand="True" />
+            </GridContainer>
+
+            <LineEdit Name="RoleSearchLine" HorizontalExpand="True" PlaceHolder="{Loc admin-time-panel-window-role-filtre}" />
+
+            <BoxContainer Orientation="Horizontal" Margin="0 4 0 4">
+                <Button Name="RoleModeButton" Text="{Loc admin-time-panel-target-role}" ToggleMode="True" Pressed="True" HorizontalExpand="True" />
+                <Button Name="DepartmentModeButton" Text="{Loc admin-time-panel-target-department}" ToggleMode="True" HorizontalExpand="True" />
+            </BoxContainer>
+
+            <OptionButton Name="RolePick" Margin="0 4 0 4" />
+            <OptionButton Name="DepartmentPick" Margin="0 4 0 4" Visible="False" />
+
+            <BoxContainer Orientation="Horizontal" SeparationOverride="8" Margin="0 4 0 4">
+                <Button Name="HourBonus" Text="+1h" HorizontalExpand="True" />
+                <Button Name="DayBonus" Text="+1d" HorizontalExpand="True" />
+                <Button Name="WeekBonus" Text="+1w" HorizontalExpand="True" />
+                <Button Name="MonthBonus" Text="+1M" HorizontalExpand="True" />
+            </BoxContainer>
+
+            <cc:PlayerListControl Name="GrantPlayerList" VerticalExpand="True" Margin="0 6 0 6" />
+
+            <BoxContainer Orientation="Horizontal" SeparationOverride="10" Margin="0 4 0 4">
+                <Button Name="GrantRoleButton" Text="{Loc admin-time-panel-window-add-to-target}" HorizontalExpand="True" />
+                <Button Name="GrantOverallButton" Text="{Loc admin-time-panel-window-add-to-overall}" HorizontalExpand="True" />
+            </BoxContainer>
+        </BoxContainer>
+
+        <BoxContainer Name="ClearTab" Orientation="Vertical" SeparationOverride="6" Margin="10">
+            <Label Text="{Loc admin-time-panel-window-player}" VerticalAlignment="Center" />
+            <LineEdit Name="ClearUserLine" HorizontalExpand="True" />
+
+            <cc:PlayerListControl Name="ClearPlayerList" VerticalExpand="True" Margin="0 6 0 6" />
+
+            <BoxContainer Orientation="Horizontal" SeparationOverride="10" Margin="0 4 0 4">
+                <Button Name="ClearEverythingButton" Text="{Loc admin-time-panel-reset-all}" StyleClasses="Caution" HorizontalExpand="True" />
+                <Button Name="ClearRolesButton" Text="{Loc admin-time-panel-reset-roles}" HorizontalExpand="True" />
+            </BoxContainer>
+
+            <Button Name="ClearOverallButton" Text="{Loc admin-time-panel-reset-overall}" HorizontalExpand="True" Margin="0 4 0 4" />
+        </BoxContainer>
+
+    </TabContainer>
+</DefaultWindow>

@@ -54,3 +54,30 @@ cmd-playtime_flush-help = Использование: { $command } [user name]
 
 cmd-playtime_flush-error-args = Ожидается ноль или один аргумент
 cmd-playtime_flush-arg-user = [user name]
+# VG-Tweak Start
+# PlayTime Reset All Command
+cmd-playtime_resetall-desc = Сбрасывает всё время игры (общее и все роли) для игрока
+cmd-playtime_resetall-help = Использование: { $command } <username/guid>
+cmd-playtime_resetall-arg-user = Имя пользователя или GUID
+cmd-playtime_resetall-error-args = Неверное количество аргументов. Ожидается: <username/guid>
+cmd-playtime_resetall-succeed = Успешно сброшено ВСЁ время игры для { $username }\nСброшено трекеров ролей: { $rolescount }\nОбщее время сейчас: { $overall } минут
+cmd-playtime_resetall-failed = Не удалось сбросить { $count } трекеров: { $trackers }
+cmd-playtime_resetall-more =  и ещё { $count }...
+
+# PlayTime Reset Roles Command
+cmd-playtime_resetroles-desc = Сбрасывает время всех ролей для игрока (сохраняет общее время)
+cmd-playtime_resetroles-help = Использование: { $command } <username/guid>
+cmd-playtime_resetroles-arg-user = Имя пользователя или GUID
+cmd-playtime_resetroles-error-args = Неверное количество аргументов. Ожидается: <username/guid>
+cmd-playtime_resetroles-succeed = Успешно сброшено время ролей для { $username }\nСброшено трекеров ролей: { $rolescount }\nОбщее время сохранено: { $overall } минут
+cmd-playtime_resetroles-failed = Не удалось сбросить { $count } трекеров: { $trackers }
+cmd-playtime_resetroles-more =  и ещё { $count }...
+
+# PlayTime Reset Overall Command
+cmd-playtime_resetoverall-desc = Сбрасывает общее время игры для игрока (сохраняет время ролей)
+cmd-playtime_resetoverall-help = Использование: { $command } <username/guid>
+cmd-playtime_resetoverall-arg-user = Имя пользователя или GUID
+cmd-playtime_resetoverall-error-args = Неверное количество аргументов. Ожидается: <username/guid>
+cmd-playtime_resetoverall-succeed = Успешно сброшено общее время для { $username }\nПредыдущее общее время: { $before } минут\nТекущее общее время: { $after } минут\nВремя ролей сохранено
+
+# VG-Tweak End
