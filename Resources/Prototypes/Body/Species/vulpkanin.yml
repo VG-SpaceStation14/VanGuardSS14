@@ -152,6 +152,13 @@
           32:
             sprite: Mobs/Species/Vulpkanin/displacement.rsi
             state: head
+      # VG-Tweak Start
+      mask:
+        sizeMaps:
+          32:
+            sprite: Mobs/Species/Vulpkanin/displacement.rsi
+            state: head
+      # VG-Tweak End
       neck:
         sizeMaps:
           32:
