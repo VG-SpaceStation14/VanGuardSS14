@@ -57,7 +57,7 @@
   - type: Sprite
     sprite: _VanGuard/Structures/Storage/tanks.rsi # VG-Tweak
     layers:
-      - state: highgenerictank-2 # VG-Tweak
+      - state: highwatertank-2 # VG-Tweak
       - state: highgenerictank-2-5 # VG-Tweak
         map: ["enum.SolutionContainerLayers.Fill"]
         visible: false
