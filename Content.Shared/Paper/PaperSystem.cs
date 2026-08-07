@@ -241,20 +241,27 @@ public sealed partial class PaperSystem : EntitySystem
     /// <summary>
     ///     Accepts the name and state to be stamped onto the paper, returns true if successful.
     /// </summary>
-    public bool TryStamp(Entity<PaperComponent> entity, StampDisplayInfo stampInfo, string spriteStampState)
+    public bool TryStamp(Entity<PaperComponent> entity, StampDisplayInfo stampInfo, string spriteStampState, Color? colorOverride = null)
     {
-        if (!entity.Comp.StampedBy.Contains(stampInfo))
-        {
-            entity.Comp.StampedBy.Add(stampInfo);
-            Dirty(entity);
-            if (entity.Comp.StampState == null && TryComp<AppearanceComponent>(entity, out var appearance))
-            {
-                entity.Comp.StampState = spriteStampState;
-                // Would be nice to be able to display multiple sprites on the paper
-                // but most of the existing images overlap
-                _appearance.SetData(entity, PaperVisuals.Stamp, entity.Comp.StampState, appearance);
-            }
-        }
+        // VG-Tweak Start
+        if (entity.Comp.StampedBy.Contains(stampInfo))
+            return true;
+
+        entity.Comp.StampedBy.Add(stampInfo);
+        Dirty(entity);
+
+        if (entity.Comp.StampState != null && entity.Comp.StampState != "paper_stamp-void")
+            return true;
+
+        if (!TryComp<AppearanceComponent>(entity, out var appearance))
+            return true;
+
+        entity.Comp.StampState = spriteStampState;
+        entity.Comp.StampTint = colorOverride ?? Color.White;
+        _appearance.SetData(entity, PaperVisuals.Stamp, entity.Comp.StampState, appearance);
+        _appearance.SetData(entity, PaperVisuals.StampTint, entity.Comp.StampTint, appearance);
+        // VG-Tweak End
+
         return true;
     }
 
@@ -300,7 +307,7 @@ public sealed partial class PaperSystem : EntitySystem
         _appearance.SetData(entity, PaperVisuals.Status, status, appearance);
     }
 
-    private void UpdateUserInterface(Entity<PaperComponent> entity)
+    public void UpdateUserInterface(Entity<PaperComponent> entity)
     {
         _uiSystem.SetUiState(entity.Owner, PaperUiKey.Key, new PaperBoundUserInterfaceState(entity.Comp.Content, entity.Comp.StampedBy, entity.Comp.Mode));
     }

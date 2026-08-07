@@ -23,6 +23,11 @@ public sealed partial class PaperComponent : Component
     [DataField("stampState"), AutoNetworkedField]
     public string? StampState { get; set; }
 
+    // VG-Tweak Start
+    [DataField("stampTint"), AutoNetworkedField]
+    public Color StampTint { get; set; } = Color.White;
+    // VG-Tweak End
+
     [DataField, AutoNetworkedField]
     public bool EditingDisabled;
 
@@ -75,7 +80,8 @@ public sealed partial class PaperComponent : Component
     public enum PaperVisuals : byte
     {
         Status,
-        Stamp
+        Stamp,
+        StampTint // VG-Tweak
     }
 
     [Serializable, NetSerializable]

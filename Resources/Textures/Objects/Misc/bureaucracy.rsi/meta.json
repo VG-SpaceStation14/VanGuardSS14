@@ -227,6 +227,12 @@
     },
     {
       "name": "paper_stamp-wizard"
+    },
+    {
+      "name": "paper_stamp-signature"
+    },
+    {
+      "name": "sign"
     }
   ]
 }
