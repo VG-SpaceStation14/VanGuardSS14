@@ -158,6 +158,23 @@ public sealed partial class StorageWindow : BaseWindow
         AddChild(container);
     }
 
+    // VG-Tweak Start
+    protected override void EnteredTree()
+    {
+        // Only floating storage windows (direct children of the window root, which
+        // is a LayoutContainer) should track parent resizes. Windows docked in the
+        // hotbar are positioned by their container, and the engine's auto-
+        // repositioning on parent resize would make several open windows overlap.
+        if (Parent is LayoutContainer)
+            base.EnteredTree();
+    }
+
+    protected override void ExitedTree()
+    {
+        base.ExitedTree(); // no-op if the parent resize tracking was never started
+    }
+    // VG-Tweak End
+
     protected override void OnThemeUpdated()
     {
         base.OnThemeUpdated();
