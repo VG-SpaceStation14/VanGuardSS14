@@ -11,6 +11,8 @@
   - metal_drop.ogg
   - metal_pickup.ogg
   - rod_pickup.ogg
+  - wood_drop.ogg
+  - wood_pickup.ogg
   license: "CC-BY-SA-3.0"
   copyright: "Sounds taken from https://github.com/Fluffy-Frontier/FluffySTG"
   source: "https://github.com/Fluffy-Frontier/FluffySTG"
