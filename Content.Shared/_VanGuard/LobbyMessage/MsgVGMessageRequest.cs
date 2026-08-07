@@ -4,7 +4,6 @@ using Robust.Shared.Serialization;
 
 namespace Content.Shared._VanGuard.LobbyMessage;
 
-[Serializable, NetSerializable]
 public sealed class MsgVGMessageRequest : NetMessage
 {
     public override MsgGroups MsgGroup => MsgGroups.Command;

@@ -73,10 +73,10 @@ public sealed partial class FootprintSystem : EntitySystem
 
         SubscribeLocalEvent<FootprintEmitterComponent, ComponentStartup>(OnEmitterStartup);
         SubscribeLocalEvent<FootprintEmitterComponent, MoveEvent>(OnEntityMove);
-        SubscribeLocalEvent<FootprintEmitterComponent, ComponentInit>(OnFootprintEmitterInit);
+        SubscribeLocalEvent<FootprintEmitterComponent, MapInitEvent>(OnFootprintEmitterInit);
     }
 
-    private void OnFootprintEmitterInit(Entity<FootprintEmitterComponent> entity, ref ComponentInit args)
+    private void OnFootprintEmitterInit(Entity<FootprintEmitterComponent> entity, ref MapInitEvent args)
     {
         _solution.EnsureSolution(entity.Owner, entity.Comp.FootsSolutionName, out var footsSolution);
         footsSolution.Comp.Solution.MaxVolume = FixedPoint2.New(FootsVolume);

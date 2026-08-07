@@ -15,6 +15,7 @@ public sealed partial class VGMessageSystem : EntitySystem
     {
         base.Initialize();
 
+        _net.RegisterNetMessage<MsgVGMessageRequest>();
         SubscribeNetworkEvent<VGMessageEvent>(OnMessage);
         _state.OnStateChanged += OnStateChanged;
     }
