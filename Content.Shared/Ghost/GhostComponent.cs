@@ -70,6 +70,12 @@ public sealed partial class GhostComponent : Component
     public int BooMaxTargets = 3;
 
     /// <summary>
+    /// Markings that can be randomly applied to the ghost as clothing.
+    /// </summary>
+    [DataField("ableClothingMarkings")] // VG-Tweak
+    public List<string>? AbleClothingMarkings { get; private set; }
+
+    /// <summary>
     /// Is this ghost allowed to interact with entities?
     /// </summary>
     /// <remarks>

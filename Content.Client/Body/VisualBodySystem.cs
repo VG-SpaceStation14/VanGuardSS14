@@ -2,6 +2,7 @@ using System.Linq;
 using Content.Client.DisplacementMap;
 using Content.Shared.Body;
 using Content.Shared.CCVar;
+using Content.Shared.Ghost;
 using Content.Shared.Humanoid.Markings;
 using Content.Shared.Humanoid;
 using Robust.Client.GameObjects;
@@ -239,11 +240,26 @@ public sealed partial class VisualBodySystem : SharedVisualBodySystem
                     numDisplacements++;
                 }
 
+                // VG: apply the marking's shader. The single "shader" field acts as a fallback
+                // for all sprites of the marking, while the per-state "shaders" dictionary wins if set.
+                var shader = proto.Shader;
                 if (proto.Shaders is not null &&
-                    proto.Shaders.TryGetValue(rsi.RsiState, out var shader))
+                    proto.Shaders.TryGetValue(rsi.RsiState, out var stateShader))
                 {
-                    // TODO: fix this when LayerSetShader is moved out of component
-                    target.Comp.LayerSetShader(index + i + 1 + numDisplacements, shader);
+                    shader = stateShader;
+                }
+
+                // VG: all markings on a ghost are forced unshaded so they match the ghost body.
+                // Species markings (ears/tails/snouts/etc.) can't carry "shader: unshaded" in their
+                // prototypes because those are shared with living players.
+                if (HasComp<GhostComponent>(target.Owner))
+                    shader = "unshaded";
+
+                if (shader is not null)
+                {
+                    // Resolve the layer by its map key rather than by raw index: the layer may
+                    // already exist from a previous apply pass and displacement layers shift indices.
+                    target.Comp.LayerSetShader(layerId, shader);
                 }
             }
 

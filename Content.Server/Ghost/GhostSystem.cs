@@ -1,11 +1,13 @@
 using System.Linq;
 using System.Numerics;
 using Content.Server.Administration.Logs;
+using Content.Server.Body;
 using Content.Server.Chat.Managers;
 using Content.Server.GameTicking;
 using Content.Server.Mind;
 using Content.Server.Roles.Jobs;
 using Content.Shared.Actions;
+using Content.Shared.Body;
 using Content.Shared.CCVar;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
@@ -18,6 +20,9 @@ using Content.Shared.Follower;
 using Content.Shared.Follower.Components;
 using Content.Shared.Ghost;
 using Content.Shared.GhostTypes;
+using Content.Shared.Humanoid;
+using Content.Shared.Humanoid.Markings;
+using Content.Shared.Humanoid.Prototypes;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
@@ -32,6 +37,7 @@ using Content.Shared.Tag;
 using Content.Shared.Warps;
 using Robust.Server.GameObjects;
 using Robust.Shared.Configuration;
+using Robust.Shared.Containers;
 using Robust.Shared.Map;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
@@ -68,6 +74,14 @@ namespace Content.Server.Ghost
         [Dependency] private NameModifierSystem _nameMod = default!;
         [Dependency] private GhostSpriteStateSystem _ghostState = default!;
 
+        //VG-Tweak Start - new organ-based humanoid appearance
+        [Dependency] private VisualBodySystem _visualBody = default!;
+        [Dependency] private HumanoidProfileSystem _humanoidProfile = default!;
+        [Dependency] private MarkingManager _markingManager = default!;
+        [Dependency] private SharedContainerSystem _container = default!;
+        [Dependency] private OrganRelationSystem _organRelation = default!;
+        //VG-Tweak End
+
         [Dependency] private EntityQuery<GhostComponent> _ghostQuery = default!;
         [Dependency] private EntityQuery<FollowerComponent> _followerQuery = default!;
         [Dependency] private EntityQuery<PhysicsComponent> _physicsQuery = default!;
@@ -86,6 +100,7 @@ namespace Content.Server.Ghost
             SubscribeLocalEvent<GhostComponent, MindRemovedMessage>(OnMindRemovedMessage);
             SubscribeLocalEvent<GhostComponent, MindUnvisitedMessage>(OnMindUnvisitedMessage);
             SubscribeLocalEvent<GhostComponent, PlayerDetachedEvent>(OnPlayerDetached);
+            SubscribeLocalEvent<GhostComponent, PlayerAttachedEvent>(OnPlayerAttached); // VG-Tweak
 
             SubscribeLocalEvent<GhostOnMoveComponent, MoveInputEvent>(OnRelayMoveInput);
 
@@ -174,6 +189,12 @@ namespace Content.Server.Ghost
                 return;
             }
 
+            // VG: a ghost entity must never be ghosted on move. Aghosts have CanGhostInteract
+            // enabled, so the usual CanGhostInteract check inside OnGhostAttempt does not protect
+            // them from being thrown into a regular ghost.
+            if (HasComp<GhostComponent>(uid))
+                return;
+
             // Let's not ghost if our mind is visiting...
             if (HasComp<VisitingMindComponent>(uid))
                 return;
@@ -251,6 +272,112 @@ namespace Content.Server.Ghost
             DeleteEntity(uid);
         }
 
+        //VG-Tweak Start
+        private void OnPlayerAttached(EntityUid uid, GhostComponent component, PlayerAttachedEvent args)
+        {
+            if (!TryComp(uid, out ActorComponent? actor))
+                return;
+
+            var profile = _gameTicker.GetPlayerProfile(actor.PlayerSession);
+
+            // Replace the ghost's default (human) body organs with the dead player's species organs
+            // so the base sprites match the species (vulpkanin torso/head/etc), not just the markings
+            // layered on top of a human skeleton.
+            ReplaceBodyOrgans(uid, profile.Species);
+
+            // Apply the player's appearance to the ghost through the new organ-based visual body system.
+            _visualBody.ApplyProfile(uid, new OrganProfileData
+            {
+                Sex = profile.Sex,
+                EyeColor = profile.Appearance.EyeColor,
+                SkinColor = profile.Appearance.SkinColor,
+            });
+            _visualBody.ApplyMarkings(uid, profile.Appearance.Markings);
+            _humanoidProfile.ApplyProfileTo(uid, profile);
+
+            if (component.AbleClothingMarkings != null && component.AbleClothingMarkings.Count > 0)
+            {
+                var clothing = _random.Pick(component.AbleClothingMarkings); // без этого вара рандома не будет
+                var marking = new Marking((ProtoId<MarkingPrototype>) clothing, 1);
+                // Convert against the species so the clothing marking is mapped
+                // onto the ghost's organ categories (Chest -> Torso etc).
+                var converted = _markingManager.ConvertMarkings([marking], profile.Species);
+                _visualBody.ApplyMarkings(uid, converted);
+            }
+        }
+
+        /// <summary>
+        /// Removes the ghost's default (human) organs from the "body_organs" container and inserts
+        /// the organs of the given species instead, so the ghost's base sprites match the species.
+        /// Also re-establishes the parent-child organ relationships, mirroring InitialBodySystem.
+        /// </summary>
+        private void ReplaceBodyOrgans(EntityUid uid, ProtoId<SpeciesPrototype> species)
+        {
+            if (!TryComp<BodyComponent>(uid, out _))
+                return;
+
+            var container = _container.EnsureContainer<Container>(uid, BodyComponent.ContainerID);
+
+            // 1. Remove all currently contained organs (the default human ones from InitialBody).
+            foreach (var organ in container.ContainedEntities.ToList())
+            {
+                _container.Remove(organ, container, reparent: false, force: true);
+                Del(organ);
+            }
+
+            // 2. Spawn the species' organs (taken from the species' doll prototype) into the body container.
+            var speciesOrgans = _markingManager.GetOrgans(species);
+            if (speciesOrgans.Count == 0)
+                return;
+
+            var xform = Transform(uid);
+            var coords = new EntityCoordinates(uid, Vector2.Zero);
+            var spawned = new Dictionary<ProtoId<OrganCategoryPrototype>, EntityUid>();
+
+            foreach (var (category, proto) in speciesOrgans)
+            {
+                var organ = Spawn(proto, coords);
+
+                // VG: a ghost only needs visual organs. Internal organs (brain, heart, lungs, ...)
+                // don't render and cause side effects - e.g. inserting the brain adds a
+                // GhostOnMoveComponent (BrainSystem), which made aghosts turn into a regular ghost
+                // as soon as they tried to move.
+                if (!HasComp<VisualOrganComponent>(organ))
+                {
+                    Del(organ);
+                    continue;
+                }
+
+                if (!_container.Insert(organ, container, containerXform: xform))
+                {
+                    Log.Error($"Ghost {ToPrettyString(uid)} failed to insert organ {ToPrettyString(organ)}.");
+                    Del(organ);
+                    continue;
+                }
+
+                spawned[category] = organ;
+            }
+
+            // 3. Re-establish the parent-child organ relationships (Torso -> Head/Arms/Legs),
+            //    mirroring what InitialBodySystem does on MapInit.
+            if (TryComp<InitialBodyComponent>(uid, out var initialBody) && initialBody.Relationships != null)
+            {
+                foreach (var (parentCategory, children) in initialBody.Relationships)
+                {
+                    if (!spawned.TryGetValue(parentCategory, out var parentUid))
+                        continue;
+
+                    foreach (var childCategory in children)
+                    {
+                        if (!spawned.TryGetValue(childCategory, out var childUid))
+                            continue;
+
+                        _organRelation.Relate(parentUid, childUid);
+                    }
+                }
+            }
+        }
+        //VG-Tweak End
         private void DeleteEntity(EntityUid uid)
         {
             if (Deleted(uid) || Terminating(uid))

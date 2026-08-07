@@ -47,7 +47,7 @@ namespace Content.Shared.Humanoid.Markings
         /// </summary>
         [DataField]
         public Dictionary<string, string>? Shaders { get; private set; }
-
+        
         public Marking AsMarking()
         {
             return new Marking(ID, Sprites.Count);
@@ -61,5 +61,10 @@ namespace Content.Shared.Humanoid.Markings
         /// </remarks>
         [DataField]
         public float RandomWeight = 1f;
+
+        //VG-Tweak - allow markings to support shaders
+        [DataField("shader")]
+        public string? Shader { get; private set; } = null;
+        //VG-Tweak impstation edit
     }
 }
