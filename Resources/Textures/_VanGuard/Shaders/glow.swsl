@@ -1,0 +1,53 @@
+uniform sampler2D SCREEN_TEXTURE;
+uniform mediump float haze_amount;
+uniform mediump float fade_divisor;
+
+const mediump float center_weight = 0.3;
+const mediump float inner_ring_weight = 0.05;
+const mediump float outer_ring_weight = 0.0375;
+const mediump float direction_step = 0.785398; // 45 degrees in radians
+
+// Fades the glow out on bright background pixels.
+mediump float glowAlpha(lowp vec4 background) {
+    mediump float brightness = dot(background.rgb, vec3(0.3333));
+    mediump float dimming = 1.0 - (1.0 - brightness) / 1.15;
+    mediump float falloff = clamp((brightness - 0.035) / fade_divisor, 0.0, 2.0);
+    return dimming * (1.0 - falloff) + falloff;
+}
+
+// Warms the sample up slightly so the glow does not look grey.
+mediump vec4 tintWarm(lowp vec4 color, lowp float amount) {
+    const mediump vec3 haze = vec3(0.9, 0.85, 0.8);
+    return vec4(mix(color.rgb, haze, amount), color.a);
+}
+
+// A single blur tap around the sprite.
+mediump vec4 glowTap(lowp vec2 offset, lowp float weight, lowp vec2 uv, lowp vec2 frag) {
+    mediump vec4 sample = texture2D(TEXTURE, uv + offset * TEXTURE_PIXEL_SIZE) * weight;
+    sample = tintWarm(sample, haze_amount);
+    sample.a *= glowAlpha(zTextureSpec(SCREEN_TEXTURE, (frag + offset) * SCREEN_PIXEL_SIZE));
+    return sample;
+}
+
+void fragment() {
+    mediump vec4 sprite = zTexture(UV);
+    if (sprite.a == 0.0)
+        discard;
+
+    mediump vec4 sum = texture2D(TEXTURE, UV) * center_weight;
+
+    // Two rings of eight taps around the sprite, spreading the glow outward.
+    for (int ring = 0; ring < 2; ring++) {
+        mediump float dist = float(ring + 1);
+        mediump float weight = ring == 0 ? inner_ring_weight : outer_ring_weight;
+
+        for (int i = 0; i < 8; i++) {
+            mediump float angle = float(i) * direction_step;
+            mediump vec2 offset = vec2(cos(angle), sin(angle)) * dist;
+            sum += glowTap(offset, weight, UV.xy, FRAGCOORD.xy);
+        }
+    }
+
+    sum = tintWarm(sum, 0.2);
+    COLOR = sum;
+}

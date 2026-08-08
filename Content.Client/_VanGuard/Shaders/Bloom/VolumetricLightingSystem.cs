@@ -5,11 +5,15 @@ using Robust.Shared.Player;
 
 namespace Content.Client._VanGuard.Shaders.Bloom;
 
+/// <summary>
+///     Adds/removes the <see cref="VolumetricLightOverlay"/> whenever a local player
+///     is present and the bloom CVar is enabled.
+/// </summary>
 public sealed partial class VolumetricLightSystem : EntitySystem
 {
-    [Dependency] private IOverlayManager _overlayMan = default!;
-    [Dependency] private IConfigurationManager _cfg = default!;
-    [Dependency] private ISharedPlayerManager _playerMan = default!;
+    [Dependency] private IOverlayManager _overlays = default!;
+    [Dependency] private IConfigurationManager _config = default!;
+    [Dependency] private ISharedPlayerManager _players = default!;
 
     private VolumetricLightOverlay _overlay = default!;
 
@@ -17,29 +21,39 @@ public sealed partial class VolumetricLightSystem : EntitySystem
     {
         base.Initialize();
 
+        _overlay = new VolumetricLightOverlay();
+
         SubscribeLocalEvent<LocalPlayerAttachedEvent>(OnPlayerAttached);
         SubscribeLocalEvent<LocalPlayerDetachedEvent>(OnPlayerDetached);
-        Subs.CVar(_cfg, VGCCVars.BloomEnabled, OnBloomEnabledChanged);
+        Subs.CVar(_config, VGCCVars.BloomEnabled, OnBloomChanged);
+    }
 
-        _overlay = new();
+    public override void Shutdown()
+    {
+        base.Shutdown();
+
+        // Remove and release the overlay even if the local player is still attached
+        // and bloom is enabled. Both calls are safe when the overlay is not registered.
+        _overlays.RemoveOverlay(_overlay);
+        _overlay.Dispose();
     }
 
     private void OnPlayerAttached(LocalPlayerAttachedEvent args)
     {
-        if (_cfg.GetCVar(VGCCVars.BloomEnabled))
-            _overlayMan.AddOverlay(_overlay);
+        if (_config.GetCVar(VGCCVars.BloomEnabled))
+            _overlays.AddOverlay(_overlay);
     }
 
     private void OnPlayerDetached(LocalPlayerDetachedEvent args)
     {
-        _overlayMan.RemoveOverlay(_overlay);
+        _overlays.RemoveOverlay(_overlay);
     }
 
-    private void OnBloomEnabledChanged(bool enabled)
+    private void OnBloomChanged(bool enabled)
     {
-        if (enabled && _playerMan.LocalEntity != null)
-            _overlayMan.AddOverlay(_overlay);
+        if (enabled && _players.LocalEntity != null)
+            _overlays.AddOverlay(_overlay);
         else
-            _overlayMan.RemoveOverlay(_overlay);
+            _overlays.RemoveOverlay(_overlay);
     }
 }
