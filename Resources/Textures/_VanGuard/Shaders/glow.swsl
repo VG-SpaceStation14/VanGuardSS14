@@ -11,8 +11,8 @@ const mediump float direction_step = 0.785398; // 45 degrees in radians
 mediump float glowAlpha(lowp vec4 background) {
     mediump float brightness = dot(background.rgb, vec3(0.3333));
     mediump float dimming = 1.0 - (1.0 - brightness) / 1.15;
-    mediump float falloff = clamp((brightness - 0.035) / fade_divisor, 0.0, 2.0);
-    return dimming * (1.0 - falloff) + falloff;
+    mediump float falloff = clamp((brightness - 0.035) / fade_divisor, 0.0, 1.0);
+    return dimming * (1.0 - falloff);
 }
 
 // Warms the sample up slightly so the glow does not look grey.
