@@ -20,6 +20,7 @@
     anchored: true
   - type: Clickable
   - type: InteractionOutline
+  - type: BloomOverlayVisuals
   - type: Sprite
     drawdepth: WallMountedItems
     layers:
