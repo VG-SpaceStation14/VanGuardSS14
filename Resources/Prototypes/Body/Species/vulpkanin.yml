@@ -193,6 +193,11 @@
   id: MobVulpkanin
   name: Urist McArfArf
   components:
+  # VG-Tweak Start
+  - type: Tool
+    qualities:
+    - Slicing
+  # VG-Tweak End
   - type: DamageVisuals
     damageOverlayGroups:
       Brute:

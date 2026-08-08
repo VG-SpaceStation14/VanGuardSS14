@@ -4,6 +4,7 @@ using Content.Shared.Dataset;
 using Content.Shared.Humanoid.Markings;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
+using Robust.Shared.Utility;
 
 namespace Content.Shared.Humanoid.Prototypes;
 
@@ -131,6 +132,36 @@ public sealed partial class SpeciesPrototype : IPrototype
     /// </summary>
     [DataField]
     public int MaxAge = 120;
+
+    // VG-Tweak Start
+    /// <summary>
+    ///     Path to a guidebook-style XML document that provides a detailed
+    ///     description of this species. Rendered inside the species browser.
+    /// </summary>
+    [DataField]
+    public ResPath? Description;
+
+    /// <summary>
+    ///     Locale keys describing the advantages of this species.
+    ///     Rendered as a green list in the species browser.
+    /// </summary>
+    [DataField]
+    public List<string> Pros = new();
+
+    /// <summary>
+    ///     Locale keys describing the drawbacks of this species.
+    ///     Rendered as a red list in the species browser.
+    /// </summary>
+    [DataField]
+    public List<string> Cons = new();
+
+    /// <summary>
+    ///     Locale keys describing any special abilities or quirks of this species.
+    ///     Rendered as a plain list in the species browser.
+    /// </summary>
+    [DataField]
+    public List<string> Special = new();
+    // VG-Tweak End
 }
 
 public enum SpeciesNaming : byte

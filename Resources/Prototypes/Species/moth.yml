@@ -17,3 +17,15 @@
   - UnisexMoth
   maleLastNames: NamesMothLast # Corvax-LastnameGender
   femaleLastNames: NamesMothLast # Corvax-LastnameGender
+  # VG-Tweak Start
+  description: /ServerInfo/Guidebook/Mobs/Moth.xml
+  pros:
+  - species-pros-moth-1
+  - species-pros-moth-2
+  - species-pros-moth-3
+  cons:
+  - species-cons-moth-1
+  - species-cons-moth-2
+  special:
+  - species-special-moth-1
+  # VG-Tweak End

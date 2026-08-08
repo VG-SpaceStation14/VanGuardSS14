@@ -5,3 +5,7 @@
   prototype: MobHuman
   dollPrototype: AppearanceHuman
   skinColoration: HumanToned
+  # VG-Tweak Start
+  description: /ServerInfo/Guidebook/Mobs/Human.xml
+  # VG-Tweak End
+

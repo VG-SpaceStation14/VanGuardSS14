@@ -20,3 +20,23 @@
   - UnisexIpc
   voices:
   - UnisexIpc
+  # VG-Tweak Start
+  description: /ServerInfo/Guidebook/Mobs/Ipc.xml
+  pros:
+  - species-pros-ipc-1
+  - species-pros-ipc-2
+  - species-pros-ipc-3
+  - species-pros-ipc-4
+  - species-pros-ipc-5
+  - species-pros-ipc-6
+  special:
+  - species-special-ipc-1
+  - species-special-ipc-2
+  - species-special-ipc-3
+  - species-special-ipc-4
+  cons:
+  - species-cons-ipc-1
+  - species-cons-ipc-2
+  - species-cons-ipc-3
+  - species-cons-ipc-4
+  # VG-Tweak End
