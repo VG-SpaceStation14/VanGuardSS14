@@ -9,7 +9,7 @@ research-console-menu-server-research-button = Research
 research-console-available-text = Researchable Technologies
 research-console-unlocked-text = Unlocked Technologies
 research-console-tier-discipline-info = Tier {$tier}, [color={$color}]{$discipline}[/color]
-research-console-tier-info-small = : Tier {$tier}
+research-console-tier-info-small = Tier {$tier}
 research-console-cost = Cost: [color=orchid]{$amount}[/color]
 research-console-unlocks-list-start = Unlocks:
 research-console-unlocks-list-entry = - [color=yellow]{$name}[/color]

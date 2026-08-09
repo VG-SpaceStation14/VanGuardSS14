@@ -45,3 +45,31 @@
     1: 0
     2: 0.75
     3: 0.75
+
+# VG-Tweak Start: Mech research discipline (own tab, adapted to our mech techs).
+- type: techDiscipline
+  id: Mech
+  name: research-discipline-mech
+  color: "#824a9c"
+  icon:
+    sprite: _VanGuard/Interface/Misc/research_disciplines.rsi
+    state: mech
+  tierPrerequisites:
+    1: 0
+    2: 0.75
+    3: 0.75
+# VG-Tweak End
+
+# VG-Tweak Start: Medical research discipline (split from CivilianServices, like the original).
+- type: techDiscipline
+  id: Medical
+  name: research-discipline-medical
+  color: "#3d8dbb"
+  icon:
+    sprite: Interface/Misc/research_disciplines.rsi
+    state: biochemical
+  tierPrerequisites:
+    1: 0
+    2: 0.75
+    3: 0.75
+# VG-Tweak End

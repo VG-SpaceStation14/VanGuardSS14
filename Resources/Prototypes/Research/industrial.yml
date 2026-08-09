@@ -1,50 +1,59 @@
+# VG-Tweak Start: research tree layout (position) and prerequisites added for the custom console.
+# PowerGeneration is the common parent; the other branches spread from it.
+# Power generators are split: base (Pacman) -> plasma (SuperPacman) -> uranium (JrPacman)
+# right before the battery progression.
+
 # Tier 1
 
 - type: technology
-  id: SalvageEquipment
-  name: research-technology-salvage-equipment
+  id: PowerGeneration
+  position: 0, 0
+  name: research-technology-power-generation
   icon:
-    sprite: Objects/Tools/handdrill.rsi
-    state: handdrill
+    sprite: Structures/Power/Generation/portable_generator.rsi
+    state: portgen3
   discipline: Industrial
   tier: 1
   cost: 7500
   recipeUnlocks:
-  - MiningDrill
-  - MineralScannerEmpty
-  - OreProcessorIndustrialMachineCircuitboard
-  - ClothingMaskWeldingGas
-  - ClothingShoesBootsJump
+  - PortableGeneratorPacmanMachineCircuitboard
+  - SolarControlComputerCircuitboard
+  - SolarTrackerElectronics
+  - EmitterCircuitboard
 
 - type: technology
-  id: SpaceScanning
-  name: research-technology-space-scanning
+  id: PlasmaGenerator
+  position: 1, 0
+  name: research-technology-plasma-generator
   icon:
-    sprite: Objects/Tools/handheld_mass_scanner.rsi
-    state: icon
-  discipline: Industrial
-  tier: 1
-  cost: 5000
-  recipeUnlocks:
-  - RadarConsoleCircuitboard
-  - HandHeldMassScanner
-
-- type: technology
-  id: AdvancedPowercells
-  name: research-technology-advanced-powercells
-  icon:
-    sprite: Structures/Power/turbo_recharger.rsi
-    state: empty
+    sprite: Structures/Power/Generation/portable_generator.rsi
+    state: portgen0
   discipline: Industrial
   tier: 1
   cost: 7500
   recipeUnlocks:
-  - PowerCellHigh
-  - TurboItemRechargerCircuitboard
-  - SMESAdvancedMachineCircuitboard
+  - PortableGeneratorSuperPacmanMachineCircuitboard
+  technologyPrerequisites:
+  - PowerGeneration
+
+- type: technology
+  id: UraniumGenerator
+  position: 2, 0
+  name: research-technology-uranium-generator
+  icon:
+    sprite: Structures/Power/Generation/portable_generator.rsi
+    state: portgen1
+  discipline: Industrial
+  tier: 2
+  cost: 7500
+  recipeUnlocks:
+  - PortableGeneratorJrPacmanMachineCircuitboard
+  technologyPrerequisites:
+  - PlasmaGenerator
 
 - type: technology
   id: MechanicalCompression
+  position: 1, 1
   name: research-technology-mechanical-compression
   icon:
     sprite: Structures/Machines/flatpacker.rsi
@@ -54,90 +63,104 @@
   cost: 10000
   recipeUnlocks:
   - FlatpackerMachineCircuitboard
+  technologyPrerequisites:
+  - PowerGeneration
+
+- type: technology
+  id: AdvancedToolsTechnology
+  position: 1, 2
+  name: research-technology-advanced-tools
+  icon:
+    sprite: Objects/Tools/welder_experimental.rsi
+    state: icon
+  discipline: Industrial
+  tier: 2
+  cost: 10000
+  recipeUnlocks:
+    - WelderExperimental
+    - PowerDrill
+    - JawsOfLife
+    - BorgModuleAdvancedTool
+    - Fulton
+    - FultonBeacon
+  technologyPrerequisites:
+  - PowerGeneration
 
 - type: technology
   id: IndustrialEngineering
+  position: 2, 2
   name: research-technology-industrial-engineering
   icon:
     sprite: Structures/Machines/protolathe_hypercon.rsi
     state: building
   discipline: Industrial
-  tier: 1
+  tier: 3
   cost: 10000
   recipeUnlocks:
   - AutolatheHyperConvectionMachineCircuitboard
   - ProtolatheHyperConvectionMachineCircuitboard
   - CircuitImprinterHyperConvectionMachineCircuitboard
   - SheetifierMachineCircuitboard
+  technologyPrerequisites:
+  - AdvancedToolsTechnology
 
 - type: technology
-  id: PowerGeneration
-  name: research-technology-power-generation
+  id: SalvageEquipment
+  position: 1, 3
+  name: research-technology-salvage-equipment
   icon:
-    sprite: Structures/Power/Generation/portable_generator.rsi
-    state: portgen0
+    sprite: Objects/Tools/handdrill.rsi
+    state: handdrill
   discipline: Industrial
-  tier: 1
+  tier: 2
   cost: 7500
   recipeUnlocks:
-  - PortableGeneratorPacmanMachineCircuitboard
-  - PortableGeneratorSuperPacmanMachineCircuitboard
-  - PortableGeneratorJrPacmanMachineCircuitboard
-  - SolarControlComputerCircuitboard
-  - SolarTrackerElectronics
-  - EmitterCircuitboard
+  - MiningDrill
+  - MineralScannerEmpty
+  - OreProcessorIndustrialMachineCircuitboard
+  - ClothingMaskWeldingGas
+  - ClothingShoesBootsJump
+  technologyPrerequisites:
+  - PowerGeneration
+
+- type: technology
+  id: MassExcavation
+  position: 2, 3
+  name: research-technology-excavation
+  icon:
+    sprite: Objects/Tools/handdrilldiamond.rsi
+    state: handdrill
+  discipline: Industrial
+  tier: 2
+  cost: 12500
+  recipeUnlocks:
+    - OreBagOfHolding
+    - MiningDrillDiamond
+    - AdvancedMineralScannerEmpty
+    - BorgModuleAdvancedMining
+    - SalvageExpeditionsComputerCircuitboard # Corvax-Cringe
+  technologyPrerequisites:
+  - SalvageEquipment
 
 - type: technology
   id: AtmosphericTech
+  position: 1, 4
   name: research-technology-atmospheric-tech
   icon:
     sprite: Structures/Piping/Atmospherics/thermomachine.rsi
     state: freezerOff
   discipline: Industrial
-  tier: 1
+  tier: 2
   cost: 7500
   recipeUnlocks:
   - ThermomachineFreezerMachineCircuitBoard
   - GasRecyclerMachineCircuitboard
-
-- type: technology
-  id: RipleyAPLU
-  name: research-technology-ripley-aplu
-  icon:
-    sprite: Objects/Specific/Mech/mecha.rsi
-    state: ripley
-  discipline: Industrial
-  tier: 1
-  cost: 7500
-  recipeUnlocks:
-  - RipleyHarness
-  - RipleyLArm
-  - RipleyRArm
-  - RipleyLLeg
-  - RipleyRLeg
-  - RipleyCentralElectronics
-  - RipleyPeripheralsElectronics
-  - MechEquipmentGrabber
-
-# Tier 2
-
-- type: technology
-  id: Shuttlecraft
-  name: research-technology-shuttlecraft
-  icon:
-    sprite: Structures/Shuttles/gyroscope.rsi
-    state: base
-  discipline: Industrial
-  tier: 2
-  cost: 10000
-  recipeUnlocks:
-  - ShuttleConsoleCircuitboard
-  - ThrusterMachineCircuitboard
-  - GyroscopeMachineCircuitboard
-  - MiniGravityGeneratorCircuitboard
+  technologyPrerequisites:
+  - PowerGeneration
 
 - type: technology
   id: AdvancedAtmospherics
+  position: 2, 4
   name: research-technology-advanced-atmospherics
   icon:
     sprite: Objects/Devices/Holoprojectors/atmos.rsi
@@ -153,42 +176,24 @@
   - AtmosphericTech
 
 - type: technology
-  id: AdvancedToolsTechnology
-  name: research-technology-advanced-tools
+  id: SpaceScanning
+  position: 1, 5
+  name: research-technology-space-scanning
   icon:
-    sprite: Objects/Tools/welder_experimental.rsi
+    sprite: Objects/Tools/handheld_mass_scanner.rsi
     state: icon
   discipline: Industrial
   tier: 2
-  cost: 10000
+  cost: 5000
   recipeUnlocks:
-    - WelderExperimental
-    - PowerDrill
-    - JawsOfLife
-    - BorgModuleAdvancedTool
-    - Fulton
-    - FultonBeacon
-
-- type: technology
-  id: MassExcavation
-  name: research-technology-excavation
-  icon:
-    sprite: Objects/Tools/handdrilldiamond.rsi
-    state: handdrill
-  discipline: Industrial
-  tier: 2
-  cost: 12500
-  recipeUnlocks:
-    - OreBagOfHolding
-    - MiningDrillDiamond
-    - AdvancedMineralScannerEmpty
-    - BorgModuleAdvancedMining
-    - SalvageExpeditionsComputerCircuitboard # Corvax-Cringe
-
-# Tier 3
+  - RadarConsoleCircuitboard
+  - HandHeldMassScanner
+  technologyPrerequisites:
+  - PowerGeneration
 
 - type: technology
   id: BluespaceStorage
+  position: 3, 2
   name: research-technology-bluespace-storage
   icon:
     sprite: Clothing/Back/Backpacks/holding.rsi
@@ -200,9 +205,62 @@
   - ClothingBackpackHolding
   - ClothingBackpackSatchelHolding
   - ClothingBackpackDuffelHolding
+  technologyPrerequisites:
+  - IndustrialEngineering
+
+- type: technology
+  id: Shuttlecraft
+  position: 2, 5
+  name: research-technology-shuttlecraft
+  icon:
+    sprite: Structures/Shuttles/gyroscope.rsi
+    state: base
+  discipline: Industrial
+  tier: 2
+  cost: 10000
+  recipeUnlocks:
+  - ShuttleConsoleCircuitboard
+  - ThrusterMachineCircuitboard
+  - GyroscopeMachineCircuitboard
+  - MiniGravityGeneratorCircuitboard
+  technologyPrerequisites:
+  - SpaceScanning
+
+- type: technology
+  id: AdvancedPowercells
+  position: 3, 0
+  name: research-technology-advanced-powercells
+  icon:
+    sprite: Structures/Power/turbo_recharger.rsi
+    state: empty
+  discipline: Industrial
+  tier: 2
+  cost: 7500
+  recipeUnlocks:
+  - PowerCellHigh
+  - TurboItemRechargerCircuitboard
+  - SMESAdvancedMachineCircuitboard
+  technologyPrerequisites:
+  - UraniumGenerator
+
+- type: technology
+  id: HyperCapacityBattery
+  position: 4, 0
+  name: research-technology-hyper-capacity-battery
+  icon:
+    sprite: Objects/Power/power_cells.rsi
+    state: hyper
+  discipline: Industrial
+  tier: 3
+  cost: 7500
+  recipeUnlocks:
+  - PowerCellHyper
+  technologyPrerequisites:
+  - AdvancedPowercells
 
 - type: technology
   id: OptimizedMicrogalvanism
+  position: 5, 0
   name: research-technology-optimized-microgalvanism
   icon:
     sprite: Objects/Power/power_cells.rsi
@@ -212,6 +270,5 @@
   cost: 10000
   recipeUnlocks:
   - PowerCellMicroreactor
-  - PowerCellHyper
   technologyPrerequisites:
-  - AdvancedPowercells
+  - HyperCapacityBattery

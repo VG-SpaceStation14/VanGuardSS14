@@ -1,0 +1,82 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      xmlns:vanguard="clr-namespace:Content.Client._VanGuard.Research.UI"
+                      Title="{Loc 'research-console-menu-title'}"
+                      MinSize="1000 600"
+                      SetSize="1240 820">
+    <BoxContainer Orientation="Vertical"
+                  HorizontalExpand="True"
+                  VerticalExpand="True">
+        <!-- Research discipline (branch) tabs -->
+        <controls:StripeBack MinSize="52 52">
+            <BoxContainer Name="DisciplinesContainer"
+                          Orientation="Horizontal"
+                          HorizontalAlignment="Stretch"
+                          MinSize="52 52"
+                          Margin="5"/>
+        </controls:StripeBack>
+
+        <!-- Top information bar -->
+        <BoxContainer Orientation="Horizontal"
+                      HorizontalExpand="True"
+                      VerticalExpand="False"
+                      MinHeight="60"
+                      Margin="10">
+            <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True">
+                <RichTextLabel Name="ResearchAmountLabel"/>
+                <Control VerticalExpand="True"/>
+                <BoxContainer Name="TierDisplayContainer" Orientation="Horizontal" HorizontalExpand="True" VerticalAlignment="Bottom"/>
+            </BoxContainer>
+            <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalAlignment="Right">
+                <Button Name="RecenterButton" Text="{Loc 'research-console-menu-recenter-button'}" MinHeight="40"/>
+            </BoxContainer>
+            <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalAlignment="Right" Margin="10 0 0 0">
+                <Button Name="ServerButton" Text="{Loc 'research-console-menu-server-selection-button'}" MinHeight="40"/>
+            </BoxContainer>
+        </BoxContainer>
+
+        <!-- Technology tree + info panel -->
+        <BoxContainer Orientation="Horizontal"
+                      HorizontalExpand="True"
+                      VerticalExpand="True">
+            <PanelContainer VerticalExpand="True"
+                            HorizontalExpand="True"
+                            SizeFlagsStretchRatio="5"
+                            Margin="0 0 0 10">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#0B0B0D"
+                                      BorderColor="#2A2A30"
+                                      BorderThickness="4"
+                                      ContentMarginTopOverride="4"
+                                      ContentMarginBottomOverride="4"
+                                      ContentMarginLeftOverride="4"
+                                      ContentMarginRightOverride="4"/>
+                </PanelContainer.PanelOverride>
+                <vanguard:ResearchTreeCanvas Name="TreeCanvas"
+                                             HorizontalExpand="True"
+                                             VerticalExpand="True"
+                                             InheritChildMeasure="False"
+                                             RectClipContent="True"
+                                             MouseFilter="Pass"/>
+            </PanelContainer>
+            <PanelContainer VerticalExpand="True"
+                            SizeFlagsStretchRatio="2"
+                            HorizontalExpand="True"
+                            MinWidth="300">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#1B1B1E"/>
+                </PanelContainer.PanelOverride>
+                <ScrollContainer HorizontalExpand="True"
+                                 VerticalExpand="True"
+                                 HScrollEnabled="False">
+                    <BoxContainer Name="InfoContainer"
+                                  Orientation="Vertical"
+                                  HorizontalExpand="True"
+                                  VerticalExpand="True"
+                                  Margin="5"/>
+                </ScrollContainer>
+            </PanelContainer>
+        </BoxContainer>
+    </BoxContainer>
+</controls:FancyWindow>
