@@ -1,0 +1,84 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      Title="{Loc 'experiment-scanner-title'}"
+                      MinSize="760 560"
+                      SetSize="860 620">
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+        <!-- Field terminal header: scanner icon + title + server link -->
+        <PanelContainer MinHeight="64">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#141310"
+                                  BorderColor="#f5a623"
+                                  BorderThickness="0 0 0 2"/>
+            </PanelContainer.PanelOverride>
+            <BoxContainer Orientation="Horizontal" Margin="10" HorizontalExpand="True">
+                <TextureRect Name="ScannerIcon"
+                             TextureScale="2 2"
+                             VerticalAlignment="Center"
+                             Margin="0 0 10 0"/>
+                <BoxContainer Orientation="Vertical" VerticalAlignment="Center" HorizontalExpand="True">
+                    <Label Text="{Loc 'experiment-scanner-title'}" StyleClasses="LabelHeading"/>
+                    <Label Name="SubtitleLabel" StyleClasses="LabelSubText"/>
+                </BoxContainer>
+                <RichTextLabel Name="ServerStatusLabel" VerticalAlignment="Center" Margin="0 0 10 0"/>
+                <Button Name="ServerButton" Text="{Loc 'experiment-scanner-select-server'}" MinWidth="140"/>
+            </BoxContainer>
+        </PanelContainer>
+
+        <!-- Orders: available list tab + active order tab -->
+        <TabContainer Name="MainTabs" HorizontalExpand="True" VerticalExpand="True" Margin="10 10 10 0">
+            <PanelContainer HorizontalExpand="True" VerticalExpand="True" Margin="4 6 4 4">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#100D0A"
+                                      BorderColor="#453524"
+                                      BorderThickness="2"
+                                      ContentMarginLeftOverride="6"
+                                      ContentMarginRightOverride="6"
+                                      ContentMarginTopOverride="6"
+                                      ContentMarginBottomOverride="6"/>
+                </PanelContainer.PanelOverride>
+                <ScrollContainer HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False">
+                    <BoxContainer Name="AvailableContainer" Orientation="Vertical" HorizontalExpand="True"/>
+                </ScrollContainer>
+            </PanelContainer>
+            <PanelContainer HorizontalExpand="True" VerticalExpand="True" Margin="4 6 4 4">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#100D0A"
+                                      BorderColor="#453524"
+                                      BorderThickness="2"
+                                      ContentMarginLeftOverride="6"
+                                      ContentMarginRightOverride="6"
+                                      ContentMarginTopOverride="6"
+                                      ContentMarginBottomOverride="6"/>
+                </PanelContainer.PanelOverride>
+                <ScrollContainer HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False">
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+                        <Label Name="NoActiveLabel" Text="{Loc 'experiment-scanner-no-active'}" StyleClasses="LabelHeading"/>
+                        <BoxContainer Name="ActiveContainer" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+                            <RichTextLabel Name="ActiveNameLabel" StyleClasses="LabelHeading"/>
+                            <RichTextLabel Name="ActiveDescLabel" HorizontalExpand="True" Margin="0 6 0 0"/>
+                            <RichTextLabel Name="ActiveProgressLabel" Margin="0 8 0 0"/>
+                            <ProgressBar Name="ActiveProgressBar" HorizontalExpand="True" MinHeight="12" Margin="0 6 0 0"/>
+                            <RichTextLabel Name="ActiveRewardLabel" Margin="0 6 0 0"/>
+                            <RichTextLabel Name="ActiveTimeLabel" Margin="0 4 0 0"/>
+                            <Control VerticalExpand="True"/>
+                            <Button Name="AbandonButton" Text="{Loc 'experiment-scanner-abandon'}" HorizontalExpand="True" MinHeight="40"/>
+                        </BoxContainer>
+                    </BoxContainer>
+                </ScrollContainer>
+            </PanelContainer>
+        </TabContainer>
+
+        <!-- Scan-line footer + scan controls -->
+        <PanelContainer MinHeight="3" Margin="12 10 12 4">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#f5a623"/>
+            </PanelContainer.PanelOverride>
+        </PanelContainer>
+        <BoxContainer Orientation="Horizontal" Margin="12 6 12 10">
+            <Label Name="ProcessingLabel" Text="{Loc 'experiment-scanner-processing'}" Visible="False" HorizontalExpand="True" VerticalAlignment="Center" FontColorOverride="#f5a623"/>
+            <Button Name="PerformButton" Text="{Loc 'experiment-scanner-perform'}" HorizontalExpand="True" MinHeight="44"/>
+        </BoxContainer>
+    </BoxContainer>
+</controls:FancyWindow>

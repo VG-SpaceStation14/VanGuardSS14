@@ -1,0 +1,78 @@
+# Experiment scanners: a handheld device for field experiments and a floor-mounted
+# machine that scans every loose item, creature and puddle standing on its tile.
+
+- type: entity
+  parent: BaseItem
+  id: ExperimentScanner
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Objects/Specific/Research/experimentscanner.rsi
+    state: icon
+  - type: Item
+    sprite: _VanGuard/Objects/Specific/Research/experimentscanner.rsi
+  - type: ResearchClient
+  - type: ExperimentScanner
+    experimentGroup: Experiments
+    visibleOrders: 7
+  - type: ActivatableUI
+    key: enum.ExperimentScannerUiKey.Key
+    singleUser: true
+  - type: UserInterface
+    interfaces:
+      enum.ExperimentScannerUiKey.Key:
+        type: ExperimentScannerBoundUserInterface
+      enum.ResearchClientUiKey.Key:
+        type: ResearchClientBoundUserInterface
+  - type: Tag
+    tags:
+    - DoorBumpOpener
+
+- type: entity
+  parent: [ BaseMachinePowered, SmallConstructibleMachine ]
+  id: ExperimentFloorScanner
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Structures/Machines/floor_scanner.rsi
+    drawdepth: LargeObjects
+    offset: 0,0.5
+    layers:
+    - state: icon
+      map: ["enum.ExperimentFloorScannerVisualLayers.Base"]
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.ExperimentFloorScannerVisuals.State:
+        enum.ExperimentFloorScannerVisualLayers.Base:
+          Idle: { state: icon }
+          Up: { state: up }
+          Down: { state: down }
+          Scanning: { state: scanning }
+  - type: Physics
+    bodyType: Static
+    canCollide: false
+  - type: Transform
+    anchored: true
+  - type: ApcPowerReceiver
+    powerLoad: 2500
+  - type: Machine
+    board: ExperimentFloorScannerMachineCircuitboard
+  - type: ContainerContainer
+    containers:
+      machine_board: !type:Container
+      machine_parts: !type:Container
+      experiment-floor-scanner-container: !type:Container
+  - type: ResearchClient
+  - type: ExperimentFloorScanner
+    experimentGroup: Experiments
+    visibleOrders: 7
+  - type: ExperimentScannerDatabase
+  - type: ActivatableUI
+    key: enum.ExperimentFloorScannerUiKey.Key
+  - type: ActivatableUIRequiresPower
+  - type: UserInterface
+    interfaces:
+      enum.ExperimentFloorScannerUiKey.Key:
+        type: ExperimentFloorScannerBoundUserInterface
+      enum.ResearchClientUiKey.Key:
+        type: ResearchClientBoundUserInterface
+

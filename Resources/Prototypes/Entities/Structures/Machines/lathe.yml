@@ -212,6 +212,7 @@
     - Janitor
     - Instruments
     - Equipment
+    - ExperimentsEquipment # VG-Tweak: experiment scanner branch
   - type: EmagLatheRecipes
     emagDynamicPacks:
     - SecurityAmmo
@@ -268,6 +269,7 @@
     - CameraBoards
     - MechBoards
     - ShuttleBoards
+    - ExperimentsBoards # VG-Tweak: experiment scanner branch
   - type: EmagLatheRecipes
     emagDynamicPacks:
     - SecurityBoards

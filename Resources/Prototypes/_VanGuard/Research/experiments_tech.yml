@@ -1,0 +1,30 @@
+# Experiment scanner research branch (part of the Experimental discipline):
+# the handheld scanner first, then the floor machine.
+
+- type: technology
+  id: ExperimentScannerTech
+  position: 0, 7
+  name: research-technology-experiment-scanner
+  icon:
+    sprite: _VanGuard/Objects/Specific/Research/experimentscanner.rsi
+    state: icon
+  discipline: Experimental
+  tier: 1
+  cost: 5000
+  recipeUnlocks:
+  - ExperimentScanner
+
+- type: technology
+  id: ExperimentFloorScannerTech
+  position: 1, 7
+  name: research-technology-experiment-floor-scanner
+  icon:
+    sprite: _VanGuard/Structures/Machines/floor_scanner.rsi
+    state: icon
+  discipline: Experimental
+  tier: 2
+  cost: 5000
+  technologyPrerequisites:
+  - ExperimentScannerTech
+  recipeUnlocks:
+  - ExperimentFloorScannerMachineCircuitboard

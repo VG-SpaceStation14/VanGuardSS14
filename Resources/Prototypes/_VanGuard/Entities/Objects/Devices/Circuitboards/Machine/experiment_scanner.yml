@@ -1,0 +1,14 @@
+# Machine circuit board for the floor experiment scanner.
+
+- type: entity
+  parent: BaseMachineCircuitboard
+  id: ExperimentFloorScannerMachineCircuitboard
+  components:
+  - type: Sprite
+    state: science
+  - type: MachineBoard
+    prototype: ExperimentFloorScanner
+    stackRequirements:
+      Manipulator: 2
+      Glass: 5
+      Cable: 5
