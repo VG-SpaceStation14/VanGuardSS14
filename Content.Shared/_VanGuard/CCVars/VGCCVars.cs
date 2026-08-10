@@ -46,5 +46,5 @@ public sealed class VGCCVars
     ///     Strength of the volumetric light glow.
     /// </summary>
     public static readonly CVarDef<float> VolumetricLightStrength =
-        CVarDef.Create("vg.volumetric_light_strength", 0.007f, CVar.CLIENT | CVar.ARCHIVE);
+        CVarDef.Create("vg.volumetric_light_strength", 0.001f, CVar.CLIENT | CVar.ARCHIVE);
 }
