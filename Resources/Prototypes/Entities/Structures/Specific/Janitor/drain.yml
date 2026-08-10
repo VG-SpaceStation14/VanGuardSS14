@@ -6,6 +6,11 @@
   placement:
     mode: SnapgridCenter
   components:
+  # VG-Tweak: allows the RCD/RPD to deconstruct floor drains.
+  - type: RCDDeconstructable
+    cost: 4
+    delay: 2
+    fx: EffectRCDDeconstruct2
   - type: Sprite
     drawdepth: FloorObjects
     sprite: Objects/Specific/Janitorial/drain.rsi

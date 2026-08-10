@@ -17,6 +17,7 @@ research-technology-ripley-aplu = Рипли АВП
 research-technology-advanced-atmospherics = Продвинутые атмос-технологии
 research-technology-advanced-tools = Продвинутые инструменты
 research-technology-compact-technologies = Компактные технологии
+research-technology-rapid-pipe-dispenser = Быстрый прокладчик труб
 research-technology-super-powercells = Супербатареи
 research-technology-bluespace-storage = Блюспейс-хранилище
 research-technology-optimized-microgalvanism = Оптимизированный микрогальванизм

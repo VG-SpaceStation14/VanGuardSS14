@@ -17,6 +17,7 @@ research-technology-ripley-aplu = Ripley APLU
 research-technology-advanced-atmospherics = Advanced Atmospherics
 research-technology-advanced-tools = Advanced Tools
 research-technology-compact-technologies = Compact Technologies
+research-technology-rapid-pipe-dispenser = Rapid Pipe Dispenser
 research-technology-super-powercells = Super Powercells
 research-technology-bluespace-storage = Bluespace Storage
 research-technology-optimized-microgalvanism = Optimized Microgalvanism

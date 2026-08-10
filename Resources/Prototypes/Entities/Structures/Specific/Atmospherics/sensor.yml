@@ -2,6 +2,11 @@
   id: AirSensorBase
   abstract: true
   components:
+  # VG-Tweak: allows the RCD/RPD to deconstruct air sensors.
+  - type: RCDDeconstructable
+    cost: 4
+    delay: 2
+    fx: EffectRCDDeconstruct2
   - type: DeviceNetwork
     deviceNetId: AtmosDevices
     receiveFrequencyId: AtmosMonitor

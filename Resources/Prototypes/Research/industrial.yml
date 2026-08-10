@@ -104,6 +104,21 @@
   - AdvancedToolsTechnology
 
 - type: technology
+  id: RapidPipeDispenser
+  position: 3, 1
+  name: research-technology-rapid-pipe-dispenser
+  icon:
+    sprite: _VanGuard/Objects/Tools/rpd.rsi
+    state: icon
+  discipline: Industrial
+  tier: 2
+  cost: 10000
+  recipeUnlocks:
+    - RPD
+  technologyPrerequisites:
+  - CompactTechnologies
+
+- type: technology
   id: IndustrialEngineering
   position: 2, 2
   name: research-technology-industrial-engineering

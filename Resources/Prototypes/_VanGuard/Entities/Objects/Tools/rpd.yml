@@ -1,0 +1,96 @@
+- type: entity
+  id: RPD
+  parent: BaseItem
+  name: RPD
+  description: The rapid pipe dispenser is used to quickly build structures for atmosphere operation and disposal.
+  components:
+  - type: RCD
+    availablePrototypes:
+    - FireAlarm
+    - GasPipeBend
+    - GasPipeStraight
+    - GasPipeHalf
+    - GasPipeFourway
+    - GasPipeTJunction
+    - GasPressurePump
+    - GasMixer
+    - GasMixerFlipped
+    - GasFilter
+    - GasFilterFlipped
+    - GasVolumePump
+    - GasPassiveVent
+    - GasOutletInjector
+    - Radiator
+    - GasVentPump
+    - GasValve
+    - GasVentScrubber
+    - GasPassiveGate
+    - GasDualPortVentPump
+    - SignalControlledValve
+    - PressureControlledValve
+    - DisposalUnit
+    - MailingUnit
+    - GasPort
+    - DisposalJunctionFlipped
+    - DisposalJunction
+    - DisposalRouterFlipped
+    - DisposalRouter
+    - DisposalTagger
+    - DisposalBend
+    - DisposalYJunction
+    - DisposalSignalRouter
+    - DisposalSignalRouterFlipped
+    - DisposalTrunk
+    - DisposalPipe
+    - AirSensor
+    - FloorDrain
+    - AirAlarm
+    - PipeDeconstruct
+  - type: LimitedCharges
+    maxCharges: 130
+    lastCharges: 130
+  - type: UseDelay
+  - type: Sprite
+    sprite: _VanGuard/Objects/Tools/rpd.rsi
+    state: icon
+  - type: Item
+    size: Normal
+  - type: Clothing
+    sprite: _VanGuard/Objects/Tools/rpd.rsi
+    quickEquip: false
+    slots:
+    - Belt
+  - type: PhysicalComposition
+    materialComposition:
+      Steel: 500
+      Plastic: 100
+  - type: StaticPrice
+    price: 150
+  - type: UserInterface
+    interfaces:
+      enum.RcdUiKey.Key:
+        type: RCDMenuBoundUserInterface
+  - type: ActivatableUI
+    inHandsOnly: true
+    key: enum.RcdUiKey.Key
+
+- type: entity
+  id: RPDEmpty
+  parent: RPD
+  suffix: Empty
+  components:
+  - type: LimitedCharges
+    lastCharges: 0
+
+- type: entity
+  id: RPDRecharging
+  parent: RPD
+  name: experimental RPD
+  description: A bluespace-enhanced rapid pipe dispenser that passively generates its own compressed matter.
+  suffix: Recharging
+  components:
+  - type: LimitedCharges
+    maxCharges: 100
+    lastCharges: 100
+  - type: AutoRecharge
+    rechargeDuration: 2

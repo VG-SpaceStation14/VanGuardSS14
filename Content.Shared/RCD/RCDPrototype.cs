@@ -51,6 +51,13 @@ public sealed partial class RCDPrototype : IPrototype
     public bool AllowMultiDirection { get; private set; }
 
     /// <summary>
+    /// If true, the deconstruct mode can only deconstruct objects and will refuse to
+    /// deconstruct floor tiles (used by the RPD, which is an RCD variant for pipes).
+    /// </summary>
+    [DataField, ViewVariables(VVAccess.ReadOnly)]
+    public bool DeconstructObjectsOnly { get; private set; }
+
+    /// <summary>
     /// Number of charges consumed when the operation is completed
     /// </summary>
     [DataField, ViewVariables(VVAccess.ReadOnly)]
@@ -137,6 +144,7 @@ public enum RcdConstructionRule : byte
     MustBuildOnSubfloor,        // Can only be built on exposed subfloor (e.g. catwalks on lattice or hull plating)
     IsWindow,                   // The entity is a window and can be built on grilles
     IsCatwalk,                  // The entity is a catwalk
+    IsWall,                     // The entity is wall-mounted (e.g. fire alarms, air alarms) and can be built on walls
 }
 
 public enum RcdRotation : byte

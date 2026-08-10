@@ -66,6 +66,8 @@
   # VG-Tweak: RCD/RCD ammo are research-locked behind CompactTechnologies.
   - RCD
   - RCDAmmo
+  # VG-Tweak: the rapid pipe dispenser is research-locked behind RapidPipeDispenser.
+  - RPD
 
 - type: latheRecipePack
   id: AtmosTools

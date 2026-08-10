@@ -61,6 +61,8 @@
   id: BaseWall
   components:
   - type: Occluder # Breaks on diagonal walls
+  # VG-Tweak: allows RCD/RPD wall-mounted devices (fire alarms, air alarms) to be built on top.
+  - type: CanBuildWallOnTop
 
 - type: entity
   abstract: true

@@ -55,8 +55,11 @@ public sealed partial class RCDConstructionGhostSystem : EntitySystem
         }
         var prototype = ProtoMan.Index(rcd.ProtoId);
 
-        // Update the direction the RCD prototype based on the placer direction
-        if (_placementDirection != _placementManager.Direction)
+        // Update the direction the RCD prototype based on the placer direction.
+        // VG-Tweak: the `placerEntity != heldEntity` check forces a direction re-sync whenever the
+        // held RCD changes, preventing a fresh device from building with its default rotation
+        // instead of the one the ghost displays.
+        if (_placementDirection != _placementManager.Direction || placerEntity != heldEntity)
         {
             _placementDirection = _placementManager.Direction;
             RaiseNetworkEvent(new RCDConstructionGhostRotationEvent(GetNetEntity(heldEntity.Value), _placementDirection));

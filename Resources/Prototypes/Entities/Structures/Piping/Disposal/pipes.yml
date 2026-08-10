@@ -8,6 +8,11 @@
     snap:
     - Disposal
   components:
+  # VG-Tweak: allows the RCD/RPD to deconstruct disposal pipes.
+  - type: RCDDeconstructable
+    cost: 4
+    delay: 2
+    fx: EffectRCDDeconstruct2
   - type: Sprite
     drawdepth: ThickPipe
     sprite: Structures/Piping/disposal.rsi

@@ -372,7 +372,7 @@ public sealed partial class RCDSystem : EntitySystem
             case RcdMode.ConstructObject:
                 return IsConstructionLocationValid(uid, component, gridUid, mapGrid, tile, position, direction, user, popMsgs);
             case RcdMode.Deconstruct:
-                return IsDeconstructionStillValid(uid, tile, target, user, popMsgs);
+                return IsDeconstructionStillValid(uid, tile, target, prototype.DeconstructObjectsOnly, user, popMsgs);
         }
 
         return false;
@@ -455,6 +455,7 @@ public sealed partial class RCDSystem : EntitySystem
         // Check rule: The tile is unoccupied
         var isWindow = prototype.ConstructionRules.Contains(RcdConstructionRule.IsWindow);
         var isCatwalk = prototype.ConstructionRules.Contains(RcdConstructionRule.IsCatwalk);
+        var isWall = prototype.ConstructionRules.Contains(RcdConstructionRule.IsWall);
 
         _intersectingEntities.Clear();
         _lookup.GetLocalEntitiesIntersecting(gridUid, position, _intersectingEntities, -0.05f, LookupFlags.Uncontained);
@@ -494,6 +495,9 @@ public sealed partial class RCDSystem : EntitySystem
                 return false;
             }
 
+            if (isWall && HasComp<SharedCanBuildWallOnTopComponent>(ent))
+                continue;
+
             if (prototype.CollisionMask != CollisionGroup.None && TryComp<FixturesComponent>(ent, out var fixtures))
             {
                 foreach (var fixture in fixtures.Fixtures.Values)
@@ -519,11 +523,20 @@ public sealed partial class RCDSystem : EntitySystem
         return true;
     }
 
-    private bool IsDeconstructionStillValid(EntityUid uid, TileRef tile, EntityUid? target, EntityUid user, bool popMsgs = true)
+    private bool IsDeconstructionStillValid(EntityUid uid, TileRef tile, EntityUid? target, bool objectsOnly, EntityUid user, bool popMsgs = true)
     {
         // Attempt to deconstruct a floor tile
         if (target == null)
         {
+            // The device refuses to deconstruct floor tiles (e.g. the RPD pipe variant)
+            if (objectsOnly)
+            {
+                if (popMsgs)
+                    _popup.PopupEntity(Loc.GetString("rcd-component-deconstruct-target-not-on-whitelist-message"), uid, user);
+
+                return false;
+            }
+
             // The tile is empty
             if (tile.Tile.IsEmpty)
             {
