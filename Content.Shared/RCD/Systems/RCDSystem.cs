@@ -1,3 +1,5 @@
+using Content.Shared.Access.Components;
+using Content.Shared.Access.Systems;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Charges.Systems;
 using Content.Shared.Construction;
@@ -43,6 +45,8 @@ public sealed partial class RCDSystem : EntitySystem
     [Dependency] private SharedMapSystem _mapSystem = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private TagSystem _tags = default!;
+    // VG-Tweak: deconstructing access-protected objects (e.g. airlocks) requires matching access.
+    [Dependency] private AccessReaderSystem _accessReader = default!;
 
     private readonly int _instantConstructionDelay = 0;
     private readonly EntProtoId _instantConstructionFx = "EffectRCDConstruct0";
@@ -578,6 +582,20 @@ public sealed partial class RCDSystem : EntitySystem
 
                 return false;
             }
+
+            // VG-Tweak Start
+            // Deconstructing access-protected objects (e.g. airlocks) requires matching access.
+            if (TryComp<AccessReaderComponent>(target, out var accessReader) && accessReader.Enabled)
+            {
+                if (!_accessReader.IsAllowed(user, target.Value, accessReader))
+                {
+                    if (popMsgs)
+                        _popup.PopupEntity(Loc.GetString("rcd-component-access-denied"), uid, user);
+
+                    return false;
+                }
+            }
+            // VG-Tweak End
         }
 
         return true;
