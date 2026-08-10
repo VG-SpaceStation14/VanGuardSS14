@@ -167,19 +167,33 @@
   - SalvageWeapons
 
 - type: technology
-  id: BasicShuttleArmament
+  id: PowerCages
   position: 1, 1
-  name: research-technology-basic-shuttle-armament
+  name: research-technology-power-cages
   icon:
     sprite: Structures/Power/cage_recharger.rsi
     state: full
   discipline: Arsenal
   tier: 2
-  cost: 10500
+  cost: 7500
   recipeUnlocks:
   - PowerCageRechargerCircuitboard
   - PowerCageSmall
   - PowerCageMedium
+  technologyPrerequisites:
+  - SalvageWeapons
+
+- type: technology
+  id: ShuttleGuns
+  position: 2, 0
+  name: research-technology-shuttle-guns
+  icon:
+    sprite: Objects/Weapons/Guns/Shuttles/laser.rsi
+    state: lse-1200c
+  discipline: Arsenal
+  tier: 2
+  cost: 10500
+  recipeUnlocks:
   - MagazineGrenadeEmpty
   - GrenadeFlash
   - GrenadeBlast
@@ -204,7 +218,8 @@
   - PowerCageHigh
   - ShuttleGunDusterCircuitboard
   technologyPrerequisites:
-  - BasicShuttleArmament
+  - PowerCages
+  - ShuttleGuns
 
 - type: technology
   id: ConcentratedLaserWeaponry

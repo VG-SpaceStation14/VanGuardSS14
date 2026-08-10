@@ -210,6 +210,18 @@
   id: StasisBedMachineCircuitboard
   result: StasisBedMachineCircuitboard
 
+# VG-Tweak: cloning and medical scanner boards were not printable before;
+# they are now research-locked behind MedicalEquipment / CloningTechnology.
+- type: latheRecipe
+  parent: BaseCircuitboardRecipe
+  id: MedicalScannerMachineCircuitboard
+  result: MedicalScannerMachineCircuitboard
+
+- type: latheRecipe
+  parent: BaseGoldCircuitboardRecipe
+  id: CloningPodMachineCircuitboard
+  result: CloningPodMachineCircuitboard
+
 ## Science
 
 # Artifact

@@ -16,7 +16,20 @@
   recipeUnlocks:
   - SeedExtractorMachineCircuitboard
   - HydroponicsTrayMachineCircuitboard
-  - ReagentGrinderIndustrialMachineCircuitboard
+
+- type: technology
+  id: Bartending
+  position: 0, 1
+  name: research-technology-bartending
+  icon:
+    sprite: Structures/smalldispensers.rsi
+    state: booze
+  discipline: CivilianServices
+  tier: 1
+  cost: 7500
+  recipeUnlocks:
+  - BoozeDispenserMachineCircuitboard
+  - SodaDispenserMachineCircuitboard
 
 - type: technology
   id: AudioVisualCommunication
@@ -35,8 +48,22 @@
   - SurveillanceWirelessCameraAnchoredCircuitboard
   - SurveillanceCameraMonitorCircuitboard
   - SurveillanceWirelessCameraMonitorCircuitboard
-  - TelecomServerCircuitboard
   - HolopadMachineCircuitboard
+
+- type: technology
+  id: Telecommunications
+  position: 2, 2
+  name: research-technology-telecommunications
+  icon:
+    sprite: Structures/Machines/telecomms.rsi
+    state: telecom-on
+  discipline: CivilianServices
+  tier: 2
+  cost: 10000
+  recipeUnlocks:
+  - TelecomServerCircuitboard
+  technologyPrerequisites:
+  - AudioVisualCommunication
 
 - type: technology
   id: AdvancedEntertainment

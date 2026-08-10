@@ -28,8 +28,22 @@
   - AnomalyScanner
   - AnomalyLocator
   - AnomalyLocatorWide
+
+- type: technology
+  id: AnomalyContainment
+  position: 0, 4
+  name: research-technology-anomaly-containment
+  icon:
+    sprite: Structures/Machines/Anomaly/anomaly_vessel.rsi
+    state: anomaly-1
+  discipline: Experimental
+  tier: 2
+  cost: 7500
+  recipeUnlocks:
   - APECircuitboard
   - AnomalyVesselCircuitboard
+  technologyPrerequisites:
+  - BasicAnomalousResearch
 
 - type: technology
   id: BasicXenoArcheology
@@ -120,7 +134,7 @@
   - AnomalySynchronizerCircuitboard
   - AnomalyVesselExperimentalCircuitboard
   technologyPrerequisites:
-  - BasicAnomalousResearch
+  - AnomalyContainment
 
 - type: technology
   id: DeterrenceTechnologies

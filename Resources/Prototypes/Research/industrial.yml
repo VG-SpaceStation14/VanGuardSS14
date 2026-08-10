@@ -2,6 +2,7 @@
 # PowerGeneration is the common parent; the other branches spread from it.
 # Power generators are split: base (Pacman) -> plasma (SuperPacman) -> uranium (JrPacman)
 # right before the battery progression.
+# CompactTechnologies (RCD) was added after AdvancedToolsTechnology.
 
 # Tier 1
 
@@ -85,6 +86,22 @@
     - FultonBeacon
   technologyPrerequisites:
   - PowerGeneration
+
+- type: technology
+  id: CompactTechnologies
+  position: 2, 1
+  name: research-technology-compact-technologies
+  icon:
+    sprite: Objects/Tools/rcd.rsi
+    state: icon
+  discipline: Industrial
+  tier: 2
+  cost: 10000
+  recipeUnlocks:
+    - RCD
+    - RCDAmmo
+  technologyPrerequisites:
+  - AdvancedToolsTechnology
 
 - type: technology
   id: IndustrialEngineering

@@ -1,6 +1,7 @@
 # Medical research tree: medical technologies moved out of CivilianServices
 # into their own discipline, like the original's medical branch.
-# One common parent (BiochemicalStasis) with branches spreading from it.
+# VG-Tweak: expanded with more tiers. Roots: BiochemicalStasis (treatment)
+# and ChemistryDispensing (chem equipment). Cryogenics split into its own tech.
 
 # Tier 1
 
@@ -16,9 +17,24 @@
   cost: 7500
   recipeUnlocks:
   - StasisBedMachineCircuitboard
-  - CryoPodMachineCircuitboard
   - CryostasisBeaker
   - SyringeCryostasis
+
+- type: technology
+  id: ChemistryDispensing
+  position: 0, 1
+  name: research-technology-chemistry-dispensing
+  icon:
+    sprite: Structures/Machines/mixer.rsi
+    state: mixer_empty
+  discipline: Medical
+  tier: 1
+  cost: 10000
+  recipeUnlocks:
+  - ChemDispenserMachineCircuitboard
+  - ChemMasterMachineCircuitboard
+  - HotplateMachineCircuitboard
+  - ReagentGrinderIndustrialMachineCircuitboard
 
 # Tier 2
 
@@ -55,8 +71,56 @@
   - MechanizedTreatment
 
 - type: technology
-  id: BluespaceChemistry
+  id: Cryopreservation
   position: 1, 1
+  name: research-technology-cryopreservation
+  icon:
+    sprite: Structures/Machines/Medical/cryopod.rsi
+    state: pod-open
+  discipline: Medical
+  tier: 2
+  cost: 10000
+  recipeUnlocks:
+  - CryoPodMachineCircuitboard
+  technologyPrerequisites:
+  - BiochemicalStasis
+
+- type: technology
+  id: MedicalEquipment
+  position: 0, 2
+  name: research-technology-medical-equipment
+  icon:
+    sprite: Structures/Machines/scanner.rsi
+    state: closed
+  discipline: Medical
+  tier: 2
+  cost: 15000
+  recipeUnlocks:
+  - MedicalScannerMachineCircuitboard
+  technologyPrerequisites:
+  - ChemistryDispensing
+
+# Tier 3
+
+- type: technology
+  id: CloningTechnology
+  position: 0, 3
+  name: research-technology-cloning-technology
+  icon:
+    sprite: Structures/Machines/cloning.rsi
+    state: pod_0
+  discipline: Medical
+  tier: 3
+  cost: 12000
+  recipeUnlocks:
+  - CloningPodMachineCircuitboard
+  - CloningConsoleComputerCircuitboard
+  technologyPrerequisites:
+  - MedicalEquipment
+
+- type: technology
+  id: BluespaceChemistry
+  position: 1, 2
   name: research-technology-bluespace-chemistry
   icon:
     sprite: Objects/Specific/Chemistry/beaker_bluespace.rsi
@@ -68,4 +132,4 @@
   - BluespaceBeaker
   - SyringeBluespace
   technologyPrerequisites:
-  - BiochemicalStasis
+  - Cryopreservation

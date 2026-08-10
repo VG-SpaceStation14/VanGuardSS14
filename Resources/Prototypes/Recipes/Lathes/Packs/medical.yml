@@ -82,10 +82,7 @@
   recipes:
   - ElectrolysisUnitMachineCircuitboard
   - CentrifugeMachineCircuitboard
-  - ChemDispenserMachineCircuitboard
-  - ChemMasterMachineCircuitboard
   - CondenserMachineCircuitBoard
-  - HotplateMachineCircuitboard
 
 ## Dynamic
 
@@ -108,3 +105,11 @@
   - StasisBedMachineCircuitboard
   - CryoPodMachineCircuitboard
   - BiomassReclaimerMachineCircuitboard
+  # VG-Tweak: chem/medical boards moved out of the free (static) pack.
+  # They are now research-locked: ChemistryDispensing, MedicalEquipment, CloningTechnology.
+  - ChemDispenserMachineCircuitboard
+  - ChemMasterMachineCircuitboard
+  - HotplateMachineCircuitboard
+  - MedicalScannerMachineCircuitboard
+  - CloningPodMachineCircuitboard
+  - CloningConsoleComputerCircuitboard

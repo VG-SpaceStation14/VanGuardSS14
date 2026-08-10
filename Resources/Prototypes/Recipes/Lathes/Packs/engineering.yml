@@ -63,6 +63,9 @@
   - JawsOfLife
   - Fulton
   - FultonBeacon
+  # VG-Tweak: RCD/RCD ammo are research-locked behind CompactTechnologies.
+  - RCD
+  - RCDAmmo
 
 - type: latheRecipePack
   id: AtmosTools
