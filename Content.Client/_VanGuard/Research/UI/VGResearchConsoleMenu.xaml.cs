@@ -42,7 +42,6 @@ public sealed partial class VGResearchConsoleMenu : FancyWindow
     [Dependency] private IPlayerManager _player = default!;
     [Dependency] private IGameTiming _gameTiming = default!;
 
-    private readonly ResearchSystem _research;
     private readonly SharedLatheSystem _lathe;
     private readonly SpriteSystem _sprite;
     private readonly AccessReaderSystem _accessReader;
@@ -127,10 +126,16 @@ public sealed partial class VGResearchConsoleMenu : FancyWindow
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
 
-        _research = _entity.System<ResearchSystem>();
         _lathe = _entity.System<SharedLatheSystem>();
         _sprite = _entity.System<SpriteSystem>();
         _accessReader = _entity.System<AccessReaderSystem>();
+
+        var computerSprite = new ResPath("/Textures/Structures/Machines/computers.rsi");
+        ConsoleBaseIcon.Texture = _sprite.Frame0(new SpriteSpecifier.Rsi(computerSprite, "computer"));
+        ConsoleScreenIcon.Texture = _sprite.Frame0(new SpriteSpecifier.Rsi(computerSprite, "rdcomp"));
+        LayoutContainer.SetPosition(ConsoleBaseIcon, Vector2.Zero);
+        LayoutContainer.SetPosition(ConsoleScreenIcon, Vector2.Zero);
+        SubtitleLabel.Text = Loc.GetString("research-console-menu-subtitle");
 
         ServerButton.OnPressed += _ => OnServerButtonPressed?.Invoke();
         RecenterButton.OnPressed += _ => Recenter();
@@ -336,12 +341,12 @@ public sealed partial class VGResearchConsoleMenu : FancyWindow
         var discipline = _disciplineProtos.First(d => d.ID == _currentDiscipline);
         TreeCanvas.LinkColor = discipline.Color;
 
-        var available = _research.GetAvailableTechnologies(Entity, database)
-            .Select(t => t.ID)
-            .ToHashSet();
-
         var unlocked = database.UnlockedTechnologies.ToHashSet();
         unlocked.UnionWith(_pendingUnlocks.Keys.Select(k => new ProtoId<TechnologyPrototype>(k)));
+
+        // Points that remain after the optimistic (not yet confirmed) unlocks,
+        // so the branches behind a freshly researched technology light up right away.
+        var optimisticPoints = GetOptimisticPoints();
 
         var techs = _prototype.EnumeratePrototypes<TechnologyPrototype>()
             .Where(t => t.Discipline == _currentDiscipline && !t.Hidden)
@@ -358,15 +363,15 @@ public sealed partial class VGResearchConsoleMenu : FancyWindow
             foreach (var tech in tierGroup)
             {
                 var state = unlocked.Contains(tech.ID) ? TechState.Unlocked
-                    : available.Contains(tech.ID) ? TechState.Available
+                    : IsTechAvailable(tech, unlocked) ? TechState.Available
                     : TechState.Locked;
 
                 var researchable = state == TechState.Available
-                    && _lastState.Points >= tech.Cost
+                    && optimisticPoints >= tech.Cost
                     && !WaveInProgress;
                 var chainResearchable = state == TechState.Locked
                     && !WaveInProgress
-                    && TryGetResearchChain(tech.ID, unlocked, _lastState.Points) != null;
+                    && TryGetResearchChain(tech.ID, unlocked, optimisticPoints) != null;
 
                 var node = new ResearchTechnologyNode(
                     tech,
@@ -531,7 +536,7 @@ public sealed partial class VGResearchConsoleMenu : FancyWindow
         var unlocked = database.UnlockedTechnologies.ToHashSet();
         unlocked.UnionWith(_pendingUnlocks.Keys.Select(k => new ProtoId<TechnologyPrototype>(k)));
 
-        var chain = TryGetResearchChain(techId, unlocked, _lastState.Points);
+        var chain = TryGetResearchChain(techId, unlocked, GetOptimisticPoints());
         if (chain == null)
             return;
 
@@ -552,6 +557,47 @@ public sealed partial class VGResearchConsoleMenu : FancyWindow
         _treeDirty = true;
 
         OnTechnologyCardPressed?.Invoke(techId);
+    }
+
+    /// <summary>
+    /// Whether the technology can be researched given the (possibly optimistic)
+    /// set of unlocked technologies. Mirrors the server-side check, but is
+    /// evaluated against the client's optimistic state so the branches behind a
+    /// freshly researched technology light up immediately instead of waiting
+    /// for the server to push the updated database.
+    /// </summary>
+    private bool IsTechAvailable(TechnologyPrototype tech, HashSet<ProtoId<TechnologyPrototype>> unlocked)
+    {
+        if (tech.Hidden)
+            return false;
+
+        if (unlocked.Contains(tech.ID))
+            return false;
+
+        foreach (var prereq in tech.TechnologyPrerequisites)
+        {
+            if (!unlocked.Contains(prereq))
+                return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Research points remaining after subtracting the cost of the optimistic
+    /// (not yet confirmed) unlocks. Used so the player can immediately continue
+    /// down a branch without waiting for the server round-trip.
+    /// </summary>
+    private float GetOptimisticPoints()
+    {
+        var points = _lastState.Points;
+        foreach (var pending in _pendingUnlocks.Keys)
+        {
+            if (_prototype.TryIndex<TechnologyPrototype>(pending, out var pendingTech))
+                points -= pendingTech.Cost;
+        }
+
+        return points;
     }
 
     /// <summary>
@@ -619,19 +665,22 @@ public sealed partial class VGResearchConsoleMenu : FancyWindow
         {
             var unlocked = database.UnlockedTechnologies.Any(x => x == tech.ID)
                 || _pendingUnlocks.ContainsKey(tech.ID);
-            var available = !unlocked && _research.IsTechnologyAvailable(database, tech);
-            var hasAccess = _player.LocalEntity is not { } local ||
-                            !_entity.TryGetComponent<AccessReaderComponent>(Entity, out var access) ||
-                            _accessReader.IsAllowed(local, Entity, access);
-            var canAfford = _lastState.Points >= tech.Cost;
 
             // Whole-branch research info: the technologies still needed to unlock
             // this one (prerequisites first, then itself) and their total cost.
             var unlockedSet = database.UnlockedTechnologies.ToHashSet();
             unlockedSet.UnionWith(_pendingUnlocks.Keys.Select(k => new ProtoId<TechnologyPrototype>(k)));
+            var optimisticPoints = GetOptimisticPoints();
+
+            var available = !unlocked && IsTechAvailable(tech, unlockedSet);
+            var hasAccess = _player.LocalEntity is not { } local ||
+                            !_entity.TryGetComponent<AccessReaderComponent>(Entity, out var access) ||
+                            _accessReader.IsAllowed(local, Entity, access);
+            var canAfford = optimisticPoints >= tech.Cost;
+
             var chain = GetResearchChain(tech.ID, unlockedSet, out var chainTotalCost);
             var chainHasBranch = chain is { Count: > 1 };
-            var chainResearchable = chainHasBranch && chainTotalCost <= _lastState.Points && !WaveInProgress;
+            var chainResearchable = chainHasBranch && chainTotalCost <= optimisticPoints && !WaveInProgress;
 
             var discipline = _prototype.Index<TechDisciplinePrototype>(tech.Discipline);
 

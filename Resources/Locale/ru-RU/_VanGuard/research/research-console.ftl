@@ -1,4 +1,5 @@
 research-console-menu-recenter-button = Центрировать
+research-console-menu-subtitle = Дерево исследований станции
 research-console-menu-select-hint = Выберите технологию на дереве, чтобы увидеть подробности.
 research-console-menu-status-unlocked = Изучено
 research-console-menu-status-available = Доступно к исследованию

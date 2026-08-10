@@ -8,6 +8,46 @@
     <BoxContainer Orientation="Vertical"
                   HorizontalExpand="True"
                   VerticalExpand="True">
+        <!-- Field terminal header: console icon + title + research info -->
+        <PanelContainer MinHeight="64">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#10161C"
+                                  BorderColor="#4ad9ff"
+                                  BorderThickness="0 0 0 2"/>
+            </PanelContainer.PanelOverride>
+            <BoxContainer Orientation="Horizontal" Margin="10" HorizontalExpand="True">
+                <LayoutContainer Name="ConsoleIcon"
+                                 MinSize="64 64"
+                                 VerticalAlignment="Center"
+                                 Margin="0 0 10 0">
+                    <TextureRect Name="ConsoleBaseIcon" TextureScale="2 2"/>
+                    <TextureRect Name="ConsoleScreenIcon" TextureScale="2 2"/>
+                </LayoutContainer>
+                <BoxContainer Orientation="Vertical" VerticalAlignment="Center" MinWidth="220">
+                    <Label Text="{Loc 'research-console-menu-title'}" StyleClasses="LabelHeading"/>
+                    <Label Name="SubtitleLabel" StyleClasses="LabelSubText"/>
+                </BoxContainer>
+                <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True" Margin="10 2 10 2">
+                    <RichTextLabel Name="ResearchAmountLabel"/>
+                    <Control VerticalExpand="True"/>
+                    <BoxContainer Name="TierDisplayContainer"
+                                  Orientation="Horizontal"
+                                  HorizontalExpand="True"
+                                  VerticalAlignment="Bottom"/>
+                </BoxContainer>
+                <BoxContainer Orientation="Vertical" VerticalAlignment="Center">
+                    <Button Name="RecenterButton"
+                            Text="{Loc 'research-console-menu-recenter-button'}"
+                            MinHeight="40"/>
+                </BoxContainer>
+                <BoxContainer Orientation="Vertical" VerticalAlignment="Center" Margin="10 0 0 0">
+                    <Button Name="ServerButton"
+                            Text="{Loc 'research-console-menu-server-selection-button'}"
+                            MinHeight="40"/>
+                </BoxContainer>
+            </BoxContainer>
+        </PanelContainer>
+
         <!-- Research discipline (branch) tabs -->
         <controls:StripeBack MinSize="52 52">
             <BoxContainer Name="DisciplinesContainer"
@@ -17,36 +57,18 @@
                           Margin="5"/>
         </controls:StripeBack>
 
-        <!-- Top information bar -->
-        <BoxContainer Orientation="Horizontal"
-                      HorizontalExpand="True"
-                      VerticalExpand="False"
-                      MinHeight="60"
-                      Margin="10">
-            <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True">
-                <RichTextLabel Name="ResearchAmountLabel"/>
-                <Control VerticalExpand="True"/>
-                <BoxContainer Name="TierDisplayContainer" Orientation="Horizontal" HorizontalExpand="True" VerticalAlignment="Bottom"/>
-            </BoxContainer>
-            <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalAlignment="Right">
-                <Button Name="RecenterButton" Text="{Loc 'research-console-menu-recenter-button'}" MinHeight="40"/>
-            </BoxContainer>
-            <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalAlignment="Right" Margin="10 0 0 0">
-                <Button Name="ServerButton" Text="{Loc 'research-console-menu-server-selection-button'}" MinHeight="40"/>
-            </BoxContainer>
-        </BoxContainer>
-
         <!-- Technology tree + info panel -->
         <BoxContainer Orientation="Horizontal"
                       HorizontalExpand="True"
-                      VerticalExpand="True">
+                      VerticalExpand="True"
+                      Margin="10 10 10 0">
             <PanelContainer VerticalExpand="True"
                             HorizontalExpand="True"
                             SizeFlagsStretchRatio="5"
-                            Margin="0 0 0 10">
+                            Margin="0 0 5 0">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#0B0B0D"
-                                      BorderColor="#2A2A30"
+                    <gfx:StyleBoxFlat BackgroundColor="#0A0E12"
+                                      BorderColor="#2E3B45"
                                       BorderThickness="4"
                                       ContentMarginTopOverride="4"
                                       ContentMarginBottomOverride="4"
@@ -63,9 +85,12 @@
             <PanelContainer VerticalExpand="True"
                             SizeFlagsStretchRatio="2"
                             HorizontalExpand="True"
-                            MinWidth="300">
+                            MinWidth="300"
+                            Margin="5 0 0 0">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#1B1B1E"/>
+                    <gfx:StyleBoxFlat BackgroundColor="#121920"
+                                      BorderColor="#2E3B45"
+                                      BorderThickness="2"/>
                 </PanelContainer.PanelOverride>
                 <ScrollContainer HorizontalExpand="True"
                                  VerticalExpand="True"
@@ -78,5 +103,12 @@
                 </ScrollContainer>
             </PanelContainer>
         </BoxContainer>
+
+        <!-- Scan-line footer -->
+        <PanelContainer MinHeight="3" Margin="12 10 12 12">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#4ad9ff"/>
+            </PanelContainer.PanelOverride>
+        </PanelContainer>
     </BoxContainer>
 </controls:FancyWindow>
