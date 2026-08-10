@@ -155,7 +155,9 @@ public sealed partial class HumanoidProfileEditor
                 .Select(jobId => _prototypeManager.Index<JobPrototype>(jobId))
                 .Where(job => job.SetPreference)
                 .ToArray();
-            Array.Sort(jobs, JobUIComparer.Instance);
+
+            if (JobUIComparer.TryCreate(_prototypeManager, null, out var comparer))
+                Array.Sort(jobs, comparer);
 
             if (jobs.Length == 0) continue;
 
