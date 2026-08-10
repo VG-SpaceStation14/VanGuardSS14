@@ -13,3 +13,18 @@
   voices:
   - MaleSlime
   - FemaleSlime
+  # VG-Tweak Start
+  description: /ServerInfo/Guidebook/Mobs/SlimePerson.xml
+  pros:
+  - species-pros-slime-1
+  - species-pros-slime-2
+  - species-pros-slime-3
+  - species-pros-slime-4
+  cons:
+  - species-cons-slime-1
+  - species-cons-slime-2
+  - species-cons-slime-3
+  - species-cons-slime-4
+  special:
+  - species-special-slime-1
+  # VG-Tweak End

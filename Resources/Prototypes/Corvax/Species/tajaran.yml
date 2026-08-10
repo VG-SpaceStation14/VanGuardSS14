@@ -18,3 +18,16 @@
   voices:
   - MaleTajaran
   - FemaleTajaran
+  # VG-Tweak Start
+  description: /ServerInfo/Guidebook/Mobs/Tajaran.xml
+  pros:
+  - species-pros-tajaran-1
+  - species-pros-tajaran-2
+  - species-pros-tajaran-3
+  special:
+  - species-special-tajaran-1
+  - species-special-tajaran-2
+  cons:
+  - species-cons-tajaran-1
+  - species-cons-tajaran-2
+  # VG-Tweak End

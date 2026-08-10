@@ -81,6 +81,11 @@
   id: MobArachnid
   name: Urist McWebs
   components:
+  # VG-Tweak Start
+  - type: Tool
+    qualities:
+    - Slicing
+  # VG-Tweak End
   - type: Respirator
     damage:
       types:

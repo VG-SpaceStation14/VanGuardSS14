@@ -1,5 +1,6 @@
 <DefaultWindow xmlns="https://spacestation14.io"
             xmlns:tabs="clr-namespace:Content.Client.Options.UI.Tabs"
+            xmlns:vgtabs="clr-namespace:Content.Client._VanGuard.Options.UI.Tabs"
             Title="{Loc 'ui-options-title'}"
             MinSize="800 450">
     <TabContainer Name="Tabs" Access="Public">
@@ -9,5 +10,6 @@
         <tabs:AudioTab Name="AudioTab" />
         <tabs:AccessibilityTab Name="AccessibilityTab" />
         <tabs:AdminOptionsTab Name="AdminOptionsTab" />
+        <vgtabs:DeltaTab Name="{Loc 'ui-options-tab-extra'}" /> <!-- VG-Tweak -->
     </TabContainer>
 </DefaultWindow>

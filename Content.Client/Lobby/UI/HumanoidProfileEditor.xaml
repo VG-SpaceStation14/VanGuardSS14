@@ -74,7 +74,11 @@
                                     <TextureButton Name="SpeciesInfoButton" Scale="0.3 0.3"
                                                    VerticalAlignment="Center"
                                                    ToolTip="{Loc 'humanoid-profile-editor-guidebook-button-tooltip'}"/>
-                                    <OptionButton Name="SpeciesButton" HorizontalAlignment="Right" />
+                                    <!-- VG-Tweak Start -->
+                                    <Button Name="NewSpeciesButton" ToggleMode="True"
+                                            Text="{Loc 'species-window-title'}"
+                                            Margin="4 0 0 0" />
+                                    <!-- VG-Tweak End -->
                                 </BoxContainer>
                                 <!-- Age -->
                                 <BoxContainer HorizontalExpand="True">

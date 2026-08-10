@@ -1,0 +1,4 @@
+- type: shader
+  id: LightingOverlay
+  kind: source
+  path: "/Textures/_VanGuard/Shaders/glow.swsl"

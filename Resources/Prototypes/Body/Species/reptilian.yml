@@ -148,6 +148,11 @@
   id: MobReptilian
   name: Urist McScales
   components:
+  # VG-Tweak Start
+  - type: Tool
+    qualities:
+    - Slicing
+  # VG-Tweak End
   - type: Puller
     needsHands: false
   - type: Butcherable

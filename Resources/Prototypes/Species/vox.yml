@@ -17,3 +17,17 @@
   - UnisexVox
   voices:
   - UnisexVox
+  # VG-Tweak Start
+  description: /ServerInfo/Guidebook/Mobs/Vox.xml
+  pros:
+  - species-pros-vox-1
+  - species-pros-vox-2
+  - species-pros-vox-3
+  cons:
+  - species-cons-vox-1
+  - species-cons-vox-2
+  - species-cons-vox-3
+  special:
+  - species-special-vox-1
+  - species-special-vox-2
+  # VG-Tweak End

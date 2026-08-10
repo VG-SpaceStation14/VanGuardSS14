@@ -18,3 +18,18 @@
   voices:
   - MaleVulpkanin
   - FemaleVulpkanin
+  # VG-Tweak Start
+  description: /ServerInfo/Guidebook/Mobs/Vulpkanin.xml
+  pros:
+  - species-pros-vulpkanin-1
+  - species-pros-vulpkanin-2
+  - species-pros-vulpkanin-3
+  cons:
+  - species-cons-vulpkanin-1
+  - species-cons-vulpkanin-2
+  - species-cons-vulpkanin-3
+  - species-cons-vulpkanin-4
+  special:
+  - species-special-vulpkanin-1
+  - species-special-vulpkanin-2
+  # VG-Tweak End

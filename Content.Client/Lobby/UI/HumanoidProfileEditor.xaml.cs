@@ -1,3 +1,6 @@
+// VG-Tweak Start
+using Content.Client._VanGuard.Lobby.UI;
+// VG-Tweak End
 using Content.Client.Humanoid;
 using Content.Client.Message;
 using Content.Client.Players.PlayTimeTracking;
@@ -76,6 +79,10 @@ namespace Content.Client.Lobby.UI
         private ISawmill _sawmill;
 
         private MarkingsViewModel _markingsModel = new();
+
+        // VG-Tweak Start
+        private SpeciesWindow? _speciesWindow;
+        // VG-Tweak End
 
         public HumanoidProfileEditor(
             IClientPreferencesManager preferencesManager,
@@ -202,12 +209,10 @@ namespace Content.Client.Lobby.UI
 
             RefreshSpecies();
 
-            SpeciesButton.OnItemSelected += args =>
-            {
-                SpeciesButton.SelectId(args.Id);
-                SetSpecies(_species[args.Id].ID);
-                OnSkinColorOnValueChanged();
-            };
+            // VG-Tweak Start
+            NewSpeciesButton.OnToggled += OnNewSpeciesButtonToggled;
+            NewSpeciesButton.Text = Loc.GetString("species-window-title");
+            // VG-Tweak End
 
             #region Skin
 
@@ -328,6 +333,71 @@ namespace Content.Client.Lobby.UI
             UpdateSpeciesGuidebookIcon();
             IsDirty = false;
         }
+
+        // VG-Tweak Start
+        private void OnNewSpeciesButtonToggled(BaseButton.ButtonToggledEventArgs args)
+        {
+            if (Profile == null)
+            {
+                NewSpeciesButton.Pressed = false;
+                return;
+            }
+
+            if (args.Pressed)
+                OpenSpeciesBrowser();
+            else
+                CloseSpeciesBrowser();
+        }
+
+        private void OpenSpeciesBrowser()
+        {
+            if (_speciesWindow != null)
+                return;
+
+            if (Profile == null)
+                return;
+
+            var window = new SpeciesWindow(Profile, _prototypeManager, _resManager);
+            _speciesWindow = window;
+
+            window.SpeciesChosen += species =>
+            {
+                SetSpecies(species);
+                UpdateSpeciesBrowserButton();
+                window.Close();
+            };
+
+            window.OnClose += () =>
+            {
+                if (ReferenceEquals(_speciesWindow, window))
+                    _speciesWindow = null;
+
+                NewSpeciesButton.Pressed = false;
+            };
+
+            window.OpenCenteredLeft();
+        }
+
+        private void CloseSpeciesBrowser()
+        {
+            if (_speciesWindow == null)
+                return;
+
+            _speciesWindow.Close();
+            _speciesWindow = null;
+        }
+
+        private void UpdateSpeciesBrowserButton()
+        {
+            if (Profile == null)
+            {
+                NewSpeciesButton.Text = Loc.GetString("species-window-title");
+                return;
+            }
+
+            NewSpeciesButton.Text = Loc.GetString(_prototypeManager.Index(Profile.Species).Name);
+        }
+        // VG-Tweak End
 
         private void SetDirty()
         {
