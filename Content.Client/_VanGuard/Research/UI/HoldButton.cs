@@ -50,6 +50,12 @@ public sealed class HoldButton : Button
             if (args.Function != EngineKeyFunctions.UIClick)
                 return;
 
+            // Only cancel a hold that is actually in progress: KeyBindUp may fire
+            // for a release of a click that started while the button was disabled,
+            // or after the hold already completed and confirmed.
+            if (!_holding)
+                return;
+
             _holding = false;
             _remaining = HoldDuration;
             HoldCancelled?.Invoke();

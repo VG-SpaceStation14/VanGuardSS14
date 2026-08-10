@@ -375,6 +375,12 @@
   placement:
     mode: SnapgridCenter
   components:
+  # VG-Tweak: the manifold inherits GasPipeSansLayers directly (not GasPipeBase),
+  # so it needs the RCD/RPD deconstruct component explicitly.
+  - type: RCDDeconstructable
+    cost: 4
+    delay: 2
+    fx: EffectRCDDeconstruct2
   - type: Sprite
     sprite: Structures/Piping/Atmospherics/manifold.rsi
     layers:

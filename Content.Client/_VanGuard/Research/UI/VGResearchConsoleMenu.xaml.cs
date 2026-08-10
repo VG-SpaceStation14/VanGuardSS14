@@ -338,7 +338,12 @@ public sealed partial class VGResearchConsoleMenu : FancyWindow
     /// </summary>
     private void PopulateTree(TechnologyDatabaseComponent database)
     {
-        var discipline = _disciplineProtos.First(d => d.ID == _currentDiscipline);
+        // RebuildTree may call this before the disciplines have been populated
+        // (UpdatePanels returns early in that case), so guard the lookup.
+        var discipline = _disciplineProtos.FirstOrDefault(d => d.ID == _currentDiscipline);
+        if (discipline == null)
+            return;
+
         TreeCanvas.LinkColor = discipline.Color;
 
         var unlocked = database.UnlockedTechnologies.ToHashSet();

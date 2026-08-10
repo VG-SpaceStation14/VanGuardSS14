@@ -6,6 +6,7 @@ ent-ExperimentFloorScannerMachineCircuitboard = Плата напольного 
     .desc = Печатная плата для напольного сканера экспериментов.
 
 experiment-scanner-title = Сканер экспериментов
+experiment-floor-scanner-title = Напольный сканер экспериментов
 experiment-scanner-order-name = [bold]{ $name }[/bold]
 experiment-scanner-select-server = Сервер
 experiment-scanner-tab-available = Доступные
@@ -13,7 +14,7 @@ experiment-scanner-tab-active = Выполняется
 experiment-scanner-tab-available-count = Доступные ({ $count })
 experiment-scanner-hint = Возьмите сканер в руки и наведите его на цель, чтобы выполнить активный заказ.
 experiment-scanner-subtitle = Полевые исследовательские заказы научного отдела
-experiment-scanner-subtitle-floor = Сканирует все предметы на своей клетке
+experiment-scanner-subtitle-floor = Сканирует все предметы, существа и лужи на своей клетке
 experiment-scanner-no-active = Нет активного заказа.
 experiment-scanner-abandon = Отказаться
 experiment-scanner-skip = Пропустить

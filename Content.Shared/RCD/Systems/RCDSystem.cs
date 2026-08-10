@@ -15,6 +15,7 @@ using Content.Shared.RCD.Components;
 using Content.Shared.Tag;
 using Content.Shared.Tiles;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Containers;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Network;
@@ -47,6 +48,7 @@ public sealed partial class RCDSystem : EntitySystem
     [Dependency] private TagSystem _tags = default!;
     // VG-Tweak: deconstructing access-protected objects (e.g. airlocks) requires matching access.
     [Dependency] private AccessReaderSystem _accessReader = default!;
+    [Dependency] private SharedContainerSystem _containers = default!;
 
     private readonly int _instantConstructionDelay = 0;
     private readonly EntProtoId _instantConstructionFx = "EffectRCDConstruct0";
@@ -657,6 +659,17 @@ public sealed partial class RCDSystem : EntitySystem
                 }
                 else
                 {
+                    // VG-Tweak: drop the contents of any containers (bodies or items
+                    // inside a disposal unit, locker contents, etc.) before deleting
+                    // the structure, instead of deleting them together with it.
+                    if (TryComp<ContainerManagerComponent>(target, out var containerManager))
+                    {
+                        foreach (var (_, container) in containerManager.Containers)
+                        {
+                            _containers.EmptyContainer(container, force: true);
+                        }
+                    }
+
                     // Deconstruct object
                     _adminLogger.Add(LogType.RCD, LogImpact.High, $"{ToPrettyString(user):user} used RCD to delete {ToPrettyString(target):target}");
                     QueueDel(target);

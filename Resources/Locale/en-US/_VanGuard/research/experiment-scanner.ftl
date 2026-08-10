@@ -6,6 +6,7 @@ ent-ExperimentFloorScannerMachineCircuitboard = Floor Experiment Scanner Board
     .desc = A printed circuit board for a floor experiment scanner.
 
 experiment-scanner-title = Experiment Scanner
+experiment-floor-scanner-title = Floor Experiment Scanner
 experiment-scanner-order-name = [bold]{ $name }[/bold]
 experiment-scanner-select-server = Server
 experiment-scanner-tab-available = Available
@@ -13,7 +14,7 @@ experiment-scanner-tab-active = Active
 experiment-scanner-tab-available-count = Available ({ $count })
 experiment-scanner-hint = Take the scanner in hand and point it at a target to advance the active order.
 experiment-scanner-subtitle = Field research orders from the science department
-experiment-scanner-subtitle-floor = Scans every loose item on its tile
+experiment-scanner-subtitle-floor = Scans every loose item, creature and puddle on its tile
 experiment-scanner-no-active = No active order.
 experiment-scanner-abandon = Abandon
 experiment-scanner-skip = Skip

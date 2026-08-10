@@ -28,6 +28,10 @@ public sealed partial class ExperimentFloorScannerMenu : FancyWindow
 
     private TimeSpan _untilNextSkip = TimeSpan.Zero;
     private readonly List<Button> _skipButtons = new();
+    // The server pushes a new state on open, on registration change and after
+    // every scan step. Only auto-select a tab on the first update so the
+    // player's manual tab choice is not discarded while the window is open.
+    private bool _tabInitialized;
 
     public ExperimentFloorScannerMenu()
     {
@@ -157,13 +161,21 @@ public sealed partial class ExperimentFloorScannerMenu : FancyWindow
             NoActiveLabel.Visible = true;
             ActiveContainer.Visible = false;
             ActiveTimeLabel.Text = string.Empty;
-            MainTabs.CurrentTab = 0;
+            if (!_tabInitialized)
+            {
+                MainTabs.CurrentTab = 0;
+                _tabInitialized = true;
+            }
             return;
         }
 
         NoActiveLabel.Visible = false;
         ActiveContainer.Visible = true;
-        MainTabs.CurrentTab = 1;
+        if (!_tabInitialized)
+        {
+            MainTabs.CurrentTab = 1;
+            _tabInitialized = true;
+        }
         ActiveNameLabel.SetMessage(FormattedMessage.FromMarkupPermissive(
             Loc.GetString("experiment-scanner-order-name", ("name", state.Active.Name))));
         ActiveDescLabel.SetMessage(FormattedMessage.FromMarkupPermissive(state.Active.Description));
