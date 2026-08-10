@@ -12,6 +12,20 @@
   voices:
   - UnisexDwarf
   - FemaleDwarf
+  # VG-Tweak Start
+  description: /ServerInfo/Guidebook/Mobs/Dwarf.xml
+  pros:
+  - species-pros-dwarf-1
+  - species-pros-dwarf-2
+  - species-pros-dwarf-3
+  - species-pros-dwarf-4
+  cons:
+  - species-cons-dwarf-1
+  - species-cons-dwarf-2
+  - species-cons-dwarf-3
+  special:
+  - species-special-dwarf-1
+  # VG-Tweak End
   # Corvax-SpeciesAgeLore-Start
   youngAge: 60
   oldAge: 300

@@ -137,6 +137,11 @@
   - BaseSpeciesMobOrganic
   id: MobTajaran
   components:
+  # VG-Tweak Start
+  - type: Tool
+    qualities:
+    - Slicing
+  # VG-Tweak End
   - type: Hunger
     baseDecayRate: 0.02
   - type: Thirst

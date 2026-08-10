@@ -15,8 +15,12 @@
   <GuideEntityEmbed Entity="AppearanceSlimePerson" Caption="Слаймалюд"/>
   <GuideEntityEmbed Entity="AppearanceVox" Caption="Вокс"/>
   </Box>
+  <!-- VG-Tweak Start -->
   <Box>
     <GuideEntityEmbed Entity="AppearanceVulpkanin" Caption="Вульпакин"/>
+    <GuideEntityEmbed Entity="AppearanceTajaran" Caption="Таяр"/>
+    <GuideEntityEmbed Entity="AppearanceIpc" Caption="КПБ"/>
   </Box>
+  <!-- VG-Tweak End -->
 
 </Document>

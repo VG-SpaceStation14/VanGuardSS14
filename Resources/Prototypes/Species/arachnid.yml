@@ -18,3 +18,20 @@
   - UnisexArachnid
   voices:
   - UnisexArachnid
+  # VG-Tweak Start
+  description: /ServerInfo/Guidebook/Mobs/Arachnid.xml
+  pros:
+  - species-pros-arachnid-1
+  - species-pros-arachnid-2
+  - species-pros-arachnid-3
+  cons:
+  - species-cons-arachnid-1
+  - species-cons-arachnid-2
+  - species-cons-arachnid-3
+  - species-cons-arachnid-4
+  special:
+  - species-special-arachnid-1
+  - species-special-arachnid-2
+  - species-special-arachnid-3
+  - species-special-arachnid-4
+  # VG-Tweak End

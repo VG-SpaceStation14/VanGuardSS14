@@ -16,3 +16,17 @@
   voices:
   - MaleReptilian
   - FemaleReptilian
+  # VG-Tweak Start
+  description: /ServerInfo/Guidebook/Mobs/Reptilian.xml
+  pros:
+  - species-pros-reptilian-1
+  - species-pros-reptilian-2
+  cons:
+  - species-cons-reptilian-1
+  - species-cons-reptilian-2
+  - species-cons-reptilian-3
+  special:
+  - species-special-reptilian-1
+  - species-special-reptilian-2
+  - species-special-reptilian-3
+  # VG-Tweak End

@@ -9,7 +9,6 @@ using Content.Shared.Speech.Components;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Enums;
 using Robust.Shared.Prototypes;
-using static Content.Client.Corvax.SponsorOnlyHelpers; // Corvax-Sponsors
 
 namespace Content.Client.Lobby.UI;
 
@@ -18,7 +17,6 @@ public sealed partial class HumanoidProfileEditor
     public event Action<List<ProtoId<GuideEntryPrototype>>>? OnOpenGuidebook;
 
     private ColorSelectorSliders _rgbSkinColorSelector;
-    private List<SpeciesPrototype> _species = new();
     private List<EmoteSoundsPrototype> _voices = new();
     private static readonly ProtoId<GuideEntryPrototype> DefaultSpeciesGuidebook = "Species";
 
@@ -177,43 +175,26 @@ public sealed partial class HumanoidProfileEditor
     }
 
     /// <summary>
-    /// Refreshes the species selector.
+    /// Refreshes the species browser button and resets the species to the default
+    /// if the currently selected one is no longer available at round start.
     /// </summary>
+    // VG-Tweak Start
     public void RefreshSpecies()
     {
-        SpeciesButton.Clear();
-        _species.Clear();
+        if (Profile == null)
+            return;
 
-        _species.AddRange(_prototypeManager.EnumeratePrototypes<SpeciesPrototype>().Where(o => o.RoundStart));
-        _species.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.CurrentCultureIgnoreCase));
-        var speciesIds = _species.Select(o => o.ID).ToList();
+        var speciesIds = _prototypeManager.EnumeratePrototypes<SpeciesPrototype>()
+            .Where(species => species.RoundStart)
+            .Select(species => species.ID)
+            .ToList();
 
-        for (var i = 0; i < _species.Count; i++)
-        {
-            var name = Loc.GetString(_species[i].Name);
+        if (!speciesIds.Contains(Profile.Species))
+            SetSpecies(HumanoidCharacterProfile.DefaultSpecies);
 
-            // Corvax-Sponsors-start
-            if (_species[i].SponsorOnly)
-                name += GetSponsorOnlySuffix(_species[i].ID);
-            // Corvax-Sponsors-end
-
-            SpeciesButton.AddItem(name, i);
-
-            if (Profile?.Species.Equals(_species[i].ID) == true)
-            {
-                SpeciesButton.SelectId(i);
-            }
-        }
-
-        // If our species isn't available then reset it to default.
-        if (Profile != null)
-        {
-            if (!speciesIds.Contains(Profile.Species))
-            {
-                SetSpecies(HumanoidCharacterProfile.DefaultSpecies);
-            }
-        }
+        UpdateSpeciesBrowserButton();
     }
+    // VG-Tweak End
 
     private void SetSpecies(string newSpecies)
     {

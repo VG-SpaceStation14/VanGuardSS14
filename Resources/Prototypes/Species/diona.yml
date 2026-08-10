@@ -19,6 +19,22 @@
   - UnisexDiona
   voices:
   - UnisexDiona
+  # VG-Tweak Start
+  description: /ServerInfo/Guidebook/Mobs/Diona.xml
+  pros:
+  - species-pros-diona-1
+  - species-pros-diona-2
+  - species-pros-diona-3
+  - species-pros-diona-4
+  cons:
+  - species-cons-diona-1
+  - species-cons-diona-2
+  - species-cons-diona-3
+  - species-cons-diona-4
+  special:
+  - species-special-diona-1
+  - species-special-diona-2
+  # VG-Tweak End
   # Corvax-SpeciesAgeLore-Start
   youngAge: 3000
   oldAge: 6000

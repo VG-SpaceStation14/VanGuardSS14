@@ -12,6 +12,10 @@
   - SlimePerson
   - Vox
   - Vulpkanin
+  # VG-Tweak Start
+  - Tajaran
+  - Ipc
+  # VG-Tweak End
 
 - type: guideEntry
   id: Arachnid
@@ -57,3 +61,15 @@
   id: Vulpkanin
   name: species-name-vulpkanin
   text: "/ServerInfo/Guidebook/Mobs/Vulpkanin.xml"
+
+# VG-Tweak Start
+- type: guideEntry
+  id: Tajaran
+  name: species-name-tajaran
+  text: "/ServerInfo/Guidebook/Mobs/Tajaran.xml"
+
+- type: guideEntry
+  id: Ipc
+  name: species-name-Ipc
+  text: "/ServerInfo/Guidebook/Mobs/Ipc.xml"
+# VG-Tweak End
