@@ -110,6 +110,7 @@
       PowerCellHigh: high
       PowerCellHyper: hyper
       PowerCellAntiqueProto: antique
+      PowerCellMicroreactor: microreactor
     lightStates:
       Off: light-off
       Empty: light-empty

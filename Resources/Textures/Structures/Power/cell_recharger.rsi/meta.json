@@ -35,6 +35,9 @@
             "name": "antique"
         },
         {
+            "name": "microreactor"
+        },
+        {
             "name": "light-charging",
             "delays": [
                 [
