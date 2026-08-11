@@ -4,6 +4,7 @@ using Content.Shared.Administration.Logs;
 using Content.Shared.Charges.Systems;
 using Content.Shared.Construction;
 using Content.Shared.Database;
+using Content.Shared.Disposal.Components;
 using Content.Shared.DoAfter;
 using Content.Shared.Examine;
 using Content.Shared.Hands.EntitySystems;
@@ -659,15 +660,17 @@ public sealed partial class RCDSystem : EntitySystem
                 }
                 else
                 {
-                    // VG-Tweak: drop the contents of any containers (bodies or items
-                    // inside a disposal unit, locker contents, etc.) before deleting
-                    // the structure, instead of deleting them together with it.
-                    if (TryComp<ContainerManagerComponent>(target, out var containerManager))
+                    // VG-Tweak: drop the contents of the disposal unit (bodies or
+                    // items inside it) before deleting it, instead of deleting them
+                    // together with it. This mirrors the damage-path
+                    // EmptyContainersBehaviour that targets DisposalUnitComponent.
+                    // Note: intentionally scoped to the disposal unit only - other
+                    // RCD-deconstructable objects keep their containers intact
+                    // (e.g. an airlock's access electronics are not dropped).
+                    if (TryComp<DisposalUnitComponent>(target, out var disposalUnit)
+                        && disposalUnit.Container != null)
                     {
-                        foreach (var (_, container) in containerManager.Containers)
-                        {
-                            _containers.EmptyContainer(container, force: true);
-                        }
+                        _containers.EmptyContainer(disposalUnit.Container, force: true);
                     }
 
                     // Deconstruct object
