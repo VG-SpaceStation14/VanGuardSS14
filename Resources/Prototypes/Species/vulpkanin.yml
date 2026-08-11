@@ -32,4 +32,5 @@
   special:
   - species-special-vulpkanin-1
   - species-special-vulpkanin-2
+  defaultLanguages: [ GalacticCommon, Canilunzt ]
   # VG-Tweak End

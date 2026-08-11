@@ -29,4 +29,5 @@
   - species-special-reptilian-1
   - species-special-reptilian-2
   - species-special-reptilian-3
+  defaultLanguages: [ GalacticCommon, Draconic ]
   # VG-Tweak End

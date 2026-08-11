@@ -30,4 +30,5 @@
   cons:
   - species-cons-tajaran-1
   - species-cons-tajaran-2
+  defaultLanguages: [ GalacticCommon, SikTaj ]
   # VG-Tweak End

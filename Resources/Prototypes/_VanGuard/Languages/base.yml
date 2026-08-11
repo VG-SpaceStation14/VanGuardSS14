@@ -1,0 +1,17 @@
+# VG-Tweak: language system.
+- type: language
+  id: BaseVocalLanguage
+  abstract: true
+  vocal: true
+  conditions:
+  - !type:SpeakerActiveCondition
+  - !type:ListenerHearingCondition
+    checkListener: true
+
+- type: language
+  id: BaseEmoteLanguage
+  abstract: true
+  conditions:
+  - !type:EmoteSpeakerCondition
+  - !type:ListenerVisionCondition
+    checkListener: true

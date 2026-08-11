@@ -1,0 +1,9 @@
+cmd-language-wrong-arguments = Wrong number of arguments for { $command }: expected { $expected }, got { $got }.
+cmd-language-target-not-found = Target "{ $target }" not found.
+cmd-language-not-found = Language "{ $language }" not found.
+cmd-addlanguage-success = Granted language { $language } to { $target }.
+cmd-removelanguage-success = Removed language { $language } from { $target }.
+cmd-listlanguages-title = Languages of { $target }:
+cmd-listlanguages-empty = { $target } knows no languages.
+cmd-language-hint-player = Player name or EntityUid
+cmd-language-hint-language = Language

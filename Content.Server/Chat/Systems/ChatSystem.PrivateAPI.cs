@@ -49,6 +49,11 @@ public sealed partial class ChatSystem
 
         name = FormattedMessage.EscapeText(name);
 
+        // VG-Tweak Start: language system integration
+        if (TryHandleLanguageSay(source, originalMessage, message, range, name, speech, hideLog))
+            return;
+        // VG-Tweak End
+
         var wrappedMessage = Loc.GetString(speech.Bold ? "chat-manager-entity-say-bold-wrap-message" : "chat-manager-entity-say-wrap-message",
             ("entityName", name),
             ("verb", Loc.GetString(_random.Pick(speech.SpeechVerbStrings))),
@@ -118,6 +123,11 @@ public sealed partial class ChatSystem
             name = nameEv.VoiceName;
         }
         name = FormattedMessage.EscapeText(name);
+
+        // VG-Tweak Start: language system integration
+        if (TryHandleLanguageWhisper(source, originalMessage, message, range, name, nameIdentity, channel))
+            return;
+        // VG-Tweak End
 
         var wrappedMessage = Loc.GetString("chat-manager-entity-whisper-wrap-message",
             ("entityName", name), ("message", FormattedMessage.EscapeText(message)));

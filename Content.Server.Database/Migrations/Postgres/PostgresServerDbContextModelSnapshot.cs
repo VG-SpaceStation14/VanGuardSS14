@@ -1160,6 +1160,10 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("jsonb")
                         .HasColumnName("organ_markings");
 
+                    b.Property<JsonDocument>("Languages")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("languages");
+
                     b.Property<int>("PreferenceId")
                         .HasColumnType("integer")
                         .HasColumnName("preference_id");

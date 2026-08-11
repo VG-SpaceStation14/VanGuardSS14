@@ -1,0 +1,137 @@
+# VG-Tweak: language system.
+# The universal language, understood by every entity.
+- type: language
+  id: Universal
+  icon:
+    sprite: /Textures/_VanGuard/Interface/Chat/language.rsi
+    state: what
+  style: !type:LinguisticStyle
+    replacement:
+    - "*incomprehensible*"
+
+# Syndicate operatives use a series of codewords to convey complex information.
+- type: language
+  id: CodeSpeak
+  uiColor: Crimson
+  parent: BaseVocalLanguage
+  icon:
+    sprite: /Textures/_VanGuard/Interface/Chat/language.rsi
+    state: codespeak
+  style: !type:LinguisticStyle
+    obfuscateSyllables: true
+    color: Crimson
+    replacement:
+    - "Белый русский"
+    - "Представитель станции"
+    - "Шериф"
+    - "Депутат"
+    - "Хранилище"
+    - "Фронтир"
+    - "Станция"
+    - "Безопасность"
+    - "Кофе"
+    - "Инженерный"
+    - "Капитан"
+    - "Атмос"
+    - "Медицинский"
+    - "ИИ"
+    - "Человек"
+    - "Вульпканин"
+    - "Унатх"
+    - "Корабль"
+    - "Шаттл"
+    - "Оружие"
+    - "Лазер"
+    - "Карп"
+    - "Ксено"
+    - "Биоугроза"
+    - "Деньги"
+    - "Космос"
+    - "Опасность"
+    - "Убить"
+    - "Спасти"
+    - "Дракон"
+    - "Ниндзя"
+    - "Секрет"
+
+# Admeme language for developers and admins.
+- type: language
+  id: Dev
+  parent: BaseVocalLanguage
+  uiColor: White
+  icon:
+    sprite: /Textures/_VanGuard/Interface/Chat/language.rsi
+    state: aphasia
+  style: !type:LinguisticStyle
+    obfuscateSyllables: true
+    color: White
+    replacement:
+    - "су"
+    - "ка"
+    - "ямл"
+    - "бл"
+    - "баг"
+    - "гни"
+    - "эмис"
+    - "билд"
+    - "кофе"
+    - "прототип"
+    - "астра"
+    - "робст"
+    - "дебаг"
+    - "мердж"
+    - "пулл"
+    - "ПР"
+
+# Gutter language - an unofficial trade pidgin.
+- type: language
+  id: Gutter
+  roundstart: true
+  uiColor: "#0030db"
+  parent: BaseVocalLanguage
+  icon:
+    sprite: /Textures/_VanGuard/Interface/Chat/language.rsi
+    state: what
+  style: !type:LinguisticStyle
+    obfuscateSyllables: true
+    color: "#0030db"
+    whisperColor: "#41559c"
+    replacement:
+    - "gra"
+    - "ba"
+    - "breh"
+    - "bra"
+    - "rah"
+    - "dur"
+    - "ra"
+    - "ro"
+    - "gro"
+    - "go"
+    - "ber"
+    - "bar"
+    - "geh"
+    - "heh"
+
+# Clown language.
+- type: language
+  id: Clownish
+  roundstart: true
+  uiColor: "#fff700"
+  parent: BaseVocalLanguage
+  icon:
+    sprite: /Textures/_VanGuard/Interface/Chat/language.rsi
+    state: popcorn
+  style: !type:LinguisticStyle
+    obfuscateSyllables: true
+    color: "#fff700"
+    whisperColor: "#d1ce69"
+    replacement:
+    - "хонк"
+    - "скуик"
+    - "боньк"
+    - "пуп"
+    - "наф"
+    - "ниф"
+    - "ви"
+    verbs:
+      Default: [ хонкает ]

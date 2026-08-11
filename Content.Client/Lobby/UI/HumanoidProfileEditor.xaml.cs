@@ -214,6 +214,16 @@ namespace Content.Client.Lobby.UI
             NewSpeciesButton.Text = Loc.GetString("species-window-title");
             // VG-Tweak End
 
+            // VG-Tweak Start: language system
+            TabContainer.SetTabTitle(1, Loc.GetString("humanoid-profile-editor-languages-tab"));
+            LanguagesSearchBar.OnTextChanged += args =>
+            {
+                _languagesSearch = args.Text.Trim();
+                RefreshLanguages();
+            };
+            RefreshLanguages();
+            // VG-Tweak End: language system
+
             #region Skin
 
             Skin.OnValueChanged += _ =>
@@ -263,7 +273,7 @@ namespace Content.Client.Lobby.UI
 
             #region Jobs
 
-            TabContainer.SetTabTitle(1, Loc.GetString("humanoid-profile-editor-jobs-tab"));
+            TabContainer.SetTabTitle(2, Loc.GetString("humanoid-profile-editor-jobs-tab"));
 
             PreferenceUnavailableButton.AddItem(
                 Loc.GetString("humanoid-profile-editor-preference-unavailable-stay-in-lobby-button"),
@@ -287,15 +297,15 @@ namespace Content.Client.Lobby.UI
 
             #endregion Jobs
 
-            TabContainer.SetTabTitle(2, Loc.GetString("humanoid-profile-editor-antags-tab"));
+            TabContainer.SetTabTitle(3, Loc.GetString("humanoid-profile-editor-antags-tab"));
 
             RefreshTraits();
 
-            TabContainer.SetTabTitle(3, Loc.GetString("humanoid-profile-editor-traits-tab")); // Corvax-TTS-Edit
+            TabContainer.SetTabTitle(4, Loc.GetString("humanoid-profile-editor-traits-tab")); // Corvax-TTS-Edit
 
             #region Markings
 
-            TabContainer.SetTabTitle(4, Loc.GetString("humanoid-profile-editor-markings-tab"));
+            TabContainer.SetTabTitle(5, Loc.GetString("humanoid-profile-editor-markings-tab"));
 
             _markingsModel.MarkingsChanged += (_, _) => OnMarkingChange();
             _markingsModel.MarkingsReset += OnMarkingChange;
@@ -468,6 +478,7 @@ namespace Content.Client.Lobby.UI
             RefreshSpecies();
             RefreshTraits();
             RefreshFlavorText();
+            RefreshLanguages(); // VG-Tweak: language system
             ReloadPreview();
 
             if (Profile != null)

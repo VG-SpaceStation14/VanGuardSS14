@@ -1,0 +1,110 @@
+# VG-Tweak: language system.
+# Non-vocal species languages, conveyed through body language.
+
+# Spoken by the Diona race.
+- type: language
+  id: RootSpeak
+  uiColor: "#76ff61"
+  parent: BaseEmoteLanguage
+  icon:
+    sprite: /Textures/_VanGuard/Interface/Chat/language.rsi
+    state: plant
+  style: !type:EmoteStyle
+    color: "#76ff61"
+    whisperColor: "#7fc474"
+    replacement:
+    - "шуршит листьями"
+    - "скрежещет ветками"
+    - "шебуршит"
+
+# Spoken by the Slime race.
+- type: language
+  id: Bubblish
+  uiColor: "#61daff"
+  parent: BaseEmoteLanguage
+  icon:
+    sprite: /Textures/_VanGuard/Interface/Chat/language.rsi
+    state: slime
+  style: !type:EmoteStyle
+    color: "#61daff"
+    whisperColor: "#5f9db0"
+    replacement:
+    - "булькает"
+    - "бурлит"
+    - "пускает пузыри"
+
+# Spoken by the Vox race.
+- type: language
+  id: VoxPidgin
+  uiColor: "#419167"
+  parent: BaseVocalLanguage
+  icon:
+    sprite: /Textures/_VanGuard/Interface/Chat/language.rsi
+    state: vox
+  style: !type:LinguisticStyle
+    obfuscateSyllables: true
+    color: "#419167"
+    whisperColor: "#2fcc7b"
+    replacement:
+    - "щик-щик"
+    - "пшик-пшик"
+    - "фррр"
+    - "трринг"
+    - "шшш-щ"
+    - "бжжж"
+    - "куууук"
+    - "бип-боп"
+    - "чирк-чирк"
+    - "дзынь-дзынь"
+    - "зинг-зинг"
+    - "шух-шух"
+    - "тик-так"
+    - "хрюк-хрюк"
+    - "ззззз"
+    - "чмок-чмок"
+    - "бзибзибзи"
+    - "щип-щип"
+    - "жуужу"
+    - "вжужу"
+    - "клек-клек"
+    - "ррррр"
+    - "гуд-гуд"
+    - "киии"
+    - "трынь-трынь"
+    - "пум-пум"
+    - "зак-зак"
+
+# Spoken by the IPC race.
+- type: language
+  id: RobotTalk
+  uiColor: "#5773ff"
+  parent: BaseVocalLanguage
+  icon:
+    sprite: /Textures/_VanGuard/Interface/Chat/language.rsi
+    state: drone
+  style: !type:LinguisticStyle
+    obfuscateSyllables: true
+    color: "#5773ff"
+    whisperColor: "#7c8acc"
+    replacement:
+    - "0"
+    - "1"
+    - "2"
+    verbs:
+      Default: [ констатирует, сообщает, докладывает ]
+
+# Sign language used by the deaf.
+- type: language
+  id: SignLanguage
+  roundstart: true
+  uiColor: White
+  parent: BaseEmoteLanguage
+  icon:
+    sprite: /Textures/_VanGuard/Interface/Chat/language.rsi
+    state: ssl
+  style: !type:EmoteStyle
+    color: White
+    whisperColor: White
+    replacement:
+    - "изящно жестикулирует"
+    - "показывает непонятные жесты"

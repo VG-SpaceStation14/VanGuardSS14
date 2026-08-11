@@ -803,6 +803,9 @@
   name: Smile
   description: This masterpiece has gone through thousands of experiments. But it is the sweetest creature in the world. Smile Slime!
   components:
+  - type: LanguageSpeaker
+    languages:
+      Bubblish: Speak
   - type: Sprite
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]

@@ -2,6 +2,7 @@ using Content.Shared.Body;
 using Content.Shared.Chat.Prototypes;
 using Content.Shared.Dataset;
 using Content.Shared.Humanoid.Markings;
+using Content.Shared._VanGuard.Language;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 using Robust.Shared.Utility;
@@ -161,6 +162,26 @@ public sealed partial class SpeciesPrototype : IPrototype
     /// </summary>
     [DataField]
     public List<string> Special = new();
+    // VG-Tweak End
+
+    // VG-Tweak Start: language system
+    /// <summary>
+    ///     Languages every member of this species starts with.
+    /// </summary>
+    [DataField]
+    public List<ProtoId<LanguagePrototype>> DefaultLanguages = new();
+
+    /// <summary>
+    ///     Languages unique to this species that may be picked in the character editor.
+    /// </summary>
+    [DataField]
+    public List<ProtoId<LanguagePrototype>> UniqueLanguages = new();
+
+    /// <summary>
+    ///     Maximum number of languages a character of this species may know.
+    /// </summary>
+    [DataField]
+    public int MaxLanguages = 2;
     // VG-Tweak End
 }
 

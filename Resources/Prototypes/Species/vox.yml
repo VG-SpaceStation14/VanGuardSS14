@@ -30,4 +30,5 @@
   special:
   - species-special-vox-1
   - species-special-vox-2
+  defaultLanguages: [ GalacticCommon, VoxPidgin ]
   # VG-Tweak End

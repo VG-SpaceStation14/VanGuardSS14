@@ -1,0 +1,9 @@
+cmd-language-wrong-arguments = Неверное количество аргументов для { $command }: ожидалось { $expected }, получено { $got }.
+cmd-language-target-not-found = Цель "{ $target }" не найдена.
+cmd-language-not-found = Язык "{ $language }" не найден.
+cmd-addlanguage-success = Игроку { $target } выдан язык: { $language }.
+cmd-removelanguage-success = У игрока { $target } снят язык: { $language }.
+cmd-listlanguages-title = Языки игрока { $target }:
+cmd-listlanguages-empty = У игрока { $target } нет известных языков.
+cmd-language-hint-player = Имя игрока или EntityUid
+cmd-language-hint-language = Язык

@@ -349,6 +349,11 @@ namespace Content.Server.Database
         public List<Antag> Antags { get; } = new();
         public List<Trait> Traits { get; } = new();
 
+        /// <summary>
+        ///     Serialized list of extra languages selected for this character.
+        /// </summary>
+        [Column(TypeName = "jsonb")] public JsonDocument? Languages { get; set; } // VG-Tweak: language system
+
         public List<ProfileRoleLoadout> Loadouts { get; } = new();
 
         [Column("pref_unavailable")] public DbPreferenceUnavailableMode PreferenceUnavailable { get; set; }
