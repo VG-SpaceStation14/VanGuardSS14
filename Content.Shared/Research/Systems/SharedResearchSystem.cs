@@ -72,8 +72,11 @@ public abstract partial class SharedResearchSystem : EntitySystem
         if (!component.SupportedDisciplines.Contains(tech.Discipline))
             return false;
 
-        if (tech.Tier > disciplineTiers[tech.Discipline])
-            return false;
+        // VG-Tweak Start: branch-based research progression (like the original).
+        // A technology is unlocked through its prerequisite chain, not through a
+        // global tier percentage - so researching the shown requirement unlocks it.
+        // if (tech.Tier > disciplineTiers[tech.Discipline])
+        //     return false;
 
         if (component.UnlockedTechnologies.Contains(tech.ID))
             return false;
@@ -83,6 +86,7 @@ public abstract partial class SharedResearchSystem : EntitySystem
             if (!component.UnlockedTechnologies.Contains(prereq))
                 return false;
         }
+        // VG-Tweak End
 
         return true;
     }

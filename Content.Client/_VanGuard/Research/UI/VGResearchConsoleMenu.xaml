@@ -1,0 +1,114 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      xmlns:vanguard="clr-namespace:Content.Client._VanGuard.Research.UI"
+                      Title="{Loc 'research-console-menu-title'}"
+                      MinSize="1000 600"
+                      SetSize="1240 820">
+    <BoxContainer Orientation="Vertical"
+                  HorizontalExpand="True"
+                  VerticalExpand="True">
+        <!-- Field terminal header: console icon + title + research info -->
+        <PanelContainer MinHeight="64">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#10161C"
+                                  BorderColor="#4ad9ff"
+                                  BorderThickness="0 0 0 2"/>
+            </PanelContainer.PanelOverride>
+            <BoxContainer Orientation="Horizontal" Margin="10" HorizontalExpand="True">
+                <LayoutContainer Name="ConsoleIcon"
+                                 MinSize="64 64"
+                                 VerticalAlignment="Center"
+                                 Margin="0 0 10 0">
+                    <TextureRect Name="ConsoleBaseIcon" TextureScale="2 2"/>
+                    <TextureRect Name="ConsoleScreenIcon" TextureScale="2 2"/>
+                </LayoutContainer>
+                <BoxContainer Orientation="Vertical" VerticalAlignment="Center" MinWidth="220">
+                    <Label Text="{Loc 'research-console-menu-title'}" StyleClasses="LabelHeading"/>
+                    <Label Name="SubtitleLabel" StyleClasses="LabelSubText"/>
+                </BoxContainer>
+                <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True" Margin="10 2 10 2">
+                    <RichTextLabel Name="ResearchAmountLabel"/>
+                    <Control VerticalExpand="True"/>
+                    <BoxContainer Name="TierDisplayContainer"
+                                  Orientation="Horizontal"
+                                  HorizontalExpand="True"
+                                  VerticalAlignment="Bottom"/>
+                </BoxContainer>
+                <BoxContainer Orientation="Vertical" VerticalAlignment="Center">
+                    <Button Name="RecenterButton"
+                            Text="{Loc 'research-console-menu-recenter-button'}"
+                            MinHeight="40"/>
+                </BoxContainer>
+                <BoxContainer Orientation="Vertical" VerticalAlignment="Center" Margin="10 0 0 0">
+                    <Button Name="ServerButton"
+                            Text="{Loc 'research-console-menu-server-selection-button'}"
+                            MinHeight="40"/>
+                </BoxContainer>
+            </BoxContainer>
+        </PanelContainer>
+
+        <!-- Research discipline (branch) tabs -->
+        <controls:StripeBack MinSize="52 52">
+            <BoxContainer Name="DisciplinesContainer"
+                          Orientation="Horizontal"
+                          HorizontalAlignment="Stretch"
+                          MinSize="52 52"
+                          Margin="5"/>
+        </controls:StripeBack>
+
+        <!-- Technology tree + info panel -->
+        <BoxContainer Orientation="Horizontal"
+                      HorizontalExpand="True"
+                      VerticalExpand="True"
+                      Margin="10 10 10 0">
+            <PanelContainer VerticalExpand="True"
+                            HorizontalExpand="True"
+                            SizeFlagsStretchRatio="5"
+                            Margin="0 0 5 0">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#0A0E12"
+                                      BorderColor="#2E3B45"
+                                      BorderThickness="4"
+                                      ContentMarginTopOverride="4"
+                                      ContentMarginBottomOverride="4"
+                                      ContentMarginLeftOverride="4"
+                                      ContentMarginRightOverride="4"/>
+                </PanelContainer.PanelOverride>
+                <vanguard:ResearchTreeCanvas Name="TreeCanvas"
+                                             HorizontalExpand="True"
+                                             VerticalExpand="True"
+                                             InheritChildMeasure="False"
+                                             RectClipContent="True"
+                                             MouseFilter="Pass"/>
+            </PanelContainer>
+            <PanelContainer VerticalExpand="True"
+                            SizeFlagsStretchRatio="2"
+                            HorizontalExpand="True"
+                            MinWidth="300"
+                            Margin="5 0 0 0">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#121920"
+                                      BorderColor="#2E3B45"
+                                      BorderThickness="2"/>
+                </PanelContainer.PanelOverride>
+                <ScrollContainer HorizontalExpand="True"
+                                 VerticalExpand="True"
+                                 HScrollEnabled="False">
+                    <BoxContainer Name="InfoContainer"
+                                  Orientation="Vertical"
+                                  HorizontalExpand="True"
+                                  VerticalExpand="True"
+                                  Margin="5"/>
+                </ScrollContainer>
+            </PanelContainer>
+        </BoxContainer>
+
+        <!-- Scan-line footer -->
+        <PanelContainer MinHeight="3" Margin="12 10 12 12">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#4ad9ff"/>
+            </PanelContainer.PanelOverride>
+        </PanelContainer>
+    </BoxContainer>
+</controls:FancyWindow>

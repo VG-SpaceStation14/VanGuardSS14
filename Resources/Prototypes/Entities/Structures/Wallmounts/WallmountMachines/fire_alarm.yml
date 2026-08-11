@@ -4,6 +4,11 @@
   name: fire alarm
   description: A fire alarm. Spicy!
   components:
+  # VG-Tweak: allows the RCD/RPD to deconstruct fire alarms.
+  - type: RCDDeconstructable
+    cost: 4
+    delay: 2
+    fx: EffectRCDDeconstruct2
   - type: LightningTarget
     priority: 0
   - type: Electrified

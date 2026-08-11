@@ -28,6 +28,10 @@ public sealed partial class RCDMenuBoundUserInterface : BoundUserInterface
             ["Airlocks"] = ("rcd-component-airlocks", new SpriteSpecifier.Texture(new ResPath("/Textures/Interface/Radial/RCD/airlocks.png"))),
             ["Electrical"] = ("rcd-component-electrical", new SpriteSpecifier.Texture(new ResPath("/Textures/Interface/Radial/RCD/multicoil.png"))),
             ["Lighting"] = ("rcd-component-lighting", new SpriteSpecifier.Texture(new ResPath("/Textures/Interface/Radial/RCD/lighting.png"))),
+            // VG-Tweak: RPD (rapid pipe dispenser) categories, reusing the RCD menu.
+            ["Gaspipes"] = ("rpd-component-Gaspipes", new SpriteSpecifier.Texture(new ResPath("/Textures/_VanGuard/Interface/Radial/RPD/Gaspipes.png"))),
+            ["DisposalPipe"] = ("rpd-component-DisposalPipe", new SpriteSpecifier.Texture(new ResPath("/Textures/_VanGuard/Interface/Radial/RPD/DisposalPipe.png"))),
+            ["Devices"] = ("rpd-component-Devices", new SpriteSpecifier.Texture(new ResPath("/Textures/_VanGuard/Interface/Radial/RPD/Devices.png"))),
         };
 
     private SimpleRadialMenu? _menu;
@@ -145,7 +149,8 @@ public sealed partial class RCDMenuBoundUserInterface : BoundUserInterface
             && proto.Prototype != null
             && _prototypeManager.TryIndex(proto.Prototype, out var entProto)) // don't use Resolve because this can be a tile
         {
-            tooltip = Loc.GetString(entProto.Name);
+            // entProto.Name is already localized - do not pass it through Loc.GetString again.
+            tooltip = entProto.Name;
         }
         else
         {

@@ -18,6 +18,7 @@ rcd-component-insufficient-ammo-message = The RCD doesn't have enough charges le
 # Deconstruction
 rcd-component-tile-indestructible-message = That tile can't be destructed!
 rcd-component-deconstruct-target-not-on-whitelist-message = You can't deconstruct that!
+rcd-component-access-denied = You don't have access to dismantle this object.
 rcd-component-nothing-to-deconstruct-message = There's nothing to deconstruct!
 rcd-component-tile-obstructed-message = You can't deconstruct tiles when there's something on top of them!
 

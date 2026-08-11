@@ -1,7 +1,10 @@
+using Content.Shared.Access.Components;
+using Content.Shared.Access.Systems;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Charges.Systems;
 using Content.Shared.Construction;
 using Content.Shared.Database;
+using Content.Shared.Disposal.Components;
 using Content.Shared.DoAfter;
 using Content.Shared.Examine;
 using Content.Shared.Hands.EntitySystems;
@@ -13,6 +16,7 @@ using Content.Shared.RCD.Components;
 using Content.Shared.Tag;
 using Content.Shared.Tiles;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Containers;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Network;
@@ -43,6 +47,9 @@ public sealed partial class RCDSystem : EntitySystem
     [Dependency] private SharedMapSystem _mapSystem = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private TagSystem _tags = default!;
+    // VG-Tweak: deconstructing access-protected objects (e.g. airlocks) requires matching access.
+    [Dependency] private AccessReaderSystem _accessReader = default!;
+    [Dependency] private SharedContainerSystem _containers = default!;
 
     private readonly int _instantConstructionDelay = 0;
     private readonly EntProtoId _instantConstructionFx = "EffectRCDConstruct0";
@@ -372,7 +379,7 @@ public sealed partial class RCDSystem : EntitySystem
             case RcdMode.ConstructObject:
                 return IsConstructionLocationValid(uid, component, gridUid, mapGrid, tile, position, direction, user, popMsgs);
             case RcdMode.Deconstruct:
-                return IsDeconstructionStillValid(uid, tile, target, user, popMsgs);
+                return IsDeconstructionStillValid(uid, tile, target, prototype.DeconstructObjectsOnly, user, popMsgs);
         }
 
         return false;
@@ -455,6 +462,7 @@ public sealed partial class RCDSystem : EntitySystem
         // Check rule: The tile is unoccupied
         var isWindow = prototype.ConstructionRules.Contains(RcdConstructionRule.IsWindow);
         var isCatwalk = prototype.ConstructionRules.Contains(RcdConstructionRule.IsCatwalk);
+        var isWall = prototype.ConstructionRules.Contains(RcdConstructionRule.IsWall);
 
         _intersectingEntities.Clear();
         _lookup.GetLocalEntitiesIntersecting(gridUid, position, _intersectingEntities, -0.05f, LookupFlags.Uncontained);
@@ -494,6 +502,9 @@ public sealed partial class RCDSystem : EntitySystem
                 return false;
             }
 
+            if (isWall && HasComp<SharedCanBuildWallOnTopComponent>(ent))
+                continue;
+
             if (prototype.CollisionMask != CollisionGroup.None && TryComp<FixturesComponent>(ent, out var fixtures))
             {
                 foreach (var fixture in fixtures.Fixtures.Values)
@@ -519,11 +530,20 @@ public sealed partial class RCDSystem : EntitySystem
         return true;
     }
 
-    private bool IsDeconstructionStillValid(EntityUid uid, TileRef tile, EntityUid? target, EntityUid user, bool popMsgs = true)
+    private bool IsDeconstructionStillValid(EntityUid uid, TileRef tile, EntityUid? target, bool objectsOnly, EntityUid user, bool popMsgs = true)
     {
         // Attempt to deconstruct a floor tile
         if (target == null)
         {
+            // The device refuses to deconstruct floor tiles (e.g. the RPD pipe variant)
+            if (objectsOnly)
+            {
+                if (popMsgs)
+                    _popup.PopupEntity(Loc.GetString("rcd-component-deconstruct-target-not-on-whitelist-message"), uid, user);
+
+                return false;
+            }
+
             // The tile is empty
             if (tile.Tile.IsEmpty)
             {
@@ -565,6 +585,20 @@ public sealed partial class RCDSystem : EntitySystem
 
                 return false;
             }
+
+            // VG-Tweak Start
+            // Deconstructing access-protected objects (e.g. airlocks) requires matching access.
+            if (TryComp<AccessReaderComponent>(target, out var accessReader) && accessReader.Enabled)
+            {
+                if (!_accessReader.IsAllowed(user, target.Value, accessReader))
+                {
+                    if (popMsgs)
+                        _popup.PopupEntity(Loc.GetString("rcd-component-access-denied"), uid, user);
+
+                    return false;
+                }
+            }
+            // VG-Tweak End
         }
 
         return true;
@@ -626,6 +660,19 @@ public sealed partial class RCDSystem : EntitySystem
                 }
                 else
                 {
+                    // VG-Tweak: drop the contents of the disposal unit (bodies or
+                    // items inside it) before deleting it, instead of deleting them
+                    // together with it. This mirrors the damage-path
+                    // EmptyContainersBehaviour that targets DisposalUnitComponent.
+                    // Note: intentionally scoped to the disposal unit only - other
+                    // RCD-deconstructable objects keep their containers intact
+                    // (e.g. an airlock's access electronics are not dropped).
+                    if (TryComp<DisposalUnitComponent>(target, out var disposalUnit)
+                        && disposalUnit.Container != null)
+                    {
+                        _containers.EmptyContainer(disposalUnit.Container, force: true);
+                    }
+
                     // Deconstruct object
                     _adminLogger.Add(LogType.RCD, LogImpact.High, $"{ToPrettyString(user):user} used RCD to delete {ToPrettyString(target):target}");
                     QueueDel(target);

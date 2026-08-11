@@ -58,12 +58,17 @@
   result: SolarControlComputerCircuitboard
 
 # Medical
-
-# Science
 - type: latheRecipe
   parent: [ BaseGoldCircuitboardRecipe, BaseResearchComputerRecipeCategory ]
   id: AnalysisComputerCircuitboard
   result: AnalysisComputerCircuitboard
+
+# VG-Tweak: cloning console board was not printable before;
+# it is now research-locked behind CloningTechnology.
+- type: latheRecipe
+  parent: [ BaseCircuitboardRecipe, BaseMedicalComputerRecipeCategory ]
+  id: CloningConsoleComputerCircuitboard
+  result: CloningConsoleComputerCircuitboard
 
 - type: latheRecipe
   parent: [ BaseGoldCircuitboardRecipe, BaseResearchComputerRecipeCategory ]

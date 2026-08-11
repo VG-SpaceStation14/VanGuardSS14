@@ -35,8 +35,6 @@
   - MicrowaveMachineCircuitboard
   - ReagentGrinderMachineCircuitboard
   - ElectricGrillMachineCircuitboard
-  - BoozeDispenserMachineCircuitboard
-  - SodaDispenserMachineCircuitboard
   - SmartFridgeCircuitboard
   - PrinterDocMachineCircuitboard # Corvax-Printer
 
@@ -68,3 +66,7 @@
   - ReagentGrinderIndustrialMachineCircuitboard
   - JukeboxCircuitBoard
   - DawInstrumentMachineCircuitboard
+  # VG-Tweak: bar dispensers moved out of the free (static) pack.
+  # They are now research-locked behind Bartending.
+  - BoozeDispenserMachineCircuitboard
+  - SodaDispenserMachineCircuitboard

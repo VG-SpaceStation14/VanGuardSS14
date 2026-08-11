@@ -1,0 +1,24 @@
+# Lathe recipes for the experiment scanners. They are tech-locked and grouped
+# into the packs in Recipes/Lathes/Packs/experiments.yml.
+
+- type: latheRecipe
+  id: ExperimentScanner
+  result: ExperimentScanner
+  categories:
+  - Research
+  completetime: 3
+  materials:
+    Steel: 400
+    Glass: 200
+    Plastic: 200
+
+- type: latheRecipe
+  id: ExperimentFloorScannerMachineCircuitboard
+  result: ExperimentFloorScannerMachineCircuitboard
+  categories:
+  - Circuitry
+  completetime: 4
+  materials:
+    Steel: 400
+    Glass: 500
+    Plastic: 200

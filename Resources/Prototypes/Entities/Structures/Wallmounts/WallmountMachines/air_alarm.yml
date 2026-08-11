@@ -4,6 +4,11 @@
   name: air alarm
   description: An air alarm. Alarms... air?
   components:
+  # VG-Tweak: allows the RCD/RPD to deconstruct air alarms.
+  - type: RCDDeconstructable
+    cost: 4
+    delay: 2
+    fx: EffectRCDDeconstruct2
   - type: StationAiWhitelist
   - type: Electrified
     enabled: false

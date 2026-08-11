@@ -29,6 +29,8 @@
     - Arsenal
     - Experimental
     - CivilianServices
+    - Mech # VG-Tweak: Mech research discipline tab
+    - Medical # VG-Tweak: Medical research discipline tab
   - type: ApcPowerReceiver
     powerLoad: 200
   - type: ExtensionCableReceiver

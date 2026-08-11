@@ -104,6 +104,12 @@
   abstract: true
   parent: [ GasPipeSansLayers, BaseGasPipeLayers ]
   id: GasPipeBase
+  # VG-Tweak: allows the RCD/RPD to deconstruct pipes.
+  components:
+  - type: RCDDeconstructable
+    cost: 4
+    delay: 2
+    fx: EffectRCDDeconstruct2
 
 #Note: The PipeDirection of the PipeNode should be the south-facing version, because the entity starts at an angle of 0 (south)
 
@@ -369,6 +375,12 @@
   placement:
     mode: SnapgridCenter
   components:
+  # VG-Tweak: the manifold inherits GasPipeSansLayers directly (not GasPipeBase),
+  # so it needs the RCD/RPD deconstruct component explicitly.
+  - type: RCDDeconstructable
+    cost: 4
+    delay: 2
+    fx: EffectRCDDeconstruct2
   - type: Sprite
     sprite: Structures/Piping/Atmospherics/manifold.rsi
     layers:

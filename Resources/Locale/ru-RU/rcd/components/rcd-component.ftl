@@ -18,6 +18,7 @@ rcd-component-insufficient-ammo-message = В РСУ не хватает заря
 # Deconstruction
 rcd-component-tile-indestructible-message = Эта клетка не может быть демонтирова!
 rcd-component-deconstruct-target-not-on-whitelist-message = Вы не можете демонтировать это!
+rcd-component-access-denied = У вас нет доступа для демонтажа этого объекта.
 rcd-component-nothing-to-deconstruct-message = Здесь нечего демонтировать!
 rcd-component-tile-obstructed-message = Вы не можете демонтировать клетку, на которой что-то находится!
 

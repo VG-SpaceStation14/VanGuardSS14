@@ -1,4 +1,5 @@
-﻿using Robust.Shared.Prototypes;
+﻿using Robust.Shared.Maths;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
 namespace Content.Shared.Research.Prototypes;
@@ -51,6 +52,16 @@ public sealed partial class TechnologyPrototype : IPrototype
     /// </summary>
     [DataField]
     public int Cost = 10000;
+
+    // VG-Tweak Start: research tree node coordinates.
+    /// <summary>
+    /// Position of this technology on the research tree, in tree units.
+    /// The tree UI places the node at <c>treeOrigin + Position * nodeSpacing</c>,
+    /// so the whole branch can be laid out right in the prototype.
+    /// </summary>
+    [DataField]
+    public Vector2i Position;
+    // VG-Tweak End
 
     /// <summary>
     /// A list of <see cref="TechnologyPrototype"/>s that need to be unlocked in order to unlock this technology.

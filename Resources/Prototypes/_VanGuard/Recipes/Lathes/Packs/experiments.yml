@@ -1,0 +1,12 @@
+# Recipe packs for the experiment scanner branch. The handheld device is printed
+# on the protolathe, the floor scanner board on the circuit imprinter.
+
+- type: latheRecipePack
+  id: ExperimentsEquipment
+  recipes:
+  - ExperimentScanner
+
+- type: latheRecipePack
+  id: ExperimentsBoards
+  recipes:
+  - ExperimentFloorScannerMachineCircuitboard
