@@ -18,4 +18,6 @@ paper-ui-fill-level = {$currentLength}/{$maxLength}
 
 paper-ui-save-button = Save ({$keybind})
 
+paper-ui-language-label = Language:
+
 paper-tamper-proof-modified-message = This page was written using tamper-proof ink.

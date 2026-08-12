@@ -1,0 +1,26 @@
+<PanelContainer
+    xmlns="https://spacestation14.io"
+    Margin="4"
+    StyleClasses="PanelInsetDark">
+    <BoxContainer
+        Orientation="Horizontal"
+        HorizontalExpand="True"
+        Margin="8"
+        SeparationOverride="8">
+        <TextureRect
+            Name="IconTexture"
+            TextureScale="2 2"
+            VerticalAlignment="Center"
+            MinSize="32 32"/>
+        <Label
+            Name="NameLabel"
+            StyleClasses="ButtonColor"
+            HorizontalExpand="True"
+            ClipText="True"
+            VerticalAlignment="Center"/>
+        <Button
+            Name="SelectButton"
+            StyleClasses="ButtonColorTransition"
+            MinWidth="96"/>
+    </BoxContainer>
+</PanelContainer>

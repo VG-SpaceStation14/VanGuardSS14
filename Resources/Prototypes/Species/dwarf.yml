@@ -25,6 +25,7 @@
   - species-cons-dwarf-3
   special:
   - species-special-dwarf-1
+  defaultLanguages: [ GalacticCommon, Dwarf ]
   # VG-Tweak End
   # Corvax-SpeciesAgeLore-Start
   youngAge: 60

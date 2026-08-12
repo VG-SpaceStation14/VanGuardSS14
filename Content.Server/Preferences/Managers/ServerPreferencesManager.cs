@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Content.Server.Afk;
 using Content.Corvax.Interfaces.Shared;
 using Content.Server.Database;
+using Content.Shared._VanGuard.Language;
 using Content.Shared.Body;
 using Content.Shared.CCVar;
 using Content.Shared.Construction.Prototypes;
@@ -184,6 +185,16 @@ namespace Content.Server.Preferences.Managers
                 loadouts[role.RoleName] = loadout;
             }
 
+            // VG-Tweak Start: language system
+            var languages = new List<ProtoId<LanguagePrototype>>();
+            if (profile.Languages is { } languageDoc)
+            {
+                var raw = languageDoc.Deserialize<List<string>>();
+                if (raw != null)
+                    languages.AddRange(raw.Select(x => new ProtoId<LanguagePrototype>(x)));
+            }
+            // VG-Tweak End: language system
+
             return new HumanoidCharacterProfile(
                 profile.CharacterName,
                 profile.FlavorText,
@@ -205,7 +216,12 @@ namespace Content.Server.Preferences.Managers
                 antags.ToHashSet(),
                 traits.ToHashSet(),
                 loadouts
-            );
+            )
+            {
+                // VG-Tweak Start: language system
+                Languages = languages,
+                // VG-Tweak End: language system
+            };
         }
 
         private async void HandleSelectCharacterMessage(MsgSelectCharacter message)

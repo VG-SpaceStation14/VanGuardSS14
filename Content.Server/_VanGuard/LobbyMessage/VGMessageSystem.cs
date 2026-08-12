@@ -4,14 +4,13 @@ using Content.Shared._VanGuard.LobbyMessage;
 using Robust.Server.Player;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
-using Robust.Shared.Network;
+using Robust.Shared.GameObjects;
 
 namespace Content.Server._VanGuard.LobbyMessage;
 
 public sealed partial class VGMessageSystem : EntitySystem
 {
     [Dependency] private IPlayerManager _playerManager = default!;
-    [Dependency] private INetManager _netManager = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
 
     private static readonly SoundSpecifier MessageSound = new SoundPathSpecifier("/Audio/Voice/Moth/moth_scream.ogg");
@@ -21,7 +20,7 @@ public sealed partial class VGMessageSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-        _netManager.RegisterNetMessage<MsgVGMessageRequest>(OnRequest, NetMessageAccept.Server);
+        SubscribeNetworkEvent<MsgVGMessageRequest>(OnRequest);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
@@ -48,11 +47,9 @@ public sealed partial class VGMessageSystem : EntitySystem
         }
     }
 
-    private void OnRequest(MsgVGMessageRequest message)
+    private void OnRequest(MsgVGMessageRequest message, EntitySessionEventArgs eventArgs)
     {
-        if (message.MsgChannel == null) return;
-        var session = _playerManager.GetSessionByChannel(message.MsgChannel);
-        if (session == null) return;
+        if (eventArgs.SenderSession is not { } session) return;
 
         var ev = new VGMessageEvent(_currentMessage ?? string.Empty);
         RaiseNetworkEvent(ev, session);

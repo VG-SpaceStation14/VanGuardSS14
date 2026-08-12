@@ -81,6 +81,7 @@
   - type: CritHeartbeat
   - type: ExaminableCharacter
   - type: FootprintEmitter
+  - type: LanguageSpeaker
   # VG-Tweak End
   - type: Body
   - type: VisualBody

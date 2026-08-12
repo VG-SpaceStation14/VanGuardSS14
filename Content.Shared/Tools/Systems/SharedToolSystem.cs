@@ -5,6 +5,7 @@ using Content.Shared.Examine;
 using Content.Shared.Interaction;
 using Content.Shared.Item.ItemToggle;
 using Content.Shared.Maps;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
 using Content.Shared.Tools.Components;
 using JetBrains.Annotations;
@@ -63,6 +64,13 @@ public abstract partial class SharedToolSystem : EntitySystem
         // If the tool has no qualities, exit early
         if (ent.Comp.Qualities.Count == 0)
             return;
+
+        // VG-Tweak Start: living creatures (species with claws etc.) have a Tool
+        // component so their natural appendages can be used as tools, but the
+        // examine text should not advertise that on a creature.
+        if (HasComp<MobStateComponent>(ent))
+            return;
+        // VG-Tweak End
 
         var message = new FormattedMessage();
 

@@ -34,6 +34,7 @@
   special:
   - species-special-diona-1
   - species-special-diona-2
+  defaultLanguages: [ GalacticCommon, RootSpeak ]
   # VG-Tweak End
   # Corvax-SpeciesAgeLore-Start
   youngAge: 3000

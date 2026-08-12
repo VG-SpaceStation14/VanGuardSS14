@@ -53,6 +53,18 @@
         HorizontalExpand="True"
         AppendStyleClass="{x:Static style:StyleClass.ButtonSquare}"
         />
+    <!-- VG-Tweak Start: language system -->
+    <ui:MenuButton
+        Name="LanguagesButton"
+        Access="Internal"
+        Icon="{xe:Tex '/Textures/Interface/languages-menu.svg.192dpi.png'}"
+        ToolTip="{Loc 'game-hud-open-languages-menu-button-tooltip'}"
+        BoundKey = "{x:Static is:ContentKeyFunctions.OpenLanguagesMenu}"
+        MinSize="42 64"
+        HorizontalExpand="True"
+        AppendStyleClass="{x:Static style:StyleClass.ButtonSquare}"
+        />
+    <!-- VG-Tweak End: language system -->
     <ui:MenuButton
         Name="CraftingButton"
         Access="Internal"

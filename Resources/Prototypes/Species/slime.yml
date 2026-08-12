@@ -27,4 +27,5 @@
   - species-cons-slime-4
   special:
   - species-special-slime-1
+  defaultLanguages: [ GalacticCommon, Bubblish ]
   # VG-Tweak End

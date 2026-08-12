@@ -131,6 +131,23 @@
                         </BoxContainer>
                     </ScrollContainer>
                 </BoxContainer>
+                <!-- Languages Tab - VG-Tweak Start -->
+                <BoxContainer Name="LanguagesTab" Orientation="Vertical" Margin="10">
+                    <Label Text="{Loc 'humanoid-profile-editor-languages-tab'}" StyleClasses="LabelHeading" Margin="0 0 0 10" />
+                    <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">
+                        <Label Text="{Loc 'humanoid-profile-editor-languages-count-label'}" />
+                        <Label Name="LanguagesCountLabel" StyleClasses="LabelSubText" Margin="6 0 0 0" />
+                    </BoxContainer>
+                    <LineEdit
+                        Name="LanguagesSearchBar"
+                        PlaceHolder="{Loc 'language-menu-search-placeholder'}"
+                        Margin="0 6 0 6"
+                        HorizontalExpand="True" />
+                    <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+                        <BoxContainer Name="LanguagesList" Orientation="Vertical" SeparationOverride="6" />
+                    </ScrollContainer>
+                </BoxContainer>
+                <!-- VG-Tweak End -->
                 <!-- Jobs Tab - изменен на два столбца -->
                 <BoxContainer Orientation="Vertical">
                     <OptionButton Name="PreferenceUnavailableButton" />

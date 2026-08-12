@@ -12,6 +12,7 @@ using Content.Shared.Preferences.Loadouts;
 using Content.Shared.Roles;
 using Content.Shared.Speech.Components;
 using Content.Shared.Traits;
+using Content.Shared._VanGuard.Language;
 using Robust.Shared.Collections;
 using Robust.Shared.Configuration;
 using Robust.Shared.Enums;
@@ -85,6 +86,14 @@ namespace Content.Shared.Preferences
         /// </summary>
         [DataField]
         public ProtoId<SpeciesPrototype> Species { get; set; } = DefaultSpecies;
+
+        // VG-Tweak Start: language system
+        /// <summary>
+        /// Extra languages selected for this character in the setup screen.
+        /// </summary>
+        [DataField]
+        public List<ProtoId<LanguagePrototype>> Languages { get; set; } = new();
+        // VG-Tweak End
 
         [DataField] //Corvax-TTS
         public string TTSVoice { get; set; } = HumanoidProfileSystem.DefaultVoice;
@@ -201,6 +210,9 @@ namespace Content.Shared.Preferences
                 new HashSet<ProtoId<TraitPrototype>>(other.TraitPreferences),
                 new Dictionary<string, RoleLoadout>(other.Loadouts))
         {
+            // VG-Tweak Start: language system
+            Languages = new List<ProtoId<LanguagePrototype>>(other.Languages);
+            // VG-Tweak End
         }
 
         /// <summary>
@@ -446,6 +458,20 @@ namespace Content.Shared.Preferences
             return new(this) { Species = species };
         }
 
+        // VG-Tweak Start: language system
+        public HumanoidCharacterProfile WithLanguage(string language)
+        {
+            var languages = new List<ProtoId<LanguagePrototype>>(Languages) { language };
+            return new(this) { Languages = languages };
+        }
+
+        public HumanoidCharacterProfile WithoutLanguage(string language)
+        {
+            var languages = new List<ProtoId<LanguagePrototype>>(Languages.Where(x => x != language));
+            return new(this) { Languages = languages };
+        }
+        // VG-Tweak End
+
         // Corvax-TTS-Start
         public HumanoidCharacterProfile WithVoice(string voice)
         {
@@ -655,6 +681,7 @@ namespace Content.Shared.Preferences
             if (!Loadouts.SequenceEqual(other.Loadouts)) return false;
             if (FlavorText != other.FlavorText) return false;
             if (TTSVoice != other.TTSVoice) return false; // Corvax-TTS
+            if (!Languages.SequenceEqual(other.Languages)) return false; // VG-Tweak: language system
             return Appearance.Equals(other.Appearance);
         }
 
@@ -676,6 +703,31 @@ namespace Content.Shared.Preferences
                 speciesPrototype = prototypeManager.Index(Species);
             }
             // Corvax-Sponsors-End
+
+            // VG-Tweak Start: validate the stored language preferences against the
+            // species policy. Unknown ids are dropped, entries are de-duplicated,
+            // defaults (granted automatically at spawn) are excluded, and the result
+            // is capped at the species' language limit.
+            var languages = new List<ProtoId<LanguagePrototype>>();
+            foreach (var lang in Languages.Distinct())
+            {
+                if (!prototypeManager.TryIndex(lang, out var languageProto))
+                    continue;
+
+                if (speciesPrototype.DefaultLanguages.Contains(lang))
+                    continue;
+
+                if (!languageProto.Roundstart && !speciesPrototype.UniqueLanguages.Contains(lang))
+                    continue;
+
+                languages.Add(lang);
+            }
+
+            if (languages.Count > speciesPrototype.MaxLanguages)
+                languages = languages.Take(speciesPrototype.MaxLanguages).ToList();
+
+            Languages = languages;
+            // VG-Tweak End
 
             var sex = Sex switch
             {

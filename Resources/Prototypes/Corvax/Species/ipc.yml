@@ -39,4 +39,5 @@
   - species-cons-ipc-2
   - species-cons-ipc-3
   - species-cons-ipc-4
+  defaultLanguages: [ GalacticCommon, RobotTalk ]
   # VG-Tweak End

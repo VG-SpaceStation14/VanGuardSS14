@@ -12,6 +12,7 @@ using Robust.Shared.Audio.Systems;
 using static Content.Shared.Paper.PaperComponent;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
+using Content.Shared._VanGuard.Language; // VG-Tweak: language system
 
 namespace Content.Shared.Paper;
 
@@ -188,6 +189,16 @@ public sealed partial class PaperSystem : EntitySystem
 
         if (args.Text.Length <= entity.Comp.ContentSize)
         {
+            // VG-Tweak Start: language system - let the language system validate and
+            // enrich the language-tagged segments before they are stored.
+            var languageEvent = new PaperWritingTextEvent(args.Actor, entity.Owner, args.Text, args.LanguageSegments);
+            RaiseLocalEvent(entity.Owner, ref languageEvent);
+            if (languageEvent.Cancelled)
+                return;
+
+            entity.Comp.LanguageSegments = languageEvent.Segments;
+            // VG-Tweak End
+
             SetContent(entity, args.Text);
 
             var paperStatus = string.IsNullOrWhiteSpace(args.Text) ? PaperStatus.Blank : PaperStatus.Written;
@@ -294,6 +305,17 @@ public sealed partial class PaperSystem : EntitySystem
     public void SetContent(Entity<PaperComponent> entity, string content)
     {
         entity.Comp.Content = content;
+
+        // VG-Tweak Start: keep the language segments consistent with the raw text.
+        if (string.IsNullOrEmpty(entity.Comp.Content))
+            entity.Comp.LanguageSegments.Clear();
+        else if (!PaperTextMatchesSegments(entity))
+        {
+            entity.Comp.LanguageSegments.Clear();
+            entity.Comp.LanguageSegments.Add(new PaperTextSegment(entity.Comp.Content, SharedLanguageSystem.CommonLanguageId));
+        }
+        // VG-Tweak End
+
         Dirty(entity);
         UpdateUserInterface(entity);
 
@@ -309,7 +331,24 @@ public sealed partial class PaperSystem : EntitySystem
 
     public void UpdateUserInterface(Entity<PaperComponent> entity)
     {
-        _uiSystem.SetUiState(entity.Owner, PaperUiKey.Key, new PaperBoundUserInterfaceState(entity.Comp.Content, entity.Comp.StampedBy, entity.Comp.Mode));
+        var segments = entity.Comp.LanguageSegments.Count == 0 && !string.IsNullOrEmpty(entity.Comp.Content)
+            ? new List<PaperTextSegment> { new(entity.Comp.Content, SharedLanguageSystem.CommonLanguageId) }
+            : new List<PaperTextSegment>(entity.Comp.LanguageSegments);
+
+        _uiSystem.SetUiState(entity.Owner,
+            PaperUiKey.Key,
+            new PaperBoundUserInterfaceState(entity.Comp.Content, segments, entity.Comp.StampedBy, entity.Comp.Mode));
+    }
+
+    /// <summary>
+    ///     Checks whether the stored language segments still add up to the paper content.
+    ///     A single trailing newline difference is tolerated, since some writing tools
+    ///     terminate the final line.
+    /// </summary>
+    private static bool PaperTextMatchesSegments(Entity<PaperComponent> entity)
+    {
+        var joined = string.Concat(entity.Comp.LanguageSegments.Select(segment => segment.Text));
+        return joined == entity.Comp.Content || joined == entity.Comp.Content + "\n";
     }
 }
 
@@ -325,3 +364,15 @@ public record struct PaperWriteEvent(EntityUid User, EntityUid Paper);
 /// <param name="paper">The paper that the writing will take place on.</param>
 [ByRefEvent]
 public record struct PaperWriteAttemptEvent(EntityUid Paper, string? FailReason = null, bool Cancelled = false);
+
+/// <summary>
+/// Raised on the server before language-tagged paper text is stored.
+/// Server language systems validate and enrich the segments here.
+/// </summary>
+[ByRefEvent]
+public record struct PaperWritingTextEvent(
+    EntityUid User,
+    EntityUid Paper,
+    string Text,
+    List<PaperTextSegment> Segments,
+    bool Cancelled = false);

@@ -116,16 +116,16 @@
   description: Seems like a good place to stand and waste time. It has a stock of paper cups on the side.
   components:
   - type: Sprite
-    sprite: _VanGuard/Structures/Storage/tanks.rsi # VG-Tweak
+    sprite: Structures/Storage/tanks.rsi
     layers:
-      - state: generictank-1 # VG-Tweak
-      - state: generictank-1-1 # VG-Tweak
+      - state: watercooler-2
+      - state: watercooler-2-1
         map: ["enum.SolutionContainerLayers.Fill"]
         visible: false
   - type: Appearance
   - type: SolutionContainerVisuals
     maxFillLevels: 4
-    fillBaseName: generictank-1- # VG-Tweak
+    fillBaseName: watercooler-2-
   - type: Solution
     solution:
       reagents:

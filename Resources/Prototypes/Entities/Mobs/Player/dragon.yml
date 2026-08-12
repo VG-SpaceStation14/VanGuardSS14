@@ -6,6 +6,9 @@
   description: A flying leviathan, loosely related to space carps.
   abstract: true
   components:
+  - type: LanguageSpeaker
+    languages:
+      Dragon: Speak
   - type: Bloodstream
     bloodReferenceSolution:
       reagents:

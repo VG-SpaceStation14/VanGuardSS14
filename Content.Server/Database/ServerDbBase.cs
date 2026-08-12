@@ -261,6 +261,11 @@ namespace Content.Server.Database
                         .Select(t => new Trait {TraitName = t})
             );
 
+            // VG-Tweak Start: language system
+            profile.Languages = JsonSerializer.SerializeToDocument(
+                humanoid.Languages.Select(l => l.Id).ToList());
+            // VG-Tweak End: language system
+
             profile.Loadouts.Clear();
 
             foreach (var (role, loadouts) in humanoid.Loadouts)

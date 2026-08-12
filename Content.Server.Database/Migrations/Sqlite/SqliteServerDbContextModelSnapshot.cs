@@ -1095,6 +1095,10 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasColumnType("jsonb")
                         .HasColumnName("organ_markings");
 
+                    b.Property<byte[]>("Languages")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("languages");
+
                     b.Property<int>("PreferenceId")
                         .HasColumnType("INTEGER")
                         .HasColumnName("preference_id");

@@ -5,6 +5,9 @@
   parent: [ SimpleSpaceMobBase, MobNightVision, BaseMobDestructible ]
   description: They mostly come at night. Mostly.
   components:
+  - type: LanguageSpeaker
+    languages:
+      Xeno: Speak
   - type: Insulated
   - type: CombatMode
   - type: InputMover

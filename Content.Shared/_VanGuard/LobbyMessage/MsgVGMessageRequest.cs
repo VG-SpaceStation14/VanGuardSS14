@@ -1,13 +1,14 @@
-using Lidgren.Network;
-using Robust.Shared.Network;
+using System;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._VanGuard.LobbyMessage;
 
-public sealed class MsgVGMessageRequest : NetMessage
+/// <summary>
+///     Client → server request asking the server to resend the current lobby message.
+///     A network event (not a raw NetMessage) so both sides handle it like any other
+///     gameplay event and no manual net-message registration is required.
+/// </summary>
+[Serializable, NetSerializable]
+public sealed class MsgVGMessageRequest : EntityEventArgs
 {
-    public override MsgGroups MsgGroup => MsgGroups.Command;
-
-    public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer) { }
-    public override void WriteToBuffer(NetOutgoingMessage buffer, IRobustSerializer serializer) { }
 }

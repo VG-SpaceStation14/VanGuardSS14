@@ -7,5 +7,6 @@
   skinColoration: HumanToned
   # VG-Tweak Start
   description: /ServerInfo/Guidebook/Mobs/Human.xml
+  defaultLanguages: [ GalacticCommon ]
   # VG-Tweak End
 

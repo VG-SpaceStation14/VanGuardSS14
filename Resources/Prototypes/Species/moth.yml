@@ -28,4 +28,5 @@
   - species-cons-moth-2
   special:
   - species-special-moth-1
+  defaultLanguages: [ GalacticCommon ]
   # VG-Tweak End

@@ -9,6 +9,7 @@ using Content.Client.UserInterface.Systems.Gameplay;
 using Content.Client.UserInterface.Systems.Guidebook;
 using Content.Client.UserInterface.Systems.MenuBar.Widgets;
 using Content.Client.UserInterface.Systems.Sandbox;
+using Content.Client._VanGuard.Language.UI; // VG-Tweak: language system
 using Robust.Client.UserInterface.Controllers;
 
 namespace Content.Client.UserInterface.Systems.MenuBar;
@@ -24,6 +25,7 @@ public sealed partial class GameTopMenuBarUIController : UIController
     [Dependency] private SandboxUIController _sandbox = default!;
     [Dependency] private GuidebookUIController _guidebook = default!;
     [Dependency] private EmotesUIController _emotes = default!;
+    [Dependency] private LanguageUIController _language = default!; // VG-Tweak: language system
 
     private GameTopMenuBar? GameTopMenuBar => UIManager.GetActiveUIWidgetOrNull<GameTopMenuBar>();
 
@@ -47,6 +49,7 @@ public sealed partial class GameTopMenuBarUIController : UIController
         _action.UnloadButton();
         _sandbox.UnloadButton();
         _emotes.UnloadButton();
+        _language.UnloadButton(); // VG-Tweak: language system
     }
 
     public void LoadButtons()
@@ -60,5 +63,6 @@ public sealed partial class GameTopMenuBarUIController : UIController
         _action.LoadButton();
         _sandbox.LoadButton();
         _emotes.LoadButton();
+        _language.LoadButton(); // VG-Tweak: language system
     }
 }

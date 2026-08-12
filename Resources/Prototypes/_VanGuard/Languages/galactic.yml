@@ -1,0 +1,32 @@
+# VG-Tweak: language system.
+# The common galactic tongue, understood by almost every sapient species.
+- type: language
+  id: GalacticCommon
+  roundstart: true
+  priority: 2
+  parent: BaseVocalLanguage
+  icon:
+    sprite: /Textures/_VanGuard/Interface/Chat/language.rsi
+    state: galcom
+  style: !type:LinguisticStyle
+    obfuscateSyllables: true
+    replacement:
+    - "бла"
+    - "бла"
+    - "бла"
+    - "динг-донг"
+    - "динг"
+    - "донг"
+    - "жиббер-жаббер"
+    - "жуббр"
+    - "бле"
+    - "зиппти"
+    - "зуп"
+    - "виббл"
+    - "воббл"
+    - "виггл"
+    - "яда"
+    - "мех"
+    - "нех"
+    - "нах"
+    - "вах"

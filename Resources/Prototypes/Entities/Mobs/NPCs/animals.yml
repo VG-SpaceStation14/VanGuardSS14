@@ -88,6 +88,9 @@
   id: MobBee
   description: Nice to have, but you can't build a civilization on a foundation of honey alone.
   components:
+  - type: LanguageSpeaker
+    languages:
+      Bee: Speak
   - type: CombatMode
   - type: MovementSpeedModifier
     baseWalkSpeed : 3
@@ -203,6 +206,9 @@
   id: MobChicken
   description: Comes before an egg, and IS a dinosaur!
   components:
+  - type: LanguageSpeaker
+    languages:
+      Chicken: Speak
   - type: Sprite
     drawdepth: Mobs
     layers:
@@ -664,6 +670,9 @@
   id: MobDuckMallard
   description: An adorable mallard duck, it's fluffy and soft!
   components:
+  - type: LanguageSpeaker
+    languages:
+      Duck: Speak
   - type: Sprite
     drawdepth: Mobs
     layers:
@@ -867,6 +876,9 @@
   id: MobCow
   description: Moo.
   components:
+  - type: LanguageSpeaker
+    languages:
+      Cow: Speak
   - type: Sprite
     drawdepth: Mobs
     layers:
@@ -1026,6 +1038,9 @@
   id: MobGoat
   description: Her spine consists of long sharp segments, no wonder she is so grumpy.
   components:
+  - type: LanguageSpeaker
+    languages:
+      Goat: Speak
   - type: Sprite
     drawdepth: Mobs
     layers:
@@ -1139,6 +1154,9 @@
   name: sheepBase
   description: A sheep.
   components:
+  - type: LanguageSpeaker
+    languages:
+      Sheep: Speak
   - type: Sprite
     drawdepth: Mobs
     layers:
@@ -1675,6 +1693,9 @@
   parent: MobBaseAncestor
   description: New church of neo-darwinists actually believe that EVERY animal evolved from a monkey. Tastes like pork, and killing them is both fun and relaxing.
   components:
+  - type: LanguageSpeaker
+    languages:
+      Monkey: Speak
   - type: NameIdentifier
     group: Monkey
   - type: Speech
@@ -1711,6 +1732,9 @@
   description: New church of neo-darwinists actually believe that EVERY animal evolved from a monkey. Tastes like pork, and killing them is both fun and relaxing.
   suffix: syndicate base
   components:
+  - type: LanguageSpeaker
+    languages:
+      Monkey: Speak
   - type: NameIdentifier
     group: Monkey
   - type: SentienceTarget
@@ -1760,6 +1784,9 @@
   description: Cousins to the sentient race of lizard people, kobolds blend in with their natural habitat and are as nasty as monkeys; ready to pull out your hair and stab you to death.
   abstract: true
   components:
+  - type: LanguageSpeaker
+    languages:
+      Draconic: Speak
   - type: NameIdentifier
     group: Kobold
   - type: LizardAccent
@@ -1921,6 +1948,9 @@
   id: MobMouse
   description: Squeak!
   components:
+  - type: LanguageSpeaker
+    languages:
+      Mouse: Speak
   - type: GhostRole
     makeSentient: true
     allowSpeech: true
@@ -2673,6 +2703,9 @@
   id: MobSpiderBase
   abstract: true
   components:
+  - type: LanguageSpeaker
+    languages:
+      Arachnid: Speak
   - type: Physics
   - type: Fixtures
     fixtures:
@@ -3105,6 +3138,9 @@
   name: corgi
   description: Finally, a space corgi!
   components:
+  - type: LanguageSpeaker
+    languages:
+      Dog: Speak
   - type: Sprite
     drawdepth: Mobs
     sprite: Mobs/Pets/corgi.rsi
@@ -3286,6 +3322,9 @@
   id: MobCat
   description: Feline pet, very funny.
   components:
+  - type: LanguageSpeaker
+    languages:
+      Cat: Speak
   - type: Sprite
     drawdepth: Mobs
     sprite: Mobs/Pets/cat.rsi
@@ -3790,6 +3829,9 @@
   id: MobPig
   description: Oink.
   components:
+  - type: LanguageSpeaker
+    languages:
+      Pig: Speak
   - type: Sprite
     drawdepth: Mobs
     layers:
@@ -3861,6 +3903,9 @@
   id: MobDionaNymph
   description: It's like a cat, only.... branch-ier.
   components:
+  - type: LanguageSpeaker
+    languages:
+      RootSpeak: Speak
   - type: Sprite
     drawdepth: Mobs
     layers:
