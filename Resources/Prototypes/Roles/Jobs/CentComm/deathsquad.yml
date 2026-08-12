@@ -3,6 +3,7 @@
   name: job-name-deathsquad
   description: job-description-deathsquad
   playTimeTracker: JobDeathSquad
+  salary: 500 # VG-Tweak: economy
   setPreference: false
   startingGear: DeathSquadGear
   icon: "JobIconDeathSquad"

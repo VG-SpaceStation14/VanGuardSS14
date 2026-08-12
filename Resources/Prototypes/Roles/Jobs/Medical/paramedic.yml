@@ -3,6 +3,7 @@
   name: job-name-paramedic
   description: job-description-paramedic
   playTimeTracker: JobParamedic
+  salary: 300 # VG-Tweak: economy
   requirements:
   - !type:DepartmentTimeRequirement
     department: Medical

@@ -3,6 +3,7 @@
   name: job-name-atmostech
   description: job-description-atmostech
   playTimeTracker: JobAtmosphericTechnician
+  salary: 300 # VG-Tweak: economy
   requirements:
     - !type:DepartmentTimeRequirement
       department: Engineering

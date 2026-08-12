@@ -1,0 +1,38 @@
+economy-card-window-title = Банковский кошелёк
+economy-card-subtitle = Личные счета центрального банка
+economy-card-tab-account = Счёт
+economy-card-tab-operations = Операции
+economy-card-brand = Центральный банк
+economy-card-brand-tag = Стандартный счёт
+economy-card-masked-account = Номер счёта
+economy-card-available-balance = Доступный баланс
+economy-card-balance-value = { $balance } кр.
+economy-card-no-account = Нет счёта
+economy-card-withdraw-section = Снятие наличных
+economy-card-withdraw-amount-label = Сумма
+economy-card-quick-amount-max = Макс
+economy-card-quick-amount-10 = 10
+economy-card-quick-amount-50 = 50
+economy-card-quick-amount-100 = 100
+economy-card-withdraw-button = Снять
+economy-card-withdraw-hint = Введите сумму и нажмите «Снять», чтобы получить кредиты наличными.
+economy-card-withdraw-failed = Не удалось снять наличные.
+economy-card-manual-account-toggle = Другой счёт
+economy-card-manual-account-warning = Будьте осторожны: вы переводите средства на чужой счёт.
+economy-card-account-override-placeholder = Номер счёта
+economy-card-status-no-account = Счёт не найден.
+economy-card-status-no-funds = На счёте недостаточно средств.
+
+economy-card-history-title = История операций
+economy-card-history-empty = Операций пока нет.
+economy-card-history-payroll = Зарплата
+economy-card-history-starting-payroll = Стартовая выплата
+economy-card-history-withdraw = Снятие наличных
+economy-card-history-deposit = Внесение наличных
+economy-card-history-vending-purchase = Покупка в автомате
+
+payroll-popup-received = На ваш счёт зачислено { $amount } кр.
+
+economy-report-market-changes = Рынок сдвинулся: дорожают — { $increased }; дешевеют — { $decreased }.
+economy-report-sender = Торговая палата
+economy-report-none = нет

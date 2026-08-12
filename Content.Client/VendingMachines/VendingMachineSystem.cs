@@ -52,6 +52,7 @@ public sealed partial class VendingMachineSystem : SharedVendingMachineSystem
         component.Contraband = state.Contraband;
         var brokenChanged = component.Broken != state.Broken;
         component.Broken = state.Broken;
+        component.AllForFree = state.AllForFree;
 
         CopyInventory(state.Inventory, component.Inventory);
         CopyInventory(state.EmaggedInventory, component.EmaggedInventory);

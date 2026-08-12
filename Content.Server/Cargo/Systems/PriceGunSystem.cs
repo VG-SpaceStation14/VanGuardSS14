@@ -1,5 +1,7 @@
 using Content.Server.Popups;
 using Content.Server.Salvage.JobBoard;
+using Content.Server._VanGuard.Economy.Systems;
+using Content.Server.Station.Systems;
 using Content.Shared.Cargo.Components;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Timing;
@@ -16,6 +18,10 @@ public sealed partial class PriceGunSystem : SharedPriceGunSystem
     [Dependency] private CargoSystem _bountySystem = default!;
     [Dependency] private SalvageJobBoardSystem _salvageJobBoard = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
+    // VG-Tweak Start: price gun reflects the station market.
+    [Dependency] private EconomyMarketSystem _market = default!;
+    [Dependency] private StationSystem _station = default!;
+    // VG-Tweak End
 
     protected override bool GetPriceOrBounty(Entity<PriceGunComponent> entity, EntityUid target, EntityUid user)
     {
@@ -32,7 +38,12 @@ public sealed partial class PriceGunSystem : SharedPriceGunSystem
         }
         else // Otherwise appraise the price
         {
+            // VG-Tweak Start: reflect the current station market in the appraisal.
             var price = _pricingSystem.GetPrice(target);
+            if (_station.GetOwningStation(user) is { } station)
+                price = _market.AdjustSellPrice(station, target, price);
+            // VG-Tweak End
+
             _popupSystem.PopupEntity(Loc.GetString("price-gun-pricing-result",
                     ("object", Identity.Entity(target, EntityManager)),
                     ("price", $"{price:F2}")),

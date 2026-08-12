@@ -3,6 +3,7 @@
   name: job-name-cadet
   description: job-description-cadet
   playTimeTracker: JobSecurityCadet
+  salary: 150 # VG-Tweak: economy
   requirements:
     - !type:OverallPlaytimeRequirement
       time: 10h # Corvax-RoleTime

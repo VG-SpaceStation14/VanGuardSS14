@@ -83,6 +83,10 @@
   - MeteorSwarmScheduler
   - SpaceTrafficControlEventScheduler
   - BasicRoundstartVariation
+  # VG-Tweak Start: economy
+  - Payday
+  - MarketShift
+  # VG-Tweak End
 
 - type: gamePreset
   id: Greenshift
@@ -111,6 +115,10 @@
   - MeteorSwarmScheduler
   - SpaceTrafficControlEventScheduler
   - BasicRoundstartVariation
+  # VG-Tweak Start: economy
+  - Payday
+  - MarketShift
+  # VG-Tweak End
 
 - type: gamePreset
   id: Secret
@@ -150,6 +158,10 @@
   - MeteorSwarmScheduler
   - SpaceTrafficControlEventScheduler
   - BasicRoundstartVariation
+  # VG-Tweak Start: economy
+  - Payday
+  - MarketShift
+  # VG-Tweak End
 
 - type: gamePreset
   id: Deathmatch

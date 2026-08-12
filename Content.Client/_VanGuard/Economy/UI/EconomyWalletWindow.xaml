@@ -1,0 +1,106 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      Title="{Loc 'economy-card-window-title'}"
+                      MinSize="700 500"
+                      SetSize="760 540">
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+        <!-- Terminal header (no duplicated balance) -->
+        <PanelContainer MinHeight="64">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#10161C" BorderColor="#4ad9ff" BorderThickness="0 0 0 2"/>
+            </PanelContainer.PanelOverride>
+            <BoxContainer Orientation="Horizontal" Margin="10" HorizontalExpand="True">
+                <BoxContainer Orientation="Vertical" VerticalAlignment="Center">
+                    <Label Text="{Loc 'economy-card-window-title'}" StyleClasses="LabelHeading"/>
+                    <Label Name="SubtitleLabel" StyleClasses="LabelSubText" Text="{Loc 'economy-card-subtitle'}"/>
+                </BoxContainer>
+                <Control HorizontalExpand="True"/>
+                <Label Name="AccountChipLabel" Access="Public" StyleClasses="LabelSubText" VerticalAlignment="Center"/>
+            </BoxContainer>
+        </PanelContainer>
+
+        <TabContainer Name="MainTabs" Access="Public" HorizontalExpand="True" VerticalExpand="True" Margin="10 10 10 0">
+            <!-- Tab 1: account + history -->
+            <PanelContainer Margin="4 6 4 4">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#0A0E12" BorderColor="#2E3B45" BorderThickness="2"
+                                      ContentMarginLeftOverride="6" ContentMarginRightOverride="6"
+                                      ContentMarginTopOverride="6" ContentMarginBottomOverride="6"/>
+                </PanelContainer.PanelOverride>
+                <BoxContainer Orientation="Vertical" SeparationOverride="6">
+                    <PanelContainer>
+                        <PanelContainer.PanelOverride>
+                            <gfx:StyleBoxFlat BackgroundColor="#141A22" BorderColor="#2B3445" BorderThickness="1"
+                                              ContentMarginLeftOverride="9" ContentMarginRightOverride="9"
+                                              ContentMarginTopOverride="9" ContentMarginBottomOverride="9"/>
+                        </PanelContainer.PanelOverride>
+                        <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                            <BoxContainer Orientation="Vertical" SeparationOverride="1" HorizontalExpand="True">
+                                <Label Name="BrandLabel" Access="Public" StyleClasses="LabelHeading" Text="{Loc 'economy-card-brand'}"/>
+                                <Label Name="AccountNumberLabel" Access="Public" StyleClasses="LabelSubText"/>
+                            </BoxContainer>
+                            <BoxContainer Orientation="Vertical" SeparationOverride="1" HorizontalAlignment="Right">
+                                <Label Name="FundsTitleLabel" Access="Public" StyleClasses="LabelSubText" HorizontalAlignment="Right" Text="{Loc 'economy-card-available-balance'}"/>
+                                <Label Name="FundsValueLabel" Access="Public" StyleClasses="LabelHeading" HorizontalAlignment="Right"/>
+                            </BoxContainer>
+                        </BoxContainer>
+                    </PanelContainer>
+
+                    <PanelContainer VerticalExpand="True">
+                        <PanelContainer.PanelOverride>
+                            <gfx:StyleBoxFlat BackgroundColor="#0A0E12" BorderColor="#2E3B45" BorderThickness="1"
+                                              ContentMarginLeftOverride="6" ContentMarginRightOverride="6"
+                                              ContentMarginTopOverride="6" ContentMarginBottomOverride="6"/>
+                        </PanelContainer.PanelOverride>
+                        <BoxContainer Orientation="Vertical" SeparationOverride="4">
+                            <Label Name="HistoryTitleLabel" Access="Public" StyleClasses="LabelHeading" Text="{Loc 'economy-card-history-title'}"/>
+                            <ScrollContainer VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False">
+                                <BoxContainer Name="HistoryList" Access="Public" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="2"/>
+                            </ScrollContainer>
+                        </BoxContainer>
+                    </PanelContainer>
+                </BoxContainer>
+            </PanelContainer>
+            <!-- Tab 2: operations (scrollable so the manual account section never squeezes the layout) -->
+            <PanelContainer Margin="4 6 4 4">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#0A0E12" BorderColor="#2E3B45" BorderThickness="2"
+                                      ContentMarginLeftOverride="6" ContentMarginRightOverride="6"
+                                      ContentMarginTopOverride="6" ContentMarginBottomOverride="6"/>
+                </PanelContainer.PanelOverride>
+                <ScrollContainer VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False">
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="5" Margin="6">
+                        <Label Name="WithdrawTitleLabel" Access="Public" StyleClasses="LabelHeading" Text="{Loc 'economy-card-withdraw-section'}"/>
+                        <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+                            <LineEdit Name="AmountInput" Access="Public" HorizontalExpand="True" PlaceHolder="{Loc 'economy-card-withdraw-amount-label'}"/>
+                            <Button Name="MaxButton" Access="Public" Text="{Loc 'economy-card-quick-amount-max'}"/>
+                        </BoxContainer>
+
+                        <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+                            <Button Name="Quick10Button" Access="Public" HorizontalExpand="True" Text="{Loc 'economy-card-quick-amount-10'}"/>
+                            <Button Name="Quick50Button" Access="Public" HorizontalExpand="True" Text="{Loc 'economy-card-quick-amount-50'}"/>
+                            <Button Name="Quick100Button" Access="Public" HorizontalExpand="True" Text="{Loc 'economy-card-quick-amount-100'}"/>
+                        </BoxContainer>
+
+                        <Button Name="WithdrawButton" Access="Public" Text="{Loc 'economy-card-withdraw-button'}" MinHeight="38"/>
+                        <Label Name="WithdrawHintLabel" Access="Public" StyleClasses="LabelSubText" Text="{Loc 'economy-card-withdraw-hint'}"/>
+
+                        <Button Name="ManualToggleButton" Access="Public" Text="{Loc 'economy-card-manual-account-toggle'}"/>
+                        <BoxContainer Name="ManualBox" Access="Public" Orientation="Vertical" SeparationOverride="3" Visible="False">
+                            <Label Name="ManualWarningLabel" Access="Public" StyleClasses="LabelSubText" Text="{Loc 'economy-card-manual-account-warning'}"/>
+                            <LineEdit Name="AccountIdInput" Access="Public" PlaceHolder="{Loc 'economy-card-account-override-placeholder'}"/>
+                        </BoxContainer>
+                    </BoxContainer>
+                </ScrollContainer>
+            </PanelContainer>
+        </TabContainer>
+
+        <!-- Scan-line footer -->
+        <PanelContainer MinHeight="3" Margin="12 10 12 12">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#4ad9ff"/>
+            </PanelContainer.PanelOverride>
+        </PanelContainer>
+    </BoxContainer>
+</controls:FancyWindow>

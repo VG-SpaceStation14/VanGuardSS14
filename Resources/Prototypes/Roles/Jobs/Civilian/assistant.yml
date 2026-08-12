@@ -3,6 +3,7 @@
   name: job-name-passenger
   description: job-description-passenger
   playTimeTracker: JobPassenger
+  salary: 100 # VG-Tweak: economy
   startingGear: PassengerGear
   icon: "JobIconPassenger"
   supervisors: job-supervisors-everyone

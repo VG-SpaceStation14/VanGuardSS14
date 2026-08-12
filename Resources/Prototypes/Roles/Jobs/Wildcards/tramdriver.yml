@@ -3,6 +3,7 @@
   name: job-name-tram-driver
   description: job-description-tram-driver
   playTimeTracker: JobTramDriver
+  salary: 200 # VG-Tweak: economy
   startingGear: TramDriverGear
   icon: "JobIconTramDriver"
   supervisors: job-supervisors-hop

@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Numerics;
 using Content.Server.Cargo.Systems;
+using Content.Server._VanGuard.Economy.Systems;
 using Content.Server.VendingMachines.Components;
 using Content.Server.Vocalization.Systems;
 using Content.Shared.Cargo;
@@ -20,6 +21,7 @@ public sealed partial class VendingMachineSystem : SharedVendingMachineSystem
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private PricingSystem _pricing = default!;
     [Dependency] private ThrowingSystem _throwingSystem = default!;
+    [Dependency] private EconomyBankSystem _bank = default!;
 
     private const float WallVendEjectDistanceFromWall = 1f;
 
@@ -169,6 +171,47 @@ public sealed partial class VendingMachineSystem : SharedVendingMachineSystem
         }
 
         args.Price += priceSets.Max();
+    }
+
+    /// <summary>
+    ///     The vending price of an item follows its estimated sale price
+    ///     (which includes StaticPrice). A price floor keeps even cheap
+    ///     consumables from being handed out for nothing.
+    /// </summary>
+    protected override int GetEntryPrice(EntityPrototype proto)
+    {
+        var price = (int)_pricing.GetEstimatedPrice(proto);
+        return price > 0 ? price : 25;
+    }
+
+    /// <summary>
+    ///     Charges the buyer's personal bank account for the item. The
+    ///     purchase is rejected when the buyer has no account or an
+    ///     insufficient balance.
+    /// </summary>
+    protected override bool TryCharge(
+        EntityUid uid,
+        EntityUid buyer,
+        VendingMachineInventoryEntry entry,
+        VendingMachineComponent component)
+    {
+        var price = entry.Price;
+        if (price <= 0 || component.AllForFree)
+            return true;
+
+        if (!_bank.TryGetPlayerAccount(buyer, out var mindUid, out var account))
+        {
+            Popup.PopupEntity(Loc.GetString("vending-machine-component-no-balance"), uid, buyer);
+            return false;
+        }
+
+        if (!_bank.Withdraw((mindUid, account), price, "vending-purchase", GetNetEntity(uid), entry.ID))
+        {
+            Popup.PopupEntity(Loc.GetString("vending-machine-component-no-balance"), uid, buyer);
+            return false;
+        }
+
+        return true;
     }
 
     [SubscribeLocalEvent]

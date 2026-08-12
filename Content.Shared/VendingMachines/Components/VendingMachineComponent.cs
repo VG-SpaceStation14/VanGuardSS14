@@ -40,6 +40,13 @@ public sealed partial class VendingMachineComponent : Component
     public float InitialStockQuality = 1.0f;
 
     /// <summary>
+    ///     When true the machine dispenses items without charging the buyer.
+    ///     Used for machines that should stay free (medical, food, tools).
+    /// </summary>
+    [DataField]
+    public bool AllForFree;
+
+    /// <summary>
     /// Audio entity used during restock in case the doafter gets canceled.
     /// </summary>
     [DataField]

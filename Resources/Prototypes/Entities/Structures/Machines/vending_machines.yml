@@ -259,6 +259,9 @@
   components:
   - type: VendingMachine
     pack: BoozeOMatInventory
+    # VG-Tweak Start: economy - this machine stays free
+    allForFree: true
+    # VG-Tweak End
   - type: VendingMachineVisuals
     denyState: deny-unshaded
     loopDenyAnimation: false
@@ -291,6 +294,9 @@
   components:
   - type: VendingMachine
     pack: BoozeOMatInventory
+    # VG-Tweak Start: economy - this machine stays free
+    allForFree: true
+    # VG-Tweak End
   - type: VendingMachineVisuals
     denyState: deny-unshaded
     loopDenyAnimation: false
@@ -351,6 +357,9 @@
   components:
   - type: VendingMachine
     pack: ChefvendInventory
+    # VG-Tweak Start: economy - this machine stays free
+    allForFree: true
+    # VG-Tweak End
   - type: VendingMachineVisuals
     ejectState: eject-unshaded
   - type: DatasetVocalizer
@@ -776,6 +785,9 @@
   components:
   - type: VendingMachine
     pack: DinnerwareInventory
+    # VG-Tweak Start: economy - this machine stays free
+    allForFree: true
+    # VG-Tweak End
   - type: VendingMachineVisuals
     ejectState: eject-unshaded
   - type: DatasetVocalizer
@@ -807,6 +819,9 @@
   components:
   - type: VendingMachine
     pack: MagiVendInventory
+    # VG-Tweak Start: economy - this machine stays free
+    allForFree: true
+    # VG-Tweak End
   - type: DatasetVocalizer
     dataset: MagiVendAds
   - type: SpeakOnUIClosed
@@ -891,6 +906,9 @@
   components:
   - type: VendingMachine
     pack: NanoMedCivilianInventory
+    # VG-Tweak Start: economy - this machine stays free
+    allForFree: true
+    # VG-Tweak End
   - type: VendingMachineEject
     ejectDelay: 0.6
   - type: VendingMachineVisuals
@@ -949,6 +967,9 @@
   components:
   - type: VendingMachine
     pack: NutriMaxInventory
+    # VG-Tweak Start: economy - this machine stays free
+    allForFree: true
+    # VG-Tweak End
   - type: VendingMachineVisuals
     ejectState: eject-unshaded
     denyState: deny-unshaded
@@ -1018,6 +1039,9 @@
   components:
   - type: VendingMachine
     pack: MegaSeedServitorInventory
+    # VG-Tweak Start: economy - this machine stays free
+    allForFree: true
+    # VG-Tweak End
   - type: VendingMachineVisuals
     ejectState: eject-unshaded
     denyState: deny-unshaded
@@ -1087,6 +1111,9 @@
   components:
   - type: VendingMachine
     pack: SustenanceInventory
+    # VG-Tweak Start: economy - this machine stays free
+    allForFree: true
+    # VG-Tweak End
   - type: VendingMachineVisuals
     ejectState: eject-unshaded
     denyState: deny-unshaded
@@ -1873,6 +1900,9 @@
   components:
   - type: VendingMachine
     pack: SyndieDrobeInventory
+    # VG-Tweak Start: economy - this machine stays free
+    allForFree: true
+    # VG-Tweak End
   - type: DatasetVocalizer
     dataset: SyndieDrobeAds
   - type: SpeakOnUIClosed

@@ -3,6 +3,7 @@
   name: job-name-research-assistant
   description: job-description-research-assistant
   playTimeTracker: JobResearchAssistant
+  salary: 150 # VG-Tweak: economy
   requirements:
     - !type:DepartmentTimeRequirement
       department: Science

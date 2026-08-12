@@ -17,6 +17,14 @@
     storedRotation: -90
   - type: Access
   - type: IdCard
+  # VG-Tweak Start: economy - ID cards double as bank cards (wallet UI).
+  - type: ActivatableUI
+    key: enum.EconomyAccountUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.EconomyAccountUiKey.Key:
+        type: EconomyWalletBoundUserInterface
+  # VG-Tweak End
   - type: StationRecordKeyStorage
   - type: Tag
     tags:

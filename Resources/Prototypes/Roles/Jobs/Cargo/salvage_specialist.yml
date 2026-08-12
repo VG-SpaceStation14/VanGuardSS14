@@ -3,6 +3,7 @@
   name: job-name-salvagespec
   description: job-description-salvagespec
   playTimeTracker: JobSalvageSpecialist
+  salary: 350 # VG-Tweak: economy
   requirements:
     - !type:DepartmentTimeRequirement
       department: Cargo

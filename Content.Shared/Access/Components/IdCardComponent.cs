@@ -64,4 +64,13 @@ public sealed partial class IdCardComponent : Component
 
     [DataField]
     public bool CanMicrowave = true;
+
+    // VG-Tweak Start: economy - ID cards double as bank cards.
+    /// <summary>
+    ///     The bank account this card is bound to, shown by the wallet UI.
+    /// </summary>
+    [DataField]
+    [AutoNetworkedField]
+    public string? BankAccountId;
+    // VG-Tweak End
 }

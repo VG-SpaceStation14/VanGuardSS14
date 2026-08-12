@@ -3,6 +3,7 @@
   name: job-name-ce
   description: job-description-ce
   playTimeTracker: JobChiefEngineer
+  salary: 400 # VG-Tweak: economy
   requirements:
     - !type:RoleTimeRequirement
       role: JobAtmosphericTechnician

@@ -5,6 +5,7 @@
   name: job-name-cmo
   description: job-description-cmo
   playTimeTracker: JobChiefMedicalOfficer
+  salary: 400 # VG-Tweak: economy
   requirements:
     - !type:RoleTimeRequirement
       role: JobChemist

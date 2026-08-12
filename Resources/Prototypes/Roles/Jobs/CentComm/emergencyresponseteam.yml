@@ -4,6 +4,7 @@
   name: job-name-ertleader
   description: job-description-ertleader
   playTimeTracker: JobERTLeader
+  salary: 500 # VG-Tweak: economy
   setPreference: false
   startingGear: ERTLeaderGearEVA
   icon: "JobIconERTLeader"
@@ -102,6 +103,7 @@
   name: job-name-ertchaplain
   description: job-description-ertchaplain
   playTimeTracker: JobERTChaplain
+  salary: 400 # VG-Tweak: economy
   setPreference: false
   startingGear: ERTChaplainGear
   icon: "JobIconERTChaplain"
@@ -178,6 +180,7 @@
   name: job-name-ertengineer
   description: job-description-ertengineer
   playTimeTracker: JobERTEngineer
+  salary: 400 # VG-Tweak: economy
   setPreference: false
   startingGear: ERTEngineerGearEVA
   icon: "JobIconERTEngineer"
@@ -271,6 +274,7 @@
   name: job-name-ertsecurity
   description: job-description-ertsecurity
   playTimeTracker: JobERTSecurity
+  salary: 400 # VG-Tweak: economy
   setPreference: false
   startingGear: ERTSecurityGearEVA
   icon: "JobIconERTSecurity"
@@ -457,6 +461,7 @@
   name: job-name-ertmedic
   description: job-description-ertmedic
   playTimeTracker: JobERTMedical
+  salary: 400 # VG-Tweak: economy
   setPreference: false
   startingGear: ERTMedicalGearEVA
   icon: "JobIconERTMedic"
@@ -556,6 +561,7 @@
   name: job-name-ertjanitor
   description: job-description-ertjanitor
   playTimeTracker: JobERTJanitor
+  salary: 300 # VG-Tweak: economy
   setPreference: false
   startingGear: ERTJanitorGearEVA
   icon: "JobIconERTJanitor"

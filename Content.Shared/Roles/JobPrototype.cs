@@ -62,6 +62,22 @@ public sealed partial class JobPrototype : IPrototype
     [DataField]
     public bool RequireAdminNotify;
 
+    // VG-Tweak Start: economy - job salaries paid by the payroll system.
+    /// <summary>
+    ///     Credits paid to this job's employees on every payday. Null disables salary.
+    /// </summary>
+    [DataField]
+    public int? Salary;
+
+    /// <summary>
+    ///     When true the salary is deducted from the station cargo budget instead of
+    ///     being minted out of thin air.
+    /// </summary>
+    [DataField]
+    public bool PayrollFromStationBudget = true;
+    // VG-Tweak End
+
+
     /// <summary>
     /// Should this job appear in preferences menu?
     /// </summary>

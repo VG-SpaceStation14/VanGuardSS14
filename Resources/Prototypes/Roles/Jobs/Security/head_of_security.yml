@@ -3,6 +3,7 @@
   name: job-name-hos
   description: job-description-hos
   playTimeTracker: JobHeadOfSecurity
+  salary: 400 # VG-Tweak: economy
   requirements:
     - !type:RoleTimeRequirement
       role: JobWarden

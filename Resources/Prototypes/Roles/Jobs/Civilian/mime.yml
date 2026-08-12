@@ -3,6 +3,7 @@
   name: job-name-mime
   description: job-description-mime
   playTimeTracker: JobMime
+  salary: 150 # VG-Tweak: economy
   requirements:
     - !type:OverallPlaytimeRequirement
       time: 1h # Corvax-RoleTime 4
