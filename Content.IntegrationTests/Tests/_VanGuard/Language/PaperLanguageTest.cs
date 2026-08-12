@@ -300,6 +300,40 @@ public sealed class PaperLanguageTest : GameTest
         Assert.That(paperComp.LanguageSegments[2].ObfuscatedText, Is.Not.EqualTo("секрет2"));
     }
 
+    [Test]
+    public async Task Writing_SecondAuthor_DeletesUnreadableSegment_CancelsWrite()
+    {
+        var server = Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var testMap = await Pair.CreateTestMap();
+        await server.WaitIdleAsync();
+        var coords = new EntityCoordinates(testMap.MapUid, default);
+
+        var writerA = await SpawnWithLanguages(server, entMan, coords, ("Canilunzt", LanguageKnowledge.Speak));
+        var paper = await SpawnPaper(server, entMan, coords);
+
+        PaperComponent.PaperInputTextMessage firstMsg = new("секрет",
+            new List<PaperComponent.PaperTextSegment> { new("секрет", "Canilunzt") });
+        firstMsg.Actor = writerA;
+        await server.WaitPost(() => entMan.EventBus.RaiseLocalEvent(paper, firstMsg));
+        await server.WaitRunTicks(2);
+
+        // Writer B (does not know Canilunzt) deletes the Canilunzt word entirely.
+        var writerB = await SpawnWithLanguages(server, entMan, coords,
+            ("GalacticCommon", LanguageKnowledge.Speak),
+            ("Draconic", LanguageKnowledge.Speak));
+
+        PaperComponent.PaperInputTextMessage secondMsg = new("новое",
+            new List<PaperComponent.PaperTextSegment> { new("новое", "Draconic") });
+        secondMsg.Actor = writerB;
+        await server.WaitPost(() => entMan.EventBus.RaiseLocalEvent(paper, secondMsg));
+        await server.WaitRunTicks(2);
+
+        var paperComp = entMan.GetComponent<PaperComponent>(paper);
+        Assert.That(paperComp.Content, Is.EqualTo("секрет"),
+            "An author who cannot read a language must not be able to delete text written in it.");
+    }
+
     private static async Task<EntityUid> SpawnWithLanguages(
         Robust.UnitTesting.IServerIntegrationInstance server,
         IEntityManager entMan,

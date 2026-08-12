@@ -37,7 +37,24 @@ public sealed partial class PaperLanguageSystem : EntitySystem
         // an earlier author). Those are never downgraded: a second author may not
         // speak the language, but must not be able to make previously written text
         // readable for everyone.
-        var preExisting = FindPreExistingSegments(entity, args.Segments);
+        var (preExisting, matchedStored) = FindPreExistingSegments(entity, args.Segments);
+
+        // An author who cannot speak a language must not be able to delete or rework
+        // text written in it. If any such stored segment is not fully reproduced by
+        // the submission, refuse the write instead of retagging the remainder as the
+        // common tongue.
+        for (var storedIndex = 0; storedIndex < entity.Comp.LanguageSegments.Count; storedIndex++)
+        {
+            var stored = entity.Comp.LanguageSegments[storedIndex];
+            if (string.IsNullOrEmpty(stored.Text) || matchedStored.Contains(storedIndex))
+                continue;
+
+            if (!_language.CanSpeak(args.User, stored.Language))
+            {
+                args.Cancelled = true;
+                return;
+            }
+        }
 
         var normalized = new List<PaperComponent.PaperTextSegment>();
         var textOffset = 0;
@@ -83,22 +100,61 @@ public sealed partial class PaperLanguageSystem : EntitySystem
     ///     submitted segment is consumed at most once, so a single stored entry can
     ///     never be reused to launder multiple new submissions.
     /// </summary>
-    private static HashSet<int> FindPreExistingSegments(
+    /// <returns>
+    ///     The indices of the submitted segments recognised as pre-existing text,
+    ///     and the indices of the stored segments that were fully reproduced.
+    /// </returns>
+    private static (HashSet<int> PreExisting, HashSet<int> MatchedStored) FindPreExistingSegments(
         Entity<PaperComponent> entity,
         List<PaperComponent.PaperTextSegment> submitted)
     {
         var preExisting = new HashSet<int>();
+        var matchedStored = new HashSet<int>();
         var consumed = new HashSet<int>();
 
-        foreach (var stored in entity.Comp.LanguageSegments)
+        for (var storedIndex = 0; storedIndex < entity.Comp.LanguageSegments.Count; storedIndex++)
         {
+            var stored = entity.Comp.LanguageSegments[storedIndex];
             if (string.IsNullOrEmpty(stored.Text))
+                continue;
+
+            var matched = TryMatchStored(submitted, consumed, stored);
+            if (matched == null)
+                continue;
+
+            foreach (var index in matched)
+            {
+                consumed.Add(index);
+                preExisting.Add(index);
+            }
+
+            matchedStored.Add(storedIndex);
+        }
+
+        return (preExisting, matchedStored);
+    }
+
+    /// <summary>
+    ///     Tries to reconstruct <paramref name="stored"/> from an exact run of
+    ///     unconsumed submitted segments of the same language, attempting every
+    ///     eligible starting index rather than greedily committing to the first
+    ///     one. Returns the matched submitted indices, or null when no exact
+    ///     reconstruction exists.
+    /// </summary>
+    private static List<int>? TryMatchStored(
+        List<PaperComponent.PaperTextSegment> submitted,
+        HashSet<int> consumed,
+        PaperComponent.PaperTextSegment stored)
+    {
+        for (var start = 0; start < submitted.Count; start++)
+        {
+            if (consumed.Contains(start) || submitted[start].Language != stored.Language)
                 continue;
 
             var run = new List<int>();
             var length = 0;
 
-            for (var index = 0; index < submitted.Count; index++)
+            for (var index = start; index < submitted.Count; index++)
             {
                 if (consumed.Contains(index) || submitted[index].Language != stored.Language)
                     continue;
@@ -113,13 +169,7 @@ public sealed partial class PaperLanguageSystem : EntitySystem
                         sb.Append(submitted[runIndex].Text);
 
                     if (sb.ToString() == stored.Text)
-                    {
-                        foreach (var runIndex in run)
-                        {
-                            consumed.Add(runIndex);
-                            preExisting.Add(runIndex);
-                        }
-                    }
+                        return run;
 
                     break;
                 }
@@ -129,7 +179,7 @@ public sealed partial class PaperLanguageSystem : EntitySystem
             }
         }
 
-        return preExisting;
+        return null;
     }
 
     private PaperComponent.PaperTextSegment CreateSegment(EntityUid writer, string text, string languageId)

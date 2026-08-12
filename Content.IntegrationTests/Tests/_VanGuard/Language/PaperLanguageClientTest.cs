@@ -363,6 +363,24 @@ public sealed class PaperLanguageClientTest : GameTest
             "Draconic:новое | Canilunzt: слово1 | GalacticCommon: слово2"));
     }
 
+    [Test]
+    public async Task Retag_WithObfuscatedSegment_PreservesOriginalRawSegments()
+    {
+        var window = await CreateWindow();
+        // The writer cannot read the first word (it is shown as "бла1").
+        SetOriginal(window, "слово1", "Canilunzt", "бла1", displayText: "бла1");
+        // The writer changed the dropdown language but left the text untouched.
+        SetLanguageState(window, "Canilunzt", "Draconic", languageSelectionChanged: true);
+
+        var segments = BuildSegments(window, "бла1");
+
+        // Marker-based retagging must NOT run over obscured text: the raw segment
+        // (with the real word, not the obfuscated display text) is preserved instead.
+        Assert.That(segments.Count, Is.EqualTo(1));
+        Assert.That(segments[0].Text, Is.EqualTo("слово1"));
+        Assert.That(segments[0].Language, Is.EqualTo("Canilunzt"));
+    }
+
     private void InvokeAddLanguageMarker(PaperWindow window, string language)
     {
         var method = typeof(PaperWindow).GetMethod("AddLanguageMarker", BindingFlags.NonPublic | BindingFlags.Instance)!;

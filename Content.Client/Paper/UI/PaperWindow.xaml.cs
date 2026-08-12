@@ -545,7 +545,11 @@ namespace Content.Client.Paper.UI
             // not change, so the language markers recorded while editing are the only
             // hint about the new languages. This must be evaluated before the
             // unchanged-document branch so an explicit re-tag is not discarded.
-            if (text == _originalEditableText && _originalLanguageSegments.Count > 0 && _languageSelectionChanged)
+            // Retagging is only safe when every segment is readable to the writer:
+            // marker positions are stored in the *displayed* text, and for obscured
+            // segments that text is full of '…' which must never be persisted as raw.
+            if (text == _originalEditableText && _originalLanguageSegments.Count > 0 && _languageSelectionChanged
+                && IsDocumentFullyReadable())
                 return BuildSegmentsFromMarkers(text);
 
             // The document was not modified at all - keep the exact original segments.
@@ -585,6 +589,25 @@ namespace Content.Client.Paper.UI
             }
 
             return result;
+        }
+
+        /// <summary>
+        ///     Whether every original language segment is shown to the writer as-is.
+        ///     Obscured segments make the editable text unusable for marker-based
+        ///     retagging, because the markers refer to positions in the displayed text.
+        /// </summary>
+        private bool IsDocumentFullyReadable()
+        {
+            if (_originalLanguageSegments.Count != _originalDisplaySegments.Count)
+                return false;
+
+            for (var index = 0; index < _originalLanguageSegments.Count; index++)
+            {
+                if (_originalLanguageSegments[index].Text != _originalDisplaySegments[index].Text)
+                    return false;
+            }
+
+            return true;
         }
 
         /// <summary>
