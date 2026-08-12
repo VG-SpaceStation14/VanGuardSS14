@@ -30,8 +30,13 @@
             </ScrollContainer>
         </PanelContainer>
         <!-- Bottom buttons for editing -->
-        <BoxContainer Name="EditButtons" Orientation="Horizontal" HorizontalAlignment="Right" Margin="6">
-            <Button Name="SaveButton" />
+        <BoxContainer Name="EditButtons" Orientation="Horizontal" Margin="6" SeparationOverride="6">
+            <!-- VG-Tweak Start: language system - language selector to the left of the save button -->
+            <Label Name="LanguageLabel" VerticalAlignment="Center" />
+            <OptionButton Name="LanguageSelector" MinSize="170 0" />
+            <Control HorizontalExpand="True" />
+            <!-- VG-Tweak End -->
+            <Button Name="SaveButton" VerticalAlignment="Center" />
         </BoxContainer>
     </BoxContainer>
 </paper:PaperWindow>

@@ -1,6 +1,7 @@
 using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
 using Robust.Shared.Serialization;
+using Robust.Shared.Serialization.Manager.Attributes;
 
 namespace Content.Shared.Paper;
 
@@ -10,6 +11,12 @@ public sealed partial class PaperComponent : Component
     public PaperAction Mode;
     [DataField("content"), AutoNetworkedField]
     public string Content { get; set; } = "";
+
+    /// <summary>
+    ///     The language used by each part of the document. Empty for legacy documents.
+    /// </summary>
+    [DataField("languageSegments"), AutoNetworkedField]
+    public List<PaperTextSegment> LanguageSegments { get; set; } = new();
 
     [DataField("contentSize")]
     public int ContentSize { get; set; } = 10000;
@@ -41,12 +48,14 @@ public sealed partial class PaperComponent : Component
     public sealed class PaperBoundUserInterfaceState : BoundUserInterfaceState
     {
         public readonly string Text;
+        public readonly List<PaperTextSegment> LanguageSegments;
         public readonly List<StampDisplayInfo> StampedBy;
         public readonly PaperAction Mode;
 
-        public PaperBoundUserInterfaceState(string text, List<StampDisplayInfo> stampedBy, PaperAction mode = PaperAction.Read)
+        public PaperBoundUserInterfaceState(string text, List<PaperTextSegment> languageSegments, List<StampDisplayInfo> stampedBy, PaperAction mode = PaperAction.Read)
         {
             Text = text;
+            LanguageSegments = languageSegments;
             StampedBy = stampedBy;
             Mode = mode;
         }
@@ -56,10 +65,27 @@ public sealed partial class PaperComponent : Component
     public sealed class PaperInputTextMessage : BoundUserInterfaceMessage
     {
         public readonly string Text;
+        public readonly List<PaperTextSegment> LanguageSegments;
 
-        public PaperInputTextMessage(string text)
+        public PaperInputTextMessage(string text, List<PaperTextSegment>? languageSegments = null)
         {
             Text = text;
+            LanguageSegments = languageSegments ?? new();
+        }
+    }
+
+    [DataDefinition, Serializable, NetSerializable]
+    public sealed partial class PaperTextSegment
+    {
+        public string Text;
+        public string Language;
+        public string ObfuscatedText;
+
+        public PaperTextSegment(string text, string language, string obfuscatedText = "")
+        {
+            Text = text;
+            Language = language;
+            ObfuscatedText = obfuscatedText;
         }
     }
 

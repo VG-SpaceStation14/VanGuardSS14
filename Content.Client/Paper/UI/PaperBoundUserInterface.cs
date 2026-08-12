@@ -40,9 +40,9 @@ public sealed class PaperBoundUserInterface : BoundUserInterface
         _window?.Populate((PaperBoundUserInterfaceState) state);
     }
 
-    private void InputOnTextEntered(string text)
+    private void InputOnTextEntered(string text, List<PaperComponent.PaperTextSegment> languageSegments)
     {
-        SendMessage(new PaperInputTextMessage(text));
+        SendMessage(new PaperInputTextMessage(text, languageSegments));
 
         if (_window != null)
         {

@@ -18,4 +18,6 @@ paper-ui-fill-level = { $currentLength }/{ $maxLength }
 
 paper-ui-save-button = Сохранить ({ $keybind })
 
+paper-ui-language-label = Язык:
+
 paper-tamper-proof-modified-message = Текст на странице был написан с использованием нефальсицицируемых чернил.
