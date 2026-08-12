@@ -50,6 +50,13 @@ public sealed partial class LanguagePrototype : IPrototype, IInheritingPrototype
     public bool Vocal = true;
 
     /// <summary>
+    ///     Whether this language can be written down on paper. Sign and other
+    ///     purely gestural languages are set to false: there is no written form.
+    /// </summary>
+    [DataField]
+    public bool Written = true;
+
+    /// <summary>
     ///     Color used to tint the language's name in the UI.
     /// </summary>
     [DataField]

@@ -6,6 +6,7 @@
   id: RootSpeak
   uiColor: "#76ff61"
   parent: BaseEmoteLanguage
+  written: false
   icon:
     sprite: /Textures/_VanGuard/Interface/Chat/language.rsi
     state: plant
@@ -22,6 +23,7 @@
   id: Bubblish
   uiColor: "#61daff"
   parent: BaseEmoteLanguage
+  written: false
   icon:
     sprite: /Textures/_VanGuard/Interface/Chat/language.rsi
     state: slime
@@ -99,6 +101,7 @@
   roundstart: true
   uiColor: White
   parent: BaseEmoteLanguage
+  written: false
   icon:
     sprite: /Textures/_VanGuard/Interface/Chat/language.rsi
     state: ssl

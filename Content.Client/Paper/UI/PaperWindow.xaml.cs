@@ -448,6 +448,11 @@ namespace Content.Client.Paper.UI
             if (_languageIds.ContainsValue(id) || !_prototypeManager.TryIndex<LanguagePrototype>(id, out var prototype))
                 return;
 
+            // Gestural languages (sign language, diona leaves, slime bubbles) have
+            // no written form and cannot be used when writing on paper.
+            if (!prototype.Written)
+                return;
+
             var optionId = _languageIds.Count;
             _languageIds.Add(optionId, id);
             LanguageSelector.AddItem(prototype.Name, optionId);

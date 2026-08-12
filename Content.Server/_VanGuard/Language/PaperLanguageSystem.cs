@@ -49,7 +49,9 @@ public sealed partial class PaperLanguageSystem : EntitySystem
                 continue;
 
             var language = segment.Language;
-            if (!_language.CanSpeak(args.User, language) && !preExisting.Contains(index))
+            // Gestural languages have no written form and cannot be stored on paper.
+            var writable = _proto.TryIndex<LanguagePrototype>(language, out var languageProto) && languageProto.Written;
+            if ((!writable || !_language.CanSpeak(args.User, language)) && !preExisting.Contains(index))
                 language = SharedLanguageSystem.CommonLanguageId;
 
             if (textOffset + segment.Text.Length > args.Text.Length ||
