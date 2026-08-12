@@ -16,11 +16,90 @@ public sealed partial class CargoSystem
     {
         SubscribeLocalEvent<CargoOrderConsoleComponent, CargoConsoleWithdrawFundsMessage>(OnWithdrawFunds);
         SubscribeLocalEvent<CargoOrderConsoleComponent, CargoConsoleToggleLimitMessage>(OnToggleLimit);
+        // VG-Tweak Start: station balance deposit/withdraw from the card console.
+        SubscribeLocalEvent<CargoOrderConsoleComponent, CargoConsoleStationFundsMessage>(OnStationFunds);
+        // VG-Tweak End
         SubscribeLocalEvent<FundingAllocationConsoleComponent, SetFundingAllocationBuiMessage>(OnSetFundingAllocation);
         SubscribeLocalEvent<FundingAllocationConsoleComponent, BeforeActivatableUIOpenEvent>(OnFundAllocationBuiOpen);
 
         _cfg.OnValueChanged(CCVars.AllowPrimaryAccountAllocation, enabled => { _allowPrimaryAccountAllocation = enabled; }, true);
         _cfg.OnValueChanged(CCVars.AllowPrimaryCutAdjustment, enabled => { _allowPrimaryCutAdjustment = enabled; }, true);
+    }
+
+    /// <summary>
+    ///     VG-Tweak: lets a crew member deposit credits from their personal bank
+    ///     account into the station budget, or withdraw station funds onto their
+    ///     account. Withdrawals of large sums require console access.
+    /// </summary>
+    private void OnStationFunds(Entity<CargoOrderConsoleComponent> ent, ref CargoConsoleStationFundsMessage args)
+    {
+        if (args.Actor is not { Valid: true } actor || args.Amount <= 0)
+            return;
+
+        if (_station.GetOwningStation(ent) is not { } station ||
+            !TryComp<StationBankAccountComponent>(station, out var bank))
+        {
+            _popup.PopupCursor(Loc.GetString("cargo-console-station-not-found"), actor);
+            return;
+        }
+
+        var primaryAccount = bank.PrimaryAccount;
+
+        switch (args.Action)
+        {
+            case CargoStationFundsAction.Deposit:
+                if (!_bank.TryGetPlayerAccount(actor, out var mindUid, out var account))
+                {
+                    _popup.PopupCursor(Loc.GetString("cargo-console-no-account"), actor);
+                    PlayDenySound(ent, ent.Comp);
+                    return;
+                }
+
+                if (!_bank.Withdraw((mindUid, account), args.Amount, "station-deposit", GetNetEntity(station), primaryAccount))
+                {
+                    _popup.PopupCursor(Loc.GetString("cargo-console-station-insufficient-funds"), actor);
+                    PlayDenySound(ent, ent.Comp);
+                    return;
+                }
+
+                UpdateBankAccount((station, bank), args.Amount, primaryAccount);
+                _audio.PlayPvs(ApproveSound, ent);
+                _adminLogger.Add(LogType.Action, LogImpact.Medium,
+                    $"{ToPrettyString(actor):player} deposited {args.Amount} credits into station {ToPrettyString(station)} from their bank account.");
+                break;
+
+            case CargoStationFundsAction.Withdraw:
+                // Large withdrawals require access to the console.
+                if (args.Amount >= ent.Comp.BaseWithdrawAccessAmount
+                    && !_accessReaderSystem.IsAllowed(actor, ent))
+                {
+                    _popup.PopupCursor(Loc.GetString("cargo-console-order-not-allowed"), actor);
+                    PlayDenySound(ent, ent.Comp);
+                    return;
+                }
+
+                var available = GetBalanceFromAccount((station, bank), primaryAccount);
+                if (args.Amount > available)
+                {
+                    _popup.PopupCursor(Loc.GetString("cargo-console-insufficient-station-funds"), actor);
+                    PlayDenySound(ent, ent.Comp);
+                    return;
+                }
+
+                if (!_bank.TryGetPlayerAccount(actor, out mindUid, out account))
+                {
+                    _popup.PopupCursor(Loc.GetString("cargo-console-no-account"), actor);
+                    PlayDenySound(ent, ent.Comp);
+                    return;
+                }
+
+                UpdateBankAccount((station, bank), -args.Amount, primaryAccount);
+                _bank.Deposit((mindUid, account), args.Amount, "station-withdraw", GetNetEntity(station), primaryAccount);
+                _audio.PlayPvs(ApproveSound, ent);
+                _adminLogger.Add(LogType.Action, LogImpact.Medium,
+                    $"{ToPrettyString(actor):player} withdrew {args.Amount} credits from station {ToPrettyString(station)}.");
+                break;
+        }
     }
 
     private void OnWithdrawFunds(Entity<CargoOrderConsoleComponent> ent, ref CargoConsoleWithdrawFundsMessage args)

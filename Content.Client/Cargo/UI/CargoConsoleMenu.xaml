@@ -187,6 +187,10 @@
               <BoxContainer HorizontalAlignment="Center">
                   <Button Name="AccountActionButton" Text="{ Loc 'cargo-console-menu-account-action-button'}" MinHeight="45" MinWidth="120"/>
               </BoxContainer>
+              <!-- VG-Tweak Start: station balance deposit/withdraw hint -->
+              <RichTextLabel Name="StationFundsAccessHint" Text="{Loc 'cargo-console-station-funds-access-hint'}"
+                             HorizontalAlignment="Center" Margin="0 8 0 0" Visible="False"/>
+              <!-- VG-Tweak End -->
               <Control VerticalExpand="True"/>
               <BoxContainer VerticalAlignment="Bottom" HorizontalAlignment="Center">
                   <Button Name="AccountLimitToggleButton" Text="{ Loc 'cargo-console-menu-toggle-account-lock-button'}" MinHeight="45" MinWidth="120"/>

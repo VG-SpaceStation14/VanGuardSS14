@@ -38,6 +38,10 @@ namespace Content.Client.Cargo.UI
 
         public event Action<ButtonEventArgs>? OnToggleUnboundedLimit;
 
+        // VG-Tweak Start: station balance deposit/withdraw.
+        public event Action<CargoStationFundsAction, int>? OnStationFunds;
+        // VG-Tweak End
+
         private readonly List<string> _categoryStrings = new();
         private string? _category;
 
@@ -76,6 +80,9 @@ namespace Content.Client.Cargo.UI
             ActionOptions.OnItemSelected += idx =>
             {
                 ActionOptions.SelectId(idx.Id);
+                // VG-Tweak Start: update the station-funds hint visibility.
+                StationFundsAccessHint.Visible = IsStationFundsSelection();
+                // VG-Tweak End
             };
 
             TransferSpinBox.IsValid = val =>
@@ -89,6 +96,18 @@ namespace Content.Client.Cargo.UI
 
             AccountActionButton.OnPressed += _ =>
             {
+                // VG-Tweak Start: station balance deposit/withdraw shares the
+                // existing transfer action button.
+                if (IsStationFundsSelection())
+                {
+                    var action = ActionOptions.SelectedMetadata as string == StationDepositMarker
+                        ? CargoStationFundsAction.Deposit
+                        : CargoStationFundsAction.Withdraw;
+                    OnStationFunds?.Invoke(action, TransferSpinBox.Value);
+                    return;
+                }
+                // VG-Tweak End
+
                 var account = (ProtoId<CargoAccountPrototype>?) ActionOptions.SelectedMetadata;
                 OnAccountAction?.Invoke(account, TransferSpinBox.Value);
             };
@@ -296,7 +315,25 @@ namespace Content.Client.Cargo.UI
                 ActionOptions.SetItemMetadata(i, account);
                 i++;
             }
+            // VG-Tweak Start: station balance deposit/withdraw.
+            ActionOptions.AddItem(Loc.GetString("cargo-console-station-funds-action-deposit"), i);
+            ActionOptions.SetItemMetadata(i, StationDepositMarker);
+            i++;
+            ActionOptions.AddItem(Loc.GetString("cargo-console-station-funds-action-withdraw"), i);
+            ActionOptions.SetItemMetadata(i, StationWithdrawMarker);
+            // VG-Tweak End
         }
+
+        // VG-Tweak Start: markers distinguishing station balance actions from
+        // regular account transfers in the shared "Transfers" tab.
+        private const string StationDepositMarker = "__station_deposit";
+        private const string StationWithdrawMarker = "__station_withdraw";
+
+        private bool IsStationFundsSelection()
+        {
+            return ActionOptions.SelectedMetadata is string;
+        }
+        // VG-Tweak End
 
         public void UpdateStation(EntityUid station)
         {
@@ -318,10 +355,30 @@ namespace Content.Client.Cargo.UI
             TransferLimitLabel.Text = Loc.GetString("cargo-console-menu-account-action-transfer-limit",
                 ("limit", (int) (balance * orderConsole.TransferLimit)));
 
-            UnlimitedNotifier.Visible = orderConsole.TransferUnbounded;
-            AccountActionButton.Disabled = TransferSpinBox.Value <= 0 ||
-                                           TransferSpinBox.Value > bankAccount.Accounts[orderConsole.Account] * orderConsole.TransferLimit ||
-                                           _timing.CurTime < orderConsole.NextAccountActionTime;
+            // VG-Tweak Start: station balance deposit/withdraw shares the
+            // "Transfers" tab - show the station budget and access hint when a
+            // station action is selected.
+            var stationActionSelected = IsStationFundsSelection();
+            if (stationActionSelected)
+            {
+                var stationBalance = _cargoSystem.GetBalanceFromAccount((_station.Value, bankAccount), bankAccount.PrimaryAccount);
+                TransferLimitLabel.Text = Loc.GetString("cargo-console-station-balance-label")
+                                          + " "
+                                          + Loc.GetString("cargo-console-menu-points-amount", ("amount", stationBalance));
+                StationFundsAccessHint.Visible = ActionOptions.SelectedMetadata as string == StationWithdrawMarker;
+            }
+            else
+            {
+                StationFundsAccessHint.Visible = false;
+            }
+
+            AccountActionButton.Disabled = TransferSpinBox.Value <= 0
+                                           || _timing.CurTime < orderConsole.NextAccountActionTime
+                                           || (!stationActionSelected &&
+                                               TransferSpinBox.Value > bankAccount.Accounts[orderConsole.Account] * orderConsole.TransferLimit);
+            // VG-Tweak End
+
+            UnlimitedNotifier.Visible = orderConsole.TransferUnbounded && !stationActionSelected;
 
             RightPart.Visible = orderConsole.Mode != CargoOrderConsoleMode.PrintSlip;
         }

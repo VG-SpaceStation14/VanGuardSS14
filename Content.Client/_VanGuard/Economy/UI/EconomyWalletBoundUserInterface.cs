@@ -1,4 +1,5 @@
 using Content.Shared._VanGuard.Economy;
+using Content.Shared.Cargo.Prototypes;
 using Content.Shared.Roles;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
@@ -143,6 +144,8 @@ public sealed class EconomyWalletBoundUserInterface(EntityUid owner, Enum uiKey)
             "card-withdraw" => Loc.GetString("economy-card-history-withdraw"),
             "card-deposit" => Loc.GetString("economy-card-history-deposit"),
             "vending-purchase" => Loc.GetString("economy-card-history-vending-purchase"),
+            "station-deposit" => Loc.GetString("economy-card-history-station-deposit"),
+            "station-withdraw" => Loc.GetString("economy-card-history-station-withdraw"),
             _ => reason,
         };
 
@@ -164,6 +167,15 @@ public sealed class EconomyWalletBoundUserInterface(EntityUid owner, Enum uiKey)
             var protoMan = IoCManager.Resolve<Robust.Shared.Prototypes.IPrototypeManager>();
             if (protoMan.TryIndex(reasonData, out JobPrototype? job))
                 return $"{localized}: {job.LocalizedName}";
+        }
+
+        // reasonData for station operations is the cargo account prototype id
+        // (e.g. "Cargo"); show its localized name.
+        if (reason is "station-deposit" or "station-withdraw")
+        {
+            var protoMan = IoCManager.Resolve<Robust.Shared.Prototypes.IPrototypeManager>();
+            if (protoMan.TryIndex(reasonData, out CargoAccountPrototype? account))
+                return $"{localized}: {Loc.GetString(account.Name)}";
         }
 
         return $"{localized} ({reasonData})";

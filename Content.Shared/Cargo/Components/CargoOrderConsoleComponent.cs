@@ -48,6 +48,13 @@ public sealed partial class CargoOrderConsoleComponent : Component
     public float BaseTransferLimit = 0.20f;
 
     /// <summary>
+    ///     VG-Tweak: withdrawals of station funds at or above this amount require
+    ///     access to the card console.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public int BaseWithdrawAccessAmount = 5000;
+
+    /// <summary>
     /// The time at which account actions can be performed again.
     /// </summary>
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
@@ -187,3 +194,29 @@ public sealed class CargoConsoleWithdrawFundsMessage : BoundUserInterfaceMessage
 /// </summary>
 [Serializable, NetSerializable]
 public sealed class CargoConsoleToggleLimitMessage : BoundUserInterfaceMessage;
+
+/// <summary>
+///     VG-Tweak: deposits or withdraws station funds from the card console.
+///     Deposit moves credits from the player's personal bank account into the
+///     station budget; withdraw moves station funds onto the player's account
+///     (large withdrawals require console access).
+/// </summary>
+[Serializable, NetSerializable]
+public sealed class CargoConsoleStationFundsMessage : BoundUserInterfaceMessage
+{
+    public CargoStationFundsAction Action;
+    public int Amount;
+
+    public CargoConsoleStationFundsMessage(CargoStationFundsAction action, int amount)
+    {
+        Action = action;
+        Amount = amount;
+    }
+}
+
+[Serializable, NetSerializable]
+public enum CargoStationFundsAction : byte
+{
+    Deposit,
+    Withdraw,
+}

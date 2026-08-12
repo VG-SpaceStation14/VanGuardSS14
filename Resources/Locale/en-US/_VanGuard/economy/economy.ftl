@@ -30,6 +30,8 @@ economy-card-history-starting-payroll = Starting payroll
 economy-card-history-withdraw = Cash withdrawal
 economy-card-history-deposit = Cash deposit
 economy-card-history-vending-purchase = Vending purchase
+economy-card-history-station-deposit = Station deposit
+economy-card-history-station-withdraw = Station withdrawal
 
 payroll-popup-received = Your account received { $amount } cr.
 

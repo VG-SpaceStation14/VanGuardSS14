@@ -30,6 +30,8 @@ economy-card-history-starting-payroll = Стартовая выплата
 economy-card-history-withdraw = Снятие наличных
 economy-card-history-deposit = Внесение наличных
 economy-card-history-vending-purchase = Покупка в автомате
+economy-card-history-station-deposit = Внесение в станцию
+economy-card-history-station-withdraw = Снятие со станции
 
 payroll-popup-received = На ваш счёт зачислено { $amount } кр.
 
