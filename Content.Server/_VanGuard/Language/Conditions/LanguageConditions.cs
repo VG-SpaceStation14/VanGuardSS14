@@ -1,8 +1,8 @@
 using Content.Shared._VanGuard.Language;
 using Content.Shared.ActionBlocker;
+using Content.Shared.Examine;
 using Content.Shared.Speech;
 using Content.Shared.Speech.Components;
-using Content.Shared.Speech.Muting;
 
 namespace Content.Server._VanGuard.Language;
 
@@ -35,13 +35,7 @@ public sealed partial class ListenerHearingCondition : LanguageCondition
 {
     public override bool Evaluate(EntityUid target, EntityUid? source, IEntityManager entMan)
     {
-        if (entMan.HasComponent<BlockListeningComponent>(target))
-            return false;
-
-        if (entMan.HasComponent<MutedStatusEffectComponent>(target))
-            return false;
-
-        return true;
+        return !entMan.HasComponent<BlockListeningComponent>(target);
     }
 }
 
@@ -50,10 +44,26 @@ public sealed partial class ListenerHearingCondition : LanguageCondition
 /// </summary>
 public sealed partial class ListenerVisionCondition : LanguageCondition
 {
+    /// <summary>
+    ///     Maximum range at which sign language can be followed.
+    /// </summary>
+    private const float SignLanguageRange = 8f;
+
     public override bool Evaluate(EntityUid target, EntityUid? source, IEntityManager entMan)
     {
         // Entities without eyes cannot follow sign languages.
-        return entMan.HasComponent<Robust.Shared.GameObjects.EyeComponent>(target);
+        if (!entMan.HasComponent<Robust.Shared.GameObjects.EyeComponent>(target))
+            return false;
+
+        // Sign and emote languages need an unobstructed line of sight, so the
+        // message cannot pass through walls.
+        if (source is { } sourceEntity)
+        {
+            var examine = entMan.System<ExamineSystemShared>();
+            return examine.InRangeUnOccluded(target, sourceEntity, SignLanguageRange);
+        }
+
+        return true;
     }
 }
 

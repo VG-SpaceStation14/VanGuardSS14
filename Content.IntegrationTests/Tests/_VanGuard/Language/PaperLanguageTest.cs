@@ -73,7 +73,7 @@ public sealed class PaperLanguageTest : GameTest
     }
 
     [Test]
-    public async Task Writing_MismatchedSegments_FallsBackToUniversal()
+    public async Task Writing_MismatchedSegments_CancelsWrite()
     {
         var server = Server;
         var entMan = server.ResolveDependency<IEntityManager>();
@@ -84,16 +84,14 @@ public sealed class PaperLanguageTest : GameTest
         var writer = await SpawnWithLanguages(server, entMan, coords, ("Canilunzt", LanguageKnowledge.Speak));
         var paper = await SpawnPaper(server, entMan, coords);
 
-        // Segment texts do not add up to the full message -> server must discard them.
+        // Segment texts do not add up to the full message -> the write must be refused.
         var segments = new List<PaperComponent.PaperTextSegment> { new("другое", "Canilunzt") };
         PaperWritingTextEvent ev = new(writer, paper, SecretText, segments);
         await server.WaitPost(() => entMan.EventBus.RaiseLocalEvent(paper, ref ev));
         await server.WaitRunTicks(2);
 
-        Assert.That(ev.Segments.Count, Is.EqualTo(1));
-        var segment = ev.Segments[0];
-        Assert.That(segment.Language, Is.EqualTo(SharedLanguageSystem.CommonLanguageId));
-        Assert.That(segment.Text, Is.EqualTo(SecretText));
+        Assert.That(ev.Cancelled, Is.True,
+            "Malformed language segments must cancel the write instead of being persisted.");
     }
 
     [Test]
@@ -232,9 +230,9 @@ public sealed class PaperLanguageTest : GameTest
         await server.WaitPost(() => entMan.EventBus.RaiseLocalEvent(paper, firstMsg));
         await server.WaitRunTicks(2);
 
-        // Writer B does not know Canilunzt. The client may attach the separator
-        // space to the preserved first segment when the author presses space
-        // before switching language.
+        // Writer B does not know Canilunzt. The current client attaches the separator
+        // space to the new segment, so the preserved first segment still matches the
+        // stored one exactly.
         var writerB = await SpawnWithLanguages(server, entMan, coords,
             ("GalacticCommon", LanguageKnowledge.Speak),
             ("Draconic", LanguageKnowledge.Speak));
@@ -242,8 +240,8 @@ public sealed class PaperLanguageTest : GameTest
         PaperComponent.PaperInputTextMessage secondMsg = new("секрет новое",
             new List<PaperComponent.PaperTextSegment>
             {
-                new("секрет ", "Canilunzt"),
-                new("новое", "Draconic"),
+                new("секрет", "Canilunzt"),
+                new(" новое", "Draconic"),
             });
         secondMsg.Actor = writerB;
         await server.WaitPost(() => entMan.EventBus.RaiseLocalEvent(paper, secondMsg));
@@ -252,8 +250,8 @@ public sealed class PaperLanguageTest : GameTest
         var paperComp = entMan.GetComponent<PaperComponent>(paper);
         Assert.That(paperComp.LanguageSegments.Count, Is.EqualTo(2));
         Assert.That(paperComp.LanguageSegments[0].Language, Is.EqualTo("Canilunzt"),
-            "The preserved Canilunzt segment must not be downgraded when a trailing space is attached.");
-        Assert.That(paperComp.LanguageSegments[0].ObfuscatedText, Is.Not.EqualTo("секрет "));
+            "The preserved Canilunzt segment must not be downgraded when a new word is appended.");
+        Assert.That(paperComp.LanguageSegments[0].ObfuscatedText, Is.Not.EqualTo("секрет"));
         Assert.That(paperComp.LanguageSegments[1].Language, Is.EqualTo("Draconic"));
     }
 

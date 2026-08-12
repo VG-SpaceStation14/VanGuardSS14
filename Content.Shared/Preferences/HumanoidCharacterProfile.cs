@@ -704,6 +704,31 @@ namespace Content.Shared.Preferences
             }
             // Corvax-Sponsors-End
 
+            // VG-Tweak Start: validate the stored language preferences against the
+            // species policy. Unknown ids are dropped, entries are de-duplicated,
+            // defaults (granted automatically at spawn) are excluded, and the result
+            // is capped at the species' language limit.
+            var languages = new List<ProtoId<LanguagePrototype>>();
+            foreach (var lang in Languages.Distinct())
+            {
+                if (!prototypeManager.TryIndex(lang, out var languageProto))
+                    continue;
+
+                if (speciesPrototype.DefaultLanguages.Contains(lang))
+                    continue;
+
+                if (!languageProto.Roundstart && !speciesPrototype.UniqueLanguages.Contains(lang))
+                    continue;
+
+                languages.Add(lang);
+            }
+
+            if (languages.Count > speciesPrototype.MaxLanguages)
+                languages = languages.Take(speciesPrototype.MaxLanguages).ToList();
+
+            Languages = languages;
+            // VG-Tweak End
+
             var sex = Sex switch
             {
                 Sex.Male => Sex.Male,

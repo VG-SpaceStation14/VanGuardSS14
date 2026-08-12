@@ -7,6 +7,7 @@ using Content.Shared._VanGuard.Language;
 using Content.Shared.GameTicking;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Prototypes;
+using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
@@ -83,11 +84,20 @@ public sealed partial class LanguageSystem : SharedLanguageSystem
         RefreshUi(args.Mob, speaker);
     }
 
-    private void OnLanguageChosen(LanguageChosenMessage args)
+    private void OnLanguageChosen(LanguageChosenMessage args, EntitySessionEventArgs eventArgs)
     {
+        var session = eventArgs.SenderSession;
         var uid = GetEntity(args.Uid);
         if (!TryComp<LanguageSpeakerComponent>(uid, out var component))
             return;
+
+        // The sender must control the entity whose language is being changed: it is
+        // either their attached body, or the body owned by their mind.
+        if (session.AttachedEntity != uid)
+        {
+            if (!_mind.TryGetMind(session.UserId, out var mindId, out _) || mindId != uid)
+                return;
+        }
 
         // Only languages the entity can actually speak may be selected.
         if (!CanSpeak(uid, args.SelectedLanguage))

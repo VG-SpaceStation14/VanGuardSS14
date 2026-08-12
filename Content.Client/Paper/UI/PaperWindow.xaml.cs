@@ -426,8 +426,18 @@ namespace Content.Client.Paper.UI
             if (_languageIds.Count > 0)
             {
                 var selected = _languageIds.FirstOrDefault(pair => pair.Value == _selectedLanguage);
-                var selectedId = selected.Value == _selectedLanguage ? selected.Key : _languageIds.Keys.First();
-                LanguageSelector.SelectId(selectedId);
+                if (selected.Value == _selectedLanguage)
+                {
+                    LanguageSelector.SelectId(selected.Key);
+                }
+                else
+                {
+                    // No matching language: select the deterministic first option
+                    // (id 0) instead of relying on dictionary enumeration order, and
+                    // keep the rest of the UI in sync with the dropdown.
+                    LanguageSelector.SelectId(0);
+                    _selectedLanguage = _languageIds[0];
+                }
             }
 
             _updatingLanguageSelector = false;
@@ -525,6 +535,14 @@ namespace Content.Client.Paper.UI
             if (text.Length == 0)
                 return new List<PaperComponent.PaperTextSegment>();
 
+            // The writer switched language and re-typed the same text (for example,
+            // erased a word and typed it back in another language). The raw text did
+            // not change, so the language markers recorded while editing are the only
+            // hint about the new languages. This must be evaluated before the
+            // unchanged-document branch so an explicit re-tag is not discarded.
+            if (text == _originalEditableText && _originalLanguageSegments.Count > 0 && _languageSelectionChanged)
+                return BuildSegmentsFromMarkers(text);
+
             // The document was not modified at all - keep the exact original segments.
             if (text == _originalEditableText && _originalLanguageSegments.Count > 0)
             {
@@ -532,13 +550,6 @@ namespace Content.Client.Paper.UI
                     .Select(segment => new PaperComponent.PaperTextSegment(segment.Text, segment.Language, segment.ObfuscatedText))
                     .ToList();
             }
-
-            // The writer switched language and re-typed the same text (for example,
-            // erased a word and typed it back in another language). The raw text did
-            // not change, so the language markers recorded while editing are the only
-            // hint about the new languages.
-            if (text == _originalEditableText && _originalLanguageSegments.Count > 0 && _languageSelectionChanged)
-                return BuildSegmentsFromMarkers(text);
 
             // A brand new paper written in this session: the language markers recorded
             // while typing describe the language switches.
@@ -675,21 +686,42 @@ namespace Content.Client.Paper.UI
         /// </summary>
         private string GetRawWord(OriginalWord word, string newWordText)
         {
-            if (word.SegmentIndex >= 0 && word.SegmentIndex < _originalLanguageSegments.Count
-                && word.SegmentIndex < _originalDisplaySegments.Count)
+            if (word.SegmentIndex >= 0 && word.SegmentIndex < _originalLanguageSegments.Count)
             {
                 var raw = _originalLanguageSegments[word.SegmentIndex];
-                var display = _originalDisplaySegments[word.SegmentIndex];
-                if (raw.Text == display.Text)
-                    return newWordText;
 
-                var rawWords = SplitWords(raw.Text);
-                if (word.WordIndex >= 0 && word.WordIndex < rawWords.Count)
+                if (word.SegmentIndex < _originalDisplaySegments.Count)
                 {
-                    // Keep the whitespace the writer sees in front of the word, but
-                    // substitute the raw (non-obscured) word content.
+                    var display = _originalDisplaySegments[word.SegmentIndex];
+
+                    // The writer sees the segment as it really is: no mapping needed.
+                    if (raw.Text == display.Text)
+                        return newWordText;
+
+                    var rawWords = SplitWords(raw.Text);
+                    var displayWords = SplitWords(display.Text);
+
+                    // Only trust the word-to-word mapping when both versions contain
+                    // the same number of words; otherwise the display word cannot be
+                    // translated back to its raw form.
+                    if (word.WordIndex >= 0 && word.WordIndex < rawWords.Count
+                        && word.WordIndex < displayWords.Count)
+                    {
+                        // Keep the whitespace the writer sees in front of the word, but
+                        // substitute the raw (non-obscured) word content.
+                        var leadingLength = newWordText.Length - newWordText.TrimStart().Length;
+                        return newWordText[..leadingLength] + rawWords[word.WordIndex].TrimStart();
+                    }
+                }
+
+                // The segment could not be mapped word-by-word: fall back to the raw
+                // word at the same position inside the original segment instead of
+                // writing the (possibly obfuscated) display text into the document.
+                var rawWordsFallback = SplitWords(raw.Text);
+                if (word.WordIndex >= 0 && word.WordIndex < rawWordsFallback.Count)
+                {
                     var leadingLength = newWordText.Length - newWordText.TrimStart().Length;
-                    return newWordText[..leadingLength] + rawWords[word.WordIndex].TrimStart();
+                    return newWordText[..leadingLength] + rawWordsFallback[word.WordIndex].TrimStart();
                 }
             }
 

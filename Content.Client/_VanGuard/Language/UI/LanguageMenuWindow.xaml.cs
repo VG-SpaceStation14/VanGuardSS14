@@ -57,32 +57,31 @@ public sealed partial class LanguageMenuWindow : FancyWindow
         OptionsList.RemoveAllChildren();
         _entries.Clear();
 
-        var ids = _options.Keys.Concat(_translator.Keys).Distinct().ToList();
-        ids.Sort((a, b) =>
+        // Resolve every id exactly once and discard ids without a registered
+        // LanguagePrototype.
+        var prototypes = new List<LanguagePrototype>();
+        foreach (var id in _options.Keys.Concat(_translator.Keys).Distinct())
         {
-            var protoA = _proto.Index<LanguagePrototype>(a);
-            var protoB = _proto.Index<LanguagePrototype>(b);
+            if (_proto.TryIndex<LanguagePrototype>(id, out var proto))
+                prototypes.Add(proto);
+        }
 
-            if (protoB.Priority != protoA.Priority)
-                return protoB.Priority.CompareTo(protoA.Priority);
-
-            return string.Compare(protoA.Name, protoB.Name, StringComparison.OrdinalIgnoreCase);
+        prototypes.Sort((a, b) =>
+        {
+            var priority = b.Priority.CompareTo(a.Priority);
+            return priority != 0 ? priority : string.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase);
         });
 
-        foreach (var id in ids)
+        foreach (var proto in prototypes)
         {
-            if (_searchText.Length > 0)
-            {
-                var proto = _proto.Index<LanguagePrototype>(id);
-                if (!proto.Name.Contains(_searchText, StringComparison.OrdinalIgnoreCase))
-                    continue;
-            }
+            if (_searchText.Length > 0 && !proto.Name.Contains(_searchText, StringComparison.OrdinalIgnoreCase))
+                continue;
 
-            var entry = new LanguageEntry(_proto.Index<LanguagePrototype>(id), _translator.ContainsKey(id));
-            entry.UpdateSelected(id == _currentLanguage);
+            var entry = new LanguageEntry(proto, _translator.ContainsKey(proto.ID));
+            entry.UpdateSelected(proto.ID == _currentLanguage);
             entry.OnLanguageSelected += OnLanguageChosen;
             OptionsList.AddChild(entry);
-            _entries[id] = entry;
+            _entries[proto.ID] = entry;
         }
     }
 

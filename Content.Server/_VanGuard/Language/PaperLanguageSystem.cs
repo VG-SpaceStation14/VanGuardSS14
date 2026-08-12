@@ -27,36 +27,35 @@ public sealed partial class PaperLanguageSystem : EntitySystem
     {
         if (args.Segments.Count == 0 || args.Segments.Sum(segment => segment.Text.Length) != args.Text.Length)
         {
-            args.Segments = new List<PaperComponent.PaperTextSegment>
-            {
-                CreateSegment(args.User, args.Text, SharedLanguageSystem.CommonLanguageId)
-            };
+            // Malformed payload: refuse to persist anything instead of storing the
+            // text as a plain common-tongue segment.
+            args.Cancelled = true;
             return;
         }
+
+        // Determine which submitted segments already exist on the paper (written by
+        // an earlier author). Those are never downgraded: a second author may not
+        // speak the language, but must not be able to make previously written text
+        // readable for everyone.
+        var preExisting = FindPreExistingSegments(entity, args.Segments);
 
         var normalized = new List<PaperComponent.PaperTextSegment>();
         var textOffset = 0;
 
-        foreach (var segment in args.Segments)
+        for (var index = 0; index < args.Segments.Count; index++)
         {
+            var segment = args.Segments[index];
             if (string.IsNullOrEmpty(segment.Text))
                 continue;
 
             var language = segment.Language;
-            // Only downgrade text the current writer actually added. Pre-existing
-            // segments (already stored on the paper by another author) are kept as
-            // they are: a second author may not speak the language, but must not be
-            // able to make previously written text readable for everyone.
-            if (!_language.CanSpeak(args.User, language) && !WasStoredOnPaper(entity, segment))
+            if (!_language.CanSpeak(args.User, language) && !preExisting.Contains(index))
                 language = SharedLanguageSystem.CommonLanguageId;
 
             if (textOffset + segment.Text.Length > args.Text.Length ||
                 !args.Text.AsSpan(textOffset, segment.Text.Length).SequenceEqual(segment.Text.AsSpan()))
             {
-                args.Segments = new List<PaperComponent.PaperTextSegment>
-                {
-                    CreateSegment(args.User, args.Text, SharedLanguageSystem.CommonLanguageId)
-                };
+                args.Cancelled = true;
                 return;
             }
 
@@ -64,30 +63,71 @@ public sealed partial class PaperLanguageSystem : EntitySystem
             textOffset += segment.Text.Length;
         }
 
-        args.Segments = textOffset == args.Text.Length
-            ? normalized
-            : new List<PaperComponent.PaperTextSegment> { CreateSegment(args.User, args.Text, SharedLanguageSystem.CommonLanguageId) };
+        if (textOffset != args.Text.Length)
+        {
+            args.Cancelled = true;
+            return;
+        }
+
+        args.Segments = normalized;
     }
 
     /// <summary>
-    ///     Checks whether the paper already stores a segment that this one clearly
-    ///     derives from: same language and overlapping text. The editor may attach
-    ///     whitespace or split a multi-word segment while inserting new words, so
-    ///     containment is enough to recognise previously written text.
+    ///     Finds the submitted segments that reproduce text already stored on the
+    ///     paper. A stored segment matches when it can be reconstructed exactly
+    ///     (character for character) from a run of submitted segments with the same
+    ///     language; segments in other languages may be interleaved when a new word
+    ///     was inserted into the middle of a stored multi-word segment. Every
+    ///     submitted segment is consumed at most once, so a single stored entry can
+    ///     never be reused to launder multiple new submissions.
     /// </summary>
-    private static bool WasStoredOnPaper(Entity<PaperComponent> entity, PaperComponent.PaperTextSegment segment)
+    private static HashSet<int> FindPreExistingSegments(
+        Entity<PaperComponent> entity,
+        List<PaperComponent.PaperTextSegment> submitted)
     {
+        var preExisting = new HashSet<int>();
+        var consumed = new HashSet<int>();
+
         foreach (var stored in entity.Comp.LanguageSegments)
         {
-            if (stored.Language != segment.Language)
+            if (string.IsNullOrEmpty(stored.Text))
                 continue;
 
-            if (segment.Text.Contains(stored.Text, StringComparison.Ordinal)
-                || stored.Text.Contains(segment.Text, StringComparison.Ordinal))
-                return true;
+            var run = new List<int>();
+            var length = 0;
+
+            for (var index = 0; index < submitted.Count; index++)
+            {
+                if (consumed.Contains(index) || submitted[index].Language != stored.Language)
+                    continue;
+
+                run.Add(index);
+                length += submitted[index].Text.Length;
+
+                if (length == stored.Text.Length)
+                {
+                    var sb = new StringBuilder();
+                    foreach (var runIndex in run)
+                        sb.Append(submitted[runIndex].Text);
+
+                    if (sb.ToString() == stored.Text)
+                    {
+                        foreach (var runIndex in run)
+                        {
+                            consumed.Add(runIndex);
+                            preExisting.Add(runIndex);
+                        }
+                    }
+
+                    break;
+                }
+
+                if (length > stored.Text.Length)
+                    break;
+            }
         }
 
-        return false;
+        return preExisting;
     }
 
     private PaperComponent.PaperTextSegment CreateSegment(EntityUid writer, string text, string languageId)

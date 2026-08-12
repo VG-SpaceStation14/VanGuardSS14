@@ -125,7 +125,7 @@ public sealed partial class ChatSystem
         name = FormattedMessage.EscapeText(name);
 
         // VG-Tweak Start: language system integration
-        if (TryHandleLanguageWhisper(source, originalMessage, message, range, name, nameIdentity, channel))
+        if (TryHandleLanguageWhisper(source, originalMessage, message, range, name, nameIdentity, channel, hideLog))
             return;
         // VG-Tweak End
 

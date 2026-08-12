@@ -30,8 +30,11 @@ public sealed partial class HumanoidProfileEditor
                 available.Add(proto);
         }
 
-        available.Sort((a, b) => b.Priority.CompareTo(a.Priority));
-        available.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase));
+        available.Sort((a, b) =>
+        {
+            var priority = b.Priority.CompareTo(a.Priority);
+            return priority != 0 ? priority : string.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase);
+        });
 
         // Species-default languages are granted automatically at spawn and cannot be removed.
         var locked = species.DefaultLanguages.ToHashSet();

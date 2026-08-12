@@ -157,6 +157,10 @@ public abstract partial class SharedLanguageSystem : EntitySystem
             return;
 
         comp.Languages[lang] = knowledge;
+        // Re-evaluate the current language: the granted language may become the
+        // most fluent one. SelectDefaultLanguage only replaces invalid or missing
+        // selections, so an explicit choice is preserved.
+        SelectDefaultLanguage(uid, comp);
         RefreshUi(uid, comp);
     }
 
@@ -166,6 +170,9 @@ public abstract partial class SharedLanguageSystem : EntitySystem
             return;
 
         comp.Languages.Remove(lang);
+        // The revoked language may have been the current one; re-select a valid
+        // fallback when the selection is no longer speakable.
+        SelectDefaultLanguage(uid, comp);
         RefreshUi(uid, comp);
     }
 

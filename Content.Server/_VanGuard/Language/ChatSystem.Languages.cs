@@ -2,10 +2,12 @@ using System.Linq;
 using Content.Server._VanGuard.Language;
 using Content.Shared._VanGuard.Language;
 using Content.Shared.Chat;
+using Content.Shared.Database;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Radio;
 using Content.Shared.Speech;
 using Robust.Shared.Network;
+using Robust.Shared.Player;
 using Robust.Shared.Random;
 using Robust.Shared.Utility;
 
@@ -48,9 +50,9 @@ public sealed partial class ChatSystem
             return false;
 
         if (language.Style is EmoteStyle emote)
-            return HandleEmoteLanguage(source, message, range, name, language, emote);
+            return HandleEmoteLanguage(source, message, range, name, language, emote, hideLog);
 
-        return HandleVocalLanguage(source, originalMessage, message, range, name, language, language.Style, speech);
+        return HandleVocalLanguage(source, originalMessage, message, range, name, language, language.Style, speech, hideLog);
     }
 
     private bool HandleVocalLanguage(
@@ -61,7 +63,8 @@ public sealed partial class ChatSystem
         string name,
         LanguagePrototype language,
         LanguageStyle style,
-        SpeechVerbPrototype speech)
+        SpeechVerbPrototype speech,
+        bool hideLog)
     {
         // BadSpeak speakers receive a noticeable accent.
         var voicedMessage = _language.AccentuateMessage(source, language.ID, message);
@@ -95,20 +98,24 @@ public sealed partial class ChatSystem
         if (!verbsReplaced && style.SuffixSpeechVerbs.TryGetValue("Default", out var defaults) && defaults.Count > 0)
             verbStrings = defaults;
 
+        // Select the speech verb once and reuse it for both the clear and the
+        // garbled variant so the two messages stay consistent with each other.
+        var verb = Loc.GetString(_random.Pick(verbStrings));
+
         var fontSize = style.FontSize ?? speech.FontSize;
         var fontId = string.IsNullOrEmpty(style.Font) ? speech.FontId : style.Font!;
         var escapedName = FormattedMessage.EscapeText(name);
 
         var wrappedMessage = Loc.GetString(speech.Bold ? "chat-manager-entity-say-bold-wrap-message" : "chat-manager-entity-say-wrap-message",
             ("entityName", escapedName),
-            ("verb", Loc.GetString(_random.Pick(verbStrings))),
+            ("verb", verb),
             ("fontType", fontId),
             ("fontSize", fontSize),
             ("message", escapedVoiced));
 
         var wrappedGarbledMessage = Loc.GetString(speech.Bold ? "chat-manager-entity-say-bold-wrap-message" : "chat-manager-entity-say-wrap-message",
             ("entityName", escapedName),
-            ("verb", Loc.GetString(_random.Pick(verbStrings))),
+            ("verb", verb),
             ("fontType", fontId),
             ("fontSize", fontSize),
             ("message", escapedGarbled));
@@ -120,6 +127,8 @@ public sealed partial class ChatSystem
         var spokeEvent = new EntitySpokeEvent(source, voicedMessage, originalMessage, null, garbledMessage);
         RaiseLocalEvent(source, spokeEvent, true);
 
+        LogLanguageSay(source, originalMessage, message, name, hideLog);
+
         return true;
     }
 
@@ -129,7 +138,8 @@ public sealed partial class ChatSystem
         ChatTransmitRange range,
         string name,
         LanguagePrototype language,
-        EmoteStyle style)
+        EmoteStyle style,
+        bool hideLog)
     {
         if (!_actionBlocker.CanEmote(source))
             return true;
@@ -138,7 +148,9 @@ public sealed partial class ChatSystem
         if (voicedMessage.Length == 0)
             return true;
 
-        var garbledMessage = _random.Pick(style.Replacement);
+        // The replacement list may be empty for languages that are purely
+        // visual; in that case there is no garbled variant to fall back on.
+        var garbledMessage = style.Replacement.Count > 0 ? _random.Pick(style.Replacement) : string.Empty;
         var escapedVoiced = FormattedMessage.EscapeText(voicedMessage);
         var color = style.Color;
         if (color.HasValue)
@@ -157,12 +169,14 @@ public sealed partial class ChatSystem
         var wrappedGarbledMessage = Loc.GetString("chat-manager-entity-me-wrap-message",
             ("entityName", escapedName),
             ("entity", Identity.Entity(source, EntityManager)),
-            ("message", FormattedMessage.RemoveMarkupOrThrow(garbledMessage)));
+            ("message", FormattedMessage.RemoveMarkupPermissive(garbledMessage)));
 
         SendInVoiceRangeWithLanguage(ChatChannel.Emotes, message, wrappedMessage, wrappedGarbledMessage, source, range, language);
 
         if (style.Sound != null)
             _audio.PlayPvs(style.Sound, source);
+
+        LogLanguageSay(source, message, message, name, hideLog);
 
         return true;
     }
@@ -203,5 +217,32 @@ public sealed partial class ChatSystem
         }
 
         _replay.RecordServerMessage(new ChatMessage(channel, message, wrappedMessage, GetNetEntity(source), null, MessageRangeHideChatForReplay(range)));
+    }
+
+    /// <summary>
+    ///     Records a language-routed say/emote in the admin log, mirroring the
+    ///     behaviour of the base chat pipeline while honouring <paramref name="hideLog"/>.
+    /// </summary>
+    private void LogLanguageSay(EntityUid source, string originalMessage, string message, string name, bool hideLog)
+    {
+        if (!HasComp<ActorComponent>(source) || hideLog)
+            return;
+
+        if (originalMessage == message)
+        {
+            if (name != Name(source))
+                _adminLogger.Add(LogType.Chat, LogImpact.Low, $"Say from {source} as {name}: {originalMessage}.");
+            else
+                _adminLogger.Add(LogType.Chat, LogImpact.Low, $"Say from {source}: {originalMessage}.");
+        }
+        else
+        {
+            if (name != Name(source))
+                _adminLogger.Add(LogType.Chat, LogImpact.Low,
+                    $"Say from {source} as {name}, original: {originalMessage}, transformed: {message}.");
+            else
+                _adminLogger.Add(LogType.Chat, LogImpact.Low,
+                    $"Say from {source}, original: {originalMessage}, transformed: {message}.");
+        }
     }
 }
