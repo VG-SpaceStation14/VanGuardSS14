@@ -70,6 +70,7 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
         - id: NanoTaskCartridge

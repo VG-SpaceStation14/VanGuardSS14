@@ -1,0 +1,25 @@
+# NanoChat cartridge - station messaging program.
+- type: entity
+  parent: BasePDACartridge
+  id: NanoChatCartridge
+  name: NanoChat cartridge
+  description: A cartridge that lets you chat with other NanoChat users on the station network.
+  components:
+  - type: Sprite
+    state: cart-y
+  - type: UIFragment
+    ui: !type:NanoChatUi
+  - type: NanoChatCartridge
+  - type: Cartridge
+    programName: nano-chat-program-name
+    icon:
+      sprite: _VanGuard/Interface/Misc/program_icons.rsi
+      state: nanochat
+    # VG-Tweak Start
+    screenState:
+      sprite: _VanGuard/Objects/Devices/pda.rsi
+      state: generic
+    # VG-Tweak End
+  - type: ActiveRadio
+    channels:
+    - Common

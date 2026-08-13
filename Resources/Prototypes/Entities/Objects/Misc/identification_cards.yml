@@ -67,6 +67,7 @@
     interfaces:
       enum.EconomyAccountUiKey.Key:
         type: EconomyWalletBoundUserInterface
+  - type: NanoChatCard # VG-Tweak: Наночат
 # VG-Tweak End
 
 #IDs with layers
@@ -1347,6 +1348,10 @@
     jobTitle: job-title-cluwne
     jobIcon: JobIconCluwne
   - type: Unremoveable
+  # VG-Tweak Start: Наночат — кулон/клувн получает номер, но скрыт из справочника.
+  - type: NanoChatCard
+    listNumber: false
+  # VG-Tweak End
 
 - type: entity
   parent: BaseBankIDCard
@@ -1457,6 +1462,10 @@
     tags:
     - NuclearOperative
     - SyndicateAgent
+  # VG-Tweak Start: Наночат — синдикат получает номер, но скрыт из справочника.
+  - type: NanoChatCard
+    listNumber: false
+  # VG-Tweak End
 
 - type: entity
   parent: [ SyndicateIDCard, BaseSyndicateContraband ]

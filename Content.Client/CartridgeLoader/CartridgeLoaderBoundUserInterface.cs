@@ -39,15 +39,36 @@ public abstract class CartridgeLoaderBoundUserInterface : BoundUserInterface
 
         var activeUI = _entManager.GetEntity(loaderUiState.ActiveUI);
 
-        _activeProgram = activeUI;
-
-        var ui = RetrieveCartridgeUI(activeUI);
+        var ui = RetrieveCartridgeUI(activeUI, setup: false);
         var comp = RetrieveCartridgeComponent(activeUI);
         var control = ui?.GetUIFragmentRoot();
 
-        // VG-Tweak: не пропускаем привязку картриджа после пересоздания меню
-        if (_activeUiFragment != null && _activeUiFragment.GetType() == control?.GetType())
+        // Reuse the already-attached fragment only while the same cartridge stays
+        // selected. Comparing types alone is unsafe: a stale fragment from a
+        // previous session or from another cartridge of the same type could be
+        // mistaken for the current one. Do NOT call Setup again on true reuse: it
+        // would recreate the fragment and orphan the one visible on screen.
+        if (_activeProgram == activeUI
+            && _activeUiFragment is not null
+            && control is not null
+            && _activeUiFragment.GetType() == control.GetType())
+        {
+            // The PDA UI state and the cartridge state share the same BUI state
+            // slot, so a PdaUpdateState can overwrite the cartridge's own state
+            // before it reaches the client (e.g. right after a power cycle).
+            // Re-request the state so the server pushes it again and the
+            // fragment is always fully populated.
+            if (_activeProgram.HasValue)
+                SendCartridgeUiReadyEvent(_activeProgram.Value);
+
             return;
+        }
+
+        _activeProgram = activeUI;
+
+        if (ui is not null)
+            ui.Setup(this, activeUI);
+        control = ui?.GetUIFragmentRoot();
 
         if (_activeUiFragment is not null)
             DetachCartridgeUI(_activeUiFragment);
@@ -119,6 +140,7 @@ public abstract class CartridgeLoaderBoundUserInterface : BoundUserInterface
     // VG-Tweak: сброс активного картриджа при пересоздании окна
     protected void ResetActiveCartridgeUi()
     {
+        _activeUiFragment?.Dispose();
         _activeProgram = null;
         _activeCartridgeUI = null;
         _activeUiFragment = null;
@@ -143,10 +165,11 @@ public abstract class CartridgeLoaderBoundUserInterface : BoundUserInterface
         SendMessage(message);
     }
 
-    private UIFragment? RetrieveCartridgeUI(EntityUid? cartridgeUid)
+    private UIFragment? RetrieveCartridgeUI(EntityUid? cartridgeUid, bool setup)
     {
         var component = EntMan.GetComponentOrNull<UIFragmentComponent>(cartridgeUid);
-        component?.Ui?.Setup(this, cartridgeUid);
+        if (setup)
+            component?.Ui?.Setup(this, cartridgeUid);
         return component?.Ui;
     }
 }
