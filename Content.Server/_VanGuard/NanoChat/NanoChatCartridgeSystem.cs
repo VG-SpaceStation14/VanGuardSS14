@@ -129,7 +129,11 @@ public sealed partial class NanoChatCartridgeSystem : EntitySystem
 
         var jobTitle = string.IsNullOrWhiteSpace(msg.RecipientJob) ? null : msg.RecipientJob.Trim();
 
-        _nanoChat.SetRecipient((card, card.Comp), number, new NanoChatRecipient(number, name, jobTitle));
+        // Fail when the card is at capacity and this is a brand new contact;
+        // updates to an existing conversation always go through.
+        if (!_nanoChat.SetRecipient((card, card.Comp), number, new NanoChatRecipient(number, name, jobTitle)))
+            return;
+
         _nanoChat.SetCurrentChat((card, card.Comp), number);
     }
 
@@ -162,9 +166,16 @@ public sealed partial class NanoChatCartridgeSystem : EntitySystem
             || card.Comp.Number is not { } senderNumber)
             return;
 
-        content = FormattedMessage.EscapeText(content.Trim());
+        // Truncate the raw text before escaping so a multi-character escape
+        // sequence (e.g. "&amp;") is never cut in half, then clamp the escaped
+        // result back to the limit at a complete sequence boundary.
+        var rawContent = content.Trim();
+        if (rawContent.Length > NanoChatMessage.MaxContentLength)
+            rawContent = rawContent[..NanoChatMessage.MaxContentLength];
+
+        content = FormattedMessage.EscapeText(rawContent);
         if (content.Length > NanoChatMessage.MaxContentLength)
-            content = content[..NanoChatMessage.MaxContentLength];
+            content = TruncateAtEscapeBoundary(content, NanoChatMessage.MaxContentLength);
 
         if (string.IsNullOrWhiteSpace(content))
             return;
@@ -212,29 +223,34 @@ public sealed partial class NanoChatCartridgeSystem : EntitySystem
         var channel = _prototype.Index(sender.Comp.RadioChannel);
         var deliverable = new List<Entity<NanoChatCardComponent>>();
 
+        // Resolve each card to the cartridge installed in its PDA once, so the
+        // station lookup doesn't re-scan the cartridge query per recipient.
+        var cardToCartridge = new Dictionary<EntityUid, EntityUid>();
+        var cartridgeQuery = EntityQueryEnumerator<NanoChatCartridgeComponent>();
+        while (cartridgeQuery.MoveNext(out var cartridgeUid, out var cartridge))
+        {
+            if (cartridge.Card is { } card)
+                cardToCartridge.TryAdd(card, cartridgeUid);
+        }
+
         foreach (var recipient in found)
         {
             // The recipient must have the NanoChat cartridge installed so we
             // can locate which station their PDA is on.
-            var cartridgeQuery = EntityQueryEnumerator<NanoChatCartridgeComponent>();
-            while (cartridgeQuery.MoveNext(out var cartridgeUid, out var cartridge))
-            {
-                if (cartridge.Card != recipient.Owner)
-                    continue;
+            if (!cardToCartridge.TryGetValue(recipient.Owner, out var cartridgeUid))
+                continue;
 
-                var recipientStation = _station.GetOwningStation(cartridgeUid);
-                if (recipientStation == null)
-                    continue;
+            var recipientStation = _station.GetOwningStation(cartridgeUid);
+            if (recipientStation == null)
+                continue;
 
-                if (!channel.LongRange && recipientStation != senderStation)
-                    continue;
+            if (!channel.LongRange && recipientStation != senderStation)
+                continue;
 
-                if (!HasActiveServer(recipientStation.Value))
-                    continue;
+            if (!HasActiveServer(recipientStation.Value))
+                continue;
 
-                deliverable.Add(recipient);
-                break;
-            }
+            deliverable.Add(recipient);
         }
 
         return (deliverable.Count == 0, deliverable);
@@ -275,14 +291,16 @@ public sealed partial class NanoChatCartridgeSystem : EntitySystem
         NanoChatMessage message,
         uint senderNumber)
     {
-        var senderName = recipient.Comp.Recipients.TryGetValue(message.SenderId, out var senderRecipient)
-            ? senderRecipient.Name
-            : $"#{message.SenderId:D4}";
-
         var isCurrentChat = recipient.Comp.CurrentChat == senderNumber;
 
-        if (!isCurrentChat)
-            recipient.Comp.Recipients[message.SenderId] = senderRecipient with { HasUnread = true };
+        // Mark the conversation unread only when the sender is a known contact;
+        // a failed lookup must never fabricate a broken recipient entry.
+        if (!isCurrentChat && recipient.Comp.Recipients.TryGetValue(message.SenderId, out var senderRecipient))
+            _nanoChat.SetRecipient((recipient, recipient.Comp), message.SenderId, senderRecipient with { HasUnread = true });
+
+        var senderName = recipient.Comp.Recipients.TryGetValue(message.SenderId, out var info)
+            ? info.Name
+            : $"#{message.SenderId:D4}";
 
         if (recipient.Comp.NotificationsMuted
             || recipient.Comp.PdaUid is not { } pdaUid
@@ -299,11 +317,38 @@ public sealed partial class NanoChatCartridgeSystem : EntitySystem
             loader);
     }
 
+    /// <summary>
+    ///     The suffix appended to truncated notification previews. Kept as a
+    ///     constant so the prefix length can be derived from its real length.
+    /// </summary>
+    private const string TruncationSuffix = " [...]";
+
     private static string TruncateMessage(string message)
     {
-        return message.Length <= NotificationMaxLength
-            ? message
-            : message[..(NotificationMaxLength - 4)] + " [...]";
+        if (message.Length <= NotificationMaxLength)
+            return message;
+
+        var prefixLength = Math.Max(0, NotificationMaxLength - TruncationSuffix.Length);
+        return message[..prefixLength] + TruncationSuffix;
+    }
+
+    /// <summary>
+    ///     Truncates an escaped string to <paramref name="maxLength"/> characters,
+    ///     rewinding to the start of the escape sequence when the cut would land
+    ///     inside one (e.g. a partial "&amp;").
+    /// </summary>
+    private static string TruncateAtEscapeBoundary(string content, int maxLength)
+    {
+        var cut = maxLength;
+        var amp = content.LastIndexOf('&', cut - 1);
+        if (amp >= 0)
+        {
+            var semi = content.IndexOf(';', amp);
+            if (semi == -1 || semi >= cut)
+                cut = amp;
+        }
+
+        return content[..cut];
     }
 
     /// <summary>
@@ -401,7 +446,14 @@ public sealed partial class NanoChatCartridgeSystem : EntitySystem
             }
         }
 
-        var state = new NanoChatUiState(recipients, messages, contacts, currentChat, ownNumber, maxRecipients,
+        // Pass copies of the card's data to the UI state so the live collections
+        // can't be mutated while a state is being built or sent.
+        var recipientsCopy = new Dictionary<uint, NanoChatRecipient>(recipients);
+        var messagesCopy = new Dictionary<uint, List<NanoChatMessage>>(messages.Count);
+        foreach (var (num, list) in messages)
+            messagesCopy[num] = [.. list];
+
+        var state = new NanoChatUiState(recipientsCopy, messagesCopy, contacts, currentChat, ownNumber, maxRecipients,
             notificationsMuted, listNumber);
 
         _cartridge.UpdateCartridgeUiState(loader, state);
@@ -419,7 +471,7 @@ public sealed partial class NanoChatCartridgeSystem : EntitySystem
             if (card.Number != number)
                 continue;
 
-            var name = "Unknown";
+            var name = Loc.GetString("nanochat-unknown-contact");
             string? jobTitle = null;
 
             if (TryComp<IdCardComponent>(uid, out var idCard))

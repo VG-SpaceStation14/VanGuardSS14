@@ -87,17 +87,20 @@ public sealed class NanoChatContactsTest : InteractionTest
         EntityUid cartridgeUid = default;
         NanoChatCartridgeComponent cartridge = default!;
         EntityUid loader = default;
-        var query = SEntMan.EntityQueryEnumerator<NanoChatCartridgeComponent, CartridgeComponent>();
-        while (query.MoveNext(out var uid, out var comp, out var cartComp))
+        await Server.WaitPost(() =>
         {
-            if (cartComp.LoaderUid is not { } cartLoader)
-                continue;
+            var query = SEntMan.EntityQueryEnumerator<NanoChatCartridgeComponent, CartridgeComponent>();
+            while (query.MoveNext(out var uid, out var comp, out var cartComp))
+            {
+                if (cartComp.LoaderUid is not { } cartLoader)
+                    continue;
 
-            cartridgeUid = uid;
-            cartridge = comp;
-            loader = cartLoader;
-            break;
-        }
+                cartridgeUid = uid;
+                cartridge = comp;
+                loader = cartLoader;
+                break;
+            }
+        });
 
         Assert.That(cartridgeUid, Is.Not.EqualTo(EntityUid.Invalid), "No NanoChat cartridge found in the test scene.");
 
@@ -112,20 +115,29 @@ public sealed class NanoChatContactsTest : InteractionTest
         await RunTicks(2);
 
         // Read the state the server pushed into the loader's BUI.
-        var uiComp = SEntMan.GetComponent<UserInterfaceComponent>(loader);
-        var states = (Dictionary<Enum, BoundUserInterfaceState>)
-            typeof(UserInterfaceComponent).GetField("States", BindingFlags.Public | BindingFlags.Instance)!.GetValue(uiComp)!;
-        var state = (NanoChatUiState) states[PdaUiKey.Key];
+        uint registeredNumber = default;
+        uint guestNumber = default;
+        uint noNameNumber = default;
+        uint hiddenNumber = default;
+        uint offStationNumber = default;
+        HashSet<uint>? numbers = null;
+        await Server.WaitPost(() =>
+        {
+            registeredNumber = SEntMan.GetComponent<NanoChatCardComponent>(pdaCard).Number!.Value;
+            guestNumber = SEntMan.GetComponent<NanoChatCardComponent>(guestCard).Number!.Value;
+            noNameNumber = SEntMan.GetComponent<NanoChatCardComponent>(noNameCard).Number!.Value;
+            hiddenNumber = SEntMan.GetComponent<NanoChatCardComponent>(hiddenCard).Number!.Value;
+            offStationNumber = SEntMan.GetComponent<NanoChatCardComponent>(offStationCard).Number!.Value;
 
-        var registeredNumber = SEntMan.GetComponent<NanoChatCardComponent>(pdaCard).Number!.Value;
-        var guestNumber = SEntMan.GetComponent<NanoChatCardComponent>(guestCard).Number!.Value;
-        var noNameNumber = SEntMan.GetComponent<NanoChatCardComponent>(noNameCard).Number!.Value;
-        var hiddenNumber = SEntMan.GetComponent<NanoChatCardComponent>(hiddenCard).Number!.Value;
-        var offStationNumber = SEntMan.GetComponent<NanoChatCardComponent>(offStationCard).Number!.Value;
+            var uiComp = SEntMan.GetComponent<UserInterfaceComponent>(loader);
+            var states = (Dictionary<Enum, BoundUserInterfaceState>)
+                typeof(UserInterfaceComponent).GetField("States", BindingFlags.Public | BindingFlags.Instance)!.GetValue(uiComp)!;
+            var state = (NanoChatUiState) states[PdaUiKey.Key];
 
-        Assert.That(state.Contacts, Is.Not.Null, "The directory state must include the contacts list.");
+            numbers = state.Contacts!.Select(c => c.Number).ToHashSet();
+        });
 
-        var numbers = state.Contacts!.Select(c => c.Number).ToHashSet();
+        Assert.That(numbers, Is.Not.Null, "The directory state must include the contacts list.");
 
         Assert.That(numbers, Does.Contain(registeredNumber), "The registered card must appear in the directory.");
         Assert.That(numbers, Does.Contain(guestNumber),

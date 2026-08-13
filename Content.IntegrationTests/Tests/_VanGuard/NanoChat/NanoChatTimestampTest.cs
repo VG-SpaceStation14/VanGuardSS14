@@ -17,7 +17,7 @@ namespace Content.IntegrationTests.Tests._VanGuard.NanoChat;
 public sealed class NanoChatTimestampTest : InteractionTest
 {
     [Test]
-    public async Task Timestamp_SurvivesGameNetSerialization()
+    public void Timestamp_SurvivesGameNetSerialization()
     {
         var serializer = Server.ResolveDependency<IRobustSerializer>();
 
@@ -32,11 +32,11 @@ public sealed class NanoChatTimestampTest : InteractionTest
             notificationsMuted: false,
             listNumber: true);
 
-        var stream = new MemoryStream();
+        using var stream = new MemoryStream();
         serializer.SerializeDirect(stream, state);
         stream.Position = 0;
 
-        NanoChatUiState read = null!;
+        NanoChatUiState read;
         serializer.DeserializeDirect(stream, out read);
 
         Assert.That(read.Messages[42][0].Timestamp, Is.EqualTo(TimeSpan.FromMinutes(5) + TimeSpan.FromSeconds(7)),

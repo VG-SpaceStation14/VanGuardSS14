@@ -13,14 +13,16 @@ public sealed partial class NanoChatCartridgeComponent : Component
 {
     /// <summary>
     ///     Station the cartridge was last used on, used for the directory lookup.
+    ///     Runtime cache, not a serialized data field.
     /// </summary>
-    [DataField]
+    [ViewVariables]
     public EntityUid? Station;
 
     /// <summary>
     ///     The NanoChat card currently linked to this cartridge.
+    ///     Runtime cache, not a serialized data field.
     /// </summary>
-    [DataField]
+    [ViewVariables]
     public EntityUid? Card;
 
     /// <summary>

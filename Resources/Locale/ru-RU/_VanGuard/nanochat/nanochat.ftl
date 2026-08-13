@@ -24,6 +24,7 @@ nano-chat-look-up-hint = Нажмите «+», чтобы начать пере�
 nano-chat-look-up-no-contacts = Справочник станции сейчас пуст.
 nano-chat-close = Закрыть
 nano-chat-footer-hint = Сообщения доставляются через сеть телекоммуникаций станции
+nanochat-unknown-contact = Неизвестно
 
 # NanoChat card examine
 nanochat-card-examine-no-number = Этой карте НаноЧат ещё не присвоен номер.

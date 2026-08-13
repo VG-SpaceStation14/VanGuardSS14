@@ -24,6 +24,7 @@ nano-chat-look-up-hint = Press + to start a conversation
 nano-chat-look-up-no-contacts = The station directory is currently empty.
 nano-chat-close = Close
 nano-chat-footer-hint = Messages are delivered over the station telecomms network
+nanochat-unknown-contact = Unknown
 
 # NanoChat card examine
 nanochat-card-examine-no-number = This NanoChat card has no number assigned yet.

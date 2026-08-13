@@ -97,8 +97,11 @@ public sealed partial class NanoChatSystem : SharedNanoChatSystem
 
     private void ScrambleMessages(NanoChatCardComponent component)
     {
-        foreach (var (recipientNumber, messages) in component.Messages)
+        // The reassignment below can insert new message lists into the
+        // dictionary, so iterate a snapshot of the keys instead.
+        foreach (var recipientNumber in component.Messages.Keys.ToList())
         {
+            var messages = component.Messages[recipientNumber];
             for (var i = 0; i < messages.Count; i++)
             {
                 // 50% chance to scramble each individual message.

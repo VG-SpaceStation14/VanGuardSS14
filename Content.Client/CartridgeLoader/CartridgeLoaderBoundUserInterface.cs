@@ -39,16 +39,19 @@ public abstract class CartridgeLoaderBoundUserInterface : BoundUserInterface
 
         var activeUI = _entManager.GetEntity(loaderUiState.ActiveUI);
 
-        _activeProgram = activeUI;
-
         var ui = RetrieveCartridgeUI(activeUI, setup: false);
         var comp = RetrieveCartridgeComponent(activeUI);
         var control = ui?.GetUIFragmentRoot();
 
-        // If the same cartridge UI is already attached, keep using it. Do NOT call
-        // Setup again: it would recreate the fragment and orphan the one that is
-        // currently visible on screen (leading to an empty cartridge view).
-        if (_activeUiFragment is not null && control is not null && _activeUiFragment.GetType() == control.GetType())
+        // Reuse the already-attached fragment only while the same cartridge stays
+        // selected. Comparing types alone is unsafe: a stale fragment from a
+        // previous session or from another cartridge of the same type could be
+        // mistaken for the current one. Do NOT call Setup again on true reuse: it
+        // would recreate the fragment and orphan the one visible on screen.
+        if (_activeProgram == activeUI
+            && _activeUiFragment is not null
+            && control is not null
+            && _activeUiFragment.GetType() == control.GetType())
         {
             // The PDA UI state and the cartridge state share the same BUI state
             // slot, so a PdaUpdateState can overwrite the cartridge's own state
@@ -60,6 +63,8 @@ public abstract class CartridgeLoaderBoundUserInterface : BoundUserInterface
 
             return;
         }
+
+        _activeProgram = activeUI;
 
         if (ui is not null)
             ui.Setup(this, activeUI);

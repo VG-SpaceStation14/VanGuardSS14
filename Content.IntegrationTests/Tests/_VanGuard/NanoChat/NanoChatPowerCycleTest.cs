@@ -43,12 +43,15 @@ public sealed class NanoChatPowerCycleTest : InteractionTest
 
         // Grab the NanoChat cartridge installed in the PDA.
         EntityUid cartridgeUid = default;
-        var query = SEntMan.EntityQueryEnumerator<NanoChatCartridgeComponent, CartridgeComponent>();
-        while (query.MoveNext(out var uid, out _, out _))
+        await Server.WaitPost(() =>
         {
-            cartridgeUid = uid;
-            break;
-        }
+            var query = SEntMan.EntityQueryEnumerator<NanoChatCartridgeComponent, CartridgeComponent>();
+            while (query.MoveNext(out var uid, out _, out _))
+            {
+                cartridgeUid = uid;
+                break;
+            }
+        });
         Assert.That(cartridgeUid, Is.Not.EqualTo(EntityUid.Invalid), "No NanoChat cartridge found in the test scene.");
 
         // Give the ID card an owner so it appears in the directory.
@@ -69,11 +72,18 @@ public sealed class NanoChatPowerCycleTest : InteractionTest
         });
         await RunTicks(2);
 
-        // Open the PDA and let the boot animation finish.
+        // Open the PDA and wait for the boot animation to finish. Poll the
+        // server's booted flag with a bounded retry instead of sleeping a fixed
+        // wall-clock duration.
         await Pickup();
         await UseInHand();
-        await RunTicks(10);
-        await Task.Delay(2300); // boot animation timer
+        var booted = false;
+        for (var i = 0; i < 100 && !booted; i++)
+        {
+            await RunTicks(2);
+            await Server.WaitPost(() => booted = SEntMan.GetComponent<PdaComponent>(pda).Booted);
+        }
+        Assert.That(booted, Is.True, "The PDA must finish booting before the cartridge UI can be activated.");
         await RunTicks(10);
 
         // Activate the NanoChat cartridge, like the player clicking its icon in the program list.
@@ -114,22 +124,22 @@ public sealed class NanoChatPowerCycleTest : InteractionTest
 
         await Client.WaitPost(() =>
         {
-            if (!CEntMan.TryGetComponent<UserInterfaceComponent>(CEntMan.GetEntity(Target!.Value), out var uiComp)
-                || !uiComp.ClientOpenInterfaces.TryGetValue(PdaUiKey.Key, out var bui))
-                return;
+            Assert.That(CEntMan.TryGetComponent<UserInterfaceComponent>(CEntMan.GetEntity(Target!.Value), out var uiComp),
+                "The PDA must have a UI component on the client.");
+            Assert.That(uiComp.ClientOpenInterfaces.TryGetValue(PdaUiKey.Key, out var bui),
+                "The PDA UI must be open on the client.");
 
             var cartridgeUi = typeof(CartridgeLoaderBoundUserInterface)
                 .GetField("_activeCartridgeUI", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(bui);
-            if (cartridgeUi == null)
-                return;
+            Assert.That(cartridgeUi, Is.Not.Null, "The active cartridge UI field must be set on the client BUI.");
 
-            var fragment = cartridgeUi.GetType()
+            var fragment = cartridgeUi!.GetType()
                 .GetField("_fragment", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(cartridgeUi);
-            if (fragment == null)
-                return;
+            Assert.That(fragment, Is.Not.Null, "The cartridge fragment field must be set on the client cartridge UI.");
 
-            result = fragment.GetType()
+            result = fragment!.GetType()
                 .GetField("_lastState", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(fragment) as NanoChatUiState;
+            Assert.That(result, Is.Not.Null, "The cartridge fragment must hold a NanoChat UI state.");
         });
 
         return result;

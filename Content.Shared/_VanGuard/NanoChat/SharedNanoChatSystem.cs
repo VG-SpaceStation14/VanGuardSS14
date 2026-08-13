@@ -68,18 +68,30 @@ public abstract class SharedNanoChatSystem : EntitySystem
         return recipient;
     }
 
-    public void SetRecipient(Entity<NanoChatCardComponent?> card, uint number, NanoChatRecipient recipient)
+    /// <summary>
+    ///     Stores (or updates) a recipient entry, respecting the card's
+    ///     <see cref="NanoChatCardComponent.MaxRecipients"/> capacity for new
+    ///     conversations. Returns false when the card is full and the number is
+    ///     not already known; updates to existing recipients always succeed.
+    /// </summary>
+    public bool SetRecipient(Entity<NanoChatCardComponent?> card, uint number, NanoChatRecipient recipient)
     {
         if (!Resolve(card, ref card.Comp))
-            return;
+            return false;
+
+        if (!card.Comp.Recipients.ContainsKey(number)
+            && card.Comp.Recipients.Count >= card.Comp.MaxRecipients)
+            return false;
 
         card.Comp.Recipients[number] = recipient;
         Dirty(card);
+        return true;
     }
 
     /// <summary>
     ///     Makes sure a conversation with the given number exists, creating the
     ///     recipient entry (when info is provided) and an empty message list.
+    ///     New conversations are capped by <see cref="NanoChatCardComponent.MaxRecipients"/>.
     /// </summary>
     public bool EnsureRecipientExists(Entity<NanoChatCardComponent?> card, uint number, NanoChatRecipient? recipientInfo = null)
     {
@@ -89,6 +101,9 @@ public abstract class SharedNanoChatSystem : EntitySystem
         if (!card.Comp.Recipients.ContainsKey(number))
         {
             if (recipientInfo == null)
+                return false;
+
+            if (card.Comp.Recipients.Count >= card.Comp.MaxRecipients)
                 return false;
 
             card.Comp.Recipients[number] = recipientInfo.Value;

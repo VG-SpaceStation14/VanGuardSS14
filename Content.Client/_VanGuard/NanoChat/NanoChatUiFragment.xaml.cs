@@ -124,6 +124,11 @@ public sealed partial class NanoChatUiFragment : PanelContainer
         if (string.IsNullOrWhiteSpace(MessageInput.Text))
             return;
 
+        // Never send an over-long message even if it slipped past the disabled
+        // send button (e.g. via the Enter key); keep the draft intact.
+        if (MessageInput.Text.Length > MaxContentLength)
+            return;
+
         OnMessageSent?.Invoke(NanoChatUiMessageType.SendMessage, chat, MessageInput.Text, null);
         MessageInput.Clear();
         SendButton.Disabled = true;
@@ -166,17 +171,21 @@ public sealed partial class NanoChatUiFragment : PanelContainer
             ChatList.AddChild(empty);
         }
 
-        // Resolve a chat selection once the server confirms it.
-        if (_pendingChat != null)
+        // Resolve a chat selection once the server confirms it. While a selection
+        // is pending, keep the optimistic target so interim state updates don't
+        // revert the UI to the previously open chat.
+        if (_pendingChat is { } pending)
         {
-            if (_pendingChat == state.CurrentChat)
-                _currentChat = _pendingChat;
-
-            _pendingChat = null;
+            if (pending == state.CurrentChat)
+            {
+                _currentChat = pending;
+                _pendingChat = null;
+            }
         }
-
-        if (_pendingChat == null)
+        else
+        {
             _currentChat = state.CurrentChat;
+        }
 
         UpdateChatView(state);
         LookupView.UpdateContactList(state);
