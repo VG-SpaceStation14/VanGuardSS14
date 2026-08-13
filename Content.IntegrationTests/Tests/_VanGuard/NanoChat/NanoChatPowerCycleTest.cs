@@ -126,7 +126,7 @@ public sealed class NanoChatPowerCycleTest : InteractionTest
         {
             Assert.That(CEntMan.TryGetComponent<UserInterfaceComponent>(CEntMan.GetEntity(Target!.Value), out var uiComp),
                 "The PDA must have a UI component on the client.");
-            Assert.That(uiComp.ClientOpenInterfaces.TryGetValue(PdaUiKey.Key, out var bui),
+            Assert.That(uiComp!.ClientOpenInterfaces.TryGetValue(PdaUiKey.Key, out var bui),
                 "The PDA UI must be open on the client.");
 
             var cartridgeUi = typeof(CartridgeLoaderBoundUserInterface)
