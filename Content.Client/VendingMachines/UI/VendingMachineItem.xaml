@@ -13,4 +13,11 @@
             SizeFlagsStretchRatio="3"
             HorizontalExpand="True"
             ClipText="True"/>
+    <Label Name="PriceLabel"
+            MinWidth="70"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Margin="0 0 6 0"
+            StyleClasses="WindowFooterText"
+            Visible="False"/>
 </BoxContainer>

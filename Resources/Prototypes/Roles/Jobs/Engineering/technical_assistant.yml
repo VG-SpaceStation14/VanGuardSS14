@@ -3,6 +3,7 @@
   name: job-name-technical-assistant
   description: job-description-technical-assistant
   playTimeTracker: JobTechnicalAssistant
+  salary: 150 # VG-Tweak: economy
   requirements:
     - !type:OverallPlaytimeRequirement
       time: 1h

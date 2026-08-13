@@ -3,6 +3,7 @@
   name: job-name-intern
   description: job-description-intern
   playTimeTracker: JobMedicalIntern
+  salary: 150 # VG-Tweak: economy
   requirements:
     - !type:DepartmentTimeRequirement
       department: Medical

@@ -44,6 +44,7 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
         {
             Contraband = component.Contraband,
             Broken = component.Broken,
+            AllForFree = component.AllForFree,
         };
 
         CopyInventory(component.Inventory, state.Inventory);
@@ -210,8 +211,37 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
                 // losing the rest of the restock.
                 entry.Amount = Math.Min(entry.Amount + amount, 3 * restock);
             else
-                inventory.Add(id, new VendingMachineInventoryEntry(type, id, restock));
+            {
+                var price = GetEntryPrice(ProtoMan.Index<EntityPrototype>(id));
+                inventory.Add(id, new VendingMachineInventoryEntry(type, id, restock) { Price = price });
+            }
         }
+    }
+
+    /// <summary>
+    ///     Returns the price of a single unit of the given vending machine
+    ///     entry. The server override fills this from the pricing system so
+    ///     the price follows the item's StaticPrice; the shared default
+    ///     returns zero (free).
+    /// </summary>
+    protected virtual int GetEntryPrice(EntityPrototype proto)
+    {
+        return 0;
+    }
+
+    /// <summary>
+    ///     Attempts to charge the buyer for a vending machine purchase.
+    ///     The server override performs the actual bank transaction; the
+    ///     shared default accepts every purchase (used on the client for
+    ///     prediction, where no bank state exists).
+    /// </summary>
+    protected virtual bool TryCharge(
+        EntityUid uid,
+        EntityUid buyer,
+        VendingMachineInventoryEntry entry,
+        VendingMachineComponent component)
+    {
+        return true;
     }
 
 }

@@ -1,4 +1,4 @@
-- type: entity
+﻿- type: entity
   parent: Clothing
   id: IDCardStandard
   name: identification card
@@ -54,10 +54,25 @@
         volume: -5
   # VG-Tweak End
 
+# VG-Tweak Start: economy - regular ID cards double as bank cards (wallet UI).
+# Only cards inheriting this get the wallet; prison/Cluwne/syndicate cards do not.
+- type: entity
+  parent: IDCardStandard
+  id: BaseBankIDCard
+  abstract: true
+  components:
+  - type: ActivatableUI
+    key: enum.EconomyAccountUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.EconomyAccountUiKey.Key:
+        type: EconomyWalletBoundUserInterface
+# VG-Tweak End
+
 #IDs with layers
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: PassengerIDCard
   name: passenger ID card
   components:
@@ -79,7 +94,7 @@
 #Command
 
 - type: entity
-  parent: [IDCardStandard, BaseGrandTheftContraband]
+  parent: [BaseBankIDCard, BaseGrandTheftContraband]
   id: CaptainIDCard
   name: captain ID card
   components:
@@ -115,7 +130,7 @@
     stealGroup: CaptainIDCard
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: HoPIDCard
   name: head of personnel ID card
   components:
@@ -143,7 +158,7 @@
     job: HeadOfPersonnel
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: CEIDCard
   name: chief engineer ID card
   components:
@@ -171,7 +186,7 @@
     job: ChiefEngineer
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: CMOIDCard
   name: chief medical officer ID card
   components:
@@ -199,7 +214,7 @@
     job: ChiefMedicalOfficer
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: RDIDCard
   name: research director ID card
   components:
@@ -227,7 +242,7 @@
     job: ResearchDirector
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: HoSIDCard
   name: head of security ID card
   components:
@@ -255,7 +270,7 @@
     job: HeadOfSecurity
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: QuartermasterIDCard
   name: quartermaster ID card
   components:
@@ -285,7 +300,7 @@
 #Engineering
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: TechnicalAssistantIDCard
   name: technical assistant ID card
   components:
@@ -311,7 +326,7 @@
     job: TechnicalAssistant
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: EngineeringIDCard
   name: engineer ID card
   components:
@@ -337,7 +352,7 @@
     job: StationEngineer
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: AtmosIDCard
   name: atmospheric technician ID card
   components:
@@ -389,7 +404,7 @@
 #Medical
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: MedicalInternIDCard
   name: medical intern ID card
   components:
@@ -415,7 +430,7 @@
     job: MedicalIntern
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: MedicalIDCard
   name: medical ID card
   components:
@@ -441,7 +456,7 @@
     job: MedicalDoctor
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: ParamedicIDCard
   name: paramedic ID card
   components:
@@ -467,7 +482,7 @@
     job: Paramedic
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: ChemistIDCard
   name: chemist ID card
   components:
@@ -493,7 +508,7 @@
     job: Chemist
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: PsychologistIDCard
   name: psychologist ID card
   components:
@@ -545,7 +560,7 @@
 #Science
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: ResearchAssistantIDCard
   name: research assistant ID card
   components:
@@ -571,7 +586,7 @@
     job: ResearchAssistant
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: ResearchIDCard
   name: research ID card
   components:
@@ -623,7 +638,7 @@
 #Security
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: SecurityCadetIDCard
   name: security cadet ID card
   components:
@@ -649,7 +664,7 @@
     job: SecurityCadet
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: SecurityIDCard
   name: security ID card
   components:
@@ -675,7 +690,7 @@
     job: SecurityOfficer
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: WardenIDCard
   name: warden ID card
   components:
@@ -701,7 +716,7 @@
     job: Warden
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: DetectiveIDCard
   name: detective ID card
   components:
@@ -727,7 +742,7 @@
     job: Detective
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: BrigmedicIDCard
   name: brigmedic ID card
   components:
@@ -777,7 +792,7 @@
 #Service
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: ServiceWorkerIDCard
   name: service worker ID card
   components:
@@ -803,7 +818,7 @@
     job: ServiceWorker
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: ClownIDCard
   name: clown ID card
   components:
@@ -825,7 +840,7 @@
     job: Clown
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: MimeIDCard
   name: mime ID card
   components:
@@ -851,7 +866,7 @@
     job: Mime
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: MusicianIDCard
   name: musician ID card
   components:
@@ -877,7 +892,7 @@
     job: Musician
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: ChaplainIDCard
   name: chaplain ID card
   components:
@@ -903,7 +918,7 @@
     job: Chaplain
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: JanitorIDCard
   name: janitor ID card
   components:
@@ -929,7 +944,7 @@
     job: Janitor
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: BartenderIDCard
   name: bartender ID card
   components:
@@ -955,7 +970,7 @@
     job: Bartender
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: PunPunIDCard
   name: pun pun ID card
   components:
@@ -985,7 +1000,7 @@
     - DoorBumpOpener
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: ChefIDCard
   name: chef ID card
   components:
@@ -1011,7 +1026,7 @@
     job: Chef
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: BotanistIDCard
   name: botanist ID card
   components:
@@ -1037,7 +1052,7 @@
     job: Botanist
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: LibrarianIDCard
   name: librarian ID card
   components:
@@ -1063,7 +1078,7 @@
     job: Librarian
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: LawyerIDCard
   name: lawyer ID card
   components:
@@ -1089,7 +1104,7 @@
     job: Lawyer
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: ReporterIDCard
   name: reporter ID card
   components:
@@ -1115,7 +1130,7 @@
     job: Reporter
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: BoxerIDCard
   name: boxer ID card
   components:
@@ -1139,7 +1154,7 @@
     # VanGuard-Sticker-End
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: ZookeeperIDCard
   name: zookeeper ID card
   components:
@@ -1163,7 +1178,7 @@
     # VanGuard-Sticker-End
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: TramDriverIDCard
   name: tram driver ID card
   components:
@@ -1184,7 +1199,7 @@
 #Supply
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: CargoIDCard
   name: cargo ID card
   components:
@@ -1234,7 +1249,7 @@
     # VanGuard-Sticker-End
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: SalvageIDCard
   name: salvage ID card
   components:
@@ -1334,7 +1349,7 @@
   - type: Unremoveable
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: VisitorIDCard
   name: visitor ID card
   components:
@@ -1523,7 +1538,7 @@
     jobIcon: JobIconSyndicateCommander
 
 - type: entity
-  parent: [ IDCardStandard, BaseHighlyIllegalContraband ]
+  parent: [ BaseBankIDCard, BaseHighlyIllegalContraband ]
   id: NinjaIDCard
   name: ninja ID card
   suffix: Ninja
@@ -1556,7 +1571,7 @@
     - Maintenance
 
 - type: entity
-  parent: [ IDCardStandard, BaseMajorContraband ]
+  parent: [ BaseBankIDCard, BaseMajorContraband ]
   id: PirateIDCard
   name: pirate ID card
   components:
@@ -1578,7 +1593,7 @@
     jobIcon: JobIconPirate
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: XenoborgIDCard
   name: xenoborg ID card
   components:
@@ -1596,7 +1611,7 @@
     - Xenoborg
 
 - type: entity
-  parent: [ IDCardStandard, BaseMagicalContraband ]
+  parent: [ BaseBankIDCard, BaseMagicalContraband ]
   id: WizardIDCard
   name: wizard ID card
   components:
@@ -1625,7 +1640,7 @@
 #ERT/Centcomm
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: CentcomIDCard
   name: command officer ID card
   components:
@@ -1653,7 +1668,7 @@
     job: CentralCommandOfficial
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: ERTLeaderIDCard
   name: ERT leader ID card
   components:
@@ -1681,7 +1696,7 @@
     job: ERTLeader
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: ERTChaplainIDCard
   name: ERT chaplain ID card
   components:
@@ -1709,7 +1724,7 @@
     job: ERTChaplain
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: ERTEngineerIDCard
   name: ERT engineer ID card
   components:
@@ -1737,7 +1752,7 @@
     job: ERTEngineer
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: ERTJanitorIDCard
   name: ERT janitor ID card
   components:
@@ -1765,7 +1780,7 @@
     job: ERTJanitor
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: ERTMedicIDCard
   name: ERT medic ID card
   components:
@@ -1793,7 +1808,7 @@
     job: ERTMedical
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: ERTSecurityIDCard
   name: ERT security ID card
   components:
@@ -1821,7 +1836,7 @@
     job: ERTSecurity
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: CentcomIDCardDeathsquad
   name: death squad ID card
   components:
@@ -1847,7 +1862,7 @@
     job: DeathSquad
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: CBURNIDcard
   name: CBURN ID card
   suffix: CBURN
@@ -1876,7 +1891,7 @@
     job: CBURN
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: UniversalIDCard
   name: universal ID card
   suffix: Admin

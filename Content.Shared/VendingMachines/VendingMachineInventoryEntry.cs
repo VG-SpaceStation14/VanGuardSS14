@@ -15,7 +15,18 @@ public sealed partial class VendingMachineInventoryEntry(InventoryType type, Ent
     [DataField]
     public uint Amount = amount;
 
-    public VendingMachineInventoryEntry(VendingMachineInventoryEntry entry) : this(entry.Type, entry.ID, entry.Amount) { }
+    /// <summary>
+    ///     The price of a single unit of this entry in station credits.
+    ///     Zero means the item is handed out for free.
+    /// </summary>
+    [DataField]
+    public int Price;
+
+    public VendingMachineInventoryEntry(VendingMachineInventoryEntry entry)
+        : this(entry.Type, entry.ID, entry.Amount)
+    {
+        Price = entry.Price;
+    }
 }
 
 [Serializable, NetSerializable]
@@ -38,4 +49,6 @@ public sealed class VendingMachineComponentState : ComponentState
     public bool Contraband;
 
     public bool Broken;
+
+    public bool AllForFree;
 }

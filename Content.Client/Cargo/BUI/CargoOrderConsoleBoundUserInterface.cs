@@ -98,6 +98,13 @@ namespace Content.Client.Cargo.BUI
                 SendMessage(new CargoConsoleWithdrawFundsMessage(account, amount));
             };
 
+            // VG-Tweak Start: station balance deposit/withdraw.
+            _menu.OnStationFunds += (action, amount) =>
+            {
+                SendMessage(new CargoConsoleStationFundsMessage(action, amount));
+            };
+            // VG-Tweak End
+
             _menu.OnToggleUnboundedLimit += _ =>
             {
                 SendMessage(new CargoConsoleToggleLimitMessage());

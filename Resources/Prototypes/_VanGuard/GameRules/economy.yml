@@ -1,0 +1,16 @@
+# Game rules for the station economy (clean-room implementation).
+
+- type: entity
+  id: Payday
+  parent: BaseGameRule
+  components:
+  - type: EconomyPaydayRule
+    interval: 300 # 5 minutes
+
+- type: entity
+  id: MarketShift
+  parent: BaseGameRule
+  components:
+  - type: EconomyMarketShiftRule
+    minInterval: 600 # 10 minutes
+    maxInterval: 3600 # 60 minutes

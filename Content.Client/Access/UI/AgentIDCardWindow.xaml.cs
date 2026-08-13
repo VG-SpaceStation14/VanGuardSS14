@@ -27,6 +27,8 @@ public sealed partial class AgentIDCardWindow : FancyWindow
 
     public event Action<ProtoId<JobIconPrototype>>? OnJobIconChanged;
 
+    public event Action? OnOpenWallet;
+
     public AgentIDCardWindow()
     {
         RobustXamlLoader.Load(this);
@@ -44,6 +46,8 @@ public sealed partial class AgentIDCardWindow : FancyWindow
 
         AgentTabs.SetTabTitle(0, Loc.GetString("agent-id-ui-tab-settings"));
         AgentTabs.SetTabTitle(1, Loc.GetString("agent-id-ui-tab-job-icons"));
+
+        OpenWalletButton.OnPressed += _ => OnOpenWallet?.Invoke();
     }
 
     /// <summary>

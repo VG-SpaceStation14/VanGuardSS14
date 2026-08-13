@@ -3,6 +3,7 @@
   name: job-name-detective
   description: job-description-detective
   playTimeTracker: JobDetective
+  salary: 300 # VG-Tweak: economy
   requirements:
     - !type:DepartmentTimeRequirement
       department: Security

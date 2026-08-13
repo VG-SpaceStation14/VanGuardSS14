@@ -4,6 +4,7 @@ using Content.Server.Popups;
 using Content.Server.Radio.EntitySystems;
 using Content.Server.Stack;
 using Content.Server.Station.Systems;
+using Content.Server._VanGuard.Economy.Systems;
 using Content.Shared.Access.Systems;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Cargo;
@@ -25,6 +26,7 @@ public sealed partial class CargoSystem : SharedCargoSystem
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private AccessReaderSystem _accessReaderSystem = default!;
+    [Dependency] private EconomyBankSystem _bank = default!;
     [Dependency] private DeviceLinkSystem _linker = default!;
     [Dependency] private EntityLookupSystem _lookup = default!;
     [Dependency] private ItemSlotsSystem _slots = default!;

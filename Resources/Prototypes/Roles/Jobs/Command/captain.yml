@@ -3,6 +3,7 @@
   name: job-name-captain
   description: job-description-captain
   playTimeTracker: JobCaptain
+  salary: 500 # VG-Tweak: economy
   requirements:
     - !type:DepartmentTimeRequirement
       department: Engineering

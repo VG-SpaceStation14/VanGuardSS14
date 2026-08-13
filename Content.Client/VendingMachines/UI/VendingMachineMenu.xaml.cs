@@ -53,10 +53,10 @@ public sealed partial class VendingMachineMenu : FancyWindow
 
     private void GenerateButton(ListData data, ListContainerButton button)
     {
-        if (data is not VendorItemsListData { ItemType: var type, ItemProtoID: var protoID, ItemText: var text })
+        if (data is not VendorItemsListData { ItemType: var type, ItemProtoID: var protoID, ItemText: var text, Price: var price, AllForFree: var allForFree })
             return;
 
-        var item = new VendingMachineItem(protoID, text);
+        var item = new VendingMachineItem(protoID, text, price, allForFree);
         var key = new VendorItemKey(type, protoID);
         _listItems[key] = (button, item);
         button.AddChild(item);
@@ -71,7 +71,7 @@ public sealed partial class VendingMachineMenu : FancyWindow
     /// Populates the list of available items on the vending machine interface
     /// and sets icons based on their prototypes
     /// </summary>
-    public void Populate(List<VendingMachineInventoryEntry> inventory, bool enabled)
+    public void Populate(List<VendingMachineInventoryEntry> inventory, bool enabled, bool allForFree = false)
     {
         _enabled = enabled;
         _listItems.Clear();
@@ -121,6 +121,8 @@ public sealed partial class VendingMachineMenu : FancyWindow
             listData.Add(new VendorItemsListData(entry.Type, prototype.ID, i)
             {
                 ItemText = itemText,
+                Price = entry.Price,
+                AllForFree = allForFree,
             });
         }
 
@@ -179,6 +181,8 @@ public sealed partial class VendingMachineMenu : FancyWindow
 public record VendorItemsListData(InventoryType ItemType, EntProtoId ItemProtoID, int ItemIndex) : ListData
 {
     public string ItemText = string.Empty;
+    public int Price;
+    public bool AllForFree;
 }
 
 public readonly record struct VendorItemKey(InventoryType Type, EntProtoId Prototype);

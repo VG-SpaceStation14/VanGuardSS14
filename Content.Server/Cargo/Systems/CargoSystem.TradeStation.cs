@@ -1,5 +1,6 @@
 using System.Linq;
 using Content.Server.Cargo.Components;
+using Content.Server._VanGuard.Economy.Systems;
 using Content.Shared.Cargo;
 using Content.Shared.Cargo.BUI;
 using Content.Shared.Cargo.Components;
@@ -16,6 +17,10 @@ public sealed partial class CargoSystem
     /*
      * Handles automated trade station / trade mechanics.
      */
+
+    // VG-Tweak Start: station market affects sell prices.
+    [Dependency] private EconomyMarketSystem _market = default!;
+    // VG-Tweak End
 
     private static readonly SoundPathSpecifier ApproveSound = new("/Audio/Effects/Cargo/ping.ogg");
     private bool _lockboxCutEnabled;
@@ -41,11 +46,24 @@ public sealed partial class CargoSystem
                 new CargoPalletConsoleInterfaceState(0, 0, false));
             return;
         }
-        GetPalletGoods(gridUid, out var toSell, out var goods);
-        var totalAmount = goods.Sum(t => t.Item3);
+
+        // VG-Tweak: prefer the station-aware goods overload so the preview uses
+        // the same market multipliers as an actual SellPallets call.
+        if (_station.GetOwningStation(uid) is { } stationUid)
+        {
+            GetPalletGoods(gridUid, stationUid, out var toSell, out var goods);
+            var totalAmount = goods.Sum(t => t.Item3);
+            _uiSystem.SetUiState(uid,
+                CargoPalletConsoleUiKey.Sale,
+                new CargoPalletConsoleInterfaceState((int) totalAmount, toSell.Count, true));
+            return;
+        }
+
+        GetPalletGoods(gridUid, out var toSellFallback, out var goodsFallback);
+        var totalAmountFallback = goodsFallback.Sum(t => t.Item3);
         _uiSystem.SetUiState(uid,
             CargoPalletConsoleUiKey.Sale,
-            new CargoPalletConsoleInterfaceState((int) totalAmount, toSell.Count, true));
+            new CargoPalletConsoleInterfaceState((int) totalAmountFallback, toSellFallback.Count, true));
     }
 
     private void OnPalletUIOpen(EntityUid uid, CargoPalletConsoleComponent component, BoundUIOpenedEvent args)
@@ -130,7 +148,7 @@ public sealed partial class CargoSystem
 
     private bool SellPallets(EntityUid gridUid, EntityUid station, out HashSet<(EntityUid, OverrideSellComponent?, double)> goods)
     {
-        GetPalletGoods(gridUid, out var toSell, out goods);
+        GetPalletGoods(gridUid, station, out var toSell, out goods);
 
         if (toSell.Count == 0)
             return false;
@@ -146,7 +164,15 @@ public sealed partial class CargoSystem
         return true;
     }
 
-    private void GetPalletGoods(EntityUid gridUid, out HashSet<EntityUid> toSell,  out HashSet<(EntityUid, OverrideSellComponent?, double)> goods)
+    // VG-Tweak Start: two-argument overload for the pallet console preview that
+    // does not belong to a specific station sell (market multipliers skipped).
+    private void GetPalletGoods(EntityUid gridUid, out HashSet<EntityUid> toSell, out HashSet<(EntityUid, OverrideSellComponent?, double)> goods)
+    {
+        GetPalletGoods(gridUid, default, out toSell, out goods);
+    }
+    // VG-Tweak End
+
+    private void GetPalletGoods(EntityUid gridUid, EntityUid station, out HashSet<EntityUid> toSell,  out HashSet<(EntityUid, OverrideSellComponent?, double)> goods)
     {
         goods = new HashSet<(EntityUid, OverrideSellComponent?, double)>();
         toSell = new HashSet<EntityUid>();
@@ -177,7 +203,9 @@ public sealed partial class CargoSystem
                 if (_cargoSellBlacklistQuery.HasComponent(ent))
                     continue;
 
-                var price = _pricing.GetPrice(ent);
+                // VG-Tweak Start: apply the station market's material multipliers.
+                var price = _market.AdjustSellPrice(station, ent, _pricing.GetPrice(ent));
+                // VG-Tweak End
                 if (price == 0)
                     continue;
                 toSell.Add(ent);

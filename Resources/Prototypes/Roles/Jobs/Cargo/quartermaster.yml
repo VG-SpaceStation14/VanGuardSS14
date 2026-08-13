@@ -3,6 +3,7 @@
   name: job-name-qm
   description: job-description-qm
   playTimeTracker: JobQuartermaster
+  salary: 350 # VG-Tweak: economy
   requirements:
 #    - !type:RoleTimeRequirement
 #      role: JobCargoTechnician

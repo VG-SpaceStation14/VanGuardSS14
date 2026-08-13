@@ -153,6 +153,14 @@ public abstract partial class SharedVendingMachineSystem
             return;
         }
 
+        // Charge the buyer before handing out the item. The server override
+        // handles the actual bank transaction; the shared default accepts.
+        if (user is { } buyer && !TryCharge(uid, buyer, entry, vendComponent))
+        {
+            Deny((uid, vendComponent), user, ejectComponent);
+            return;
+        }
+
         // Start Ejecting and prevent users from ordering while anim playing
         ejectComponent.EjectEnd = Timing.CurTime + ejectComponent.EjectDelay;
         ejectComponent.NextItemToEject = entry.ID;

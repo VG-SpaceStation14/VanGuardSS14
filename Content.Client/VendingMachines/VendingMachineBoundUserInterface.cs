@@ -33,7 +33,9 @@ public sealed class VendingMachineBoundUserInterface(EntityUid owner, Enum uiKey
         var system = EntMan.System<VendingMachineSystem>();
         _cachedInventory = system.GetAllInventory(Owner);
 
-        _menu?.Populate(_cachedInventory, enabled);
+        var allForFree = EntMan.TryGetComponent(Owner, out VendingMachineComponent? vend) && vend.AllForFree;
+
+        _menu?.Populate(_cachedInventory, enabled, allForFree);
     }
 
     public void UpdateAmounts()

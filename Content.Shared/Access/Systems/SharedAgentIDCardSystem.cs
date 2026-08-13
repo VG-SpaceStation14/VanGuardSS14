@@ -21,6 +21,7 @@ public abstract partial class SharedAgentIdCardSystem : EntitySystem
     [Dependency] private SharedIdCardSystem _card = default!;
     [Dependency] private SharedJobSystem _job = default!;
     [Dependency] private SharedJobStatusSystem _jobStatus = default!;
+    [Dependency] private SharedUserInterfaceSystem _ui = default!;
 
     /// <summary>
     /// Steals access from interacted ids.
@@ -92,6 +93,21 @@ public abstract partial class SharedAgentIdCardSystem : EntitySystem
         UpdateUi(ent);
     }
 
+    [SubscribeLocalEvent]
+    private void OnOpenWallet(Entity<AgentIDCardComponent> ent, ref AgentIDCardOpenWalletMessage args)
+    {
+        // The agent card's own ActivatableUI key is taken by the agent window,
+        // so the wallet BUI is opened explicitly through the UI system. The
+        // economy wallet system binds the owner by the card's bank account.
+        if (!TryComp<IdCardComponent>(ent, out _))
+            return;
+
+        if (args.Actor is not { Valid: true } user)
+            return;
+
+        _ui.OpenUi((ent.Owner, null), Content.Shared._VanGuard.Economy.EconomyAccountUiKey.Key, user);
+    }
+
     /// <summary>
     /// Update the agent id UI with new component info.
     /// </summary>
@@ -136,4 +152,14 @@ public sealed class AgentIDCardJobChangedMessage(string job) : BoundUserInterfac
 public sealed class AgentIDCardJobIconChangedMessage(ProtoId<JobIconPrototype> icon) : BoundUserInterfaceMessage
 {
     public ProtoId<JobIconPrototype> JobIconId { get; } = icon;
+}
+
+/// <summary>
+/// Sent from the agent ID UI to open the card's bank wallet. The agent card's
+/// own ActivatableUI key is used for the agent window, so the wallet needs an
+/// explicit activation path of its own.
+/// </summary>
+[Serializable, NetSerializable]
+public sealed class AgentIDCardOpenWalletMessage : BoundUserInterfaceMessage
+{
 }

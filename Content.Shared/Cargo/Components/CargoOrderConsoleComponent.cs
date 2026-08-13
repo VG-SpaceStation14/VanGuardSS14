@@ -187,3 +187,29 @@ public sealed class CargoConsoleWithdrawFundsMessage : BoundUserInterfaceMessage
 /// </summary>
 [Serializable, NetSerializable]
 public sealed class CargoConsoleToggleLimitMessage : BoundUserInterfaceMessage;
+
+/// <summary>
+///     VG-Tweak: deposits or withdraws station funds from the card console.
+///     Deposit moves credits from the player's personal bank account into the
+///     station budget; withdraw moves station funds onto the player's account
+///     (large withdrawals require console access).
+/// </summary>
+[Serializable, NetSerializable]
+public sealed class CargoConsoleStationFundsMessage : BoundUserInterfaceMessage
+{
+    public CargoStationFundsAction Action;
+    public int Amount;
+
+    public CargoConsoleStationFundsMessage(CargoStationFundsAction action, int amount)
+    {
+        Action = action;
+        Amount = amount;
+    }
+}
+
+[Serializable, NetSerializable]
+public enum CargoStationFundsAction : byte
+{
+    Deposit,
+    Withdraw,
+}

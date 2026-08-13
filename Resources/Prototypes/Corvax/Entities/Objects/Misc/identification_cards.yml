@@ -1,5 +1,5 @@
-- type: entity
-  parent: IDCardStandard
+﻿- type: entity
+  parent: BaseBankIDCard
   id: IAAIDCard
   name: internal affairs agent ID card
   components:
@@ -19,7 +19,7 @@
     job: IAA
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: PilotIDCard
   name: pilot ID card
   components:
@@ -39,7 +39,7 @@
     job: Pilot
 
 - type: entity
-  parent: IDCardStandard
+  parent: BaseBankIDCard
   id: MagistrateIDCard
   name: magistrate's ID card
   components:
