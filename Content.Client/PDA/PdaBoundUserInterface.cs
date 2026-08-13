@@ -33,8 +33,13 @@ namespace Content.Client.PDA
             {
                 _menu.Dispose();
                 _menu = null;
-                ResetActiveCartridgeUi();
             }
+
+            // Whenever the menu gets (re)created, drop the old cartridge UI.
+            // Otherwise the stale fragment is never reattached and the cartridge
+            // shows an empty screen after the window is reopened.
+            if (_menu == null)
+                ResetActiveCartridgeUi();
             // VG-PDAScreens End
 
             base.Open();
@@ -145,6 +150,10 @@ namespace Content.Client.PDA
             {
                 _menu.Close();
                 _menu = null;
+
+                // VG-Tweak: reset the cartridge UI as well, so reopening the PDA
+                // reattaches the cartridge instead of showing an empty screen.
+                ResetActiveCartridgeUi();
                 return;
             }
             _hasReceivedInitialState = true;

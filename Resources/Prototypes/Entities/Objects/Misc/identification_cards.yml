@@ -67,6 +67,7 @@
     interfaces:
       enum.EconomyAccountUiKey.Key:
         type: EconomyWalletBoundUserInterface
+  - type: NanoChatCard # VG-Tweak: Наночат
 # VG-Tweak End
 
 #IDs with layers

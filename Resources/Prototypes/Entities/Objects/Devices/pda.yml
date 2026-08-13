@@ -99,6 +99,7 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
         - id: NanoTaskCartridge
@@ -164,6 +165,7 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
         - id: NanoTaskCartridge
@@ -179,6 +181,7 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
         - id: NanoTaskCartridge
@@ -588,6 +591,7 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NewsReaderCartridge
   - type: PermanentStatusEffects # for random sentience event
@@ -675,6 +679,7 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
         - id: NanoTaskCartridge
@@ -749,6 +754,7 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
         - id: NanoTaskCartridge
@@ -1321,6 +1327,7 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
         - id: NanoTaskCartridge
@@ -1433,6 +1440,7 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
         - id: NanoTaskCartridge
@@ -1461,6 +1469,7 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
         - id: NanoTaskCartridge
@@ -1640,6 +1649,7 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        - id: NanoChatCartridge
         - id: NotekeeperCartridge
         - id: NanoTaskCartridge
 
@@ -1708,6 +1718,7 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        - id: NanoChatCartridge
         - id: NotekeeperCartridge
         - id: NanoTaskCartridge
         - id: MedTekCartridge
@@ -1786,6 +1797,7 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
         - id: NanoTaskCartridge
@@ -2086,6 +2098,7 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
         - id: NanoTaskCartridge
@@ -2133,6 +2146,7 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
         - id: NanoTaskCartridge

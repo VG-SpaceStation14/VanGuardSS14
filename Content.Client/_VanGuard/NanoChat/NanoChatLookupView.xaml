@@ -1,0 +1,68 @@
+<cartridges:NanoChatLookupView
+    xmlns="https://spacestation14.io"
+    xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+    xmlns:cartridges="clr-namespace:Content.Client._VanGuard.NanoChat"
+    HorizontalExpand="True"
+    VerticalExpand="True"
+    MouseFilter="Stop"
+    RectClipContent="True">
+
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="6">
+        <!-- Directory header -->
+        <PanelContainer MinHeight="44">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#10161C"
+                                  BorderColor="#4ad9ff"
+                                  BorderThickness="0 0 0 2"/>
+            </PanelContainer.PanelOverride>
+            <BoxContainer Orientation="Horizontal" Margin="8" HorizontalExpand="True">
+                <TextureRect Name="LookupIcon"
+                             MinSize="28 28"
+                             VerticalAlignment="Center"
+                             Margin="0 0 8 0"/>
+                <BoxContainer Orientation="Vertical" VerticalAlignment="Center" HorizontalExpand="True">
+                    <Label Text="{Loc nano-chat-look-up-title}" StyleClasses="LabelHeading"/>
+                    <Label Text="{Loc nano-chat-look-up-subtitle}" StyleClasses="LabelSubText"/>
+                </BoxContainer>
+                <Button Name="ListNumberButton"
+                        MinSize="30 30"
+                        MaxSize="30 30"
+                        VerticalAlignment="Center"
+                        StyleClasses="OpenBoth"
+                        Margin="0 0 4 0"
+                        ToggleMode="True"
+                        ToolTip="{Loc nano-chat-list-number}">
+                    <TextureRect StyleClasses="ButtonSquare"
+                                 TexturePath="/Textures/_VanGuard/Interface/VerbIcons/hamburger_icon.svg.png"
+                                 Stretch="KeepAspectCentered"
+                                 MinSize="16 16"/>
+                </Button>
+                <TextureButton Name="CloseLookupButton"
+                               StyleClasses="windowCloseButton"
+                               VerticalAlignment="Center"/>
+            </BoxContainer>
+        </PanelContainer>
+
+        <!-- Search, stretched across the whole directory -->
+        <LineEdit Name="SearchInput"
+                  PlaceHolder="{Loc nano-chat-look-up-search-placeholder}"
+                  HorizontalExpand="True"
+                  Margin="0 4 0 0"/>
+
+        <ScrollContainer Name="ContactsScroll"
+                         VerticalExpand="True"
+                         HorizontalExpand="True"
+                         Margin="0 4 0 0"
+                         HScrollEnabled="False">
+            <BoxContainer Name="ContactsList" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True"/>
+        </ScrollContainer>
+
+        <!-- Scan-line footer -->
+        <PanelContainer MinHeight="3" Margin="8 4 8 2">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#4ad9ff"/>
+            </PanelContainer.PanelOverride>
+        </PanelContainer>
+        <Label Text="{Loc nano-chat-look-up-hint}" StyleClasses="LabelSubText" HorizontalAlignment="Center" Margin="0 0 0 4"/>
+    </BoxContainer>
+</cartridges:NanoChatLookupView>

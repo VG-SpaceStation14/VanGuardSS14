@@ -1,0 +1,205 @@
+<cartridges:NanoChatUiFragment
+    xmlns="https://spacestation14.io"
+    xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+    xmlns:cartridges="clr-namespace:Content.Client._VanGuard.NanoChat"
+    HorizontalExpand="True"
+    VerticalExpand="True"
+    Margin="4"
+    RectClipContent="True">
+
+    <!-- Full-screen dark background, matches the field-terminal style of the
+         research console and experiment scanner UIs. -->
+    <PanelContainer HorizontalExpand="True" VerticalExpand="True">
+        <PanelContainer.PanelOverride>
+            <gfx:StyleBoxFlat BackgroundColor="#0A0E12"/>
+        </PanelContainer.PanelOverride>
+    </PanelContainer>
+
+    <!-- Main screen -->
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+        <!-- Field terminal header -->
+        <PanelContainer MinHeight="52">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#10161C"
+                                  BorderColor="#4ad9ff"
+                                  BorderThickness="0 0 0 2"/>
+            </PanelContainer.PanelOverride>
+            <BoxContainer Orientation="Horizontal" Margin="8" HorizontalExpand="True">
+                <TextureRect Name="NanoChatIcon"
+                             MinSize="32 32"
+                             VerticalAlignment="Center"
+                             Margin="0 0 8 0"/>
+                <BoxContainer Orientation="Vertical" VerticalAlignment="Center" HorizontalExpand="True">
+                    <Label Text="{Loc nano-chat-title}" StyleClasses="LabelHeading"/>
+                    <Label Name="OwnNumberLabel" Text="#0000" StyleClasses="LabelSubText"/>
+                </BoxContainer>
+                <Button Name="LookupButton"
+                        MinSize="34 34"
+                        MaxSize="34 34"
+                        VerticalAlignment="Center"
+                        StyleClasses="OpenBoth"
+                        Margin="0 0 4 0"
+                        ToolTip="{Loc nano-chat-look-up}">
+                    <TextureRect StyleClasses="ButtonSquare"
+                                 TexturePath="/Textures/Interface/VerbIcons/group.svg.192dpi.png"
+                                 Stretch="KeepAspectCentered"
+                                 MinSize="18 18"/>
+                </Button>
+                <Button Name="MuteButton"
+                        MinSize="34 34"
+                        MaxSize="34 34"
+                        VerticalAlignment="Center"
+                        StyleClasses="OpenBoth"
+                        Margin="0 0 4 0"
+                        ToolTip="{Loc nano-chat-toggle-mute}">
+                    <Control HorizontalExpand="True" VerticalExpand="True">
+                        <TextureRect Name="BellIcon"
+                                     StyleClasses="ButtonSquare"
+                                     TexturePath="/Textures/_VanGuard/Interface/VerbIcons/bell.svg.png"
+                                     Stretch="KeepAspectCentered"
+                                     MinSize="18 18"/>
+                        <TextureRect Name="BellMutedIcon"
+                                     StyleClasses="ButtonSquare"
+                                     TexturePath="/Textures/_VanGuard/Interface/VerbIcons/bell_muted.png"
+                                     Stretch="KeepAspectCentered"
+                                     Visible="False"
+                                     MinSize="18 18"/>
+                    </Control>
+                </Button>
+            </BoxContainer>
+        </PanelContainer>
+
+        <!-- Main content -->
+        <BoxContainer Orientation="Horizontal"
+                      HorizontalExpand="True"
+                      VerticalExpand="True"
+                      Margin="0 4 0 0">
+            <!-- Conversation list -->
+            <PanelContainer MinWidth="170" MaxWidth="240" Margin="0 0 4 0">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#0D1319"
+                                      BorderColor="#2E3B45"
+                                      BorderThickness="1"
+                                      ContentMarginLeftOverride="4"
+                                      ContentMarginRightOverride="4"
+                                      ContentMarginTopOverride="4"
+                                      ContentMarginBottomOverride="4"/>
+                </PanelContainer.PanelOverride>
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+                    <Label Text="{Loc nano-chat-chats}" StyleClasses="LabelSubText" Margin="2 0 2 4"/>
+                    <ScrollContainer Name="ChatListScroll"
+                                     VerticalExpand="True"
+                                     HorizontalExpand="True"
+                                     HScrollEnabled="False">
+                        <BoxContainer Name="ChatList" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True"/>
+                    </ScrollContainer>
+                </BoxContainer>
+            </PanelContainer>
+
+            <!-- Messages -->
+            <PanelContainer HorizontalExpand="True">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#121920"
+                                      BorderColor="#2E3B45"
+                                      BorderThickness="1"
+                                      ContentMarginLeftOverride="4"
+                                      ContentMarginRightOverride="4"
+                                      ContentMarginTopOverride="4"
+                                      ContentMarginBottomOverride="4"/>
+                </PanelContainer.PanelOverride>
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+                    <!-- Chat header: name + job + number + delete -->
+                    <PanelContainer MinHeight="40" Margin="0 0 0 4">
+                        <PanelContainer.PanelOverride>
+                            <gfx:StyleBoxFlat BackgroundColor="#10161C"
+                                              BorderColor="#2E3B45"
+                                              BorderThickness="0 0 0 1"
+                                              ContentMarginLeftOverride="6"
+                                              ContentMarginRightOverride="6"/>
+                        </PanelContainer.PanelOverride>
+                        <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+                            <BoxContainer Orientation="Vertical" VerticalAlignment="Center" HorizontalExpand="True">
+                                <Label Name="CurrentChatName" Text="{Loc nano-chat-select-chat}" StyleClasses="LabelHeading" ClipText="True"/>
+                                <Label Name="CurrentChatJob" Text="" StyleClasses="LabelSubText" ClipText="True" Visible="False"/>
+                            </BoxContainer>
+                            <Label Name="CurrentChatNumber" Text="" StyleClasses="LabelSubText" VerticalAlignment="Center" Margin="0 0 6 0" Visible="False"/>
+                            <Button Name="DeleteChatButton"
+                                    MinSize="28 28"
+                                    MaxSize="28 28"
+                                    VerticalAlignment="Center"
+                                    StyleClasses="OpenBoth"
+                                    Visible="False"
+                                    ToolTip="{Loc nano-chat-delete}">
+                                <TextureRect StyleClasses="ButtonSquare"
+                                             TexturePath="/Textures/Interface/VerbIcons/delete_transparent.svg.192dpi.png"
+                                             Stretch="KeepAspectCentered"
+                                             MinSize="16 16"/>
+                            </Button>
+                        </BoxContainer>
+                    </PanelContainer>
+
+                    <Label Name="NoChatLabel"
+                           Text="{Loc nano-chat-select-chat}"
+                           StyleClasses="LabelSubText"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           HorizontalExpand="True"
+                           VerticalExpand="True"/>
+
+                    <ScrollContainer Name="MessagesScroll"
+                                     VerticalExpand="True"
+                                     HorizontalExpand="True"
+                                     HScrollEnabled="False"
+                                     Visible="False">
+                        <BoxContainer Name="MessageList" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True"/>
+                    </ScrollContainer>
+
+                    <BoxContainer Name="InputRow"
+                                  Orientation="Horizontal"
+                                  HorizontalExpand="True"
+                                  Margin="0 4 0 0"
+                                  Visible="False">
+                        <LineEdit Name="MessageInput"
+                                  PlaceHolder="{Loc nano-chat-message-placeholder}"
+                                  HorizontalExpand="True"
+                                  StyleClasses="OpenRight"/>
+                        <Label Name="CharacterCount"
+                               StyleClasses="LabelSubText"
+                               Margin="0 0 4 0"
+                               VerticalAlignment="Center"
+                               Visible="False"/>
+                        <Button Name="SendButton"
+                                MinSize="32 32"
+                                MaxSize="32 32"
+                                Disabled="True"
+                                StyleClasses="OpenLeft"
+                                Margin="4 0 0 0"
+                                ToolTip="{Loc nano-chat-send}">
+                            <TextureRect StyleClasses="ButtonSquare"
+                                         TexturePath="/Textures/Interface/Nano/triangle_right.png"
+                                         Stretch="KeepAspectCentered"/>
+                        </Button>
+                    </BoxContainer>
+                </BoxContainer>
+            </PanelContainer>
+        </BoxContainer>
+
+
+        <!-- Scan-line footer -->
+        <PanelContainer MinHeight="3" Margin="8 4 8 2">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#4ad9ff"/>
+            </PanelContainer.PanelOverride>
+        </PanelContainer>
+        <Label Name="FooterHint" StyleClasses="LabelSubText" HorizontalAlignment="Center" Margin="0 0 0 4"/>
+    </BoxContainer>
+
+    <!-- Station directory overlay: covers the whole cartridge screen instead of
+         pushing the chat layout around. -->
+    <cartridges:NanoChatLookupView Name="LookupView"
+                                   Visible="False"
+                                   HorizontalExpand="True"
+                                   VerticalExpand="True"
+                                   MouseFilter="Stop"/>
+</cartridges:NanoChatUiFragment>
+

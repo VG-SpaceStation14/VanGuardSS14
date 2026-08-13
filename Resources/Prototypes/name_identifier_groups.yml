@@ -60,3 +60,8 @@
   format: name-identifier-format-telepad
   minValue: 0
   maxValue: 999
+
+- type: nameIdentifierGroup
+  id: NanoChat
+  minValue: 1000
+  maxValue: 9999
