@@ -69,9 +69,9 @@ public sealed partial class CargoSystem
                 break;
 
             case CargoStationFundsAction.Withdraw:
-                // Large withdrawals require access to the console.
-                if (args.Amount >= ent.Comp.BaseWithdrawAccessAmount
-                    && !_accessReaderSystem.IsAllowed(actor, ent))
+                // Withdrawals always require console access so a random crew
+                // member cannot drain the station budget into their account.
+                if (!_accessReaderSystem.IsAllowed(actor, ent))
                 {
                     _popup.PopupCursor(Loc.GetString("cargo-console-order-not-allowed"), actor);
                     PlayDenySound(ent, ent.Comp);

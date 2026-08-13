@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Content.IntegrationTests.Fixtures;
 using Content.Server._VanGuard.Economy.Components;
+using Content.Server._VanGuard.Economy.Rules.Components;
+using Content.Server._VanGuard.Economy.Rules;
 using Content.Server._VanGuard.Economy.Systems;
 using Content.Server.Cargo.Systems;
 using Content.Server.Station.Systems;
@@ -39,6 +41,7 @@ public sealed class EconomyPayrollTest : GameTest
   name: economy test paid job
   playTimeTracker: EconomyTestTrackerA
   salary: 1000
+  payrollFromStationBudget: false
 
 - type: job
   id: EconomyTestBudgetJob
@@ -46,6 +49,16 @@ public sealed class EconomyPayrollTest : GameTest
   playTimeTracker: EconomyTestTrackerB
   salary: 2000
   payrollFromStationBudget: true
+
+- type: material
+  id: EconomyTestMaterial
+  price: 10.0
+
+- type: marketCommodity
+  id: EconomyTestCommodity
+  material: EconomyTestMaterial
+  highDemandMultiplier: 1.5
+  lowDemandMultiplier: 0.5
 ";
 
     [Test]
@@ -262,6 +275,45 @@ public sealed class EconomyPayrollTest : GameTest
             // No modifiers -> base price.
             market.ClearMarketModifiers(station);
             Assert.That(market.AdjustSellPrice(station, goods, 100), Is.EqualTo(100.0).Within(0.01));
+        });
+        await server.WaitRunTicks(2);
+    }
+
+    [Test]
+    public async Task Market_ShiftRule_UsesConfiguredCommodityMultiplier()
+    {
+        var server = Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var testMap = await Pair.CreateTestMap();
+        await server.WaitIdleAsync();
+        var coords = new EntityCoordinates(testMap.MapUid, default);
+
+        EntityUid station = default;
+        EntityUid goods = default;
+        await server.WaitPost(() =>
+        {
+            station = entMan.SpawnEntity(null, coords);
+            entMan.AddComponent<StationDataComponent>(station);
+            goods = entMan.SpawnEntity(null, coords);
+            var composition = entMan.AddComponent<PhysicalCompositionComponent>(goods);
+            composition.MaterialComposition["EconomyTestMaterial"] = 10;
+
+            // Only our test commodity can be picked, so the configured
+            // high-demand multiplier must be applied, not a random range value.
+            var rule = entMan.AddComponent<EconomyMarketShiftRuleComponent>(station);
+            rule.AllowedMaterials = ["EconomyTestMaterial"];
+            rule.MinIncreased = 1;
+            rule.MaxIncreased = 1;
+            rule.MinDecreased = 0;
+            rule.MaxDecreased = 0;
+            rule.AnnouncementsEnabled = false;
+
+            entMan.System<EconomyMarketShiftRuleSystem>().ApplyShiftToAllStations(rule);
+
+            var market = entMan.System<EconomyMarketSystem>();
+            var adjusted = market.AdjustSellPrice(station, goods, 100);
+            Assert.That(adjusted, Is.EqualTo(150.0).Within(0.01),
+                "The commodity's configured high-demand multiplier (1.5x) must be applied.");
         });
         await server.WaitRunTicks(2);
     }

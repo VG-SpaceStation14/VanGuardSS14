@@ -48,13 +48,6 @@ public sealed partial class CargoOrderConsoleComponent : Component
     public float BaseTransferLimit = 0.20f;
 
     /// <summary>
-    ///     VG-Tweak: withdrawals of station funds at or above this amount require
-    ///     access to the card console.
-    /// </summary>
-    [DataField, AutoNetworkedField]
-    public int BaseWithdrawAccessAmount = 5000;
-
-    /// <summary>
     /// The time at which account actions can be performed again.
     /// </summary>
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]

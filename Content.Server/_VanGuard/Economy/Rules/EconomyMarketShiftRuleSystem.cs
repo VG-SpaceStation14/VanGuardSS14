@@ -50,7 +50,7 @@ public sealed partial class EconomyMarketShiftRuleSystem : GameRuleSystem<Econom
         }
     }
 
-    private void ApplyShiftToAllStations(EconomyMarketShiftRuleComponent component)
+    internal void ApplyShiftToAllStations(EconomyMarketShiftRuleComponent component)
     {
         var stations = EntityQueryEnumerator<StationDataComponent>();
         while (stations.MoveNext(out var stationUid, out _))
@@ -87,7 +87,9 @@ public sealed partial class EconomyMarketShiftRuleSystem : GameRuleSystem<Econom
         for (var i = 0; i < increasedCount; i++)
         {
             var item = _random.PickAndTake(picked);
-            modifiers[item.Material] = NextIncreasedMultiplier(increasedMin, increasedMax);
+            // VG-Tweak: use each commodity's configured high-demand multiplier,
+            // clamped to the rule's min/max range.
+            modifiers[item.Material] = Math.Clamp(item.HighDemandMultiplier, increasedMin, increasedMax);
             increased.Add(item.Material);
         }
 
@@ -98,30 +100,15 @@ public sealed partial class EconomyMarketShiftRuleSystem : GameRuleSystem<Econom
         for (var i = 0; i < decreasedCount; i++)
         {
             var item = _random.PickAndTake(picked);
-            modifiers[item.Material] = NextDecreasedMultiplier(decreasedMin, decreasedMax);
+            // VG-Tweak: use each commodity's configured low-demand multiplier,
+            // clamped to the rule's min/max range.
+            modifiers[item.Material] = Math.Clamp(item.LowDemandMultiplier, decreasedMin, decreasedMax);
             decreased.Add(item.Material);
         }
 
         _market.SetMarketModifiers(stationUid, modifiers);
         if (component.AnnouncementsEnabled)
             _market.AnnounceMarketChanges(stationUid, increased, decreased);
-    }
-
-    private float NextIncreasedMultiplier(float min, float max)
-    {
-        var low = MathF.Max(min, 1f);
-        var high = MathF.Max(max, low);
-        return MathF.Max(_random.NextFloat(low, high), 1.01f);
-    }
-
-    private float NextDecreasedMultiplier(float min, float max)
-    {
-        var low = MathF.Min(min, 0.99f);
-        var high = MathF.Min(max, 1f);
-        if (high <= low)
-            return low;
-
-        return MathF.Min(_random.NextFloat(low, high), 0.99f);
     }
 
     private void ScheduleNextShift(EconomyMarketShiftRuleComponent component)

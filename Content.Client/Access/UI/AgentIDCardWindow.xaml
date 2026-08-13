@@ -61,6 +61,8 @@
 
         <!-- Footer -->
         <BoxContainer Margin="10 2 5 0" VerticalAlignment="Bottom">
+            <Button Name="OpenWalletButton" StyleClasses="ButtonColorGreen" Margin="0 0 8 0"
+                    Text="{Loc 'agent-id-ui-open-wallet'}" />
             <Label Text="{Loc 'agent-id-ui-footer-flavor-left'}" StyleClasses="WindowFooterText" />
             <Label Text="{Loc 'agent-id-ui-footer-flavor-right'}" StyleClasses="WindowFooterText"
                     HorizontalAlignment="Right" HorizontalExpand="True"  Margin="0 0 5 0" />

@@ -28,11 +28,13 @@ public sealed class IdCardConsoleJobChangeTest : InteractionTest
     [Test]
     public async Task ChangingJobViaConsole_UpdatesMindJobRole()
     {
-        // Give the player a mind with an initial job. The mind's character name
-        // matches the card's full name, which is how the console resolves the owner.
+        // Give the player a mind with an initial job and a bank account. The
+        // card's BankAccountId binds it to that account (and thus the mind),
+        // which is how the console resolves the owner.
         var mindSystem = SEntMan.System<SharedMindSystem>();
         var roleSystem = SEntMan.System<Content.Server.Roles.RoleSystem>();
         var jobSystem = SEntMan.System<SharedJobSystem>();
+        var bank = SEntMan.System<Content.Server._VanGuard.Economy.Systems.EconomyBankSystem>();
         EntityUid mindUid = default;
         await Server.WaitPost(() =>
         {
@@ -47,12 +49,14 @@ public sealed class IdCardConsoleJobChangeTest : InteractionTest
         Assert.That(jobSystem.MindTryGetJob(mindUid, out var initialJob) && initialJob.ID == "Passenger",
             "Player should start as Passenger.");
 
-        // Put an ID card in the player's hand; the console will treat it as the target.
+        // Put an ID card bound to the mind's bank account in the player's hand;
+        // the console will treat it as the target.
         EntityUid card = default;
         await Server.WaitPost(() =>
         {
+            var account = bank.EnsureAccount(mindUid, SEntMan.GetComponent<MindComponent>(mindUid));
             card = SEntMan.SpawnEntity("PassengerIDCard", SEntMan.GetCoordinates(TargetCoords));
-            SEntMan.System<SharedIdCardSystem>().TryChangeFullName(card, "Test User");
+            SEntMan.GetComponent<IdCardComponent>(card).BankAccountId = account.AccountId;
             var hands = SEntMan.System<SharedHandsSystem>();
             hands.TryPickup(SPlayer, card);
         });

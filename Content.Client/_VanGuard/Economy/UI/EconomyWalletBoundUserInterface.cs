@@ -31,6 +31,7 @@ public sealed class EconomyWalletBoundUserInterface(EntityUid owner, Enum uiKey)
         _window.ManualToggleButton.OnPressed += _ => ToggleManualAccount();
         _window.AmountInput.OnTextChanged += _ => UpdateWithdrawAvailability();
         _window.AccountIdInput.OnTextChanged += _ => OnAccountInputChanged();
+        _window.AccountIdInput.OnTextEntered += OnAccountInputEntered;
 
         _window.MainTabs.SetTabTitle(0, Loc.GetString("economy-card-tab-account"));
         _window.MainTabs.SetTabTitle(1, Loc.GetString("economy-card-tab-operations"));
@@ -72,11 +73,27 @@ public sealed class EconomyWalletBoundUserInterface(EntityUid owner, Enum uiKey)
             _accountOverrideEdited = !string.Equals(input, _lastAccountId, StringComparison.Ordinal);
         }
 
-        SendMessage(new EconomySelectAccountMessage(GetEffectiveAccountId()));
-
         UpdateDisplayedAccount();
         UpdateWithdrawAvailability();
     }
+
+    private void OnAccountInputEntered(LineEdit.LineEditEventArgs args)
+    {
+        if (_window == null)
+            return;
+
+        // Only dispatch a full, plausible account id. Account numbers are
+        // 12 digits, so anything shorter is still being typed.
+        var input = string.IsNullOrWhiteSpace(_window.AccountIdInput.Text) ? null : _window.AccountIdInput.Text.Trim();
+        if (!string.IsNullOrEmpty(input) && input.Length < AccountIdLength)
+            return;
+
+        SendMessage(new EconomySelectAccountMessage(GetEffectiveAccountId()));
+        UpdateDisplayedAccount();
+        UpdateWithdrawAvailability();
+    }
+
+    private const int AccountIdLength = 12;
 
     private void UpdateDisplayedAccount()
     {

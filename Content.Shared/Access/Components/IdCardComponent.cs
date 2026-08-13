@@ -69,8 +69,12 @@ public sealed partial class IdCardComponent : Component
     /// <summary>
     ///     The bank account this card is bound to, shown by the wallet UI.
     /// </summary>
+    /// <remarks>
+    ///     Deliberately not networked: the account id must only be revealed
+    ///     through the owner's bound UI state, never broadcast to clients that
+    ///     merely see the card.
+    /// </remarks>
     [DataField]
-    [AutoNetworkedField]
     public string? BankAccountId;
     // VG-Tweak End
 }

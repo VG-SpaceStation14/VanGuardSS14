@@ -25,6 +25,7 @@ public sealed class AgentIDCardBoundUserInterface(EntityUid owner, Enum uiKey) :
         _window.OnNameChanged += OnNameChanged;
         _window.OnJobChanged += OnJobChanged;
         _window.OnJobIconChanged += OnJobIconChanged;
+        _window.OnOpenWallet += OnOpenWallet;
 
         ProtoId<JobIconPrototype> currentIcon = default;
         if (EntMan.TryGetComponent<IdCardComponent>(Owner, out var card))
@@ -60,5 +61,10 @@ public sealed class AgentIDCardBoundUserInterface(EntityUid owner, Enum uiKey) :
     private void OnJobIconChanged(ProtoId<JobIconPrototype> newJobIconId)
     {
         SendPredictedMessage(new AgentIDCardJobIconChangedMessage(newJobIconId));
+    }
+
+    private void OnOpenWallet()
+    {
+        SendPredictedMessage(new AgentIDCardOpenWalletMessage());
     }
 }

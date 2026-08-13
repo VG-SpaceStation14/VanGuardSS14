@@ -34,7 +34,7 @@ public sealed partial class EconomyWalletWindow : FancyWindow
 
     public string FormatCredits(int amount)
     {
-        return Loc.GetString("economy-card-balance-value", ("balance", amount.ToString("N0", CultureInfo.InvariantCulture)));
+        return Loc.GetString("economy-card-balance-value", ("balance", amount.ToString("N0", CultureInfo.CurrentCulture)));
     }
 
     public string MaskAccountId(string? accountId)

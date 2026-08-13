@@ -46,11 +46,24 @@ public sealed partial class CargoSystem
                 new CargoPalletConsoleInterfaceState(0, 0, false));
             return;
         }
-        GetPalletGoods(gridUid, out var toSell, out var goods);
-        var totalAmount = goods.Sum(t => t.Item3);
+
+        // VG-Tweak: prefer the station-aware goods overload so the preview uses
+        // the same market multipliers as an actual SellPallets call.
+        if (_station.GetOwningStation(uid) is { } stationUid)
+        {
+            GetPalletGoods(gridUid, stationUid, out var toSell, out var goods);
+            var totalAmount = goods.Sum(t => t.Item3);
+            _uiSystem.SetUiState(uid,
+                CargoPalletConsoleUiKey.Sale,
+                new CargoPalletConsoleInterfaceState((int) totalAmount, toSell.Count, true));
+            return;
+        }
+
+        GetPalletGoods(gridUid, out var toSellFallback, out var goodsFallback);
+        var totalAmountFallback = goodsFallback.Sum(t => t.Item3);
         _uiSystem.SetUiState(uid,
             CargoPalletConsoleUiKey.Sale,
-            new CargoPalletConsoleInterfaceState((int) totalAmount, toSell.Count, true));
+            new CargoPalletConsoleInterfaceState((int) totalAmountFallback, toSellFallback.Count, true));
     }
 
     private void OnPalletUIOpen(EntityUid uid, CargoPalletConsoleComponent component, BoundUIOpenedEvent args)

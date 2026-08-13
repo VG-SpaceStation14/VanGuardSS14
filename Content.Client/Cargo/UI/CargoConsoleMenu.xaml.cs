@@ -87,11 +87,20 @@ namespace Content.Client.Cargo.UI
 
             TransferSpinBox.IsValid = val =>
             {
+                if (val < 0)
+                    return false;
+
+                // VG-Tweak Start: station deposits/withdrawals are not bound by
+                // the cargo account transfer-limit percentage.
+                if (IsStationFundsSelection())
+                    return true;
+                // VG-Tweak End
+
                 if (!_entityManager.TryGetComponent<CargoOrderConsoleComponent>(owner, out var console) ||
                     !_entityManager.TryGetComponent<StationBankAccountComponent>(_station, out var bank))
                     return true;
 
-                return val >= 0 && val <= (int) (console.TransferLimit * bank.Accounts[console.Account]);
+                return val <= (int) (console.TransferLimit * bank.Accounts[console.Account]);
             };
 
             AccountActionButton.OnPressed += _ =>

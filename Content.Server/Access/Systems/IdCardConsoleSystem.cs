@@ -2,8 +2,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Server.Chat.Systems;
 using Content.Server.Containers;
-using Content.Server.Mind;
 using Content.Server.Roles;
+using Content.Server._VanGuard.Economy.Systems;
 using Content.Shared.Access;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
@@ -14,7 +14,6 @@ using Content.Shared.Construction;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Database;
-using Content.Shared.Mind;
 using Content.Shared.Roles;
 using Content.Shared.Roles.Components;
 using Content.Shared.StationRecords;
@@ -45,8 +44,8 @@ public sealed partial class IdCardConsoleSystem : SharedIdCardConsoleSystem
     [Dependency] private ThrowingSystem _throwing = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private ChatSystem _chat = default!;
-    [Dependency] private MindSystem _mind = default!;
     [Dependency] private RoleSystem _roles = default!;
+    [Dependency] private EconomyBankSystem _bank = default!;
 
     public override void Initialize()
     {
@@ -266,33 +265,25 @@ public sealed partial class IdCardConsoleSystem : SharedIdCardConsoleSystem
     /// <summary>
     ///     VG-Tweak: syncs the job role on the mind of whoever owns the target
     ///     ID card, so the payroll system pays the new job's salary. The card
-    ///     owner is resolved by matching the card's full name with the mind's
-    ///     character name (works even while the card sits in the console slot).
+    ///     owner is resolved through the stable bank-account binding written onto
+    ///     the card when its holder spawns, so renamed cards or duplicate
+    ///     character names cannot affect unrelated minds.
     /// </summary>
     private void SyncMindJobRole(EntityUid targetId, ProtoId<JobPrototype>? newJobProto)
     {
         // An empty selection means "no job" - just clear any existing role.
         var clearRole = newJobProto == null || newJobProto == string.Empty;
 
-        var cardName = Comp<IdCardComponent>(targetId).FullName;
-        if (string.IsNullOrWhiteSpace(cardName))
+        var bankAccountId = Comp<IdCardComponent>(targetId).BankAccountId;
+        if (string.IsNullOrWhiteSpace(bankAccountId))
             return;
 
-        // Resolve the owner of this exact card by name, so we do not touch unrelated minds.
-        EntityUid? ownerMind = null;
-        var query = EntityQueryEnumerator<MindComponent>();
-        while (query.MoveNext(out var mindUid, out var mind))
-        {
-            if (!string.Equals(mind.CharacterName, cardName, StringComparison.OrdinalIgnoreCase))
-                continue;
-
-            ownerMind = mindUid;
-            break;
-        }
-
-        if (ownerMind is not { } mindId)
+        // Accounts live on the mind entity, so resolving the account resolves
+        // the owner mind. Refuse the update when no binding exists.
+        if (!_bank.TryFindAccountById(bankAccountId, out var account))
             return;
 
+        var mindId = account.Owner;
         if (clearRole)
         {
             _roles.MindRemoveRole<JobRoleComponent>(mindId);

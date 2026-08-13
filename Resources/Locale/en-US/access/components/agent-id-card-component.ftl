@@ -18,3 +18,4 @@ agent-id-ui-os-flavor = When in doubt, nobody questions a mime
 # Get your mind out of the gutter.
 agent-id-ui-footer-flavor-left = Just a regular ID nothing to see here
 agent-id-ui-footer-flavor-right = v2.0
+agent-id-ui-open-wallet = Wallet

@@ -47,7 +47,10 @@ public sealed partial class VendingMachineSystem : SharedVendingMachineSystem
         var fullUiUpdate = !component.Inventory.Keys.SequenceEqual(state.Inventory.Keys) ||
                            !component.EmaggedInventory.Keys.SequenceEqual(state.EmaggedInventory.Keys) ||
                            !component.ContrabandInventory.Keys.SequenceEqual(state.ContrabandInventory.Keys) ||
-                           component.Contraband != state.Contraband;
+                           component.Contraband != state.Contraband ||
+                           // VG-Tweak: repopulate the UI when the pricing mode
+                           // (free vs paid) changes while the menu is open.
+                           component.AllForFree != state.AllForFree;
 
         component.Contraband = state.Contraband;
         var brokenChanged = component.Broken != state.Broken;

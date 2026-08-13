@@ -46,6 +46,10 @@ public sealed partial class EconomyWalletSystem : EntitySystem
     {
         SubscribeLocalEvent<MindContainerComponent, MindAddedMessage>(OnMindAdded);
         SubscribeLocalEvent<RoleAddedEvent>(OnRoleAdded);
+        // VG-Tweak: keep OwningStation in sync without polling every mind every
+        // second - an owned entity changing parent (grid/station move) is the
+        // only way a station can change after spawn.
+        SubscribeLocalEvent<EntParentChangedMessage>(OnOwnedEntityParentChanged);
         SubscribeLocalEvent<IdCardComponent, BoundUIOpenedEvent>(OnUiOpened);
         SubscribeLocalEvent<IdCardComponent, BoundUIClosedEvent>(OnUiClosed);
         // VG-Tweak: the StickerSystem already owns the IdCardComponent/InteractUsingEvent
@@ -72,7 +76,6 @@ public sealed partial class EconomyWalletSystem : EntitySystem
             return;
 
         _uiRefreshAccumulator = 0f;
-        SyncAccountsOwningStations();
 
         var closedUis = new List<EntityUid>();
         foreach (var (uid, accountId) in _openUiAccounts)
@@ -98,26 +101,23 @@ public sealed partial class EconomyWalletSystem : EntitySystem
         }
     }
 
-    private void SyncAccountsOwningStations()
+    private void OnOwnedEntityParentChanged(ref EntParentChangedMessage args)
     {
-        var query = EntityQueryEnumerator<MindComponent>();
-        while (query.MoveNext(out var mindUid, out var mind))
-        {
-            if (!IsHumanoidMind(mind))
-                continue;
+        // Only track owned entities that have a mind; skip container/held items.
+        if (!TryComp(args.Entity, out MindContainerComponent? mindContainer) || mindContainer.Mind is not { } mindUid)
+            return;
 
-            if (mind.OwnedEntity is not { } owned)
-                continue;
+        // Read-only: never create accounts for unregistered minds here.
+        if (!TryComp(mindUid, out EconomyAccountComponent? account))
+            return;
 
-            if (_station.GetOwningStation(owned) is not { } stationUid)
-                continue;
+        if (_station.GetOwningStation(args.Entity) is not { } stationUid)
+            return;
 
-            var account = _bank.EnsureAccount(mindUid, mind);
-            if (account.OwningStation == stationUid)
-                continue;
+        if (account.OwningStation == stationUid)
+            return;
 
-            account.OwningStation = stationUid;
-        }
+        account.OwningStation = stationUid;
     }
 
 
@@ -145,6 +145,11 @@ public sealed partial class EconomyWalletSystem : EntitySystem
 
     private void OnRoleAdded(RoleAddedEvent args)
     {
+        // VG-Tweak: only humanoid minds get a wallet and starting payroll;
+        // silicon/ghost minds must not end up with a bank account.
+        if (!IsHumanoidMind(args.Mind))
+            return;
+
         var account = _bank.EnsureAccount(args.MindId, args.Mind);
         EnsureStartingPayroll(args.MindId, args.Mind, account);
     }
@@ -268,11 +273,23 @@ public sealed partial class EconomyWalletSystem : EntitySystem
         if (!ResolveAccount(card, user, out var account))
             return false;
 
+        // VG-Tweak: capture the original stack count, clear the stack first and
+        // verify it was actually reduced before crediting the account.
         var amount = stack.Count;
-        if (!_bank.Deposit(account, amount, "card-deposit", GetNetEntity(user)))
+        if (amount <= 0)
             return false;
 
         _stack.SetCount(stackUid, 0, stack);
+        if (stack.Count == amount)
+            return false;
+
+        if (!_bank.Deposit(account, amount, "card-deposit", GetNetEntity(user)))
+        {
+            // Roll back the stack so no cash vanishes on a failed deposit.
+            _stack.SetCount(stackUid, amount, stack);
+            return false;
+        }
+
         _openUiAccounts[card.Owner] = account.Comp.AccountId;
         SetWalletState(card.Owner, account.Comp.AccountId);
         return true;
@@ -291,6 +308,19 @@ public sealed partial class EconomyWalletSystem : EntitySystem
 
         if (string.IsNullOrWhiteSpace(accountId))
             return false;
+
+        // VG-Tweak: a client-supplied account id may only ever select the acting
+        // player's own account, so a spoofed id cannot view or draw from someone
+        // else's balance. The card's own binding is used for legitimate cash
+        // deposits regardless of who physically holds the card.
+        if (!string.IsNullOrWhiteSpace(accountOverride))
+        {
+            if (!_bank.TryGetPlayerAccount(user, out var ownMind, out var ownAccount))
+                return false;
+
+            account = (ownMind, ownAccount);
+            return true;
+        }
 
         return _bank.TryFindAccountById(accountId, out account);
     }

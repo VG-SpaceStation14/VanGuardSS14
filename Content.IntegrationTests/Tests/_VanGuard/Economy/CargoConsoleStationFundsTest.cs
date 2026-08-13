@@ -47,21 +47,22 @@ public sealed class CargoConsoleStationFundsTest : InteractionTest
     }
 
     [Test]
-    public async Task Withdraw_BelowThreshold_DoesNotRequireAccess()
+    public async Task Withdraw_RequiresConsoleAccess_EvenForSmallAmounts()
     {
         var (station, _) = await SetupStationAndPlayer(1000);
         var cargo = SEntMan.System<CargoSystem>();
 
-        // 1200 < 5000 threshold, so no access needed.
+        // The test player has no Cargo access, so even a small withdrawal must
+        // be rejected and change nothing.
         await InvokeStationFunds(CargoStationFundsAction.Withdraw, 1200);
 
         var stationBank = SEntMan.GetComponent<StationBankAccountComponent>(station);
         var stationBalance = cargo.GetBalanceFromAccount((station, stationBank), stationBank.PrimaryAccount);
 
-        Assert.That(stationBalance, Is.EqualTo(2000 - 1200),
-            "A small withdrawal must come out of the station budget.");
-        Assert.That(await GetPlayerBalance(), Is.EqualTo(1000 + 1200),
-            "The withdrawn amount must land on the player's personal account.");
+        Assert.That(stationBalance, Is.EqualTo(2000),
+            "A withdrawal without access must not touch the station budget.");
+        Assert.That(await GetPlayerBalance(), Is.EqualTo(1000),
+            "A withdrawal without access must not credit the player.");
     }
 
     [Test]
@@ -70,17 +71,17 @@ public sealed class CargoConsoleStationFundsTest : InteractionTest
         var (station, _) = await SetupStationAndPlayer(0);
         var cargo = SEntMan.System<CargoSystem>();
 
-        // 6000 >= 5000 threshold and the test player has no Cargo access:
-        // the withdrawal must be rejected and nothing changes.
+        // The test player has no Cargo access, so the withdrawal must be
+        // rejected and nothing changes.
         await InvokeStationFunds(CargoStationFundsAction.Withdraw, 6000);
 
         var stationBank = SEntMan.GetComponent<StationBankAccountComponent>(station);
         var stationBalance = cargo.GetBalanceFromAccount((station, stationBank), stationBank.PrimaryAccount);
 
         Assert.That(stationBalance, Is.EqualTo(2000),
-            "A large withdrawal without access must not touch the station budget.");
+            "A withdrawal without access must not touch the station budget.");
         Assert.That(await GetPlayerBalance(), Is.EqualTo(0),
-            "A large withdrawal without access must not credit the player.");
+            "A withdrawal without access must not credit the player.");
     }
 
     private async Task<(EntityUid Station, EntityUid Mind)> SetupStationAndPlayer(int playerFunds)

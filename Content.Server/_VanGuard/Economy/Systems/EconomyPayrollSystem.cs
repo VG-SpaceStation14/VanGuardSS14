@@ -38,15 +38,20 @@ public sealed partial class EconomyPayrollSystem : EntitySystem
                 continue;
 
             var account = _bank.EnsureAccount(mindUid, mindComp);
-            if (!_jobs.MindTryGetJob(mindUid, out var job) || job.Salary is not > 0)
+            if (!_jobs.MindTryGetJob(mindUid, out var job) || job == null || job.Salary is not > 0)
                 continue;
 
             var paid = job.Salary.Value;
             var stationUid = _station.GetOwningStation(owned);
 
-            if (job.PayrollFromStationBudget && stationUid != null
-                && TryComp<StationBankAccountComponent>(stationUid, out var stationBank))
+            // VG-Tweak: budget-funded jobs must have a resolvable station bank
+            // account; never mint money when the station or its funding account
+            // cannot be found.
+            if (job.PayrollFromStationBudget)
             {
+                if (stationUid == null || !TryComp<StationBankAccountComponent>(stationUid, out var stationBank))
+                    continue;
+
                 var primaryAccount = stationBank.PrimaryAccount;
                 var budget = _cargo.GetBalanceFromAccount((stationUid.Value, stationBank), primaryAccount);
                 if (budget <= 0)
