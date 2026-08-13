@@ -61,6 +61,7 @@ public sealed class VendingInteractionTest : InteractionTest
   components:
   - type: VendingMachine
     pack: InteractionTestVendingInventory
+    allForFree: true # VG: economy vending charges are covered by VendingEconomyTest, this test only checks dispensing mechanics.
   - type: VendingMachineEject
     ejectDelay: 0 # no delay to speed up tests
   - type: Sprite

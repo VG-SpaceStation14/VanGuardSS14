@@ -52,6 +52,8 @@ public sealed class EconomyPayrollTest : GameTest
 
 - type: material
   id: EconomyTestMaterial
+  stackEntity: SheetSteel1
+  icon: { sprite: Objects/Materials/Sheets/metal.rsi, state: steel }
   price: 10.0
 
 - type: marketCommodity

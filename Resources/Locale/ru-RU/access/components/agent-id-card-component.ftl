@@ -18,4 +18,5 @@ agent-id-ui-os = Nuke#OS ™
 agent-id-ui-os-flavor = Когда возникают сомнения, никто не задает вопросов миму.
 # Get your mind out of the gutter.
 agent-id-ui-footer-flavor-left = Просто обычная ID карта, тут не на что смотреть
+agent-id-ui-footer-flavor-right = v2.0
 agent-id-ui-open-wallet = Кошелёк
