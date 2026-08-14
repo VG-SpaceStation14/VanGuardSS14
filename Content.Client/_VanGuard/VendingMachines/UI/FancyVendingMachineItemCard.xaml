@@ -1,0 +1,38 @@
+<vg:FancyVendingMachineItemCard
+    xmlns="https://spacestation14.io"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vg="clr-namespace:Content.Client._VanGuard.VendingMachines.UI"
+    Orientation="Vertical"
+    SetWidth="148">
+
+    <PanelContainer Name="CardBackground" SetSize="140 140" Margin="4" HorizontalAlignment="Center">
+        <EntityPrototypeView Name="ItemIcon"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"
+                             MaxSize="96 96"
+                             Scale="3 3" />
+
+        <BoxContainer Orientation="Horizontal"
+                      HorizontalExpand="True"
+                      VerticalAlignment="Top"
+                      Margin="6">
+            <RichTextLabel Name="PriceLabel"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           StyleClasses="LabelSubText" />
+            <Control HorizontalExpand="True" />
+            <RichTextLabel Name="CountLabel"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           StyleClasses="LabelSubText" />
+        </BoxContainer>
+
+        <vg:FancyVendingMachineBuyButton Name="BuyButton" HorizontalExpand="True" VerticalExpand="True" />
+    </PanelContainer>
+
+    <RichTextLabel Name="NameLabel"
+                   Margin="0 4"
+                   MaxWidth="148"
+                   HorizontalAlignment="Center"
+                   StyleClasses="LabelSubText" />
+</vg:FancyVendingMachineItemCard>

@@ -11,6 +11,10 @@ using Content.Shared.Throwing;
 using Content.Shared.VendingMachines;
 using Content.Shared.VendingMachines.Components;
 using Content.Shared.Wall;
+// VG-Tweak Start: vending UI balance support
+using Content.Shared._VanGuard.VendingMachines;
+using Robust.Server.GameObjects;
+// VG-Tweak End
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 
@@ -22,6 +26,9 @@ public sealed partial class VendingMachineSystem : SharedVendingMachineSystem
     [Dependency] private PricingSystem _pricing = default!;
     [Dependency] private ThrowingSystem _throwingSystem = default!;
     [Dependency] private EconomyBankSystem _bank = default!;
+    // VG-Tweak Start: UI system used to push the buyer's balance to the open vending UI
+    [Dependency] private UserInterfaceSystem _ui = default!;
+    // VG-Tweak End
 
     private const float WallVendEjectDistanceFromWall = 1f;
 
@@ -211,8 +218,33 @@ public sealed partial class VendingMachineSystem : SharedVendingMachineSystem
             return false;
         }
 
+        // VG-Tweak Start: push the updated balance to the buyer's vending UI
+        SendBalance(uid, buyer);
+        // VG-Tweak End
+
         return true;
     }
+
+    // VG-Tweak Start: vending balance display
+    [SubscribeLocalEvent]
+    private void OnVendingUiOpened(Entity<VendingMachineComponent> ent, ref BoundUIOpenedEvent args)
+    {
+        if (args.UiKey is not VendingMachineUiKey)
+            return;
+
+        SendBalance(ent, args.Actor);
+    }
+
+    private void SendBalance(EntityUid uid, EntityUid buyer)
+    {
+        var balance = -1;
+        if (_bank.TryGetPlayerAccount(buyer, out _, out var account))
+            balance = account.Balance;
+
+        _ui.ServerSendUiMessage(uid, VendingMachineUiKey.Key,
+            new VendingMachineBalanceUpdateMessage(balance), buyer);
+    }
+    // VG-Tweak End
 
     [SubscribeLocalEvent]
     private void OnTryVocalize(Entity<VendingMachineComponent> ent, ref TryVocalizeEvent args)

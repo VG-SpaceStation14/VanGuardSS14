@@ -1,0 +1,39 @@
+<controls:FancyWindow
+    xmlns="https://spacestation14.io"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+    MinSize="640 600"
+    SetSize="640 600">
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+        <!-- Balance header -->
+        <PanelContainer MinHeight="38">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#10161C" BorderColor="#2E3B45" BorderThickness="0 0 0 1" />
+            </PanelContainer.PanelOverride>
+            <BoxContainer Orientation="Horizontal" Margin="12 0" SeparationOverride="6" VerticalAlignment="Center">
+                <Label Text="{Loc 'vending-machine-ui-balance-title'}" StyleClasses="LabelSubText" VerticalAlignment="Center" />
+                <Control HorizontalExpand="True" />
+                <Label Name="BalanceLabel" StyleClasses="LabelSubText" VerticalAlignment="Center" FontColorOverride="#9FD3C7" />
+            </BoxContainer>
+        </PanelContainer>
+
+        <!-- Search -->
+        <LineEdit Name="SearchBar" PlaceHolder="{Loc 'vending-machine-ui-search'}" Margin="6 6 6 2" />
+
+        <!-- Item grid -->
+        <ScrollContainer VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False" Margin="4 2 4 2">
+            <GridContainer Name="ItemGrid" Columns="4" HorizontalExpand="True" HorizontalAlignment="Center" Margin="4" HSeparationOverride="4" VSeparationOverride="4" />
+        </ScrollContainer>
+
+        <!-- Empty state -->
+        <Label Name="EmptyLabel" Visible="False" StyleClasses="LabelSubText" HorizontalAlignment="Center" Margin="6 10 6 6" />
+
+        <!-- Scan-line footer -->
+        <PanelContainer MinHeight="3" Margin="12 4 12 10">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#57B3A0" />
+            </PanelContainer.PanelOverride>
+        </PanelContainer>
+    </BoxContainer>
+</controls:FancyWindow>
