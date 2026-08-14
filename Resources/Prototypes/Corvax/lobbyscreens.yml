@@ -160,17 +160,20 @@
   title: lobby-state-background-xeno-title
   artist: lobby-state-background-xeno-artist
 
-- type: lobbyBackground
-  id: ClownSpider
-  background: /Textures/Corvax/LobbyScreens/clownspider.webp
-  title: lobby-state-background-clownspider-title
-  artist: lobby-state-background-clownspider-artist
-
-- type: lobbyBackground
-  id: AIMia
-  background: /Textures/Corvax/LobbyScreens/ai-mia.webp
-  title: lobby-state-background-aimia-title
-  artist: lobby-state-background-aimia-artist
+# VG-Tweak Start
+#- type: lobbyBackground
+#  id: ClownSpider
+#  background: /Textures/Corvax/LobbyScreens/clownspider.webp
+#  title: lobby-state-background-clownspider-title
+#  artist: lobby-state-background-clownspider-artist
+#
+#
+#- type: lobbyBackground
+#  id: AIMia
+#  background: /Textures/Corvax/LobbyScreens/ai-mia.webp
+#  title: lobby-state-background-aimia-title
+#  artist: lobby-state-background-aimia-artist
+# VG-Tweak End
 
 - type: lobbyBackground
   id: XenoAttack
@@ -286,11 +289,13 @@
   title: lobby-state-background-silly-title
   artist: lobby-state-background-silly-artist
 
-- type: lobbyBackground
-  id: EchoTeam
-  background: /Textures/Corvax/LobbyScreens/echo-team.webp
-  title: lobby-state-background-echoteam-title
-  artist: lobby-state-background-echoteam-artist
+# VG-Tweak Start
+#- type: lobbyBackground
+#  id: EchoTeam
+#  background: /Textures/Corvax/LobbyScreens/echo-team.webp
+#  title: lobby-state-background-echoteam-title
+#  artist: lobby-state-background-echoteam-artist
+# VG-Tweak End
 
 - type: lobbyBackground
   id: YouAreNotFunny
