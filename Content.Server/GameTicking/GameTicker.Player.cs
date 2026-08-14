@@ -13,6 +13,7 @@ using Robust.Shared.Enums;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
+using System.Linq;
 
 namespace Content.Server.GameTicking
 {
@@ -61,13 +62,42 @@ namespace Content.Server.GameTicking
                         Timer.Spawn(0, () => _playerManager.JoinGame(args.Session));
                     // Corvax-Queue-End
 
+                    // VG-Tweak Start
                     var record = await _db.GetPlayerRecordByUserId(args.Session.UserId);
-                    var firstConnection = record != null &&
-                                          Math.Abs((record.FirstSeenTime - record.LastSeenTime).TotalMinutes) < 1;
+                    var firstConnection = record == null || Math.Abs((record.FirstSeenTime - record.LastSeenTime).TotalMinutes) < 600;
 
-                    _chatManager.SendAdminAnnouncement(firstConnection
-                        ? Loc.GetString("player-first-join-message", ("name", args.Session.Name))
-                        : Loc.GetString("player-join-message", ("name", args.Session.Name)));
+                    if (firstConnection)
+                    {
+                        var firstSeenTime = record?.FirstSeenTime.ToString("dd.MM.yyyy") ?? "unknown";
+                        _chatManager.SendAdminAnnouncement(
+                            Loc.GetString("player-new-join-message", ("name", args.Session.Name), ("firstSeen", firstSeenTime)),
+                            flagBlacklist: null,
+                            flagWhitelist: null
+                        );
+
+                        var clients = _adminManager.ActiveAdmins
+                            .Where(admin => _adminManager.GetAdminData(admin)?.Flags.HasFlag(AdminFlags.Adminchat) == true)
+                            .Select(p => p.Channel).ToList();
+
+                        if (clients.Count > 0)
+                        {
+                            var filter = Filter.Empty();
+                            foreach (var client in clients)
+                            {
+                                var sessionAdmin = _playerManager.GetSessionByChannel(client);
+                                filter.AddPlayer(sessionAdmin);
+                            }
+
+                            var soundPath = new ResPath("/Audio/Misc/bluealert.ogg");
+                            var audioParams = AudioParams.Default.WithVolume(-8f);
+                            _audio.PlayGlobal(soundPath, filter, false, audioParams);
+                        }
+                    }
+                    else
+                    {
+                        _chatManager.SendAdminAnnouncement(Loc.GetString("player-join-message", ("name", args.Session.Name)), null, null);
+                    }
+                    // VG-Tweak End
 
                     RaiseNetworkEvent(GetConnectionStatusMsg(), session.Channel);
 
