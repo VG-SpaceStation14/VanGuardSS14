@@ -125,13 +125,13 @@ public sealed partial class CCVars
     ///     Is the emergency shuttle allowed to be early launched.
     /// </summary>
     public static readonly CVarDef<bool> EmergencyEarlyLaunchAllowed =
-        CVarDef.Create("shuttle.emergency_early_launch_allowed", false, CVar.SERVER | CVar.REPLICATED);
+        CVarDef.Create("shuttle.emergency_early_launch_allowed", true, CVar.SERVER | CVar.REPLICATED); // VG-Tweak
 
     /// <summary>
     ///     How long the emergency shuttle remains docked with the station, in seconds.
     /// </summary>
     public static readonly CVarDef<float> EmergencyShuttleDockTime =
-        CVarDef.Create("shuttle.emergency_dock_time", 180f, CVar.SERVERONLY);
+        CVarDef.Create("shuttle.emergency_dock_time", 300f, CVar.SERVERONLY); // VG-Tweak 180>300
 
     /// <summary>
     ///     If the emergency shuttle can't dock at a priority port, the dock time will be multiplied with this value.
@@ -149,7 +149,7 @@ public sealed partial class CCVars
     ///     How long after the console is authorized for the shuttle to early launch.
     /// </summary>
     public static readonly CVarDef<float> EmergencyShuttleAuthorizeTime =
-        CVarDef.Create("shuttle.emergency_authorize_time", 10f, CVar.SERVERONLY);
+        CVarDef.Create("shuttle.emergency_authorize_time", 30f, CVar.SERVERONLY); // VG-Tweak 10>30
 
     /// <summary>
     ///     The minimum time for the emergency shuttle to arrive at centcomm.
@@ -182,7 +182,7 @@ public sealed partial class CCVars
     /// </summary>
     [CVarControl(AdminFlags.Server | AdminFlags.Mapping, min: 0, max: int.MaxValue)]
     public static readonly CVarDef<int> EmergencyShuttleAutoCallTime =
-        CVarDef.Create("shuttle.auto_call_time", 90, CVar.SERVERONLY);
+        CVarDef.Create("shuttle.auto_call_time", 270, CVar.SERVERONLY); // VG-Tweak 90>270
 
     /// <summary>
     ///     Time in minutes after the round was extended (by recalling the shuttle) to call
