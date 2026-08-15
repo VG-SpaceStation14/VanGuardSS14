@@ -1,5 +1,8 @@
 using Content.Shared.Lathe;
 using Content.Shared.Research.Components;
+// VG-Tweak Start
+using Content.Shared._VanGuard.Mining.Points;
+// VG-Tweak End
 using JetBrains.Annotations;
 using Robust.Client.UserInterface;
 
@@ -34,6 +37,9 @@ namespace Content.Client.Lathe.UI
             _menu.QueueMoveUpAction += index => SendMessage(new LatheMoveRequestMessage(index, -1));
             _menu.QueueMoveDownAction += index => SendMessage(new LatheMoveRequestMessage(index, 1));
             _menu.DeleteFabricatingAction += () => SendMessage(new LatheAbortFabricationMessage());
+            // VG-Tweak Start
+            _menu.OnClaimMiningPoints += () => SendMessage(new LatheClaimMiningPointsMessage());
+            // VG-Tweak End
         }
 
         protected override void UpdateState(BoundUserInterfaceState state)
