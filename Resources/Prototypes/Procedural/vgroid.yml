@@ -95,6 +95,14 @@
       count: 60 # you don't really hit it on purpose so it should be common
       minGroupSize: 1
       maxGroupSize: 1
+    # VG-Tweak Start: volatile gibtonite on the planetoid - explodes on any impact.
+    - !type:OreDunGen
+      replacement: IronRock
+      entity: IronRockGibtoniteVolatile
+      count: 40
+      minGroupSize: 1
+      maxGroupSize: 1
+    # VG-Tweak End
 
 # Configs
 - type: dungeonConfig

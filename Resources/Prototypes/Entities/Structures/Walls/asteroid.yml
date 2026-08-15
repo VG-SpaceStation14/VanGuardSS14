@@ -802,6 +802,34 @@
       visible: false
       map: [ "enum.MiningScannerVisualLayers.Overlay", "gib" ]
 
+# VG-Tweak Start: volatile gibtonite for the planetoid (VGRoid). Explodes IMMEDIATELY on ANY
+# damage (1) - no timer, no beeping: touch it and it goes BOOM.
+- type: entity
+  parent: IronRockGibtonite
+  id: IronRockGibtoniteVolatile
+  suffix: Volatile
+  components:
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 1
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: GlassBreak
+      - !type:TriggerBehavior
+        keyOut: timer
+    - trigger:
+        !type:DamageTrigger
+        damage: 500
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:TriggerBehavior
+        keyOut: timer
+# VG-Tweak End
+
 - type: entity
   id: IronRockDiamond
   parent: IronRock
