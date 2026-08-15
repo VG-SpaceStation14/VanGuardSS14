@@ -175,11 +175,13 @@
           32:
             sprite: Mobs/Species/Vulpkanin/displacement.rsi
             state: neck
-      eyes:
-        sizeMaps:
-          32:
-            sprite: Mobs/Species/Vulpkanin/displacement.rsi
-            state: eyes
+      # VG-Tweak Start
+      #eyes:
+      #  sizeMaps:
+      #    32:
+      #      sprite: Mobs/Species/Vulpkanin/displacement.rsi
+      #      state: eyes
+      # VG-Tweak End
       belt:
         sizeMaps:
           32:
