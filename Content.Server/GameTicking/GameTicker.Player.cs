@@ -74,7 +74,9 @@ namespace Content.Server.GameTicking
                         Log.Error($"Failed to load player record for {args.Session.Name} ({args.Session.UserId}): {e}");
                     }
 
-                    if (args.Session.Status == SessionStatus.Disconnected)
+                    if (args.Session.Status == SessionStatus.Disconnected
+                        || !_playerManager.TryGetSessionById(args.Session.UserId, out var currentSession)
+                        || currentSession != args.Session)
                         break;
 
                     var firstConnection = record == null || Math.Abs((record.FirstSeenTime - record.LastSeenTime).TotalMinutes) < 600;
