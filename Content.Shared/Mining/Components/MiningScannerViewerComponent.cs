@@ -1,10 +1,16 @@
 using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
 using Robust.Shared.Map;
+// VG-Tweak Start
+using Content.Shared._VanGuard.Mining;
+// VG-Tweak End
 
 namespace Content.Shared.Mining.Components;
 
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState, AutoGenerateComponentPause, Access(typeof(MiningScannerSystem))]
+// VG-Tweak Start: SharedInnateMiningScannerSystem grants/restores this viewer for innate mining vision.
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState, AutoGenerateComponentPause,
+    Access(typeof(MiningScannerSystem), typeof(SharedInnateMiningScannerSystem))]
+// VG-Tweak End
 public sealed partial class MiningScannerViewerComponent : Component
 {
     [DataField, ViewVariables(VVAccess.ReadOnly), AutoNetworkedField]
