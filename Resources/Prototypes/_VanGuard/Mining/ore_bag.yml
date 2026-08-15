@@ -1,0 +1,15 @@
+# Advanced ore bag: a bigger ore bag with a wider magnet pickup range.
+- type: entity
+  id: AdvancedOreBag
+  parent: OreBag
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Objects/Specific/Salvage/advanced_ore_bag.rsi
+    state: icon
+  - type: Clothing
+    sprite: _VanGuard/Objects/Specific/Salvage/advanced_ore_bag.rsi
+  - type: Storage
+    grid:
+    - 0,0,11,5
+  - type: MagnetPickup
+    range: 1.5

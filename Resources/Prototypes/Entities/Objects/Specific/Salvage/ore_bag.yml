@@ -1,10 +1,13 @@
 - type: entity
-  name: ore bag
+  # VG-Tweak Start: localized name/description (ent-OreBag).
   id: OreBag
   parent: BaseStorageItem
-  description: A robust bag for salvage specialists and miners alike to carry large amounts of ore. Magnetises any nearby ores when attached to a belt.
+  # VG-Tweak End
   components:
   - type: MagnetPickup
+    # VG-Tweak Start: ore bags can be worn in pockets.
+    slotFlags: POCKET
+    # VG-Tweak End
   - type: Sprite
     sprite: Objects/Specific/Mining/ore_bag.rsi
     state: icon
@@ -14,7 +17,9 @@
     slots:
     - belt
   - type: Item
-    size: Ginormous
+    # VG-Tweak Start: small enough to fit in pockets/backpacks.
+    size: Small
+    # VG-Tweak End
   - type: Storage
     maxItemSize: Normal
     grid:
@@ -26,12 +31,17 @@
         - ArtifactFragment
         - Ore
   - type: Dumpable
+  # VG-Tweak Start: marked so ore processors can auto-insert its contents.
+  - type: Tag
+    tags:
+    - AutoInsertOreBag
+  # VG-Tweak End
 
 - type: entity
   parent: OreBag
   id: BorgOreBag
-  name: integrated ore bag
-  description: A large ore bag built into the frame of a mining cyborg. Magnetises any nearby ores when held.
+  # VG-Tweak Start: localized name/description (ent-BorgOreBag).
+  # VG-Tweak End
   components:
     - type: MagnetPickup
       slotFlags: null
