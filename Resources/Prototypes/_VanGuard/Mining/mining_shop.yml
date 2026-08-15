@@ -1,0 +1,152 @@
+- type: miningShopSection
+  id: Crushers
+  locId: mining-shop-section-crushers
+  entries:
+  - id: WeaponCrusher
+    price: 1050
+  - id: WeaponKineticSpear
+    price: 1050
+  - id: WeaponKineticHammer
+    price: 1050
+  - id: WeaponKineticClaws
+    price: 1050
+  - id: WeaponKineticMachete
+    price: 1050
+
+- type: miningShopSection
+  id: KA
+  locId: mining-shop-section-ka
+  entries:
+  - id: WeaponProtoKineticAccelerator
+    price: 750
+  - id: WeaponProtoKineticPistol
+    price: 1750
+  - id: WeaponProtoKineticShotgun
+    price: 2350
+  - id: WeaponProtoKineticRepeater
+    price: 2150
+  - id: WeaponProtoKineticRailgun
+    price: 2100
+
+- type: miningShopSection
+  id: Motion
+  locId: mining-shop-section-motion
+  entries:
+  - id: FultonBeacon
+    price: 1000
+  - id: Fulton
+    price: 1750
+  - id: WeaponGrapplingGun
+    price: 750
+
+- type: miningShopSection
+  id: Medicine
+  locId: mining-shop-section-medicine
+  entries:
+  - id: SpaceMedipen
+    price: 300
+  - id: EmergencyMedipen
+    price: 300
+  - id: BruteAutoInjector
+    price: 600
+  - id: BurnAutoInjector
+    price: 600
+  - id: MedkitBruteFilled
+    price: 900
+  - id: MedkitBurnFilled
+    price: 800
+  - id: MedkitToxinFilled
+    price: 1000
+
+- type: miningShopSection
+  id: EquipmentWearable
+  locId: mining-shop-section-equipment-wearable
+  entries:
+  - id: ClothingMaskGasExplorer
+    price: 175
+  - id: ClothingBeltSalvageWebbing
+    price: 500
+  - id: OreBag
+    price: 350
+  - id: AdvancedOreBag
+    price: 850
+  - id: ClothingEyesGlassesMesonScanner
+    price: 300
+  - id: ClothingOuterHardsuitSpatio
+    price: 1000
+  - id: ClothingOuterHardsuitSalvage
+    price: 2500
+
+- type: miningShopSection
+  id: EquipmentHand
+  locId: mining-shop-section-equipment-hand
+  entries:
+  - id: Flare
+    price: 75
+  - id: Pickaxe
+    price: 125
+  - id: MiningDrill
+    price: 500
+  - id: FireExtinguisherMini
+    price: 150
+  - id: PowerCellHigh
+    price: 650
+  - id: Binoculars
+    price: 450
+
+- type: miningShopSection
+  id: Upgrades
+  locId: mining-shop-section-upgrades
+  entries:
+  - id: PKAUpgradeDamage
+    price: 750
+  - id: PKAUpgradeRange
+    price: 350
+  - id: PKAUpgradeFireRate
+    price: 500
+
+- type: miningShopSection
+  id: Fun
+  locId: mining-shop-section-fun
+  entries:
+  - id: PlushieLizard
+    price: 220
+  - id: SpaceCash1000
+    price: 2500
+  - id: DrinkWhiskeyBottleFull
+    price: 100
+  - id: DrinkAbsintheBottleFull
+    price: 150
+  - id: BoxMRE
+    price: 350
+  - id: ChessBoard
+    price: 400
+  - id: CheckerBoard
+    price: 400
+  - id: SoapNT
+    price: 400
+  - id: Cigar
+    price: 300
+  - id: CigarGoldCase
+    price: 1000
+
+# One-use delivery bag used for express delivery: handed to the buyer, using it
+# dumps the ordered goods onto the floor and deletes the bag.
+- type: entity
+  parent: BaseItem
+  id: MiningShopDeliveryBag
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Cargo/mail_bag.rsi
+    state: icon
+  - type: Item
+    sprite: Objects/Specific/Cargo/mail_bag.rsi
+    size: Normal
+  - type: Storage
+    maxItemSize: Ginormous
+    grid:
+    - 0,0,8,6
+    quickInsert: true
+    areaInsert: true
+  - type: MiningShopDeliveryBag

@@ -902,7 +902,7 @@ public sealed partial class VGResearchConsoleMenu : FancyWindow
             chainResearchButton.HoldStarted += () =>
             {
                 _holdButtonTechId = tech.ID;
-                _holdButtonRemaining = HoldButton.HoldDuration + ResearchTechnologyNode.FillDelay;
+                _holdButtonRemaining = chainResearchButton.HoldDuration + ResearchTechnologyNode.FillDelay;
             };
             chainResearchButton.HoldCancelled += () =>
             {

@@ -17,7 +17,10 @@ namespace Content.Client._VanGuard.Research.UI;
 public sealed class HoldButton : Button
 {
     /// <summary>How long (seconds) the mouse button must be held to confirm.</summary>
-    public const float HoldDuration = 1.25f;
+    private const float DefaultHoldDuration = 1.25f;
+
+    /// <summary>How long (seconds) the mouse button must be held to confirm.</summary>
+    public float HoldDuration { get; set; } = DefaultHoldDuration;
 
     /// <summary>Fired when the mouse button is pressed down on the button.</summary>
     public event Action? HoldStarted;
@@ -28,8 +31,14 @@ public sealed class HoldButton : Button
     /// <summary>Fired once when the hold is completed.</summary>
     public event Action? Confirmed;
 
+    /// <summary>Fired when the button draw mode (hover/pressed/disabled) changes.</summary>
+    public event Action? OnDrawModeChanged;
+
+    /// <summary>Fill color of the hold confirmation progress.</summary>
+    public Color FillColor { get; set; } = ResearchTechnologyNode.ChainFillColor;
+
     private bool _holding;
-    private float _remaining = HoldDuration;
+    private float _remaining = DefaultHoldDuration;
     private float _delayRemaining;
 
     public HoldButton()
@@ -101,13 +110,18 @@ public sealed class HoldButton : Button
         }
     }
 
+    protected override void DrawModeChanged()
+    {
+        base.DrawModeChanged();
+        OnDrawModeChanged?.Invoke();
+    }
+
     /// <summary>
-    /// Draws the yellow confirmation fill from the left edge to the right,
-    /// using the same yellow as the chain-research fills on the technology
-    /// cards. The fill reuses the button's own (chamfered) stylebox so its
-    /// bevel matches the button exactly and never pokes out past it. The
-    /// button is tinted navy via ModulateSelf, so the drawing modulate is
-    /// temporarily reset to keep the fill the pure chain-research yellow.
+    /// Draws the confirmation fill from the left edge to the right,
+    /// using the configured <see cref="FillColor"/>. The fill reuses the button's own
+    /// (chamfered) stylebox so its bevel matches the button exactly and never pokes out
+    /// past it. The button is tinted navy via ModulateSelf, so the drawing modulate is
+    /// temporarily reset to keep the fill the pure fill color.
     /// </summary>
     protected override void Draw(DrawingHandleScreen handle)
     {
@@ -135,7 +149,7 @@ public sealed class HoldButton : Button
             {
                 var tinted = new StyleBoxTexture(texture)
                 {
-                    Modulate = ResearchTechnologyNode.ChainFillColor,
+                    Modulate = FillColor,
                 };
 
                 // Keep the fill at least as wide as the corner patches so the
@@ -149,7 +163,7 @@ public sealed class HoldButton : Button
             else
             {
                 handle.DrawRect(UIBox2.FromDimensions(0, 0, fillWidth, PixelHeight),
-                    ResearchTechnologyNode.ChainFillColor);
+                    FillColor);
             }
         }
         finally

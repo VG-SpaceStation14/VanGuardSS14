@@ -1,0 +1,60 @@
+<controls:FancyWindow
+    xmlns="https://spacestation14.io"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+    xmlns:vgresearch="clr-namespace:Content.Client._VanGuard.Research.UI"
+    MinSize="680 740"
+    SetSize="680 740">
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+        <!-- Header: shop name + balance + search -->
+        <PanelContainer MinHeight="64">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#10161C" BorderColor="#C9A227" BorderThickness="0 0 0 2" />
+            </PanelContainer.PanelOverride>
+            <BoxContainer Orientation="Horizontal" Margin="10" SeparationOverride="10" VerticalAlignment="Center">
+                <BoxContainer Orientation="Vertical" VerticalAlignment="Center" MinWidth="200">
+                    <Label Name="ShopNameLabel" Access="Public" StyleClasses="LabelHeading" />
+                    <Label Name="PointsLabel" Access="Public" StyleClasses="LabelSubText" FontColorOverride="#C9A227" />
+                </BoxContainer>
+                <Control HorizontalExpand="True" />
+                <LineEdit Name="Search" Access="Public" PlaceHolder="{Loc mining-shop-search}" MinWidth="240" VerticalAlignment="Center" />
+            </BoxContainer>
+        </PanelContainer>
+
+        <!-- Category tabs -->
+        <GridContainer Name="Tabs" Access="Public" Columns="5" HorizontalExpand="True" Margin="6 6 6 2" HSeparationOverride="4" VSeparationOverride="4" />
+
+        <!-- Catalog -->
+        <PanelContainer HorizontalExpand="True" VerticalExpand="True" Margin="6 2 6 2">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#0A0E12" BorderColor="#2E3B45" BorderThickness="2"
+                                  ContentMarginTopOverride="4" ContentMarginBottomOverride="4"
+                                  ContentMarginLeftOverride="4" ContentMarginRightOverride="4" />
+            </PanelContainer.PanelOverride>
+            <ScrollContainer HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False">
+                <BoxContainer Name="Catalog" Access="Public" Orientation="Vertical" HorizontalExpand="True" />
+            </ScrollContainer>
+            <Label Name="EmptyLabel" Access="Public" Visible="False" StyleClasses="LabelSubText"
+                   HorizontalAlignment="Center" VerticalAlignment="Center" Margin="6" />
+        </PanelContainer>
+
+        <!-- Checkout: orders + express delivery -->
+        <PanelContainer Margin="6 4 6 4">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#121920" BorderColor="#2E3B45" BorderThickness="2" />
+            </PanelContainer.PanelOverride>
+            <BoxContainer Orientation="Vertical" Margin="10 8" SeparationOverride="6">
+                <Label Text="{Loc mining-shop-orders-caption}" StyleClasses="LabelHeading" />
+                <BoxContainer Name="OrderList" Access="Public" Orientation="Vertical" SeparationOverride="2" />
+                <vgresearch:HoldButton Name="Express" Access="Public" Text="{Loc mining-shop-collect-order}" StyleClasses="ButtonColorGreen" Disabled="True" HorizontalExpand="True" TextAlign="Center" MinHeight="34" />
+            </BoxContainer>
+        </PanelContainer>
+
+        <!-- Scan-line footer -->
+        <PanelContainer MinHeight="3" Margin="12 2 12 10">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#C9A227" />
+            </PanelContainer.PanelOverride>
+        </PanelContainer>
+    </BoxContainer>
+</controls:FancyWindow>

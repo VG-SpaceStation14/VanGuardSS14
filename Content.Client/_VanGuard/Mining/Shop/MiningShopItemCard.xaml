@@ -1,0 +1,24 @@
+<vg:MiningShopItemCard
+    xmlns="https://spacestation14.io"
+    xmlns:vg="clr-namespace:Content.Client._VanGuard.Mining.Shop"
+    Orientation="Vertical"
+    SetWidth="148">
+    <PanelContainer Name="CardBackground" SetSize="140 140" Margin="4" HorizontalAlignment="Center">
+        <EntityPrototypeView Name="ItemIcon"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"
+                             MaxSize="96 96"
+                             Scale="3 3" />
+        <RichTextLabel Name="PriceLabel"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Top"
+                       StyleClasses="LabelSubText"
+                       Margin="6" />
+        <vg:MiningShopBuyButton Name="BuyButton" HorizontalExpand="True" VerticalExpand="True" />
+    </PanelContainer>
+    <RichTextLabel Name="NameLabel"
+                   Margin="0 4"
+                   MaxWidth="148"
+                   HorizontalAlignment="Center"
+                   StyleClasses="LabelSubText" />
+</vg:MiningShopItemCard>
