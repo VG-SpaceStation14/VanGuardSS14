@@ -33,4 +33,13 @@ public sealed partial class UpgradeableGunComponent : Component
     /// </summary>
     [DataField]
     public int MaxUpgradeCount = 2;
+
+    // VG-Tweak Start: allow stacking several upgrades of the same type on guns that opt in.
+    /// <summary>
+    /// When true, upgrades sharing the same tags (e.g. multiple fire rate mods) can be
+    /// installed multiple times and their modifiers stack.
+    /// </summary>
+    [DataField]
+    public bool AllowDuplicateUpgrades = false;
+    // VG-Tweak End
 }

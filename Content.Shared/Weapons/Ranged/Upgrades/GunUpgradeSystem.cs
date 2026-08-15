@@ -78,11 +78,14 @@ public sealed partial class GunUpgradeSystem : EntitySystem
         if (_entityWhitelist.IsWhitelistFail(ent.Comp.Whitelist, args.Used))
             return;
 
-        if (GetCurrentUpgradeTags(ent).ToHashSet().IsSupersetOf(upgradeComponent.Tags))
+        // VG-Tweak Start: weapons with AllowDuplicateUpgrades can stack mods of the same type.
+        if (!ent.Comp.AllowDuplicateUpgrades
+            && GetCurrentUpgradeTags(ent).ToHashSet().IsSupersetOf(upgradeComponent.Tags))
         {
             _popup.PopupEntity(Loc.GetString("upgradeable-gun-popup-already-present"), ent, args.User);
             return;
         }
+        // VG-Tweak End
 
         args.Handled = _container.Insert(args.Used, _container.GetContainer(ent, ent.Comp.UpgradesContainerId));
         _audio.PlayPredicted(ent.Comp.InsertSound, ent, args.User);
