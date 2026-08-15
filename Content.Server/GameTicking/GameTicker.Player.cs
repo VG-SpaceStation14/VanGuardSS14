@@ -1,4 +1,5 @@
 using Content.Corvax.Interfaces.Server;
+using Content.Server.Database;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
 using Content.Shared.Database;
@@ -63,14 +64,28 @@ namespace Content.Server.GameTicking
                     // Corvax-Queue-End
 
                     // VG-Tweak Start
-                    var record = await _db.GetPlayerRecordByUserId(args.Session.UserId);
+                    PlayerRecord? record = null;
+                    try
+                    {
+                        record = await _db.GetPlayerRecordByUserId(args.Session.UserId);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error($"Failed to load player record for {args.Session.Name} ({args.Session.UserId}): {e}");
+                    }
+
+                    if (args.Session.Status == SessionStatus.Disconnected)
+                        break;
+
                     var firstConnection = record == null || Math.Abs((record.FirstSeenTime - record.LastSeenTime).TotalMinutes) < 600;
 
                     if (firstConnection)
                     {
-                        var firstSeenTime = record?.FirstSeenTime.ToString("dd.MM.yyyy") ?? "unknown";
                         _chatManager.SendAdminAnnouncement(
-                            Loc.GetString("player-new-join-message", ("name", args.Session.Name), ("firstSeen", firstSeenTime)),
+                            Loc.GetString("player-new-join-message",
+                                ("name", args.Session.Name),
+                                ("hasSeen", record != null),
+                                ("firstSeen", record?.FirstSeenTime.DateTime ?? DateTime.MinValue)),
                             flagBlacklist: null,
                             flagWhitelist: null
                         );
