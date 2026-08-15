@@ -1,4 +1,5 @@
 using Content.Corvax.Interfaces.Server;
+using Content.Server.Database;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
 using Content.Shared.Database;
@@ -13,6 +14,7 @@ using Robust.Shared.Enums;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
+using System.Linq;
 
 namespace Content.Server.GameTicking
 {
@@ -61,13 +63,58 @@ namespace Content.Server.GameTicking
                         Timer.Spawn(0, () => _playerManager.JoinGame(args.Session));
                     // Corvax-Queue-End
 
-                    var record = await _db.GetPlayerRecordByUserId(args.Session.UserId);
-                    var firstConnection = record != null &&
-                                          Math.Abs((record.FirstSeenTime - record.LastSeenTime).TotalMinutes) < 1;
+                    // VG-Tweak Start
+                    PlayerRecord? record = null;
+                    try
+                    {
+                        record = await _db.GetPlayerRecordByUserId(args.Session.UserId);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error($"Failed to load player record for {args.Session.Name} ({args.Session.UserId}): {e}");
+                    }
 
-                    _chatManager.SendAdminAnnouncement(firstConnection
-                        ? Loc.GetString("player-first-join-message", ("name", args.Session.Name))
-                        : Loc.GetString("player-join-message", ("name", args.Session.Name)));
+                    if (args.Session.Status == SessionStatus.Disconnected
+                        || !_playerManager.TryGetSessionById(args.Session.UserId, out var currentSession)
+                        || currentSession != args.Session)
+                        break;
+
+                    var firstConnection = record == null || Math.Abs((record.FirstSeenTime - record.LastSeenTime).TotalMinutes) < 600;
+
+                    if (firstConnection)
+                    {
+                        _chatManager.SendAdminAnnouncement(
+                            Loc.GetString("player-new-join-message",
+                                ("name", args.Session.Name),
+                                ("hasSeen", record != null),
+                                ("firstSeen", record?.FirstSeenTime.DateTime ?? DateTime.MinValue)),
+                            flagBlacklist: null,
+                            flagWhitelist: null
+                        );
+
+                        var clients = _adminManager.ActiveAdmins
+                            .Where(admin => _adminManager.GetAdminData(admin)?.Flags.HasFlag(AdminFlags.Adminchat) == true)
+                            .Select(p => p.Channel).ToList();
+
+                        if (clients.Count > 0)
+                        {
+                            var filter = Filter.Empty();
+                            foreach (var client in clients)
+                            {
+                                var sessionAdmin = _playerManager.GetSessionByChannel(client);
+                                filter.AddPlayer(sessionAdmin);
+                            }
+
+                            var soundPath = new ResPath("/Audio/Misc/bluealert.ogg");
+                            var audioParams = AudioParams.Default.WithVolume(-8f);
+                            _audio.PlayGlobal(soundPath, filter, false, audioParams);
+                        }
+                    }
+                    else
+                    {
+                        _chatManager.SendAdminAnnouncement(Loc.GetString("player-join-message", ("name", args.Session.Name)), null, null);
+                    }
+                    // VG-Tweak End
 
                     RaiseNetworkEvent(GetConnectionStatusMsg(), session.Channel);
 
