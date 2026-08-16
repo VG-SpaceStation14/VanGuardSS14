@@ -108,6 +108,11 @@
           - type: Gravity
             enabled: true
             inherent: true
+          # VG-Tweak Start
+          - type: IFF
+            flags: None
+            color: "#d67e27"
+          # VG-Tweak End
           protos:
           - VGRoid
         # Corvax-Mapping-Start
