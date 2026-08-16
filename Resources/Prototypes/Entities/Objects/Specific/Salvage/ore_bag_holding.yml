@@ -6,6 +6,9 @@
   components:
   - type: MagnetPickup
     range: 2
+  # VG-Tweak Start: the ore bag of holding supports smart ore filtering.
+  - type: SmartOreBag
+  # VG-Tweak End
   - type: Sprite
     sprite: Objects/Specific/Mining/ore_bag_holding.rsi
     state: icon

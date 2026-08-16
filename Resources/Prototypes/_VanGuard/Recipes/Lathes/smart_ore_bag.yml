@@ -1,0 +1,9 @@
+# Smart ore bag: lathe recipe, unlocked by the SmartOreBagTech research.
+- type: latheRecipe
+  id: SmartOreBag
+  result: SmartOreBag
+  completetime: 3
+  materials:
+    Steel: 1000
+    Silver: 500
+    Plasma: 500

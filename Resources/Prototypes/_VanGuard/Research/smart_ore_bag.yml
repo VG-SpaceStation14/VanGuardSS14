@@ -1,0 +1,14 @@
+- type: technology
+  id: SmartOreBagTech
+  position: 2, 3
+  name: research-technology-smart-ore-bag
+  icon:
+    sprite: _VanGuard/Objects/Specific/Salvage/smart_ore_bag.rsi
+    state: icon
+  discipline: Industrial
+  tier: 2
+  cost: 10000
+  recipeUnlocks:
+  - SmartOreBag
+  technologyPrerequisites:
+  - SalvageEquipment

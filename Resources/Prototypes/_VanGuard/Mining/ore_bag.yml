@@ -13,3 +13,21 @@
     - 0,0,11,5
   - type: MagnetPickup
     range: 1.5
+
+# Smart ore bag: the next step after the advanced bag. Filters which ores its
+# magnet collects via the smart ore bag window (right-click it, or use it with
+# an item in hand).
+- type: entity
+  id: SmartOreBag
+  parent: AdvancedOreBag
+  components:
+  - type: SmartOreBag
+  - type: Sprite
+    sprite: _VanGuard/Objects/Specific/Salvage/smart_ore_bag.rsi
+    state: icon
+  - type: Clothing
+    sprite: _VanGuard/Objects/Specific/Salvage/smart_ore_bag.rsi
+  - type: Item
+    sprite: _VanGuard/Objects/Specific/Salvage/smart_ore_bag.rsi
+  - type: MagnetPickup
+    range: 2.5

@@ -21,6 +21,8 @@ ent-WeaponKineticMachete = kinetic machete
 # Bags and gear
 ent-AdvancedOreBag = advanced ore bag
     .desc = A larger ore bag with a wider magnet pickup range.
+ent-SmartOreBag = smart ore bag
+    .desc = A mid-tier ore bag that filters which ores its magnet collects.
 
 # Machines
 ent-MiningShop = MinerMagnet
