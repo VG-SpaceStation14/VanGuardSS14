@@ -115,7 +115,7 @@
       shader: unshaded
     - state: paper
       sprite: Structures/Storage/Crates/labels.rsi
-      offset: "-0.5,0"
+      offset: "0.0,-0.31" # VG-Tweak
       map: ["enum.PaperLabelVisuals.Layer"]
   - type: Damageable
     damageModifierSet: StructuralMetallic
