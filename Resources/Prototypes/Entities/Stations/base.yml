@@ -118,7 +118,7 @@
         # Corvax-Mapping-Start
         mining: !type:GridSpawnGroup
           paths:
-          - /Maps/Corvax/Shuttles/Tara NT-KA.yml
+          - /Maps/_VanGuard/Shuttles/eagle.yml # VG-Tweak
         # Corvax-Mapping-End
 
 - type: entity
