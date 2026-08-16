@@ -7,3 +7,8 @@
     Steel: 1000
     Silver: 500
     Plasma: 500
+
+- type: latheRecipePack
+  id: SmartOreBag
+  recipes:
+  - SmartOreBag

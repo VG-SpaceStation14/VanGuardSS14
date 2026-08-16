@@ -214,6 +214,7 @@
     - Equipment
     - ExperimentsEquipment # VG-Tweak: experiment scanner branch
     - BluespaceCrystal # VG-Tweak: tier-3 tech-locked artificial crystal reproduction.
+    - SmartOreBag # VG-Tweak: tier-2 tech-locked smart ore bag.
   - type: EmagLatheRecipes
     emagDynamicPacks:
     - SecurityAmmo
