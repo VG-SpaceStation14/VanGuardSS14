@@ -57,6 +57,7 @@
     Silver: 300
     Plasma: 1000
     Uranium: 100
+    BluespaceCrystal: 125 # VG-Tweak: bluespace crystals focus the subspace fold.
 
 - type: latheRecipe
   id: LightReplacer

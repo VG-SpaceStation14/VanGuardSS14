@@ -1,0 +1,145 @@
+# Copper, Zinc and Lead ores - BFUU-style materials ported to VanGuard.
+# They spawn on asteroids and on magnet-attracted asteroids (see asteroid_ores.yml),
+# are smelted on the ore processor and are used in many crafts.
+
+# Ore stacks
+
+- type: stack
+  parent: BaseMediumStack
+  id: CopperOre
+  name: stack-copper-ore
+  icon: { sprite: /Textures/_VanGuard/Objects/Materials/ores.rsi, state: copper }
+  spawn: CopperOre1
+
+- type: stack
+  parent: BaseMediumStack
+  id: ZincOre
+  name: stack-zinc-ore
+  icon: { sprite: /Textures/_VanGuard/Objects/Materials/ores.rsi, state: zinc }
+  spawn: ZincOre1
+
+- type: stack
+  parent: BaseMediumStack
+  id: LeadOre
+  name: stack-lead-ore
+  icon: { sprite: /Textures/_VanGuard/Objects/Materials/ores.rsi, state: lead }
+  spawn: LeadOre1
+
+# Ore entities
+
+- type: entity
+  parent: OreBase
+  id: CopperOre
+  name: copper ore
+  suffix: Full
+  components:
+  - type: Stack
+    stackType: CopperOre
+  - type: Sprite
+    sprite: _VanGuard/Objects/Materials/ores.rsi
+    state: copper
+  - type: PhysicalComposition
+    materialComposition:
+      RawCopper: 100
+  - type: Item
+    sprite: _VanGuard/Objects/Materials/ores.rsi
+    heldPrefix: copper
+
+- type: entity
+  parent: CopperOre
+  id: CopperOre1
+  suffix: Single
+  components:
+  - type: Stack
+    count: 1
+
+- type: entity
+  parent: OreBase
+  id: ZincOre
+  name: zinc ore
+  suffix: Full
+  components:
+  - type: Stack
+    stackType: ZincOre
+  - type: Sprite
+    sprite: _VanGuard/Objects/Materials/ores.rsi
+    state: zinc
+  - type: PhysicalComposition
+    materialComposition:
+      RawZinc: 100
+  - type: Item
+    sprite: _VanGuard/Objects/Materials/ores.rsi
+    heldPrefix: zinc
+
+- type: entity
+  parent: ZincOre
+  id: ZincOre1
+  suffix: Single
+  components:
+  - type: Stack
+    count: 1
+
+- type: entity
+  parent: OreBase
+  id: LeadOre
+  name: lead ore
+  suffix: Full
+  components:
+  - type: Stack
+    stackType: LeadOre
+  - type: Sprite
+    sprite: _VanGuard/Objects/Materials/ores.rsi
+    state: lead
+  - type: PhysicalComposition
+    materialComposition:
+      RawLead: 100
+  - type: Item
+    sprite: _VanGuard/Objects/Materials/ores.rsi
+    heldPrefix: lead
+
+- type: entity
+  parent: LeadOre
+  id: LeadOre1
+  suffix: Single
+  components:
+  - type: Stack
+    count: 1
+
+# Bluespace ore
+
+- type: stack
+  parent: BaseMediumStack
+  id: BluespaceOre
+  name: stack-bluespace-ore
+  icon: { sprite: /Textures/_VanGuard/Objects/Materials/ores.rsi, state: bluespace }
+  spawn: BluespaceOre1
+
+- type: entity
+  parent: OreBase
+  id: BluespaceOre
+  name: bluespace ore
+  suffix: Full
+  components:
+  - type: Stack
+    stackType: BluespaceOre
+  - type: Sprite
+    sprite: _VanGuard/Objects/Materials/ores.rsi
+    state: bluespace
+  - type: PhysicalComposition
+    materialComposition:
+      RawBluespace: 100
+  - type: Item
+    sprite: _VanGuard/Objects/Materials/ores.rsi
+    heldPrefix: bluespace
+  - type: PointLight
+    radius: 1.2
+    color: "#6ec5ff"
+    energy: 1.5
+
+- type: entity
+  parent: BluespaceOre
+  id: BluespaceOre1
+  suffix: Single
+  components:
+  - type: Stack
+    count: 1

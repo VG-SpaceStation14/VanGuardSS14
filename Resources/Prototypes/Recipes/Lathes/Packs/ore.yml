@@ -11,6 +11,13 @@
   - IngotSilver1
   - MaterialBananium1
   - MaterialDiamond
+  # VG-Tweak Start: copper, zinc and lead smelting recipes.
+  - IngotCopper1
+  - SheetZinc1
+  - SheetLead1
+  # VG-Tweak End
+  # VG-Tweak: bluespace ore is smelted into crystals by default on the ore processor.
+  - SheetBluespaceCrystal1
 
 - type: latheRecipePack
   id: RGlassSmelting

@@ -74,6 +74,7 @@
     Steel: 100
     Glass: 100
     Plastic: 100
+    Copper: 50 # VG-Tweak
 
 - type: latheRecipe
   parent: BaseToolRecipe

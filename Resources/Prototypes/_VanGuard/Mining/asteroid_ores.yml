@@ -1,0 +1,268 @@
+# Copper, zinc and lead ore generation: asteroids, magnet-attracted asteroids
+# and random-ore rocks. Vein overlays use the standard rock.rsi states
+# (rock_copper / rock_zinc / rock_lead), hidden until revealed by the mining scanner.
+
+# Ore yield definitions (used by OreVein components)
+
+- type: ore
+  id: OreCopper
+  oreEntity: CopperOre1
+  minOreYield: 1
+  maxOreYield: 3
+
+- type: ore
+  id: OreZinc
+  oreEntity: ZincOre1
+  minOreYield: 1
+  maxOreYield: 3
+
+- type: ore
+  id: OreLead
+  oreEntity: LeadOre1
+  minOreYield: 1
+  maxOreYield: 3
+
+# Asteroid vein rocks
+
+- type: entity
+  id: AsteroidRockCopper
+  parent: AsteroidRock
+  description: An ore vein rich with copper.
+  suffix: Copper
+  components:
+  - type: OreVein
+    oreChance: 1.0
+    currentOre: OreCopper
+  - type: Sprite
+    layers:
+    - state: rock_asteroid
+    - map: [ "enum.EdgeLayer.South" ]
+      state: rock_asteroid_south
+    - map: [ "enum.EdgeLayer.East" ]
+      state: rock_asteroid_east
+    - map: [ "enum.EdgeLayer.North" ]
+      state: rock_asteroid_north
+    - map: [ "enum.EdgeLayer.West" ]
+      state: rock_asteroid_west
+    - state: rock_copper
+      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
+      map: [ "enum.MiningScannerVisualLayers.Overlay" ]
+
+- type: entity
+  id: AsteroidRockZinc
+  parent: AsteroidRock
+  description: An ore vein rich with zinc.
+  suffix: Zinc
+  components:
+  - type: OreVein
+    oreChance: 1.0
+    currentOre: OreZinc
+  - type: Sprite
+    layers:
+    - state: rock_asteroid
+    - map: [ "enum.EdgeLayer.South" ]
+      state: rock_asteroid_south
+    - map: [ "enum.EdgeLayer.East" ]
+      state: rock_asteroid_east
+    - map: [ "enum.EdgeLayer.North" ]
+      state: rock_asteroid_north
+    - map: [ "enum.EdgeLayer.West" ]
+      state: rock_asteroid_west
+    - state: rock_zinc
+      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
+      map: [ "enum.MiningScannerVisualLayers.Overlay" ]
+
+- type: entity
+  id: AsteroidRockLead
+  parent: AsteroidRock
+  description: An ore vein rich with lead.
+  suffix: Lead
+  components:
+  - type: OreVein
+    oreChance: 1.0
+    currentOre: OreLead
+  - type: Sprite
+    layers:
+    - state: rock_asteroid
+    - map: [ "enum.EdgeLayer.South" ]
+      state: rock_asteroid_south
+    - map: [ "enum.EdgeLayer.East" ]
+      state: rock_asteroid_east
+    - map: [ "enum.EdgeLayer.North" ]
+      state: rock_asteroid_north
+    - map: [ "enum.EdgeLayer.West" ]
+      state: rock_asteroid_west
+    - state: rock_lead
+      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
+      map: [ "enum.MiningScannerVisualLayers.Overlay" ]
+
+# Magnet asteroid generation (referenced by the AsteroidOre weightedRandom in
+# Resources/Prototypes/Procedural/Magnet/asteroid_ore_gens.yml)
+
+- type: oreDunGen
+  id: OreCopper
+  replacement: AsteroidRock
+  entity: AsteroidRockCopper
+  count: 4
+  minGroupSize: 5
+  maxGroupSize: 7
+
+- type: oreDunGen
+  id: OreZinc
+  replacement: AsteroidRock
+  entity: AsteroidRockZinc
+  count: 4
+  minGroupSize: 5
+  maxGroupSize: 7
+
+- type: oreDunGen
+  id: OreLead
+  replacement: AsteroidRock
+  entity: AsteroidRockLead
+  count: 4
+  minGroupSize: 5
+  maxGroupSize: 7
+
+# Bluespace ore (NOT on the planetoid - vgroid.yml deliberately has no bluespace veins)
+
+- type: ore
+  id: OreBluespace
+  oreEntity: BluespaceOre1
+  minOreYield: 1
+  maxOreYield: 3
+
+- type: entity
+  id: AsteroidRockBluespace
+  parent: AsteroidRock
+  description: An ore vein rich with bluespace crystals.
+  suffix: Bluespace
+  components:
+  - type: OreVein
+    oreChance: 1.0
+    currentOre: OreBluespace
+  - type: Sprite
+    layers:
+    - state: rock_asteroid
+    - map: [ "enum.EdgeLayer.South" ]
+      state: rock_asteroid_south
+    - map: [ "enum.EdgeLayer.East" ]
+      state: rock_asteroid_east
+    - map: [ "enum.EdgeLayer.North" ]
+      state: rock_asteroid_north
+    - map: [ "enum.EdgeLayer.West" ]
+      state: rock_asteroid_west
+    - state: rock_bluespace
+      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
+      map: [ "enum.MiningScannerVisualLayers.Overlay" ]
+
+- type: oreDunGen
+  id: OreBluespace
+  replacement: AsteroidRock
+  entity: AsteroidRockBluespace
+  count: 3
+  minGroupSize: 3
+  maxGroupSize: 5
+
+# Planet biome markers (low-value ores, on par with iron/coal)
+
+- type: biomeMarkerLayer
+  id: OreCopper
+  entityMask:
+    AsteroidRock: AsteroidRockCopper
+  maxCount: 30
+  minGroupSize: 10
+  maxGroupSize: 15
+  radius: 4
+
+- type: biomeMarkerLayer
+  id: OreZinc
+  entityMask:
+    AsteroidRock: AsteroidRockZinc
+  maxCount: 30
+  minGroupSize: 10
+  maxGroupSize: 15
+  radius: 4
+
+- type: biomeMarkerLayer
+  id: OreLead
+  entityMask:
+    AsteroidRock: AsteroidRockLead
+  maxCount: 30
+  minGroupSize: 10
+  maxGroupSize: 15
+  radius: 4
+
+# Planetoid (VGRoid) iron rock veins - referenced by Resources/Prototypes/Procedural/vgroid.yml
+
+- type: entity
+  id: IronRockCopper
+  parent: IronRock
+  description: An ore vein rich with copper.
+  suffix: Copper
+  components:
+  - type: OreVein
+    oreChance: 1.0
+    currentOre: OreCopper
+  - type: Sprite
+    layers:
+    - state: ironrock
+    - map: [ "enum.EdgeLayer.South" ]
+      state: ironrock_south
+    - map: [ "enum.EdgeLayer.East" ]
+      state: ironrock_east
+    - map: [ "enum.EdgeLayer.North" ]
+      state: ironrock_north
+    - map: [ "enum.EdgeLayer.West" ]
+      state: ironrock_west
+    - state: rock_copper
+      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
+      map: [ "enum.MiningScannerVisualLayers.Overlay" ]
+
+- type: entity
+  id: IronRockZinc
+  parent: IronRock
+  description: An ore vein rich with zinc.
+  suffix: Zinc
+  components:
+  - type: OreVein
+    oreChance: 1.0
+    currentOre: OreZinc
+  - type: Sprite
+    layers:
+    - state: ironrock
+    - map: [ "enum.EdgeLayer.South" ]
+      state: ironrock_south
+    - map: [ "enum.EdgeLayer.East" ]
+      state: ironrock_east
+    - map: [ "enum.EdgeLayer.North" ]
+      state: ironrock_north
+    - map: [ "enum.EdgeLayer.West" ]
+      state: ironrock_west
+    - state: rock_zinc
+      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
+      map: [ "enum.MiningScannerVisualLayers.Overlay" ]
+
+- type: entity
+  id: IronRockLead
+  parent: IronRock
+  description: An ore vein rich with lead.
+  suffix: Lead
+  components:
+  - type: OreVein
+    oreChance: 1.0
+    currentOre: OreLead
+  - type: Sprite
+    layers:
+    - state: ironrock
+    - map: [ "enum.EdgeLayer.South" ]
+      state: ironrock_south
+    - map: [ "enum.EdgeLayer.East" ]
+      state: ironrock_east
+    - map: [ "enum.EdgeLayer.North" ]
+      state: ironrock_north
+    - map: [ "enum.EdgeLayer.West" ]
+      state: ironrock_west
+    - state: rock_lead
+      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
+      map: [ "enum.MiningScannerVisualLayers.Overlay" ]
+

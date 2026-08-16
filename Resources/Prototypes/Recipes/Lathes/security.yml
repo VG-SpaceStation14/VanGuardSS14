@@ -60,6 +60,7 @@
     Steel: 500
     Plastic: 250
     Cloth: 500
+    Copper: 100 # VG-Tweak
 
 - type: latheRecipe
   id: ClothingEyesHudSecurity
@@ -70,6 +71,7 @@
   materials:
     Steel: 300
     Glass: 200
+    Copper: 100 # VG-Tweak
 
 - type: latheRecipe
   id: PortableRecharger
@@ -83,6 +85,8 @@
     Plastic: 1000
     Plasma: 500
     Glass: 500
+    Copper: 500 # VG-Tweak: wiring.
+    Lead: 500 # VG-Tweak: radiation shielding for the RTG core.
 
 - type: latheRecipe
   id: ClothingBackpackHarmpack

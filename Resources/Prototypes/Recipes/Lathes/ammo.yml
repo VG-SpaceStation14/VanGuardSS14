@@ -181,7 +181,9 @@
   id: MagazinePistol
   result: MagazinePistol
   materials:
-    Steel: 145
+    Steel: 45
+    Copper: 70 # VG-Tweak: brass casing
+    Zinc: 30 # VG-Tweak
 
 - type: latheRecipe
   parent: BaseAmmoRecipe
@@ -189,6 +191,8 @@
   result: MagazinePistolIncendiary
   materials:
     Steel: 25
+    Copper: 40 # VG-Tweak: brass casing
+    Zinc: 20 # VG-Tweak
     Plastic: 120
 
 - type: latheRecipe
@@ -196,7 +200,9 @@
   id: MagazinePistolPractice
   result: MagazinePistolPractice
   materials:
-    Steel: 85
+    Steel: 25
+    Copper: 40 # VG-Tweak: brass casing
+    Zinc: 20 # VG-Tweak
 
 - type: latheRecipe
   parent: BaseAmmoRecipe
@@ -204,6 +210,8 @@
   result: MagazinePistolUranium
   materials:
     Steel: 25
+    Copper: 40 # VG-Tweak: brass casing
+    Zinc: 20 # VG-Tweak
     Plastic: 65
     Uranium: 120
 
@@ -219,7 +227,9 @@
   id: MagazinePistolSubMachineGun
   result: MagazinePistolSubMachineGun
   materials:
-    Steel: 300
+    Steel: 100
+    Copper: 150 # VG-Tweak: brass casings
+    Zinc: 50 # VG-Tweak
 
 - type: latheRecipe
   parent: BaseAmmoRecipe
@@ -227,6 +237,8 @@
   result: MagazinePistolSubMachineGunIncendiary
   materials:
     Steel: 25
+    Copper: 40 # VG-Tweak: brass casings
+    Zinc: 20 # VG-Tweak
     Plastic: 275
 
 - type: latheRecipe
@@ -234,7 +246,9 @@
   id: MagazinePistolSubMachineGunPractice
   result: MagazinePistolSubMachineGunPractice
   materials:
-    Steel: 150
+    Steel: 50
+    Copper: 80 # VG-Tweak: brass casings
+    Zinc: 30 # VG-Tweak
 
 - type: latheRecipe
   parent: BaseAmmoRecipe
@@ -242,6 +256,8 @@
   result: MagazinePistolSubMachineGunUranium
   materials:
     Steel: 25
+    Copper: 40 # VG-Tweak: brass casings
+    Zinc: 20 # VG-Tweak
     Plastic: 250
     Uranium: 250
 
@@ -257,35 +273,45 @@
   id: MagazinePistolSubMachineGunTopMounted
   result: MagazinePistolSubMachineGunTopMounted
   materials:
-    Steel: 300
+    Steel: 100
+    Copper: 150 # VG-Tweak: brass casings
+    Zinc: 50 # VG-Tweak
 
 - type: latheRecipe
   parent: BaseAmmoBoxRecipe
   id: MagazineBoxPistol
   result: MagazineBoxPistol
   materials:
-    Steel: 600
+    Steel: 200
+    Copper: 300 # VG-Tweak: brass casings
+    Zinc: 100 # VG-Tweak
 
 - type: latheRecipe
   parent: BaseAmmoBoxRecipe
   id: MagazineBoxPistolIncendiary
   result: MagazineBoxPistolIncendiary
   materials:
-    Plastic: 600
+    Plastic: 300
+    Copper: 200 # VG-Tweak: brass casings
+    Zinc: 100 # VG-Tweak
 
 - type: latheRecipe
   parent: BaseAmmoBoxRecipe
   id: MagazineBoxPistolPractice
   result: MagazineBoxPistolPractice
   materials:
-    Steel: 300
+    Steel: 100
+    Copper: 150 # VG-Tweak: brass casings
+    Zinc: 50 # VG-Tweak
 
 - type: latheRecipe
   parent: BaseAmmoBoxRecipe
   id: MagazineBoxPistolUranium
   result: MagazineBoxPistolUranium
   materials:
-    Plastic: 300
+    Plastic: 150
+    Copper: 100 # VG-Tweak: brass casings
+    Zinc: 50 # VG-Tweak
     Uranium: 600
 
 # .45 Magnum
@@ -301,7 +327,9 @@
   id: SpeedLoaderMagnum
   result: SpeedLoaderMagnum
   materials:
-    Steel: 190
+    Steel: 60
+    Copper: 90 # VG-Tweak: brass casings
+    Zinc: 40 # VG-Tweak
 
 - type: latheRecipe
   parent: BaseAmmoRecipe
@@ -309,6 +337,8 @@
   result: SpeedLoaderMagnumIncendiary
   materials:
     Steel: 50
+    Copper: 40 # VG-Tweak: brass casings
+    Zinc: 20 # VG-Tweak
     Plastic: 150
 
 - type: latheRecipe
@@ -316,7 +346,9 @@
   id: SpeedLoaderMagnumPractice
   result: SpeedLoaderMagnumPractice
   materials:
-    Steel: 90
+    Steel: 30
+    Copper: 40 # VG-Tweak: brass casings
+    Zinc: 20 # VG-Tweak
 
 - type: latheRecipe
   parent: BaseAmmoRecipe
@@ -324,6 +356,8 @@
   result: SpeedLoaderMagnumUranium
   materials:
     Steel: 50
+    Copper: 40 # VG-Tweak: brass casings
+    Zinc: 20 # VG-Tweak
     Plastic: 150
     Uranium: 110
 
@@ -332,28 +366,36 @@
   id: MagazineBoxMagnum
   result: MagazineBoxMagnum
   materials:
-    Steel: 240
+    Steel: 80
+    Copper: 120 # VG-Tweak: brass casings
+    Zinc: 40 # VG-Tweak
 
 - type: latheRecipe
   parent: BaseAmmoBoxRecipe
   id: MagazineBoxMagnumIncendiary
   result: MagazineBoxMagnumIncendiary
   materials:
-    Plastic: 240
+    Plastic: 120
+    Copper: 80 # VG-Tweak: brass casings
+    Zinc: 40 # VG-Tweak
 
 - type: latheRecipe
   parent: BaseAmmoBoxRecipe
   id: MagazineBoxMagnumPractice
   result: MagazineBoxMagnumPractice
   materials:
-    Steel: 60
+    Steel: 20
+    Copper: 30 # VG-Tweak: brass casings
+    Zinc: 10 # VG-Tweak
 
 - type: latheRecipe
   parent: BaseAmmoBoxRecipe
   id: MagazineBoxMagnumUranium
   result: MagazineBoxMagnumUranium
   materials:
-    Plastic: 240
+    Plastic: 120
+    Copper: 80 # VG-Tweak: brass casings
+    Zinc: 40 # VG-Tweak
     Uranium: 180
 
 # .50 Shell
@@ -369,14 +411,18 @@
   id: MagazineShotgun
   result: MagazineShotgun
   materials:
-    Steel: 240
+    Steel: 80
+    Copper: 120 # VG-Tweak: brass casing
+    Zinc: 40 # VG-Tweak
 
 - type: latheRecipe
   parent: BaseAmmoRecipe
   id: MagazineShotgunIncendiary
   result: MagazineShotgunIncendiary
   materials:
-    Steel: 100
+    Steel: 50
+    Copper: 40 # VG-Tweak: brass casing
+    Zinc: 20 # VG-Tweak
     Plastic: 190
 
 - type: latheRecipe
@@ -384,7 +430,9 @@
   id: MagazineShotgunBeanbag
   result: MagazineShotgunBeanbag
   materials:
-    Steel: 150
+    Steel: 60
+    Copper: 60 # VG-Tweak: brass casing
+    Zinc: 30 # VG-Tweak
     Plastic: 140
 
 - type: latheRecipe
@@ -392,7 +440,9 @@
   id: MagazineShotgunSlug
   result: MagazineShotgunSlug
   materials:
-    Steel: 190
+    Steel: 70
+    Copper: 90 # VG-Tweak: brass casing
+    Zinc: 30 # VG-Tweak
     Plastic: 100
 
 - type: latheRecipe
@@ -400,14 +450,18 @@
   id: BoxLethalshot
   result: BoxLethalshot
   materials:
-    Steel: 320
+    Steel: 100
+    Copper: 160 # VG-Tweak: brass casings
+    Zinc: 60 # VG-Tweak
 
 - type: latheRecipe
   parent: BaseAmmoBoxRecipe
   id: BoxShotgunIncendiary
   result: BoxShotgunIncendiary
   materials:
-    Steel: 80
+    Steel: 40
+    Copper: 40 # VG-Tweak: brass casings
+    Zinc: 20 # VG-Tweak
     Plastic: 320
 
 - type: latheRecipe
@@ -415,14 +469,18 @@
   id: BoxShotgunPractice
   result: BoxShotgunPractice
   materials:
-    Steel: 80
+    Steel: 30
+    Copper: 40 # VG-Tweak: brass casings
+    Zinc: 10 # VG-Tweak
 
 - type: latheRecipe
   parent: BaseAmmoBoxRecipe
   id: BoxShotgunUranium
   result: BoxShotgunUranium
   materials:
-    Plastic: 320
+    Plastic: 160
+    Copper: 120 # VG-Tweak: brass casings
+    Zinc: 60 # VG-Tweak
     Uranium: 240
 
 - type: latheRecipe
@@ -430,7 +488,9 @@
   id: BoxBeanbag
   result: BoxBeanbag
   materials:
-    Steel: 160
+    Steel: 60
+    Copper: 80 # VG-Tweak: brass casings
+    Zinc: 40 # VG-Tweak
     Plastic: 240
 
 - type: latheRecipe
@@ -438,7 +498,9 @@
   id: BoxShotgunSlug
   result: BoxShotgunSlug
   materials:
-    Steel: 240
+    Steel: 90
+    Copper: 120 # VG-Tweak: brass casings
+    Zinc: 50 # VG-Tweak
     Plastic: 160
 
 - type: latheRecipe
@@ -457,7 +519,9 @@
   id: BoxShotgunFlare
   result: BoxShotgunFlare
   materials:
-    Steel: 80
+    Steel: 40
+    Copper: 30 # VG-Tweak: brass casings
+    Zinc: 10 # VG-Tweak
     Plastic: 80
 
 # .60 anti-materiel

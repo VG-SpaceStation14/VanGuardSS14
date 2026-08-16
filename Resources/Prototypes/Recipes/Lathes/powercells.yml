@@ -17,6 +17,7 @@
   materials:
     Steel: 100
     Plastic: 50
+    Copper: 100 # VG-Tweak
 
 - type: latheRecipe
   parent: BasePowerCellRecipe
@@ -28,6 +29,7 @@
     Glass: 300
     Plastic: 100
     Gold: 10
+    Copper: 200 # VG-Tweak
 
 - type: latheRecipe
   parent: BasePowerCellRecipe
@@ -39,6 +41,7 @@
     Glass: 400
     Plastic: 200
     Gold: 50
+    Copper: 200 # VG-Tweak
 
 - type: latheRecipe
   parent: BasePowerCellRecipe
@@ -51,6 +54,7 @@
     Plasma: 300
     Gold: 200
     Silver: 300
+    Copper: 300 # VG-Tweak
 
 - type: latheRecipe
   parent: BasePowerCellRecipe
@@ -62,8 +66,9 @@
     Glass: 400
     Uranium: 200
     Gold: 100
+    Copper: 200 # VG-Tweak
 
-# Power cages
+# Power cages (lead-acid accumulators)
 - type: latheRecipe
   parent: BasePowerCellRecipe
   id: PowerCageSmall
@@ -72,6 +77,7 @@
   materials:
     Steel: 200
     Plastic: 100
+    Lead: 100 # VG-Tweak
 
 - type: latheRecipe
   parent: BasePowerCellRecipe
@@ -83,6 +89,7 @@
     Glass: 500
     Plastic: 250
     Gold: 40
+    Lead: 200 # VG-Tweak
 
 - type: latheRecipe
   parent: BasePowerCellRecipe
@@ -94,3 +101,4 @@
     Glass: 800
     Plastic: 400
     Gold: 100
+    Lead: 300 # VG-Tweak

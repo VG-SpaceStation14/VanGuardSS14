@@ -11,6 +11,7 @@
     Steel: 400
     Glass: 200
     Plastic: 200
+    Copper: 100 # VG-Tweak
 
 - type: latheRecipe
   id: ExperimentFloorScannerMachineCircuitboard
@@ -22,3 +23,4 @@
     Steel: 400
     Glass: 500
     Plastic: 200
+    Copper: 100 # VG-Tweak

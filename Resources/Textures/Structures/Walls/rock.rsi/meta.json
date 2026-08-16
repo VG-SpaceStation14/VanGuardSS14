@@ -110,6 +110,9 @@
             "name": "rock_bauxite"
         },
         {
+            "name": "rock_bluespace"
+        },
+        {
             "name": "rock_carbon"
         },
         {
@@ -172,6 +175,9 @@
         },
         {
             "name": "rock_uranium"
+        },
+        {
+            "name": "rock_zinc"
         },
         {
             "name": "rock_verdantium"

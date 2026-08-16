@@ -1,0 +1,80 @@
+# Ore processor recipes for copper, zinc and lead (raw ore -> refined material).
+
+- type: latheRecipe
+  id: IngotCopper1
+  result: IngotCopper1
+  completetime: 0
+  # VG-Tweak: mining points earned when smelted on an ore processor.
+  miningPoints: 1
+  materials:
+    RawCopper: 100
+
+- type: latheRecipe
+  id: IngotCopper
+  result: IngotCopper
+  completetime: 2
+  materials:
+    RawCopper: 3000
+
+- type: latheRecipe
+  id: SheetZinc1
+  result: SheetZinc1
+  completetime: 0
+  # VG-Tweak: mining points earned when smelted on an ore processor.
+  miningPoints: 1
+  materials:
+    RawZinc: 100
+
+- type: latheRecipe
+  id: SheetZinc
+  result: SheetZinc
+  completetime: 2
+  materials:
+    RawZinc: 3000
+
+- type: latheRecipe
+  id: SheetLead1
+  result: SheetLead1
+  completetime: 0
+  # VG-Tweak: mining points earned when smelted on an ore processor.
+  miningPoints: 1
+  materials:
+    RawLead: 100
+
+- type: latheRecipe
+  id: SheetLead
+  result: SheetLead
+  completetime: 2
+  materials:
+    RawLead: 3000
+
+# Bluespace crystal smelting happens on the ore processor by default (the
+# recipe is part of the static OreSmelting pack). The tier-3 BluespaceCrystalTech
+# unlocks artificial crystal reproduction on the protolathe instead (see
+# Resources/Prototypes/_VanGuard/Research/bluespace_crystal.yml).
+
+- type: latheRecipe
+  id: SheetBluespaceCrystal1
+  result: SheetBluespaceCrystal1
+  completetime: 0
+  # VG-Tweak: bluespace crystals are worth a lot of mining points when smelted.
+  miningPoints: 10
+  materials:
+    RawBluespace: 100
+
+# Artificial crystal reproduction: forge a single bluespace crystal from plasma
+# and diamonds. Expensive on purpose - bluespace ore is common enough, so the
+# synthetic route is a convenience, not a bargain.
+
+- type: latheRecipe
+  id: SheetBluespaceCrystalSynthetic
+  result: SheetBluespaceCrystal1
+  completetime: 2
+  materials:
+    Plasma: 500
+    Diamond: 50
+
+- type: latheRecipePack
+  id: BluespaceCrystal
+  recipes:
+  - SheetBluespaceCrystalSynthetic

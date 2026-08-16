@@ -33,6 +33,10 @@ public sealed partial class SmartOreBagWindow : FancyWindow
         "BananiumOre1",
         "DiamondOre1",
         "ArtifactFragment1",
+        "CopperOre1",
+        "ZincOre1",
+        "LeadOre1",
+        "BluespaceOre1"
     ];
 
     private readonly List<EntProtoId> _initialIgnored = new();
