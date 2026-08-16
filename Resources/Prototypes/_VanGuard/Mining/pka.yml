@@ -1,0 +1,242 @@
+# Kinetic ammo for the custom PKA weapons.
+
+- type: entity
+  id: BulletKineticPistol
+  parent: BulletKinetic
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Projectile
+    impactEffect: BulletImpactEffectKinetic
+    damage:
+      types:
+        Blunt: 20
+        Structural: 20
+
+- type: entity
+  id: BulletKineticRepeater
+  parent: BulletKinetic
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Projectile
+    impactEffect: BulletImpactEffectKinetic
+    damage:
+      types:
+        Blunt: 15
+        Structural: 20
+
+- type: entity
+  id: BulletKineticRailgun
+  parent: BulletKinetic
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Projectile
+    deleteOnCollide: false
+    impactEffect: BulletImpactEffectKinetic
+    damage:
+      types:
+        Blunt: 70
+        Structural: 20
+  - type: GatheringProjectile
+    amount: 40
+
+- type: entity
+  id: BulletKineticShotgunPellet
+  parent: BulletKinetic
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Projectile
+    impactEffect: BulletImpactEffectKinetic
+    damage:
+      types:
+        Blunt: 15
+        Structural: 20
+
+- type: entity
+  id: BulletKineticShotgunSpread
+  parent: BulletKinetic
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: ProjectileSpread
+    proto: BulletKineticShotgunPellet
+    count: 6
+    spread: 35
+
+# Custom PKA weapons.
+
+- type: entity
+  id: WeaponProtoKineticPistol
+  parent: [WeaponProtoKineticAcceleratorBase, BaseCargoContraband]
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Objects/Weapons/Guns/PKAs/kinetic_pistol.rsi
+    layers:
+    - state: icon
+    - state: animation-icon
+      visible: false
+      map: [ "empty-icon" ]
+  - type: UpgradeableGun
+    maxUpgradeCount: 6
+    allowDuplicateUpgrades: true
+    whitelist:
+      tags:
+      - PKAUpgrade
+  - type: Gun
+    fireRate: 0.5
+  - type: ContainerContainer
+    containers:
+      upgrades: !type:Container
+  - type: Item
+    sprite: _VanGuard/Objects/Weapons/Guns/PKAs/kinetic_pistol.rsi
+    size: Small
+    shape:
+    - 0,0,1,0
+    - 0,1,0,1
+  - type: BasicEntityAmmoProvider
+    proto: BulletKineticPistol
+    capacity: 1
+    count: 1
+  - type: Clothing
+    sprite: _VanGuard/Objects/Weapons/Guns/PKAs/kinetic_pistol.rsi
+    quickEquip: false
+    slots:
+    - suitStorage
+    - Belt
+
+- type: entity
+  id: WeaponProtoKineticRepeater
+  parent: [WeaponProtoKineticAcceleratorBase, BaseGunWieldable, BaseCargoContraband]
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Objects/Weapons/Guns/PKAs/kinetic_repeater.rsi
+    layers:
+    - state: icon
+    - state: animation-icon
+      visible: false
+      map: [ "empty-icon" ]
+  - type: UpgradeableGun
+    maxUpgradeCount: 3
+    allowDuplicateUpgrades: true
+    whitelist:
+      tags:
+      - PKAUpgrade
+  - type: GunWieldBonus
+    minAngle: 0
+    maxAngle: 0
+  - type: GunRequiresWield
+  - type: ContainerContainer
+    containers:
+      upgrades: !type:Container
+  - type: Item
+    sprite: _VanGuard/Objects/Weapons/Guns/PKAs/kinetic_repeater.rsi
+  - type: BasicEntityAmmoProvider
+    proto: BulletKineticRepeater
+    capacity: 3
+    count: 3
+  - type: Gun
+    burstCooldown: 2
+    fireRate: 0.4
+    selectedMode: Burst
+    angleDecay: 45
+    minAngle: 2
+    maxAngle: 3
+    availableModes:
+    - Burst
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/kinetic_accel.ogg
+  - type: RechargeBasicEntityAmmo
+    rechargeCooldown: 0.25
+    rechargeSound:
+      path: /Audio/Weapons/Guns/MagIn/kinetic_reload.ogg
+  - type: Clothing
+    sprite: _VanGuard/Objects/Weapons/Guns/PKAs/kinetic_repeater.rsi
+    quickEquip: false
+    slots:
+    - suitStorage
+
+- type: entity
+  id: WeaponProtoKineticRailgun
+  parent: [WeaponProtoKineticAcceleratorBase, BaseGunWieldable, BaseCargoContraband]
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Objects/Weapons/Guns/PKAs/kinetic_railgun.rsi
+    layers:
+    - state: icon
+    - state: animation-icon
+      visible: false
+      map: [ "empty-icon" ]
+  - type: UpgradeableGun
+    maxUpgradeCount: 3
+    allowDuplicateUpgrades: true
+    whitelist:
+      tags:
+      - PKAUpgrade
+  - type: ContainerContainer
+    containers:
+      upgrades: !type:Container
+  - type: Item
+    sprite: _VanGuard/Objects/Weapons/Guns/PKAs/kinetic_railgun.rsi
+    size: Normal
+  - type: GunWieldBonus
+    minAngle: 0
+    maxAngle: 0
+  - type: GunRequiresWield
+  - type: BasicEntityAmmoProvider
+    proto: BulletKineticRailgun
+    capacity: 1
+    count: 1
+  - type: Gun
+    fireRate: 0.25
+    angleDecay: 45
+    minAngle: 2
+    maxAngle: 3
+    cameraRecoilScalar: 6
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/kinetic_accel.ogg
+  - type: Clothing
+    sprite: _VanGuard/Objects/Weapons/Guns/PKAs/kinetic_railgun.rsi
+    quickEquip: false
+    slots:
+    - suitStorage
+    - Belt
+
+- type: entity
+  id: WeaponProtoKineticShotgun
+  parent: [WeaponProtoKineticAcceleratorBase, BaseGunWieldable, BaseCargoContraband]
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Objects/Weapons/Guns/PKAs/kinetic_shotgun.rsi
+    layers:
+    - state: icon
+    - state: animation-icon
+      visible: false
+      map: [ "empty-icon" ]
+  - type: UpgradeableGun
+    maxUpgradeCount: 3
+    allowDuplicateUpgrades: true
+    whitelist:
+      tags:
+      - PKAUpgrade
+  - type: GunWieldBonus
+    minAngle: 0
+    maxAngle: 0
+  - type: GunRequiresWield
+  - type: Gun
+    fireRate: 0.3
+  - type: ContainerContainer
+    containers:
+      upgrades: !type:Container
+  - type: Item
+    sprite: _VanGuard/Objects/Weapons/Guns/PKAs/kinetic_shotgun.rsi
+    size: Normal
+  - type: BasicEntityAmmoProvider
+    proto: BulletKineticShotgunSpread
+    capacity: 1
+    count: 1
+  - type: Clothing
+    sprite: _VanGuard/Objects/Weapons/Guns/PKAs/kinetic_shotgun.rsi
+    quickEquip: false
+    slots:
+    - suitStorage
+    - Belt
+
+    - Belt

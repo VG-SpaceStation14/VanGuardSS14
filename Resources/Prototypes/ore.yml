@@ -110,6 +110,13 @@
     OreUranium: 1
     OreBananium: 0.5
     OreArtifactFragment: 0.5
+    # VG-Tweak Start: copper, zinc and lead ores in random ore rocks.
+    OreCopper: 0.5
+    OreZinc: 0.5
+    OreLead: 0.5
+    # Bluespace is not especially rare.
+    OreBluespace: 0.3
+    # VG-Tweak End
 
 - type: weightedRandomOre
   id: OreCrab

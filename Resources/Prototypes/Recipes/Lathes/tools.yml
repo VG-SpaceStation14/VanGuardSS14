@@ -57,17 +57,24 @@
   - Parts
   completetime: 0.1
   materials:
-    Steel: 30
+    Copper: 30
 
 - type: latheRecipe
   parent: CableStack
   id: CableMVStack
   result: CableMVStack1
+  materials:
+    Copper: 60
+    Plastic: 40 # VG-Tweak: insulated casing.
 
 - type: latheRecipe
   parent: CableStack
   id: CableHVStack
   result: CableHVStack1
+  materials:
+    Copper: 90
+    Plastic: 60 # VG-Tweak: heavy insulation.
+    Steel: 40 # VG-Tweak: armored conduit.
 
 - type: latheRecipe
   parent: BaseToolRecipe
@@ -100,6 +107,7 @@
   materials:
     Steel: 200
     Plastic: 200
+    Copper: 50 # VG-Tweak: internal wiring.
 
 - type: latheRecipe
   parent: Multitool

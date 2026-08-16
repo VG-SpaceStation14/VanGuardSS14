@@ -1,0 +1,122 @@
+using System.Numerics;
+using Content.Shared._VanGuard.Mining.MesonVision;
+using Content.Shared.Doors.Components;
+using Content.Shared.Light.Components;
+using Content.Shared.Traits.Assorted;
+using Robust.Client.GameObjects;
+using Robust.Client.Graphics;
+using Robust.Client.Player;
+using Robust.Shared.Enums;
+using Robust.Shared.Map;
+
+namespace Content.Client._VanGuard.Mining.MesonVision;
+
+/// <summary>
+/// Renders walls and doors through solid geometry while meson vision is active.
+/// </summary>
+public sealed partial class MesonVisionOverlay : Overlay
+{
+    [Dependency] private IEntityManager _entity = default!;
+    [Dependency] private IPlayerManager _player = default!;
+
+    private readonly SharedTransformSystem _xformSystem;
+    private readonly ContainerSystem _container;
+    private readonly EntityQuery<SpriteComponent> _spriteQuery;
+    private readonly EntityQuery<TransformComponent> _xformQuery;
+
+    private readonly List<MesonVisionRenderEntry> _entries = new(64);
+
+    public override OverlaySpace Space => OverlaySpace.WorldSpace;
+
+    public MesonVisionOverlay()
+    {
+        IoCManager.InjectDependencies(this);
+        _xformSystem = _entity.System<SharedTransformSystem>();
+        _container = _entity.System<ContainerSystem>();
+        _spriteQuery = _entity.GetEntityQuery<SpriteComponent>();
+        _xformQuery = _entity.GetEntityQuery<TransformComponent>();
+    }
+
+    protected override void Draw(in OverlayDrawArgs args)
+    {
+        if (!_entity.TryGetComponent(_player.LocalEntity, out MesonVisionComponent? vision) ||
+            vision.State != MesonVisionState.Full ||
+            _entity.HasComponent<PermanentBlindnessComponent>(_player.LocalEntity))
+        {
+            return;
+        }
+
+        var eye = args.Viewport.Eye;
+        if (eye == null)
+            return;
+
+        var mapId = eye.Position.MapId;
+        var eyeRot = eye.Rotation;
+        var worldBounds = args.WorldBounds;
+        var worldHandle = args.WorldHandle;
+
+        foreach (var entity in _entity.GetEntities())
+        {
+            if (!_spriteQuery.TryGetComponent(entity, out var sprite) ||
+                !_xformQuery.TryGetComponent(entity, out var xform) ||
+                xform.MapID != mapId ||
+                _container.TryGetOuterContainer(entity, xform, out _))
+            {
+                continue;
+            }
+
+            var worldPos = _xformSystem.GetWorldPosition(xform);
+            if (!worldBounds.Contains(worldPos))
+                continue;
+
+            var isWall = _entity.HasComponent<SunShadowCastComponent>(entity) ||
+                         _entity.HasComponent<IsRoofComponent>(entity);
+            var isDoor = _entity.HasComponent<DoorComponent>(entity);
+
+            if (!isWall && !isDoor)
+                continue;
+
+            _entries.Add(new MesonVisionRenderEntry(
+                (entity, sprite, xform),
+                mapId,
+                eyeRot,
+                sprite.DrawDepth,
+                1f));
+        }
+
+        foreach (var entry in _entries)
+        {
+            RenderFast(entry.Ent, worldHandle, entry.EyeRot, entry.Transparency ?? 1f, vision.Color);
+        }
+
+        _entries.Clear();
+    }
+
+    private void RenderFast(
+        Entity<SpriteComponent, TransformComponent> ent,
+        DrawingHandleWorld handle,
+        Angle eyeRot,
+        float alpha,
+        Color color)
+    {
+        var (uid, sprite, xform) = ent;
+        var position = _xformSystem.GetWorldPosition(xform);
+        var rotation = _xformSystem.GetWorldRotation(xform);
+
+        handle.SetTransform(position, rotation);
+
+        var originalColor = sprite.Color;
+        sprite.Color = color.WithAlpha(alpha);
+        sprite.Render(handle, eyeRot, rotation, position: position);
+        sprite.Color = originalColor;
+        handle.SetTransform(Vector2.Zero, Angle.Zero);
+    }
+}
+
+public readonly record struct MesonVisionRenderEntry(
+    (EntityUid, SpriteComponent, TransformComponent) Ent,
+    MapId? Map,
+    Angle EyeRot,
+    int Priority,
+    float? Transparency);
+

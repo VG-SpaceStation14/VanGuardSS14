@@ -1,0 +1,77 @@
+# Raw ores
+
+- type: material
+  id: RawCopper
+  stackEntity: CopperOre1
+  name: materials-raw-copper
+  unit: materials-unit-chunk
+  icon: { sprite: _VanGuard/Objects/Materials/ores.rsi, state: copper }
+  color: "#dd7d00"
+  price: 0.075
+
+- type: material
+  id: RawZinc
+  stackEntity: ZincOre1
+  name: materials-raw-zinc
+  unit: materials-unit-chunk
+  icon: { sprite: _VanGuard/Objects/Materials/ores.rsi, state: zinc }
+  color: "#087a67"
+  price: 0.075
+
+- type: material
+  id: RawLead
+  stackEntity: LeadOre1
+  name: materials-raw-lead
+  unit: materials-unit-chunk
+  icon: { sprite: _VanGuard/Objects/Materials/ores.rsi, state: lead }
+  color: "#08287a"
+  price: 0.075
+
+# Refined metals
+
+- type: material
+  id: Copper
+  stackEntity: IngotCopper1
+  name: materials-copper
+  unit: materials-unit-bar
+  icon: { sprite: Objects/Materials/ingots.rsi, state: copper }
+  color: "#dd7d00"
+  price: 0.075
+
+- type: material
+  id: Zinc
+  stackEntity: SheetZinc1
+  name: materials-zinc
+  unit: materials-unit-sheet
+  icon: { sprite: _VanGuard/Objects/Materials/zinc_sheet.rsi, state: zinc }
+  color: "#087a67"
+  price: 0.075
+
+- type: material
+  id: Lead
+  stackEntity: SheetLead1
+  name: materials-lead
+  unit: materials-unit-sheet
+  icon: { sprite: _VanGuard/Objects/Materials/lead_sheet.rsi, state: lead }
+  color: "#08287a"
+  price: 0.075
+
+# Bluespace
+
+- type: material
+  id: RawBluespace
+  stackEntity: BluespaceOre1
+  name: materials-raw-bluespace
+  unit: materials-unit-chunk
+  icon: { sprite: _VanGuard/Objects/Materials/ores.rsi, state: bluespace }
+  color: "#4a9fe8"
+  price: 0.2
+
+- type: material
+  id: BluespaceCrystal
+  stackEntity: SheetBluespaceCrystal1
+  name: materials-bluespace-crystal
+  unit: materials-unit-crystal
+  icon: { sprite: _VanGuard/Objects/Materials/bluespace_crystal.rsi, state: bluespace_crystal }
+  color: "#3ad6f5"
+  price: 0.3

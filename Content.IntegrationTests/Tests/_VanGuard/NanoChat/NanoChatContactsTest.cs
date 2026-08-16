@@ -19,7 +19,7 @@ namespace Content.IntegrationTests.Tests._VanGuard.NanoChat;
 
 /// <summary>
 ///     Verifies the NanoChat station directory behaviour from the original
-///     VG/ADT build: every card that has an owner (a full name on its ID) and
+///     Every card that has an owner (a full name on its ID) and
 ///     is on the station is listed. Cards without a name, cards that opted out
 ///     of the directory and cards on other grids must not show up.
 /// </summary>

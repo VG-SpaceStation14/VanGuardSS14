@@ -11,6 +11,12 @@
     OreUranium: 0.20
     OreArtifactFragment: 0.10
     OreBananium: 0.10
+    # VG-Tweak Start: copper, zinc and lead (BFUU ores) spawn on magnet-attracted asteroids.
+    OreCopper: 0.3
+    OreZinc: 0.3
+    OreLead: 0.3
+    OreBluespace: 0.3 # VG-Tweak: bluespace is not especially rare even on magnet asteroids.
+    # VG-Tweak End
 
 - type: oreDunGen
   id: OreIron

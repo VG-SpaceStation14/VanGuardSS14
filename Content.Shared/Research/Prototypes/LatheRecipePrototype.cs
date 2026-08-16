@@ -69,5 +69,13 @@ namespace Content.Shared.Research.Prototypes
         /// </summary>
         [DataField]
         public List<ProtoId<LatheCategoryPrototype>> Categories = new();
+
+        // VG-Tweak Start: mining points awarded when this recipe is produced on a mining lathe (ore processor).
+        /// <summary>
+        /// Number of mining points this recipe adds to a mining points lathe when produced.
+        /// </summary>
+        [DataField]
+        public uint MiningPoints;
+        // VG-Tweak End
     }
 }

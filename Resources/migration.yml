@@ -954,3 +954,6 @@ CrateEngineeringJetpack: CrateSpaceMiniJetpack
 CrateEngineeringMiniJetpack: CrateSpaceMiniJetpack
 CrateEngineeringShuttle: CrateSpaceShuttlePower
 CrateEngineeringThruster: CrateSpaceThruster
+
+# VG 2026-08-15
+VendingMachineSalvage: MiningShop

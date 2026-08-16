@@ -1,0 +1,49 @@
+<controls:FancyWindow
+    xmlns="https://spacestation14.io"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+    Title="{Loc smart-ore-bag-window-title}"
+    MinSize="400 540"
+    SetSize="400 540">
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+        <!-- Header: title + selected count -->
+        <PanelContainer MinHeight="44">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#10161C" BorderColor="#C9A227" BorderThickness="0 0 0 2" />
+            </PanelContainer.PanelOverride>
+            <BoxContainer Orientation="Horizontal" Margin="10" SeparationOverride="6" VerticalAlignment="Center">
+                <Label Text="{Loc smart-ore-bag-window-title}" StyleClasses="LabelHeading" />
+                <Control HorizontalExpand="True" />
+                <Label Name="CountLabel" Access="Public" StyleClasses="LabelSubText" FontColorOverride="#C9A227" />
+            </BoxContainer>
+        </PanelContainer>
+
+        <!-- Caption -->
+        <Label Text="{Loc smart-ore-bag-window-caption}" StyleClasses="LabelSubText" Margin="10 8 10 2" />
+
+        <!-- Ore list -->
+        <PanelContainer HorizontalExpand="True" VerticalExpand="True" Margin="10 4 10 2">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#0A0E12" BorderColor="#2E3B45" BorderThickness="2"
+                                  ContentMarginTopOverride="4" ContentMarginBottomOverride="4"
+                                  ContentMarginLeftOverride="4" ContentMarginRightOverride="4" />
+            </PanelContainer.PanelOverride>
+            <ScrollContainer HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False">
+                <BoxContainer Name="OreListContainer" Access="Public" Orientation="Vertical" SeparationOverride="2" />
+            </ScrollContainer>
+        </PanelContainer>
+
+        <!-- Buttons -->
+        <BoxContainer Orientation="Horizontal" HorizontalAlignment="Right" Margin="10 8" SeparationOverride="6">
+            <Button Name="SelectAllButton" Access="Public" Text="{Loc smart-ore-bag-select-all}" />
+            <Button Name="SaveButton" Access="Public" Text="{Loc smart-ore-bag-save}" StyleClasses="ButtonColorGreen" MinWidth="110" />
+        </BoxContainer>
+
+        <!-- Scan-line footer -->
+        <PanelContainer MinHeight="3" Margin="12 0 12 10">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#C9A227" />
+            </PanelContainer.PanelOverride>
+        </PanelContainer>
+    </BoxContainer>
+</controls:FancyWindow>

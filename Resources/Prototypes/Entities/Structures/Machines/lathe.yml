@@ -213,6 +213,8 @@
     - Instruments
     - Equipment
     - ExperimentsEquipment # VG-Tweak: experiment scanner branch
+    - BluespaceCrystal # VG-Tweak: tier-3 tech-locked artificial crystal reproduction.
+    - SmartOreBag # VG-Tweak: tier-2 tech-locked smart ore bag.
   - type: EmagLatheRecipes
     emagDynamicPacks:
     - SecurityAmmo
@@ -610,10 +612,20 @@
     - type: Lathe
       idleState: icon
       runningState: building
-      defaultProductionAmount: 10
+      # VG-Tweak Start
+      defaultProductionAmount: 30
+      # VG-Tweak End
       staticPacks:
       - OreSmelting
       - RGlassSmelting
+    # VG-Tweak Start: ore bags auto-insert their contents and the processor earns mining points.
+    - type: AutoMaterialInsert
+      tag: AutoInsertOreBag
+    - type: MiningPoints
+      transferSound:
+        path: /Audio/Effects/Cargo/ping.ogg
+    - type: MiningPointsLathe
+    # VG-Tweak End
 
 - type: entity
   parent: OreProcessor

@@ -1,0 +1,2 @@
+- type: Tag
+  id: AutoInsertOreBag # Ore bags that can auto-insert their contents into an ore processor when used on it.

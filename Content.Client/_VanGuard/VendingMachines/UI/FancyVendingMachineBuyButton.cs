@@ -6,7 +6,7 @@ namespace Content.Client._VanGuard.VendingMachines.UI;
 
 /// <summary>
 ///     Invisible click/hover catcher for <see cref="FancyVendingMachineItemCard"/>.
-///     The visible square is a separate panel drawn behind it (the ADT "FancyButton"
+///     The visible square is a separate panel drawn behind it (the "FancyButton"
 ///     pattern); <see cref="OnDrawModeChanged"/> lets the card repaint that panel on
 ///     hover / press / disabled state changes.
 /// </summary>

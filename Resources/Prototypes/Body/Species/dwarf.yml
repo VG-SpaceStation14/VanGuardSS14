@@ -150,6 +150,11 @@
     displacement: Dwarfism
   - type: InnerBodyAnomalyVisuals
     displacement: Dwarfism
+  # VG-Tweak Start: dwarves can naturally sense mineral veins without a handheld scanner.
+  - type: InnateMiningScannerViewer
+    viewRange: 4
+    pingSound: null
+  # VG-Tweak End
 
 - type: entity
   parent: OrganBaseOrganic

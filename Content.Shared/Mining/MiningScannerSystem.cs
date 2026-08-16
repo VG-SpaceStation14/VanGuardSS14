@@ -1,6 +1,9 @@
 using Content.Shared.Inventory;
 using Content.Shared.Item.ItemToggle.Components;
 using Content.Shared.Mining.Components;
+// VG-Tweak Start
+using Content.Shared._VanGuard.Mining;
+// VG-Tweak End
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
 using Robust.Shared.Network;
@@ -15,6 +18,9 @@ public sealed partial class MiningScannerSystem : EntitySystem
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedContainerSystem _container = default!;
     [Dependency] private InventorySystem _inventory = default!;
+    // VG-Tweak Start
+    [Dependency] private SharedInnateMiningScannerSystem _innateMining = default!;
+    // VG-Tweak End
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -85,6 +91,11 @@ public sealed partial class MiningScannerSystem : EntitySystem
         {
             if (viewer.QueueRemoval)
             {
+                // VG-Tweak Start: keep the viewer alive when the entity has innate mining vision (e.g. dwarves).
+                if (_innateMining.TryRestoreInnateViewer(uid))
+                    continue;
+                // VG-Tweak End
+
                 RemCompDeferred(uid, viewer);
                 continue;
             }

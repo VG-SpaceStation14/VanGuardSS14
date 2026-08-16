@@ -53,6 +53,9 @@
       params:
         volume: -5
   # VG-Tweak End
+  # VG-Tweak Start: ID cards store mining points for the mining shop economy.
+  - type: MiningPoints
+  # VG-Tweak End
 
 # VG-Tweak Start: economy - regular ID cards double as bank cards (wallet UI).
 # Only cards inheriting this get the wallet; prison/Cluwne/syndicate cards do not.

@@ -211,6 +211,23 @@
     containers:
       toggleable-clothing: !type:ContainerSlot {}
   - type: GroupExamine
+  # VG-Tweak Start
+  - type: EmitSoundOnPickup
+    sound:
+      path: /Audio/_VanGuard/Items/handling/backpack_pickup.ogg
+      params:
+        volume: -4
+  - type: EmitSoundOnDrop
+    sound:
+      path: /Audio/_VanGuard/Items/handling/backpack_drop.ogg
+      params:
+        volume: -4
+  - type: EmitSoundOnLand
+    sound:
+      path: /Audio/_VanGuard/Items/handling/backpack_drop.ogg
+      params:
+        volume: -4
+  # VG-Tweak End
   - type: Tag
     tags:
     - Hardsuit

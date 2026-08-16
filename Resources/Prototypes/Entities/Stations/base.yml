@@ -108,12 +108,17 @@
           - type: Gravity
             enabled: true
             inherent: true
+          # VG-Tweak Start
+          - type: IFF
+            flags: None
+            color: "#d67e27"
+          # VG-Tweak End
           protos:
           - VGRoid
         # Corvax-Mapping-Start
         mining: !type:GridSpawnGroup
           paths:
-          - /Maps/Corvax/Shuttles/Tara NT-KA.yml
+          - /Maps/_VanGuard/Shuttles/NT - Eagle.yml # VG-Tweak
         # Corvax-Mapping-End
 
 - type: entity

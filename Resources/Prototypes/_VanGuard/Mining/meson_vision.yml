@@ -1,0 +1,38 @@
+# Action used to toggle meson vision granted by worn meson goggles.
+- type: entity
+  parent: BaseAction
+  id: ActionToggleMesonVision
+  categories: [HideSpawnMenu]
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Interface/Actions/mesonvision.rsi
+    layers:
+    - state: icon_on
+      map: ["enum.ActionVisuals.Icon"]
+    - state: icon_off
+      map: ["enum.ActionVisuals.IconToggled"]
+      visible: false
+  - type: Action
+    useDelay: 0.25
+    itemIconStyle: NoItem
+  - type: InstantAction
+    event: !type:ToggleActionEvent
+
+# Meson goggles. A separate item from the engineering goggles (ClothingEyesGlassesMeson):
+# wearing these grants a toggleable meson vision overlay.
+- type: entity
+  parent: ClothingEyesBase
+  id: ClothingEyesGlassesMesonScanner
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Eyes/Glasses/meson.rsi
+  - type: Clothing
+    sprite: _VanGuard/Clothing/Eyes/Glasses/meson.rsi
+  - type: MesonVisionItem
+  - type: EyeProtection
+  - type: IdentityBlocker
+    coverage: EYES
+  - type: Tag
+    tags:
+    - PetWearable
+    - WhitelistChameleon

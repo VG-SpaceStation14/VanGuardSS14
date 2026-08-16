@@ -157,14 +157,14 @@
 
 - type: technology
   id: MassExcavation
-  position: 2, 3
+  position: 3, 3
   name: research-technology-excavation
   icon:
     sprite: Objects/Tools/handdrilldiamond.rsi
     state: handdrill
   discipline: Industrial
-  tier: 2
-  cost: 12500
+  tier: 3
+  cost: 15000
   recipeUnlocks:
     - OreBagOfHolding
     - MiningDrillDiamond
@@ -173,6 +173,7 @@
     - SalvageExpeditionsComputerCircuitboard # Corvax-Cringe
   technologyPrerequisites:
   - SalvageEquipment
+  - SmartOreBagTech
 
 - type: technology
   id: AtmosphericTech

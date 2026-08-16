@@ -21,6 +21,7 @@
     Steel: 300
     Plastic: 100
     Glass: 100
+    Copper: 100 # VG-Tweak
 
 - type: latheRecipe
   parent: BaseWeaponRecipe
@@ -61,6 +62,7 @@
     Steel: 100
     Plastic: 200
     Glass: 100
+    Copper: 50 # VG-Tweak
 
 - type: latheRecipe
   parent: BasePartRecipe
@@ -70,6 +72,7 @@
     Steel: 100
     Plastic: 200
     Glass: 100
+    Copper: 50 # VG-Tweak
 
 - type: latheRecipe
   parent: BasePartRecipe
@@ -79,6 +82,7 @@
     Steel: 100
     Plastic: 200
     Plasma: 100
+    Copper: 50 # VG-Tweak
 
 - type: latheRecipe
   id: AnomalyLocator
@@ -152,6 +156,7 @@
     Silver: 750
     Plasma: 1500
     Uranium: 150
+    BluespaceCrystal: 250 # VG-Tweak: bluespace crystals focus the subspace fold.
 
 - type: latheRecipe
   parent: ClothingBackpackHolding

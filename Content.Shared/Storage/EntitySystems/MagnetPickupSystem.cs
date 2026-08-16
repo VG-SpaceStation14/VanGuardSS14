@@ -2,6 +2,7 @@ using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Inventory;
 using Content.Shared.Storage.Components;
 using Content.Shared.Whitelist;
+using Content.Shared._VanGuard.Mining.OreBags; // VG-Tweak
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Timing;
 
@@ -84,6 +85,15 @@ public sealed partial class MagnetPickupSystem : EntitySystem
             {
                 if (_whitelistSystem.IsWhitelistFail(storage.Whitelist, near))
                     continue;
+
+                // VG-Tweak Start: smart ore bags skip ores in their ignore list.
+                if (TryComp<SmartOreBagComponent>(uid, out var smartBag))
+                {
+                    var nearMeta = MetaData(near);
+                    if (nearMeta.EntityPrototype != null && smartBag.IgnoredOres.Contains(nearMeta.EntityPrototype.ID))
+                        continue;
+                }
+                // VG-Tweak End
 
                 if (!_physicsQuery.TryGetComponent(near, out var physics) || physics.BodyStatus != BodyStatus.OnGround)
                     continue;

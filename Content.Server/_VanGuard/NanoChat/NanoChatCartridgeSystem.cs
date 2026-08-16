@@ -381,10 +381,10 @@ public sealed partial class NanoChatCartridgeSystem : EntitySystem
             var lookup = AllEntityQuery<NanoChatCardComponent, IdCardComponent>();
             while (lookup.MoveNext(out var cardUid, out var card, out var idCard))
             {
-                // Like the original VG/ADT build: any card that has an owner (a full
-                // name written on its ID) and is currently on this station is listed.
-                // This includes guest IDs such as the Pun Pun badge or a pet monkey's
-                // card, not just IDs that were registered in the station records.
+                // Any card that has an owner (a full name written on its ID) and is
+                // currently on this station is listed. This includes guest IDs such as
+                // the Pun Pun badge or a pet monkey's card, not just IDs that were
+                // registered in the station records.
                 if (!card.ListNumber || card.Number is not { } number || idCard.FullName is not { } fullName)
                     continue;
 

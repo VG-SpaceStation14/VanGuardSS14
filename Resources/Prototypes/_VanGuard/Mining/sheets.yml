@@ -1,0 +1,246 @@
+# Refined copper, zinc and lead: ingots/sheets produced by the ore processor.
+# All of them carry the Material marker so they can be fed into lathes for crafting.
+
+# Stacks
+
+- type: stack
+  parent: BaseMediumStack
+  id: Copper
+  name: stack-copper
+  icon: { sprite: /Textures/Objects/Materials/ingots.rsi, state: copper }
+  spawn: IngotCopper1
+
+- type: stack
+  parent: BaseSheetStack
+  id: Zinc
+  name: stack-zinc
+  icon: { sprite: /Textures/_VanGuard/Objects/Materials/zinc_sheet.rsi, state: zinc }
+  spawn: SheetZinc1
+
+- type: stack
+  parent: BaseSheetStack
+  id: Lead
+  name: stack-lead
+  icon: { sprite: /Textures/_VanGuard/Objects/Materials/lead_sheet.rsi, state: lead }
+  spawn: SheetLead1
+
+# Copper ingot (ingots.rsi already has copper states)
+
+- type: entity
+  parent: IngotBase
+  id: IngotCopper
+  name: copper
+  suffix: Full
+  components:
+  - type: Material
+  - type: PhysicalComposition
+    materialComposition:
+      Copper: 100
+  - type: Stack
+    stackType: Copper
+    baseLayer: base
+    layerStates:
+    - copper
+    - copper_2
+    - copper_3
+  - type: Sprite
+    state: copper_3
+    layers:
+    - state: copper_3
+      map: ["base"]
+  - type: Item
+    heldPrefix: copper
+  - type: Solution
+    solution:
+      reagents:
+      - ReagentId: Copper
+        Quantity: 8.8
+      - ReagentId: Carbon
+        Quantity: 0.9
+
+- type: entity
+  parent: IngotCopper
+  id: IngotCopper1
+  name: copper
+  suffix: Single
+  components:
+  - type: Sprite
+    state: copper
+  - type: Stack
+    count: 1
+
+# Zinc sheet
+
+- type: entity
+  parent: SheetOtherBase
+  id: SheetZinc
+  name: zinc
+  suffix: Full
+  components:
+  - type: Material
+  - type: PhysicalComposition
+    materialComposition:
+      Zinc: 100
+  - type: Stack
+    stackType: Zinc
+    baseLayer: base
+    layerStates:
+    - zinc
+    - zinc_2
+    - zinc_3
+  - type: Sprite
+    sprite: _VanGuard/Objects/Materials/zinc_sheet.rsi
+    state: zinc_3
+    layers:
+    - state: zinc_3
+      map: ["base"]
+  - type: Item
+    sprite: _VanGuard/Objects/Materials/zinc_sheet.rsi
+    heldPrefix: zinc
+  - type: Solution
+    solution:
+      reagents:
+      - ReagentId: Zinc
+        Quantity: 3.3
+      - ReagentId: Carbon
+        Quantity: 0.9
+
+- type: entity
+  parent: SheetZinc
+  id: SheetZinc10
+  name: zinc
+  suffix: 10
+  components:
+  - type: Sprite
+    state: zinc
+  - type: Stack
+    count: 10
+
+- type: entity
+  parent: SheetZinc
+  id: SheetZinc1
+  name: zinc
+  suffix: Single
+  components:
+  - type: Sprite
+    state: zinc
+  - type: Stack
+    count: 1
+
+# Lead sheet
+
+- type: entity
+  parent: SheetMetalBase
+  id: SheetLead
+  name: lead
+  suffix: Full
+  components:
+  - type: Material
+  - type: PhysicalComposition
+    materialComposition:
+      Lead: 100
+  - type: Stack
+    stackType: Lead
+    baseLayer: base
+    layerStates:
+    - lead
+    - lead_2
+    - lead_3
+  - type: Sprite
+    sprite: _VanGuard/Objects/Materials/lead_sheet.rsi
+    state: lead_3
+    layers:
+    - state: lead_3
+      map: ["base"]
+  - type: Item
+    sprite: _VanGuard/Objects/Materials/lead_sheet.rsi
+    heldPrefix: lead
+  - type: Solution
+    solution:
+      reagents:
+      - ReagentId: Lead
+        Quantity: 8.8
+      - ReagentId: Carbon
+        Quantity: 0.9
+
+- type: entity
+  parent: SheetLead
+  id: SheetLead10
+  name: lead
+  suffix: 10
+  components:
+  - type: Sprite
+    state: lead
+  - type: Stack
+    count: 10
+
+- type: entity
+  parent: SheetLead
+  id: SheetLead1
+  name: lead
+  suffix: Single
+  components:
+  - type: Sprite
+    state: lead
+  - type: Stack
+    count: 1
+
+# Bluespace crystal (refined from bluespace ore on the ore processor)
+
+- type: stack
+  parent: BaseMediumStack
+  id: BluespaceCrystal
+  name: stack-bluespace-crystal
+  icon: { sprite: /Textures/_VanGuard/Objects/Materials/bluespace_crystal.rsi, state: bluespace_crystal }
+  spawn: SheetBluespaceCrystal1
+
+- type: entity
+  parent: SheetOtherBase
+  id: SheetBluespaceCrystal
+  name: bluespace crystal
+  suffix: Full
+  components:
+  - type: Material
+  - type: PhysicalComposition
+    materialComposition:
+      BluespaceCrystal: 100
+  - type: Stack
+    stackType: BluespaceCrystal
+    baseLayer: base
+    layerStates:
+    - bluespace_crystal
+    - bluespace_crystal_2
+    - bluespace_crystal_3
+  - type: Sprite
+    sprite: _VanGuard/Objects/Materials/bluespace_crystal.rsi
+    state: bluespace_crystal_3
+    layers:
+    - state: bluespace_crystal_3
+      map: ["base"]
+  - type: Item
+    sprite: _VanGuard/Objects/Materials/bluespace_crystal.rsi
+    heldPrefix: bluespace_crystal
+  - type: StackPrice
+    price: 200 # VG-Tweak: bluespace crystals are expensive.
+
+- type: entity
+  parent: SheetBluespaceCrystal
+  id: SheetBluespaceCrystal10
+  name: bluespace crystal
+  suffix: 10
+  components:
+  - type: Sprite
+    state: bluespace_crystal
+  - type: Stack
+    count: 10
+
+- type: entity
+  parent: SheetBluespaceCrystal
+  id: SheetBluespaceCrystal1
+  name: bluespace crystal
+  suffix: Single
+  components:
+  - type: Sprite
+    state: bluespace_crystal
+  - type: Stack
+    count: 1
