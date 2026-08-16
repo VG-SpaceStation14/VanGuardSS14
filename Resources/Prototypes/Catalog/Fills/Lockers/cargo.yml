@@ -16,13 +16,14 @@
     - id: HandheldGPSBasic
     - id: RadioHandheld
     - id: AppraisalTool
-    - id: FireExtinguisher
-    - id: Flare
+    #- id: FireExtinguisher # VG-Tweak
+    #- id: Flare # VG-Tweak
       prob: 0.3
       rolls: !type:ConstantNumberSelector
         value: 3
     # VG-Tweak Start: mineral scanner and meson goggles for the salvage specialist.
     - id: MineralScanner
+    - id: OreBag
     - id: ClothingEyesGlassesMesonScanner
     # VG-Tweak End
     - id: PlushieLizardJobSalvagespecialist
