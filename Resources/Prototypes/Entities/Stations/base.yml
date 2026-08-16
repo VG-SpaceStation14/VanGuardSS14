@@ -118,7 +118,7 @@
         # Corvax-Mapping-Start
         mining: !type:GridSpawnGroup
           paths:
-          - /Maps/_VanGuard/Shuttles/eagle.yml # VG-Tweak
+          - /Maps/_VanGuard/Shuttles/NT - Eagle.yml # VG-Tweak
         # Corvax-Mapping-End
 
 - type: entity

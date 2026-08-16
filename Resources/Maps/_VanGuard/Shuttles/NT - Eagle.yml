@@ -24,7 +24,7 @@ entities:
   - uid: 1
     components:
     - type: MetaData
-      name: NT Eagle
+      name: NT - Eagle
     - type: Transform
       parent: invalid
       pos: -0.46568897,-0.5138889
