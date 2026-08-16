@@ -557,6 +557,9 @@
   - type: TimedDespawn
     lifetime: 0.22 # roughly 5.5 tiles
   - type: GatheringProjectile
+  # VG-Tweak: proto-kinetic bolts are almost useless in a pressurized atmosphere -
+  # the blast relies on the vacuum expanding. See PressureDamageModifySystem.
+  - type: PressureDamageModify
 
 - type: entity
   id: BulletKineticShuttle
