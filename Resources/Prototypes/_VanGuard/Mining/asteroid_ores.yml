@@ -34,6 +34,7 @@
     oreChance: 1.0
     currentOre: OreCopper
   - type: Sprite
+    sprite: Structures/Walls/rock.rsi
     layers:
     - state: rock_asteroid
     - map: [ "enum.EdgeLayer.South" ]
@@ -45,6 +46,7 @@
     - map: [ "enum.EdgeLayer.West" ]
       state: rock_asteroid_west
     - state: rock_copper
+      sprite: Structures/Walls/rock.rsi
       visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
 
@@ -58,6 +60,7 @@
     oreChance: 1.0
     currentOre: OreZinc
   - type: Sprite
+    sprite: Structures/Walls/rock.rsi
     layers:
     - state: rock_asteroid
     - map: [ "enum.EdgeLayer.South" ]
@@ -69,6 +72,7 @@
     - map: [ "enum.EdgeLayer.West" ]
       state: rock_asteroid_west
     - state: rock_zinc
+      sprite: Structures/Walls/rock.rsi
       visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
 
@@ -82,6 +86,7 @@
     oreChance: 1.0
     currentOre: OreLead
   - type: Sprite
+    sprite: Structures/Walls/rock.rsi
     layers:
     - state: rock_asteroid
     - map: [ "enum.EdgeLayer.South" ]
@@ -93,6 +98,7 @@
     - map: [ "enum.EdgeLayer.West" ]
       state: rock_asteroid_west
     - state: rock_lead
+      sprite: Structures/Walls/rock.rsi
       visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
 
@@ -141,6 +147,7 @@
     oreChance: 1.0
     currentOre: OreBluespace
   - type: Sprite
+    sprite: Structures/Walls/rock.rsi
     layers:
     - state: rock_asteroid
     - map: [ "enum.EdgeLayer.South" ]
@@ -152,6 +159,7 @@
     - map: [ "enum.EdgeLayer.West" ]
       state: rock_asteroid_west
     - state: rock_bluespace
+      sprite: Structures/Walls/rock.rsi
       visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
 
@@ -204,6 +212,7 @@
     oreChance: 1.0
     currentOre: OreCopper
   - type: Sprite
+    sprite: Structures/Walls/rock.rsi
     layers:
     - state: ironrock
     - map: [ "enum.EdgeLayer.South" ]
@@ -215,6 +224,7 @@
     - map: [ "enum.EdgeLayer.West" ]
       state: ironrock_west
     - state: rock_copper
+      sprite: Structures/Walls/rock.rsi
       visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
 
@@ -228,6 +238,7 @@
     oreChance: 1.0
     currentOre: OreZinc
   - type: Sprite
+    sprite: Structures/Walls/rock.rsi
     layers:
     - state: ironrock
     - map: [ "enum.EdgeLayer.South" ]
@@ -239,6 +250,7 @@
     - map: [ "enum.EdgeLayer.West" ]
       state: ironrock_west
     - state: rock_zinc
+      sprite: Structures/Walls/rock.rsi
       visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
 
@@ -252,6 +264,7 @@
     oreChance: 1.0
     currentOre: OreLead
   - type: Sprite
+    sprite: Structures/Walls/rock.rsi
     layers:
     - state: ironrock
     - map: [ "enum.EdgeLayer.South" ]
@@ -263,6 +276,7 @@
     - map: [ "enum.EdgeLayer.West" ]
       state: ironrock_west
     - state: rock_lead
+      sprite: Structures/Walls/rock.rsi
       visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
 
