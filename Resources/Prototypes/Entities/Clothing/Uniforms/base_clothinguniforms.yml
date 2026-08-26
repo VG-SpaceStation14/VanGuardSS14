@@ -55,7 +55,6 @@
     slots: [innerclothing]
     femaleMask: UniformTop
 
-
 - type: entity
   abstract: true
   parent: UnsensoredClothingUniformBase

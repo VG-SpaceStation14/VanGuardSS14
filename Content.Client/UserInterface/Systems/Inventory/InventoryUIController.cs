@@ -372,7 +372,7 @@ public sealed partial class InventoryUIController : UIController, IOnStateEntere
                 if (!slot.InsertOnInteract)
                     continue;
 
-                if (!itemSlotsSys.CanInsert(container.ContainedEntity.Value, held.Value, null, slot))
+                if (!itemSlotsSys.CanInsert(container.ContainedEntity.Value, slot, held.Value, null))
                     continue;
                 fits = true;
                 break;
