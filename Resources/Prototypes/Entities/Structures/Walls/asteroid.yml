@@ -130,7 +130,6 @@
     layers:
     - state: rock_coal
       sprite: Structures/Walls/stone-ore.rsi
-      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
 
 - type: entity
@@ -146,7 +145,6 @@
     layers:
     - state: rock_gold
       sprite: Structures/Walls/stone-ore.rsi
-      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
 
 - type: entity
@@ -162,7 +160,6 @@
     layers:
     - state: rock_diamond
       sprite: Structures/Walls/stone-ore.rsi
-      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
 
 - type: entity
@@ -178,7 +175,6 @@
     layers:
     - state: rock_phoron
       sprite: Structures/Walls/stone-ore.rsi
-      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
 
 - type: entity
@@ -194,7 +190,6 @@
     layers:
     - state: rock_quartz
       sprite: Structures/Walls/stone-ore.rsi
-      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
 
 - type: entity
@@ -210,7 +205,6 @@
     layers:
     - state: rock_silver
       sprite: Structures/Walls/stone-ore.rsi
-      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
 
 - type: entity
@@ -226,7 +220,6 @@
     layers:
     - state: rock_tin
       sprite: Structures/Walls/stone-ore.rsi
-      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
 
 - type: entity
@@ -242,7 +235,6 @@
     layers:
     - state: rock_uranium
       sprite: Structures/Walls/stone-ore.rsi
-      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
 
 - type: entity
@@ -258,7 +250,6 @@
     layers:
     - state: rock_salt
       sprite: Structures/Walls/stone-ore.rsi
-      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
 
 - type: entity
@@ -274,7 +265,6 @@
     layers:
     - state: rock_artifact_fragment
       sprite: Structures/Walls/stone-ore.rsi
-      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
 
 - type: entity
@@ -418,7 +408,6 @@
     layers:
     - state: rock_bananium
       sprite: Structures/Walls/stone-ore.rsi
-      visible: false
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
 # VG-Tweak End
 
@@ -685,7 +674,6 @@
     layers:
     - state: rock_bananium
       sprite: Structures/Walls/stone-ore.rsi
-      visible: false
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
 # VG-Tweak End
 
@@ -743,6 +731,23 @@
   parent: [ BaseVeinSalt, WallRockSnow ]
   id: WallRockSnowSalt
 
+# VG-Tweak Start
+- type: entity
+  id: WallRockSnowBananium
+  parent: WallRockSnow
+  description: An ore vein rich with bananium.
+  suffix: Bananium
+  components:
+  - type: OreVein
+    oreChance: 1.0
+    currentOre: OreBananium
+  - type: Sprite
+    layers:
+    - state: rock_bananium
+      sprite: Structures/Walls/stone-ore.rsi
+      map: [ "enum.MiningScannerVisualLayers.Overlay" ]
+# VG-Tweak End
+
 #endregion
 #region Wall Rock (Sand)
 
@@ -796,6 +801,23 @@
 - type: entity
   parent: [ BaseVeinSalt, WallRockSand ]
   id: WallRockSandSalt
+
+# VG-Tweak Start
+- type: entity
+  id: WallRockSandBananium
+  parent: WallRockSand
+  description: An ore vein rich with bananium.
+  suffix: Bananium
+  components:
+  - type: OreVein
+    oreChance: 1.0
+    currentOre: OreBananium
+  - type: Sprite
+    layers:
+    - state: rock_bananium
+      sprite: Structures/Walls/stone-ore.rsi
+      map: [ "enum.MiningScannerVisualLayers.Overlay" ]
+# VG-Tweak End
 
 #endregion
 #region Wall Rock (Chromite)
@@ -851,226 +873,10 @@
   parent: [ BaseVeinSalt, WallRockChromite ]
   id: WallRockChromiteSalt
 
-#endregion
-
-# Andesite variants
+# VG-Tweak Start
 - type: entity
-  id: WallRockAndesite
-  name: andesite
-  parent: WallRock
-  components:
-  - type: Icon
-    sprite: Structures/Walls/rock.rsi
-    state: rock_andesite
-  - type: Sprite
-    sprite: Structures/Walls/rock.rsi
-    layers:
-    - state: rock_andesite
-    - map: [ "enum.EdgeLayer.South" ]
-      state: rock_andesite_south
-    - map: [ "enum.EdgeLayer.East" ]
-      state: rock_andesite_east
-    - map: [ "enum.EdgeLayer.North" ]
-      state: rock_andesite_north
-    - map: [ "enum.EdgeLayer.West" ]
-      state: rock_andesite_west
-
-- type: entity
-  id: WallRockAndesiteCoal
-  parent: WallRockAndesite
-  description: An ore vein rich with coal.
-  suffix: Coal
-  components:
-  - type: OreVein
-    oreChance: 1.0
-    currentOre: OreCoal
-  - type: Sprite
-    layers:
-    - state: rock_andesite
-    - map: [ "enum.EdgeLayer.South" ]
-      state: rock_andesite_south
-    - map: [ "enum.EdgeLayer.East" ]
-      state: rock_andesite_east
-    - map: [ "enum.EdgeLayer.North" ]
-      state: rock_andesite_north
-    - map: [ "enum.EdgeLayer.West" ]
-      state: rock_andesite_west
-    - state: rock_coal
-      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
-      map: [ "enum.MiningScannerVisualLayers.Overlay" ]
-
-- type: entity
-  id: WallRockAndesiteGold
-  parent: WallRockAndesite
-  description: An ore vein rich with gold.
-  suffix: Gold
-  components:
-  - type: OreVein
-    oreChance: 1.0
-    currentOre: OreGold
-  - type: Sprite
-    layers:
-    - state: rock_andesite
-    - map: [ "enum.EdgeLayer.South" ]
-      state: rock_andesite_south
-    - map: [ "enum.EdgeLayer.East" ]
-      state: rock_andesite_east
-    - map: [ "enum.EdgeLayer.North" ]
-      state: rock_andesite_north
-    - map: [ "enum.EdgeLayer.West" ]
-      state: rock_andesite_west
-    - state: rock_gold
-      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
-      map: [ "enum.MiningScannerVisualLayers.Overlay" ]
-
-- type: entity
-  id: WallRockAndesiteDiamond
-  parent: WallRockAndesite
-  description: An ore vein rich with diamonds.
-  suffix: Diamond
-  components:
-  - type: OreVein
-    oreChance: 1.0
-    currentOre: OreDiamond
-  - type: Sprite
-    layers:
-    - state: rock_andesite
-    - map: [ "enum.EdgeLayer.South" ]
-      state: rock_andesite_south
-    - map: [ "enum.EdgeLayer.East" ]
-      state: rock_andesite_east
-    - map: [ "enum.EdgeLayer.North" ]
-      state: rock_andesite_north
-    - map: [ "enum.EdgeLayer.West" ]
-      state: rock_andesite_west
-    - state: rock_diamond
-      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
-      map: [ "enum.MiningScannerVisualLayers.Overlay" ]
-
-- type: entity
-  id: WallRockAndesitePlasma
-  parent: WallRockAndesite
-  description: An ore vein rich with plasma.
-  suffix: Plasma
-  components:
-  - type: OreVein
-    oreChance: 1.0
-    currentOre: OrePlasma
-  - type: Sprite
-    layers:
-    - state: rock_andesite
-    - map: [ "enum.EdgeLayer.South" ]
-      state: rock_andesite_south
-    - map: [ "enum.EdgeLayer.East" ]
-      state: rock_andesite_east
-    - map: [ "enum.EdgeLayer.North" ]
-      state: rock_andesite_north
-    - map: [ "enum.EdgeLayer.West" ]
-      state: rock_andesite_west
-    - state: rock_phoron
-      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
-      map: [ "enum.MiningScannerVisualLayers.Overlay" ]
-
-- type: entity
-  id: WallRockAndesiteQuartz
-  parent: WallRockAndesite
-  description: An ore vein rich with quartz.
-  suffix: Quartz
-  components:
-  - type: OreVein
-    oreChance: 1.0
-    currentOre: OreSpaceQuartz
-  - type: Sprite
-    layers:
-    - state: rock_andesite
-    - map: [ "enum.EdgeLayer.South" ]
-      state: rock_andesite_south
-    - map: [ "enum.EdgeLayer.East" ]
-      state: rock_andesite_east
-    - map: [ "enum.EdgeLayer.North" ]
-      state: rock_andesite_north
-    - map: [ "enum.EdgeLayer.West" ]
-      state: rock_andesite_west
-    - state: rock_quartz
-      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
-      map: [ "enum.MiningScannerVisualLayers.Overlay" ]
-
-- type: entity
-  id: WallRockAndesiteSilver
-  parent: WallRockAndesite
-  description: An ore vein rich with silver.
-  suffix: Silver
-  components:
-  - type: OreVein
-    oreChance: 1.0
-    currentOre: OreSilver
-  - type: Sprite
-    layers:
-    - state: rock_andesite
-    - map: [ "enum.EdgeLayer.South" ]
-      state: rock_andesite_south
-    - map: [ "enum.EdgeLayer.East" ]
-      state: rock_andesite_east
-    - map: [ "enum.EdgeLayer.North" ]
-      state: rock_andesite_north
-    - map: [ "enum.EdgeLayer.West" ]
-      state: rock_andesite_west
-    - state: rock_silver
-      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
-      map: [ "enum.MiningScannerVisualLayers.Overlay" ]
-
-- type: entity
-  id: WallRockAndesiteTin
-  parent: WallRockAndesite
-  description: An ore vein rich with iron.
-  suffix: Iron
-  components:
-  - type: OreVein
-    oreChance: 1.0
-    currentOre: OreSteel
-  - type: Sprite
-    layers:
-    - state: rock_andesite
-    - map: [ "enum.EdgeLayer.South" ]
-      state: rock_andesite_south
-    - map: [ "enum.EdgeLayer.East" ]
-      state: rock_andesite_east
-    - map: [ "enum.EdgeLayer.North" ]
-      state: rock_andesite_north
-    - map: [ "enum.EdgeLayer.West" ]
-      state: rock_andesite_west
-    - state: rock_tin
-      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
-      map: [ "enum.MiningScannerVisualLayers.Overlay" ]
-
-- type: entity
-  id: WallRockAndesiteUranium
-  parent: WallRockAndesite
-  description: An ore vein rich with uranium.
-  suffix: Uranium
-  components:
-  - type: OreVein
-    oreChance: 1.0
-    currentOre: OreUranium
-  - type: Sprite
-    layers:
-    - state: rock_andesite
-    - map: [ "enum.EdgeLayer.South" ]
-      state: rock_andesite_south
-    - map: [ "enum.EdgeLayer.East" ]
-      state: rock_andesite_east
-    - map: [ "enum.EdgeLayer.North" ]
-      state: rock_andesite_north
-    - map: [ "enum.EdgeLayer.West" ]
-      state: rock_andesite_west
-    - state: rock_uranium
-      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
-      map: [ "enum.MiningScannerVisualLayers.Overlay" ]
-
-
-- type: entity
-  id: WallRockAndesiteBananium
-  parent: WallRockAndesite
+  id: WallRockChromiteBananium
+  parent: WallRockChromite
   description: An ore vein rich with bananium.
   suffix: Bananium
   components:
@@ -1079,63 +885,9 @@
     currentOre: OreBananium
   - type: Sprite
     layers:
-    - state: rock_andesite
-    - map: [ "enum.EdgeLayer.South" ]
-      state: rock_andesite_south
-    - map: [ "enum.EdgeLayer.East" ]
-      state: rock_andesite_east
-    - map: [ "enum.EdgeLayer.North" ]
-      state: rock_andesite_north
-    - map: [ "enum.EdgeLayer.West" ]
-      state: rock_andesite_west
     - state: rock_bananium
-      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
+      sprite: Structures/Walls/stone-ore.rsi
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
+# VG-Tweak End
 
-- type: entity
-  id: WallRockAndesiteArtifactFragment
-  parent: WallRockAndesite
-  description: A rock wall. What's that sticking out of it?
-  suffix: Artifact Fragment
-  components:
-  - type: OreVein
-    oreChance: 1.0
-    currentOre: OreArtifactFragment
-  - type: Sprite
-    layers:
-    - state: rock_andesite
-    - map: [ "enum.EdgeLayer.South" ]
-      state: rock_andesite_south
-    - map: [ "enum.EdgeLayer.East" ]
-      state: rock_andesite_east
-    - map: [ "enum.EdgeLayer.North" ]
-      state: rock_andesite_north
-    - map: [ "enum.EdgeLayer.West" ]
-      state: rock_andesite_west
-    - state: rock_artifact_fragment
-      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
-      map: [ "enum.MiningScannerVisualLayers.Overlay" ]
-
-- type: entity
-  id: WallRockAndesiteSalt
-  parent: WallRockAndesite
-  description: An ore vein rich with salt.
-  suffix: Salt
-  components:
-  - type: OreVein
-    oreChance: 1.0
-    currentOre: OreSalt
-  - type: Sprite
-    layers:
-    - state: rock_andesite
-    - map: [ "enum.EdgeLayer.South" ]
-      state: rock_andesite_south
-    - map: [ "enum.EdgeLayer.East" ]
-      state: rock_andesite_east
-    - map: [ "enum.EdgeLayer.North" ]
-      state: rock_andesite_north
-    - map: [ "enum.EdgeLayer.West" ]
-      state: rock_andesite_west
-    - state: rock_salt
-      visible: false # VG-Tweak: ore hidden by default; revealed by the mining scanner overlay
-      map: [ "enum.MiningScannerVisualLayers.Overlay" ]
+#endregion
