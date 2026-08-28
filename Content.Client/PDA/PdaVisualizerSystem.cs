@@ -5,7 +5,7 @@ using Robust.Shared.Utility; // VG-Tweak
 
 namespace Content.Client.PDA;
 
-public sealed class PdaVisualizerSystem : VisualizerSystem<PdaVisualsComponent>
+public sealed partial class PdaVisualizerSystem : VisualizerSystem<PdaVisualsComponent>
 {
     protected override void OnAppearanceChange(EntityUid uid, PdaVisualsComponent comp, ref AppearanceChangeEvent args)
     {
