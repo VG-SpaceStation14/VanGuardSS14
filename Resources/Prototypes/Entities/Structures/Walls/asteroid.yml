@@ -675,7 +675,6 @@
   - type: EntityRemap
     mask:
       AsteroidRock: AsteroidRockBananium
-      WallRockBasalt: WallRockBasaltBananium
       WallRockChromite: WallRockChromiteBananium
       WallRockSand: WallRockSandBananium
       WallRockSnow: WallRockSnowBananium
