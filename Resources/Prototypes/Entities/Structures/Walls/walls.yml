@@ -70,8 +70,6 @@
   id: WallDiagonalBase
   suffix: Diagonal
   components:
-  # VG-Tweak: allows RCD/RPD wall-mounted devices on diagonal walls too.
-  - type: CanBuildWallOnTop
   - type: Tag
     tags:
     - Diagonal
@@ -298,37 +296,6 @@
     resistance: 5
 
 - type: entity
-  parent: BaseStructureWall
-  id: WallPlastic
-  name: plastic wall
-  components:
-  - type: Sprite
-    sprite: Structures/Walls/plastic.rsi
-  - type: Icon
-    sprite: Structures/Walls/plastic.rsi
-  - type: Construction
-    graph: Girder
-    node: plasticWall
-  - type: RCDDeconstructable
-    cost: 6
-    delay: 8
-    fx: EffectRCDDeconstruct8
-  - type: Damageable
-    damageModifierSet: PlasmaMod
-  - type: Destructible
-    thresholds:
-    - trigger: *DamageWallWeak
-      behaviors:
-      - *ChangeNodeGirder
-      - *SoundMetalSlam
-      - !type:SpawnEntitiesBehavior
-        spawn:
-          SheetPlasma1: *BaseWallSpawn
-  - type: IconSmooth
-    key: walls
-    base: plastic
-
-- type: entity
   parent: BaseWall
   id: WallPlastitaniumIndestructible
   name: plastitanium wall
@@ -532,31 +499,6 @@
   - type: StaticPrice
     price: 150
 
-# Riveting (VG: kept wall, upstream replaced it with marble)
-- type: entity
-  parent: BaseStructureWall
-  id: WallRiveted
-  name: riveted wall
-  components:
-  - type: Sprite
-    sprite: Structures/Walls/riveted.rsi
-  - type: Icon
-    sprite: Structures/Walls/riveted.rsi
-  - type: Damageable
-    damageModifierSet: RockMod
-  - type: Destructible
-    thresholds:
-    - trigger: *DamageWallStrong
-      behaviors:
-      - *SoundMetalSlam
-      - *SpawnGirder
-      - *SpawnPlasteel
-  - type: IconSmooth
-    key: walls
-    base: riveted
-  - type: StaticPrice
-    price: 150
-
 - type: entity
   parent: BaseWall
   id: WallMarbleIndestructible
@@ -584,7 +526,6 @@
   - type: RadiationBlocker
     resistance: 5
 
-# Sandstone (VG: kept wall, upstream replaced it with marble)
 - type: entity
   parent: [ BaseWall, StructureHealthWallWeak ]
   id: WallSilver
@@ -1118,143 +1059,6 @@
   - type: IconSmooth
     key: walls
     base: concrete
-
-# Cobblebrick (VG: kept walls, upstream removed them in favor of concrete)
-- type: entity
-  parent: BaseStructureWall
-  id: WallCobblebrick
-  name: cobblestone brick wall
-  description: Stone by stone, perfectly fitted together to form a wall.
-  components:
-  - type: Sprite
-    sprite: Structures/Walls/cobblebrick.rsi
-  - type: Icon
-    sprite: Structures/Walls/cobblebrick.rsi
-  - type: RCDDeconstructable
-    cost: 6
-    delay: 8
-    fx: EffectRCDDeconstruct8
-  - type: Damageable
-    damageModifierSet: RockMod
-  - type: Destructible
-    thresholds:
-    - trigger: *DamageBarrierStrong
-      behaviors:
-      - *SoundBreakStone
-  - type: IconSmooth
-    key: cobblebricks
-    base: cobblebrick
-
-- type: entity
-  parent: WallCobblebrick
-  id: WallBasaltCobblebrick
-  name: basalt brick wall
-  components:
-  - type: Sprite
-    sprite: Structures/Walls/cobblebrick_basalt.rsi
-  - type: Icon
-    sprite: Structures/Walls/cobblebrick_basalt.rsi
-  - type: IconSmooth
-    key: cobblebricks
-    base: cobblebrick
-
-- type: entity
-  parent: WallCobblebrick
-  id: WallSnowCobblebrick
-  name: snow brick wall
-  description: A cold, not-so-impenetrable wall.
-  components:
-  - type: Sprite
-    sprite: Structures/Walls/cobblebrick_snow.rsi
-  - type: Icon
-    sprite: Structures/Walls/cobblebrick_snow.rsi
-  - type: IconSmooth
-    key: cobblebricks
-    base: cobblebrick
-
-- type: entity
-  parent: WallCobblebrick
-  id: WallAsteroidCobblebrick
-  name: asteroid stone brick wall
-  components:
-  - type: Sprite
-    sprite: Structures/Walls/cobblebrick_asteroid.rsi
-  - type: Icon
-    sprite: Structures/Walls/cobblebrick_asteroid.rsi
-  - type: IconSmooth
-    key: cobblebricks
-    base: cobblebrick
-
-- type: entity
-  parent: WallCobblebrick
-  id: WallSandCobblebrick
-  name: sandstone brick wall
-  components:
-  - type: Sprite
-    sprite: Structures/Walls/cobblebrick_sand.rsi
-  - type: Icon
-    sprite: Structures/Walls/cobblebrick_sand.rsi
-  - type: IconSmooth
-    key: cobblebricks
-    base: cobblebrick
-
-- type: entity
-  parent: WallCobblebrick
-  id: WallChromiteCobblebrick
-  name: chromite brick wall
-  components:
-  - type: Sprite
-    sprite: Structures/Walls/cobblebrick_chromite.rsi
-  - type: Icon
-    sprite: Structures/Walls/cobblebrick_chromite.rsi
-  - type: IconSmooth
-    key: cobblebricks
-    base: cobblebrick
-
-- type: entity
-  parent: WallCobblebrick
-  id: WallAndesiteCobblebrick
-  name: andesite brick wall
-  components:
-  - type: Sprite
-    sprite: Structures/Walls/cobblebrick_andesite.rsi
-  - type: Icon
-    sprite: Structures/Walls/cobblebrick_andesite.rsi
-  - type: IconSmooth
-    key: cobblebricks
-    base: cobblebrick
-
-- type: entity
-  parent: WallCobblebrick
-  id: WallIronsandCobblebrick
-  name: ironsand brick wall
-  description: The pale, rounded shapes that make up this wall look strikingly different from the iron sands they were allegedly made from.
-  components:
-  - type: Sprite
-    sprite: Structures/Walls/cobblebrick_ironsand.rsi
-  - type: Icon
-    sprite: Structures/Walls/cobblebrick_ironsand.rsi
-  - type: IconSmooth
-    key: cobblebricks
-    base: cobblebrick
-  - type: RCDDeconstructable
-    deconstructable: false
-  - type: Destructible
-    thresholds:
-    - trigger:
-        !type:DamageTrigger
-        damage: 100
-      behaviors:
-      - !type:PlaySoundBehavior
-        sound:
-          path: /Audio/Effects/break_stone.ogg
-          params:
-            volume: -6
-      - !type:SpawnEntitiesBehavior
-        spawn:
-          SteelOre1:
-            min: 0
-            max: 2
 
 # Cardboard
 

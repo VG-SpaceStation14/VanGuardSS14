@@ -404,6 +404,24 @@
   parent: [ BaseVeinRandom, AsteroidRock ]
   id: AsteroidRockMining
 
+# VG-Tweak Start
+- type: entity
+  id: AsteroidRockBananium
+  parent: AsteroidRock
+  description: An ore vein rich with bananium.
+  suffix: Bananium
+  components:
+  - type: OreVein
+    oreChance: 1.0
+    currentOre: OreBananium
+  - type: Sprite
+    layers:
+    - state: rock_bananium
+      sprite: Structures/Walls/stone-ore.rsi
+      visible: false
+      map: [ "enum.MiningScannerVisualLayers.Overlay" ]
+# VG-Tweak End
+
 #endregion
 #region Iron Rock
 
@@ -466,6 +484,34 @@
 - type: entity
   parent: [ BaseRockGibtonite, BaseIronRockVisuals, IronRock ]
   id: IronRockGibtonite
+
+# VG-Tweak Start: volatile gibtonite for the planetoid (VGRoid). Explodes IMMEDIATELY on ANY
+# damage (1) - no timer, no beeping: touch it and it goes BOOM.
+- type: entity
+  parent: IronRockGibtonite
+  id: IronRockGibtoniteVolatile
+  suffix: Volatile
+  components:
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 1
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: GlassBreak
+      - !type:TriggerBehavior
+        keyOut: timer
+    - trigger:
+        !type:DamageTrigger
+        damage: 500
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:TriggerBehavior
+        keyOut: timer
+# VG-Tweak End
 
 - type: entity
   parent: [ BaseVeinDiamond, IronRock ]
@@ -618,6 +664,31 @@
       WallRockChromite: WallRockChromiteSalt
       WallRockSand: WallRockSandSalt
       WallRockSnow: WallRockSnowSalt
+
+# VG-Tweak Start
+- type: entity
+  id: WallRockBananium
+  parent: WallRock
+  description: An ore vein rich with bananium.
+  suffix: Bananium
+  components:
+  - type: EntityRemap
+    mask:
+      AsteroidRock: AsteroidRockBananium
+      WallRockBasalt: WallRockBasaltBananium
+      WallRockChromite: WallRockChromiteBananium
+      WallRockSand: WallRockSandBananium
+      WallRockSnow: WallRockSnowBananium
+  - type: OreVein
+    oreChance: 1.0
+    currentOre: OreBananium
+  - type: Sprite
+    layers:
+    - state: rock_bananium
+      sprite: Structures/Walls/stone-ore.rsi
+      visible: false
+      map: [ "enum.MiningScannerVisualLayers.Overlay" ]
+# VG-Tweak End
 
 #endregion
 #region Wall Rock (Snow)
