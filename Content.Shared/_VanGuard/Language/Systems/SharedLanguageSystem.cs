@@ -14,13 +14,11 @@ public abstract partial class SharedLanguageSystem : EntitySystem
     /// <summary>
     ///     Fallback language used whenever an entity has no explicit selection.
     /// </summary>
-    [ValidatePrototypeId<LanguagePrototype>]
     public static readonly string CommonLanguageId = "GalacticCommon";
 
     /// <summary>
     ///     Universal language understood by every entity.
     /// </summary>
-    [ValidatePrototypeId<LanguagePrototype>]
     public static readonly string UniversalLanguageId = "Universal";
 
     public override void Initialize()

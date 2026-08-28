@@ -9,6 +9,7 @@ using Content.Shared.Ghost.Components;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Shared.Configuration;
+using Content.Shared.DisplacementMap;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 

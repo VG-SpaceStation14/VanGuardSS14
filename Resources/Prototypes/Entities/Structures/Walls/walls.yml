@@ -298,7 +298,7 @@
     resistance: 5
 
 - type: entity
-  parent: BaseStationWall
+  parent: BaseStructureWall
   id: WallPlastic
   name: plastic wall
   components:
@@ -534,7 +534,7 @@
 
 # Riveting (VG: kept wall, upstream replaced it with marble)
 - type: entity
-  parent: BaseStationWall
+  parent: BaseStructureWall
   id: WallRiveted
   name: riveted wall
   components:
@@ -1121,7 +1121,7 @@
 
 # Cobblebrick (VG: kept walls, upstream removed them in favor of concrete)
 - type: entity
-  parent: BaseStationWall
+  parent: BaseStructureWall
   id: WallCobblebrick
   name: cobblestone brick wall
   description: Stone by stone, perfectly fitted together to form a wall.

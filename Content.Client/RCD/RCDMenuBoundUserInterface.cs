@@ -148,7 +148,14 @@ public sealed partial class RCDMenuBoundUserInterface : BoundUserInterface
         }
         else
         {
-            tooltip = Loc.GetString(proto.SetName);
+            if (string.IsNullOrEmpty(proto.SetName))
+            {
+                tooltip = proto.ID.ToString();
+            }
+            else
+            {
+                tooltip = Loc.GetString(proto.SetName);
+            }
         }
 
         tooltip = OopsConcat(char.ToUpper(tooltip[0]).ToString(), tooltip.Remove(0, 1));

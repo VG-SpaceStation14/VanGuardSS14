@@ -34,26 +34,6 @@
     - state: display-charging
       shader: unshaded
       map: ["enum.ApcVisualLayers.ChargeState"]
-    - state: lock0-unlocked # VG-Tweak
-      shader: unshaded
-      map: ["enum.ApcVisualLayers.InterfaceLock"]
-      visible: true # VG-Tweak
-    - state: lock1-unlocked # VG-Tweak
-      shader: unshaded
-      map: ["enum.ApcVisualLayers.PanelLock"]
-      visible: true # Ganimed-Resprite-Tweak
-    - state: channel0-auto_on # VG-Tweak
-      shader: unshaded
-      map: ["enum.ApcVisualLayers.Equipment"]
-      visible: true # Ganimed-Resprite-Tweak
-    - state: channel1-auto_on # VG-Tweak
-      shader: unshaded
-      map: ["enum.ApcVisualLayers.Lighting"]
-      visible: true # Ganimed-Resprite-Tweak
-    - state: channel2-auto_on # VG-Tweak
-      shader: unshaded
-      map: ["enum.ApcVisualLayers.Environment"]
-      visible: true # VG-Tweak
     - state: channel-on
       shader: unshaded
       map: ["enum.ApcVisualLayers.Equipment"]
