@@ -288,7 +288,7 @@
 
 #Syndicate
 - type: entity
-  parent: [ClothingBackpack, BaseSyndicateContraband]
+  parent: [ClothingBackpack] # Corvax-Contraband BaseSyndicateContraband
   id: ClothingBackpackSyndicate
   name: syndicate backpack
   description:
