@@ -8,9 +8,9 @@
   # VG-Tweak Start
   - type: Appearance
     appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda_base
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda_base
   - type: Sprite
     sprite: _VanGuard/Objects/Devices/pda.rsi
     layers:
@@ -416,15 +416,13 @@
     id: ServiceWorkerIDCard
   - type: Appearance
     appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-internservice
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-internservice
   - type: PdaBorderColor
     borderColor: "#717059"
     accentVColor: "#00cc35"
   # VG-Tweak End
-  - type: Pda
-    id: ServiceWorkerIDCard
 
 - type: entity
   parent: [BaseCorvaxContraband431JobsChef, BasePDA] # Corvax-Contraband
@@ -1601,14 +1599,12 @@
     id: MusicianIDCard
   - type: Appearance
     appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-musician
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-musician
   - type: PdaBorderColor
     borderColor: "#333333"
   # VG-Tweak End
-  - type: Pda
-    id: MusicianIDCard
   - type: Instrument
     allowPercussion: false
     handheld: true
@@ -1882,16 +1878,14 @@
     id: ERTLeaderIDCard
   - type: Appearance
     appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-ert
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-ert
   - type: PdaBorderColor
     borderColor: "#A32D26"
     accentHColor: "#447987"
     accentVColor: "#447987"
   # VG-Tweak End
-  - type: Pda
-    id: ERTLeaderIDCard
   - type: EntityTableContainerFill
     containers:
       preinstalled-program-container: !type:AllSelector
@@ -2022,8 +2016,6 @@
     accentHColor: "#447987"
     accentVColor: "#447987"
   # VG-Tweak End
-  - type: Pda
-    id: CBURNIDcard
 
 - type: entity
   parent: BasePDA
@@ -2062,15 +2054,13 @@
     id: PsychologistIDCard
   - type: Appearance
     appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-medical
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-medical
   - type: PdaBorderColor
     borderColor: "#d7d7d0"
     accentVColor: "#447987"
   # VG-Tweak End
-  - type: Pda
-    id: PsychologistIDCard
 
 - type: entity
   parent: BasePDA
@@ -2109,15 +2099,13 @@
     id: TramDriverIDCard
   - type: Appearance
     appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-tramdriver
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-tramdriver
   - type: PdaBorderColor
     borderColor: "#454a50"
     accentVColor: "#ffc500"
   # VG-Tweak End
-  - type: Pda
-    id: TramDriverIDCard
 
 - type: entity
   parent: BasePDA
@@ -2431,16 +2419,14 @@
     id: SeniorResearcherIDCard
   - type: Appearance
     appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-seniorresearcher
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-seniorresearcher
   - type: PdaBorderColor
     borderColor: "#d7d7d0"
     accentHColor: "#8900c9"
     accentVColor: "#8900c9"
   # VG-Tweak End
-  - type: Pda
-    id: SeniorResearcherIDCard
 
 - type: entity
   parent: BaseMedicalPDA
@@ -2481,16 +2467,14 @@
     id: SeniorPhysicianIDCard
   - type: Appearance
     appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-seniorphysician
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-seniorphysician
   - type: PdaBorderColor
     borderColor: "#d7d7d0"
     accentHColor: "#447987"
     accentVColor: "#B34200"
   # VG-Tweak End
-  - type: Pda
-    id: SeniorPhysicianIDCard
 
 - type: entity
   parent: BaseSecurityPDA
@@ -2529,15 +2513,13 @@
     id: SeniorOfficerIDCard
   - type: Appearance
     appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda-seniorofficer
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-seniorofficer
   - type: PdaBorderColor
     borderColor: "#A32D26"
     accentVColor: "#DFDFDF"
   # VG-Tweak End
-  - type: Pda
-    id: SeniorOfficerIDCard
 
 - type: entity
   parent: [BaseCorvaxContraband431JobsCargoTechnician, BasePDA] # Corvax-Contraband

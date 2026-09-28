@@ -89,10 +89,9 @@
   description: Corporation and profit are best friends.
   components:
   # VG-Tweak Start
-    severity: Corvax431
-    allowedJobs: [Magistrate]
   - type: Sprite
     layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
       state: pda_base
       color: "#6f6192"
     - state: pda_buttons
@@ -111,6 +110,12 @@
   - type: PdaBorderColor
     borderColor: "#6f6192"
   # VG-Tweak End
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [Magistrate]
+  # Corvax-Contraband-end
   - type: Pda
     id: MagistrateIDCard
     penSlot:
