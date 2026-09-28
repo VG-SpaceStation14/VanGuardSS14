@@ -1,7 +1,7 @@
 using Content.Server._VanGuard.Economy.Rules.Components;
 using Content.Server._VanGuard.Economy.Systems;
-using Content.Server.GameTicking.Rules;
 using Content.Shared.GameTicking.Components;
+using Content.Shared.GameTicking.Rules;
 using Robust.Shared.Timing;
 
 namespace Content.Server._VanGuard.Economy.Rules;
@@ -14,11 +14,11 @@ public sealed partial class EconomyPaydayRuleSystem : GameRuleSystem<EconomyPayd
     [Dependency] private EconomyPayrollSystem _payroll = default!;
     [Dependency] private IGameTiming _timing = default!;
 
-    protected override void Started(EntityUid uid, EconomyPaydayRuleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
+    protected override void Started(Entity<EconomyPaydayRuleComponent, GameRuleComponent> rule, ref GameRuleStartedEvent args)
     {
-        base.Started(uid, component, gameRule, args);
+        base.Started(rule, ref args);
 
-        component.NextPayday = _timing.CurTime + component.Interval;
+        rule.Comp1.NextPayday = _timing.CurTime + rule.Comp1.Interval;
     }
 
     protected override void ActiveTick(EntityUid uid, EconomyPaydayRuleComponent component, GameRuleComponent gameRule, float frameTime)

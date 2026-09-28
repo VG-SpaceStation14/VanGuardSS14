@@ -86,7 +86,7 @@ public sealed class CargoConsoleStationFundsTest : InteractionTest
 
     private async Task<(EntityUid Station, EntityUid Mind)> SetupStationAndPlayer(int playerFunds)
     {
-        var stationSystem = SEntMan.System<StationSystem>();
+        var stationSystem = SEntMan.System<ServerStationSystem>();
         var bank = SEntMan.System<Content.Server._VanGuard.Economy.Systems.EconomyBankSystem>();
         var mindSystem = SEntMan.System<SharedMindSystem>();
 

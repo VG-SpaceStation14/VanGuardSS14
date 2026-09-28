@@ -26,7 +26,7 @@ public sealed partial class NanoChatCartridgeSystem : EntitySystem
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IPrototypeManager _prototype = default!;
     [Dependency] private SharedNanoChatSystem _nanoChat = default!;
-    [Dependency] private StationSystem _station = default!;
+    [Dependency] private ServerStationSystem _station = default!;
     [Dependency] private SharedUserInterfaceSystem _ui = default!;
 
     /// <summary>

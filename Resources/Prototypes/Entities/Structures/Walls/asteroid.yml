@@ -471,7 +471,7 @@
   id: IronRockArtifactFragment
 
 - type: entity
-  parent: [ BaseRockGibtonite, BaseIronRockVisuals, IronRock ]
+  parent: [ BaseRockGibtonite, BaseIronRockVisuals, BaseAsteroidRock ]
   id: IronRockGibtonite
 
 # VG-Tweak Start: volatile gibtonite for the planetoid (VGRoid). Explodes IMMEDIATELY on ANY

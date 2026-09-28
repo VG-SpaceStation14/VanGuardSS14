@@ -54,7 +54,7 @@ public sealed partial class ExperimentScannerSystem : EntitySystem
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private SharedSolutionContainerSystem _solution = default!;
     [Dependency] private SharedUserInterfaceSystem _ui = default!;
-    [Dependency] private StationSystem _station = default!;
+    [Dependency] private ServerStationSystem _station = default!;
     [Dependency] private TagSystem _tag = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private RadioSystem _radio = default!;

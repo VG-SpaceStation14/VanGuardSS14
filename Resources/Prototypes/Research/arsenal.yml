@@ -78,8 +78,8 @@
   position: 0, 5
   name: research-technology-nonlethal-ammunition
   icon:
-    sprite: Objects/Weapons/Guns/Ammunition/Casings/shotgun_shell.rsi
-    state: beanbag
+    sprite: Objects/Weapons/Guns/Battery/disabler_smg.rsi
+    state: icon
   discipline: Arsenal
   tier: 1
   cost: 5000
@@ -88,6 +88,7 @@
   - BoxShellTranquilizer
   - BoxBeanbag
   - WeaponDisabler
+  - WeaponDisablerSMG
 
 - type: technology
   id: UraniumMunitions
@@ -149,6 +150,9 @@
 
 # Tier 2
 
+# VG-Tweak: AdvancedRiotControl, ConcentratedLaserWeaponry and WaveParticleHarnessing already exist
+# above as part of our custom research tree (with our own positions and prerequisites),
+# so the upstream duplicates added to the "Tier 2" section are intentionally not merged.
 - type: technology
   id: KineticModifications
   position: 1, 0

@@ -25,7 +25,7 @@
         </BoxContainer>
         
         <!-- VG-Tweak start - Убираем Color, оставляем только разделитель -->
-        <cc:HSeparator Margin="0 2 0 2" />
+        <ui:Separator Margin="0 2 0 2" />
         <!-- VG-Tweak end -->
         
         <!-- VG-Tweak start - Плеер с prev/next -->
