@@ -414,11 +414,8 @@
   # Corvax-Contraband-end
   - type: Pda
     id: ServiceWorkerIDCard
-  - type: Appearance
-    appearanceDataInit:
-      enum.PdaVisuals.PdaType:
-        !type:String
-        pda-internservice
+  # VG-Tweak: no PdaVisuals.PdaType override here. Our PDA art uses the pda_base layer defined in the
+  # Sprite above; upstream's pda-internservice state does not exist in _VanGuard/Objects/Devices/pda.rsi.
   - type: PdaBorderColor
     borderColor: "#717059"
     accentVColor: "#00cc35"
@@ -1597,11 +1594,7 @@
   # Corvax-Contraband-end
   - type: Pda
     id: MusicianIDCard
-  - type: Appearance
-    appearanceDataInit:
-      enum.PdaVisuals.PdaType:
-        !type:String
-        pda-musician
+  # VG-Tweak: no PdaVisuals.PdaType override here, see the ServiceWorkerPDA comment above.
   - type: PdaBorderColor
     borderColor: "#333333"
   # VG-Tweak End
@@ -1885,11 +1878,7 @@
   # Corvax-Contraband-end
   - type: Pda
     id: ERTLeaderIDCard
-  - type: Appearance
-    appearanceDataInit:
-      enum.PdaVisuals.PdaType:
-        !type:String
-        pda-ert
+  # VG-Tweak: no PdaVisuals.PdaType override here, see the ServiceWorkerPDA comment above.
   - type: PdaBorderColor
     borderColor: "#A32D26"
     accentHColor: "#447987"
@@ -2061,11 +2050,7 @@
   # Corvax-Contraband-end
   - type: Pda
     id: PsychologistIDCard
-  - type: Appearance
-    appearanceDataInit:
-      enum.PdaVisuals.PdaType:
-        !type:String
-        pda-medical
+  # VG-Tweak: no PdaVisuals.PdaType override here, see the ServiceWorkerPDA comment above.
   - type: PdaBorderColor
     borderColor: "#d7d7d0"
     accentVColor: "#447987"
@@ -2106,11 +2091,7 @@
   # Corvax-Contraband-end
   - type: Pda
     id: TramDriverIDCard
-  - type: Appearance
-    appearanceDataInit:
-      enum.PdaVisuals.PdaType:
-        !type:String
-        pda-tramdriver
+  # VG-Tweak: no PdaVisuals.PdaType override here, see the ServiceWorkerPDA comment above.
   - type: PdaBorderColor
     borderColor: "#454a50"
     accentVColor: "#ffc500"
@@ -2426,11 +2407,7 @@
   # Corvax-Contraband-end
   - type: Pda
     id: SeniorResearcherIDCard
-  - type: Appearance
-    appearanceDataInit:
-      enum.PdaVisuals.PdaType:
-        !type:String
-        pda-seniorresearcher
+  # VG-Tweak: no PdaVisuals.PdaType override here, see the ServiceWorkerPDA comment above.
   - type: PdaBorderColor
     borderColor: "#d7d7d0"
     accentHColor: "#8900c9"
@@ -2474,11 +2451,7 @@
   # Corvax-Contraband-end
   - type: Pda
     id: SeniorPhysicianIDCard
-  - type: Appearance
-    appearanceDataInit:
-      enum.PdaVisuals.PdaType:
-        !type:String
-        pda-seniorphysician
+  # VG-Tweak: no PdaVisuals.PdaType override here, see the ServiceWorkerPDA comment above.
   - type: PdaBorderColor
     borderColor: "#d7d7d0"
     accentHColor: "#447987"
@@ -2520,11 +2493,7 @@
   # Corvax-Contraband-end
   - type: Pda
     id: SeniorOfficerIDCard
-  - type: Appearance
-    appearanceDataInit:
-      enum.PdaVisuals.PdaType:
-        !type:String
-        pda-seniorofficer
+  # VG-Tweak: no PdaVisuals.PdaType override here, see the ServiceWorkerPDA comment above.
   - type: PdaBorderColor
     borderColor: "#A32D26"
     accentVColor: "#DFDFDF"
