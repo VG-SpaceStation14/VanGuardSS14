@@ -5,6 +5,7 @@
     <BoxContainer Orientation="Horizontal"
                   HorizontalExpand="True"
                   SeparationOverride="0"
+                  Margin="2"
                   Name="InternalHBox">
         <profile:ProfilePreviewSpriteView Scale="2 2"
                                           Margin="0 4 4 4"
@@ -13,7 +14,8 @@
                                           SetSize="64 64"/>
         <Label Name="DescriptionLabel"
                ClipText="True"
-               HorizontalExpand="True"/>
+               HorizontalExpand="True"
+               StyleClasses="LabelKeyText"/>
         <Button Name="DeleteButton"
                 Text="{Loc 'character-setup-gui-character-picker-button-delete-button'}"/>
         <Button Name="ConfirmDeleteButton"

@@ -7,41 +7,66 @@
     <Control>
         <PanelContainer Name="BackgroundPanel" />
         <BoxContainer Orientation="Vertical" SeparationOverride="0">
-            <BoxContainer Orientation="Horizontal" MinSize="0 40">
-                <Label Text="{Loc 'character-setup-gui-character-setup-label'}"
-                       Margin="8 0 0 0" VAlign="Center"
-                       StyleClasses="LabelHeadingBigger" />
 
-                <Button Name="StatsButton" HorizontalExpand="True"
-                        Text="{Loc 'character-setup-gui-character-setup-stats-button'}"
-                        StyleClasses="ButtonBig"
-                        HorizontalAlignment="Right" />
-                <cc:CommandButton Name="AdminRemarksButton"
-                                  Command="adminremarks"
-                                  Text="{Loc 'character-setup-gui-character-setup-adminremarks-button'}"
-                                  StyleClasses="ButtonBig" />
-                <!-- Corvax-Sponsor-Start -->
-                <Button Name="SponsorButton"
-                        Text="{Loc 'character-setup-gui-character-setup-sponsor-button'}"
-                        Visible="False"
-                        StyleClasses="ButtonBig" />
-                <!-- Corvax-Sponsor-End -->
-                <Button Name="RulesButton"
-                        Text="{Loc 'character-setup-gui-character-setup-rules-button'}"
-                        StyleClasses="ButtonBig"/>
-                <Button Name="CloseButton"
-                        Access="Public"
-                        Text="{Loc 'character-setup-gui-character-setup-close-button'}"
-                        StyleClasses="ButtonBig"/>
-            </BoxContainer>
-            <PanelContainer StyleClasses="highlight" MinHeight="2" />
-            <BoxContainer Orientation="Horizontal" VerticalExpand="True" SeparationOverride="0">
-                <ScrollContainer MinSize="325 0" Margin="5 5 0 0">
-                    <BoxContainer Name="Characters" Orientation="Vertical" />
-                </ScrollContainer>
-                <PanelContainer MinSize="2 0" StyleClasses="highlight">
+            <PanelContainer MinHeight="44">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#10161C"
+                                      BorderColor="#FF6A00"
+                                      BorderThickness="0 0 0 2" />
+                </PanelContainer.PanelOverride>
+                <BoxContainer Orientation="Horizontal" Margin="10 6">
+                    <Label Text="{Loc 'character-setup-gui-character-setup-label'}"
+                           VAlign="Center"
+                           StyleClasses="LabelHeadingBigger" />
+
+                    <Button Name="StatsButton" HorizontalExpand="True"
+                            Text="{Loc 'character-setup-gui-character-setup-stats-button'}"
+                            StyleClasses="ButtonBig"
+                            HorizontalAlignment="Right" />
+                    <cc:CommandButton Name="AdminRemarksButton"
+                                      Command="adminremarks"
+                                      Text="{Loc 'character-setup-gui-character-setup-adminremarks-button'}"
+                                      StyleClasses="ButtonBig" />
+                    <!-- Corvax-Sponsor-Start -->
+                    <Button Name="SponsorButton"
+                            Text="{Loc 'character-setup-gui-character-setup-sponsor-button'}"
+                            Visible="False"
+                            StyleClasses="ButtonBig" />
+                    <!-- Corvax-Sponsor-End -->
+                    <Button Name="RulesButton"
+                            Text="{Loc 'character-setup-gui-character-setup-rules-button'}"
+                            StyleClasses="ButtonBig"/>
+                    <Button Name="CloseButton"
+                            Access="Public"
+                            Text="{Loc 'character-setup-gui-character-setup-close-button'}"
+                            StyleClasses="ButtonBig"/>
+                </BoxContainer>
+            </PanelContainer>
+
+            <BoxContainer Orientation="Horizontal" VerticalExpand="True" SeparationOverride="0" Margin="8">
+
+                <PanelContainer MinWidth="325" Modulate="#FFFFFFD0" Margin="0 8 0 8">
+                    <PanelContainer.PanelOverride>
+                        <gfx:StyleBoxFlat BackgroundColor="#0A0E12"
+                                          BorderColor="#2E3B45"
+                                          BorderThickness="2"
+                                          ContentMarginTopOverride="6"
+                                          ContentMarginBottomOverride="6"
+                                          ContentMarginLeftOverride="6"
+                                          ContentMarginRightOverride="6" />
+                    </PanelContainer.PanelOverride>
+                    <ScrollContainer MinSize="325 0">
+                        <BoxContainer Name="Characters" Orientation="Vertical" SeparationOverride="6" />
+                    </ScrollContainer>
                 </PanelContainer>
-                <BoxContainer Name="CharEditor" HorizontalExpand="True" />
+
+                <PanelContainer MinSize="2 0" Margin="8 8 8 8">
+                    <PanelContainer.PanelOverride>
+                        <gfx:StyleBoxFlat BackgroundColor="#2E3B45" />
+                    </PanelContainer.PanelOverride>
+                </PanelContainer>
+
+                <BoxContainer Name="CharEditor" HorizontalExpand="True" Margin="0 8 0 8" />
             </BoxContainer>
         </BoxContainer>
     </Control>
