@@ -26,7 +26,7 @@ public sealed class NanoChatPowerCycleTest : InteractionTest
     [Test]
     public async Task Cartridge_RefreshesAfterPdaPowerCycle()
     {
-        var stationSystem = SEntMan.System<StationSystem>();
+        var stationSystem = SEntMan.System<ServerStationSystem>();
 
         // A station that owns the test grid.
         EntityUid station = default;

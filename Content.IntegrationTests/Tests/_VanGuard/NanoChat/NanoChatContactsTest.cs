@@ -28,7 +28,7 @@ public sealed class NanoChatContactsTest : InteractionTest
     [Test]
     public async Task Directory_ListsAllCardsWithAnOwnerOnTheStation()
     {
-        var stationSystem = SEntMan.System<StationSystem>();
+        var stationSystem = SEntMan.System<ServerStationSystem>();
 
         // A station that owns the test grid.
         EntityUid station = default;

@@ -2,6 +2,7 @@ using Content.IntegrationTests.Fixtures;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Rules;
 using Content.Server.GameTicking.Rules.Components;
+using Content.Shared.GameTicking;
 using Content.Shared.GameTicking.Components;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Prototypes;
@@ -34,7 +35,7 @@ namespace Content.IntegrationTests.Tests.GameRules
             // VG-Tweak End
 
             var entityManager = server.ResolveDependency<IEntityManager>();
-            var sGameTicker = server.ResolveDependency<IEntitySystemManager>().GetEntitySystem<GameTicker>();
+            var sGameTicker = server.ResolveDependency<IEntitySystemManager>().GetEntitySystem<ServerGameTicker>();
             var sGameTiming = server.ResolveDependency<IGameTiming>();
 
             MaxTimeRestartRuleComponent maxTime = null;
@@ -42,8 +43,9 @@ namespace Content.IntegrationTests.Tests.GameRules
             await server.WaitPost(() =>
             {
                 sGameTicker.StartGameRule(MaxTimeRestartGameRule, out var ruleEntity);
-                maxTimeRuleUid = ruleEntity; // VG-Tweak
-                Assert.That(entityManager.TryGetComponent<MaxTimeRestartRuleComponent>(ruleEntity, out maxTime));
+                Assert.That(ruleEntity, Is.Not.Null, "MaxTimeRestart rule should be created");
+                maxTimeRuleUid = ruleEntity!.Value.Owner; // VG-Tweak
+                Assert.That(entityManager.TryGetComponent<MaxTimeRestartRuleComponent>(maxTimeRuleUid, out maxTime));
             });
 
             // VG-Tweak Start: Check that our specific rule exists, not total count.

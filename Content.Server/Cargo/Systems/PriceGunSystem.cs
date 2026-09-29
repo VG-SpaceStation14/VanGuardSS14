@@ -4,8 +4,9 @@ using Content.Server._VanGuard.Economy.Systems;
 using Content.Server.Station.Systems;
 using Content.Shared.Cargo.Components;
 using Content.Shared.IdentityManagement;
-using Content.Shared.Timing;
 using Content.Shared.Cargo.Systems;
+using Content.Shared.Timing.Components;
+using Content.Shared.Timing.Systems;
 using Robust.Shared.Audio.Systems;
 
 namespace Content.Server.Cargo.Systems;
@@ -20,7 +21,7 @@ public sealed partial class PriceGunSystem : SharedPriceGunSystem
     [Dependency] private SharedAudioSystem _audio = default!;
     // VG-Tweak Start: price gun reflects the station market.
     [Dependency] private EconomyMarketSystem _market = default!;
-    [Dependency] private StationSystem _station = default!;
+    [Dependency] private ServerStationSystem _station = default!;
     // VG-Tweak End
 
     protected override bool GetPriceOrBounty(Entity<PriceGunComponent> entity, EntityUid target, EntityUid user)

@@ -1,10 +1,10 @@
 using System.Linq;
 using System.Text;
 using Content.Server.Chat.Systems;
-using Content.Server.GameTicking.Events;
 using Content.Server.Mind;
 using Content.Shared._VanGuard.Language;
 using Content.Shared.GameTicking;
+using Content.Shared.GameTicking.Events;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Prototypes;
 using Robust.Shared.Network;

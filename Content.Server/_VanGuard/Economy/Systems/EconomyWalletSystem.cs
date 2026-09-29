@@ -33,7 +33,7 @@ public sealed partial class EconomyWalletSystem : EntitySystem
     [Dependency] private StackSystem _stack = default!;
     [Dependency] private UserInterfaceSystem _ui = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
-    [Dependency] private StationSystem _station = default!;
+    [Dependency] private ServerStationSystem _station = default!;
     [Dependency] private SharedJobSystem _jobs = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
 

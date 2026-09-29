@@ -107,7 +107,10 @@ public sealed class HolosignProjectorTest : MovementTest
         AssertDeleted(Target);
 
         // We should be able to walk back now.
-        await Move(DirectionFlag.West, 0.5f);
+        // VG-Tweak: upstream enlarged the holobarrier collision (bounds 0.3 -> 0.4 plus the LowImpassable layer
+        // in #45634), so the player now stands ~0.1 tiles further away from it and 0.5s of walking is too short
+        // to clear the 0.5 tile threshold below (max travel at the 2.5 tiles/s walk speed is 1.25 tiles).
+        await Move(DirectionFlag.West, 0.7f);
         Assert.That(DeltaCoordinates(), Is.GreaterThan(0.5), "Player was able to walk past a deleted holobarrier.");
     }
 }

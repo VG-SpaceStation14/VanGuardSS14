@@ -1,9 +1,9 @@
 using System.Linq;
 using Content.Server._VanGuard.Economy.Rules.Components;
 using Content.Server._VanGuard.Economy.Systems;
-using Content.Server.GameTicking.Rules;
 using Content.Shared._VanGuard.Economy.Prototypes;
 using Content.Shared.GameTicking.Components;
+using Content.Shared.GameTicking.Rules;
 using Content.Shared.Station.Components;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
@@ -21,11 +21,11 @@ public sealed partial class EconomyMarketShiftRuleSystem : GameRuleSystem<Econom
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private EconomyMarketSystem _market = default!;
 
-    protected override void Started(EntityUid uid, EconomyMarketShiftRuleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
+    protected override void Started(Entity<EconomyMarketShiftRuleComponent, GameRuleComponent> rule, ref GameRuleStartedEvent args)
     {
-        base.Started(uid, component, gameRule, args);
+        base.Started(rule, ref args);
 
-        ScheduleNextShift(component);
+        ScheduleNextShift(rule.Comp1);
     }
 
     protected override void ActiveTick(EntityUid uid, EconomyMarketShiftRuleComponent component, GameRuleComponent gameRule, float frameTime)
@@ -39,9 +39,9 @@ public sealed partial class EconomyMarketShiftRuleSystem : GameRuleSystem<Econom
         ScheduleNextShift(component);
     }
 
-    protected override void Ended(EntityUid uid, EconomyMarketShiftRuleComponent component, GameRuleComponent gameRule, GameRuleEndedEvent args)
+    protected override void Ended(Entity<EconomyMarketShiftRuleComponent> rule, ref GameRuleEndedEvent args)
     {
-        base.Ended(uid, component, gameRule, args);
+        base.Ended(rule, ref args);
 
         var stations = EntityQueryEnumerator<StationDataComponent>();
         while (stations.MoveNext(out var stationUid, out _))

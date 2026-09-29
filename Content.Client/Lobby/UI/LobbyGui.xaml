@@ -4,6 +4,7 @@
     xmlns:cc="clr-namespace:Content.Client.Administration.UI.CustomControls"
     xmlns:vote="clr-namespace:Content.Client.Voting.UI"
     xmlns:lobbyUi="clr-namespace:Content.Client.Lobby.UI"
+    xmlns:corvaxLobby="clr-namespace:Content.Client.Corvax.Lobby.UI"
     xmlns:info="clr-namespace:Content.Client.Info"
     xmlns:widgets="clr-namespace:Content.Client.UserInterface.Systems.Chat.Widgets"
     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
@@ -84,18 +85,18 @@
                                 <BoxContainer Orientation="Vertical" Margin="0 12" SeparationOverride="6" HorizontalExpand="True">
                                     <Button Name="ReadyButton" Access="Public" ToggleMode="True" Text="ПРИСОЕДИНИТЬСЯ" HorizontalExpand="True" MinHeight="40" StyleClasses="ButtonBig" />
                                     <cc:UICommandButton Command="observe" Name="ObserveButton" Access="Public" Text="Наблюдать" HorizontalExpand="True" MinHeight="32" WindowType="{x:Type lobbyUi:ObserveWarningWindow}" />
-                                    <controls:HLine Thickness="1" Margin="2 4" Modulate="#FFFFFF30" />
+                                    <controls:Separator Thickness="1" Margin="2 4" Modulate="#FFFFFF30" />
                                     <Button Name="CharacterSetup" Access="Public" Text="Персонаж" HorizontalExpand="True" MinHeight="32" />
                                     <!-- VG-Tweak: Admin buttons -->
                                     <BoxContainer Name="AdminButtons" Orientation="Vertical" SeparationOverride="4" Visible="False">
-                                        <controls:HLine Thickness="1" Margin="2 4" Modulate="#FFFFFF30" />
+                                        <controls:Separator Thickness="1" Margin="2 4" Modulate="#FFFFFF30" />
                                         <Label Text="Администрирование" StyleClasses="LabelSubText" HorizontalAlignment="Center" Margin="0 2" />
                                         <Button Name="StartRoundButton" Access="Public" Text="Начать раунд" HorizontalExpand="True" MinHeight="28" />
                                         <Button Name="DelayStartButton" Access="Public" Text="Пауза в лобби" HorizontalExpand="True" MinHeight="28" />
                                         <Button Name="SendLobbyMessageButton" Access="Public" Text="Сообщение в лобби" HorizontalExpand="True" MinHeight="28" />
                                     </BoxContainer>
                                     <!-- VG-Tweak end -->
-                                    <controls:HLine Thickness="1" Margin="2 4" Modulate="#FFFFFF30" />
+                                    <controls:Separator Thickness="1" Margin="2 4" Modulate="#FFFFFF30" />
                                     <Button Name="OptionsButton" Access="Public" Text="Настройки" HorizontalExpand="True" MinHeight="32" />
                                     <Button Name="LeaveButton" Access="Public" Text="Выйти" HorizontalExpand="True" MinHeight="32" StyleClasses="Caution" />
                                 </BoxContainer>

@@ -121,7 +121,7 @@ public sealed class EconomyPayrollTest : GameTest
             station = entMan.SpawnEntity(null, new EntityCoordinates(testMap.MapUid, default));
             entMan.AddComponent<StationDataComponent>(station);
             entMan.AddComponent<StationBankAccountComponent>(station);
-            entMan.System<StationSystem>().AddGridToStation(station, testMap.Grid);
+            entMan.System<ServerStationSystem>().AddGridToStation(station, testMap.Grid);
         });
         await server.WaitRunTicks(2);
 
@@ -159,7 +159,7 @@ public sealed class EconomyPayrollTest : GameTest
             station = entMan.SpawnEntity(null, new EntityCoordinates(testMap.MapUid, default));
             entMan.AddComponent<StationDataComponent>(station);
             var bank = entMan.AddComponent<StationBankAccountComponent>(station);
-            entMan.System<StationSystem>().AddGridToStation(station, testMap.Grid);
+            entMan.System<ServerStationSystem>().AddGridToStation(station, testMap.Grid);
             // Bankrupt the station by draining its primary account.
             var cargo = entMan.System<CargoSystem>();
             cargo.UpdateBankAccount((station, bank), -cargo.GetBalanceFromAccount((station, bank), bank.PrimaryAccount), bank.PrimaryAccount);

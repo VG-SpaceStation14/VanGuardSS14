@@ -24,6 +24,10 @@
     - state: "insert_overlay"
       map: [ "enum.PdaVisualLayers.Pen" ]
   # VG-Tweak End
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [IAA]
   - type: Pda
     id: IAAIDCard
     penSlot:
@@ -34,7 +38,7 @@
   # VG-Tweak End
 
 - type: entity
-  parent: BaseSecurityPDA
+  parent: [BaseCorvaxContraband431JobsPilot, BaseSecurityPDA] # Corvax-Contraband
   id: PilotPDA
   name: pilot PDA
   description: Has protection from cosmic radiation.
@@ -106,6 +110,12 @@
   - type: PdaBorderColor
     borderColor: "#6f6192"
   # VG-Tweak End
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [Magistrate]
+  # Corvax-Contraband-end
   - type: Pda
     id: MagistrateIDCard
     penSlot:

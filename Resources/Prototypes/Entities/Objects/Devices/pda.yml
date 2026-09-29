@@ -8,9 +8,9 @@
   # VG-Tweak Start
   - type: Appearance
     appearanceDataInit:
-     enum.PdaVisuals.PdaType:
-       !type:String
-       pda_base
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda_base
   - type: Sprite
     sprite: _VanGuard/Objects/Devices/pda.rsi
     layers:
@@ -250,6 +250,12 @@
     borderColor: "#FFA500"
     accentVColor: "#FFFF00"
   # VG-Tweak End
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [TechnicalAssistant]
+  # Corvax-Contraband-end
   - type: Pda
     id: TechnicalAssistantIDCard
 
@@ -284,6 +290,12 @@
     borderColor: "#E0FFFF"
     accentVColor: "#00BFFF"
   # VG-Tweak End
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [MedicalIntern]
+  # Corvax-Contraband-end
   - type: Pda
     id: MedicalInternIDCard
   - type: GuideHelp
@@ -318,6 +330,12 @@
   - type: PdaBorderColor
     borderColor: "#A32D26"
   # VG-Tweak End
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [SecurityCadet]
+  # Corvax-Contraband-end
   - type: Pda
     id: SecurityCadetIDCard
 
@@ -352,6 +370,12 @@
     borderColor: "#E0FFFF"
     accentVColor: "#9932CC"
   # VG-Tweak End
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [ResearchAssistant]
+  # Corvax-Contraband-end
   - type: Pda
     id: ResearchAssistantIDCard
 
@@ -382,15 +406,23 @@
       visible: false
     - state: "insert_overlay"
       map: [ "enum.PdaVisualLayers.Pen" ]
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [ServiceWorker]
+  # Corvax-Contraband-end
+  - type: Pda
+    id: ServiceWorkerIDCard
+  # VG-Tweak: no PdaVisuals.PdaType override here. Our PDA art uses the pda_base layer defined in the
+  # Sprite above; upstream's pda-internservice state does not exist in _VanGuard/Objects/Devices/pda.rsi.
   - type: PdaBorderColor
     borderColor: "#717059"
     accentVColor: "#00cc35"
   # VG-Tweak End
-  - type: Pda
-    id: ServiceWorkerIDCard
 
 - type: entity
-  parent: BasePDA
+  parent: [BaseCorvaxContraband431JobsChef, BasePDA] # Corvax-Contraband
   id: ChefPDA
   name: chef PDA
   description: Covered in grease and flour.
@@ -421,7 +453,7 @@
     id: ChefIDCard
 
 - type: entity
-  parent: BasePDA
+  parent: [BaseCorvaxContraband431JobsBotanist, BasePDA] # Corvax-Contraband
   id: BotanistPDA
   name: botanist PDA
   description: Has an earthy scent.
@@ -483,6 +515,12 @@
   - type: PdaBorderColor
     borderColor: "#dc428f"
   # VG-Tweak End
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [Clown]
+  # Corvax-Contraband-end
   - type: Pda
     id: ClownIDCard
     penSlot:
@@ -556,6 +594,12 @@
     borderColor: "#d7d7d0"
     accentHColor: "#333333"
   # VG-Tweak End
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [Mime]
+  # Corvax-Contraband-end
   - type: Pda
     id: MimeIDCard
     paiSlot:
@@ -600,7 +644,7 @@
 
 - type: entity
   name: chaplain PDA
-  parent: BasePDA
+  parent: [BaseCorvaxContraband431JobsChaplain, BasePDA] # Corvax-Contraband
   id: ChaplainPDA
   description: God's chosen PDA.
   components:
@@ -644,7 +688,7 @@
 
 - type: entity
   name: quartermaster PDA
-  parent: BasePDA
+  parent: [BaseCorvaxContraband431JobsQuartermaster, BasePDA] # Corvax-Contraband
   id: QuartermasterPDA
   description: PDA for the guy that orders the guns.
   components:
@@ -687,7 +731,7 @@
         - id: AstroNavCartridge
 
 - type: entity
-  parent: BasePDA
+  parent: [BaseCorvaxContraband431JobsCargoTechnician, BasePDA] # Corvax-Contraband
   id: CargoPDA
   name: cargo PDA
   description: PDA for the guys that order the pizzas.
@@ -718,7 +762,7 @@
     id: CargoIDCard
 
 - type: entity
-  parent: BasePDA
+  parent: [BaseCorvaxContraband431JobsSalvageSpecialist, BasePDA] # Corvax-Contraband
   id: SalvagePDA
   name: salvage PDA
   description: Smells like ash.
@@ -762,7 +806,7 @@
         - id: AstroNavCartridge
 
 - type: entity
-  parent: BasePDA
+  parent: [BaseCorvaxContraband431JobsBartender, BasePDA] # Corvax-Contraband
   id: BartenderPDA
   name: bartender PDA
   description: Smells like beer.
@@ -820,6 +864,12 @@
   - type: PdaBorderColor
     borderColor: "#858585"
   # VG-Tweak End
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [Librarian]
+  # Corvax-Contraband-end
   - type: Pda
     id: LibrarianIDCard
     penSlot:
@@ -868,6 +918,12 @@
   - type: PdaBorderColor
     borderColor: "#003153"
   # VG-Tweak End
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [Lawyer]
+  # Corvax-Contraband-end
   - type: Pda
     id: LawyerIDCard
     penSlot:
@@ -889,7 +945,7 @@
     - DoorBumpOpener
 
 - type: entity
-  parent: BasePDA
+  parent: [BaseCorvaxContraband431JobsJanitor, BasePDA] # Corvax-Contraband
   id: JanitorPDA
   name: janitor PDA
   description: Smells like bleach.
@@ -920,7 +976,7 @@
     id: JanitorIDCard
 
 - type: entity
-  parent: BasePDA
+  parent: [BaseCorvaxContraband431JobsCaptain, BasePDA] # Corvax-Contraband
   id: CaptainPDA
   name: captain PDA
   description: Surprisingly no different from your PDA.
@@ -960,7 +1016,7 @@
         - Write
 
 - type: entity
-  parent: BasePDA
+  parent: [BaseCorvaxContraband431JobsHeadOfPersonnel, BasePDA] # Corvax-Contraband
   id: HoPPDA
   name: head of personnel PDA
   description: Looks like it's been chewed on.
@@ -1001,7 +1057,7 @@
         - Write
 
 - type: entity
-  parent: BasePDA
+  parent: [BaseCorvaxContraband431JobsChiefEngineer, BasePDA] # Corvax-Contraband
   id: CEPDA
   name: chief engineer PDA
   description: Looks like it's barely been used.
@@ -1036,7 +1092,7 @@
     id: CEIDCard
 
 - type: entity
-  parent: BasePDA
+  parent: [BaseCorvaxContraband431JobsStationEngineer, BasePDA] # Corvax-Contraband
   id: EngineerPDA
   name: engineer PDA
   description: Rugged and well-worn.
@@ -1070,7 +1126,7 @@
     id: EngineeringIDCard
 
 - type: entity
-  parent: BaseMedicalPDA
+  parent: [BaseCorvaxContraband431JobsChiefMedicalOfficer, BaseMedicalPDA] # Corvax-Contraband
   id: CMOPDA
   name: chief medical officer PDA
   description: Extraordinarily shiny and sterile.
@@ -1154,7 +1210,7 @@
     - DoorBumpOpener
 
 - type: entity
-  parent: BaseMedicalPDA
+  parent: [BaseCorvaxContraband431JobsParamedic, BaseMedicalPDA] # Corvax-Contraband
   id: ParamedicPDA
   name: paramedic PDA
   description: Shiny and sterile.
@@ -1188,7 +1244,7 @@
     id: ParamedicIDCard
 
 - type: entity
-  parent: BaseMedicalPDA
+  parent: [BaseCorvaxContraband431JobsChemist, BaseMedicalPDA] # Corvax-Contraband
   id: ChemistryPDA
   name: chemistry PDA
   description: It has a few discolored blotches here and there.
@@ -1222,7 +1278,7 @@
     id: ChemistIDCard
 
 - type: entity
-  parent: BasePDA
+  parent: [BaseCorvaxContraband431JobsResearchDirector, BasePDA] # Corvax-Contraband
   id: RnDPDA
   name: research director PDA
   description: It appears surprisingly ordinary.
@@ -1292,7 +1348,7 @@
     id: ResearchIDCard
 
 - type: entity
-  parent: BaseSecurityPDA
+  parent: [BaseCorvaxContraband431JobsHeadOfSecurity, BaseSecurityPDA] # Corvax-Contraband
   id: HoSPDA
   name: head of security PDA
   description: Whosoever bears this PDA is the law.
@@ -1336,7 +1392,7 @@
         - id: LogProbeCartridge
 
 - type: entity
-  parent: BaseSecurityPDA
+  parent: [BaseCorvaxContraband431JobsWarden, BaseSecurityPDA] # Corvax-Contraband
   id: WardenPDA
   name: warden PDA
   description: The OS appears to have been jailbroken.
@@ -1428,6 +1484,12 @@
   - type: PdaBorderColor
     borderColor: "#00842e"
   # VG-Tweak End
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [CentralCommandOfficial]
+  # Corvax-Contraband-end
   - type: Pda
     id: CentcomIDCard
     penSlot:
@@ -1487,6 +1549,12 @@
   id: DeathsquadPDA
   suffix: Death Squad
   components:
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [DeathSquad]
+  # Corvax-Contraband-end
   - type: Pda
     id: CentcomIDCardDeathsquad
   - type: Tag
@@ -1518,11 +1586,18 @@
       visible: false
     - state: "insert_overlay"
       map: [ "enum.PdaVisualLayers.Pen" ]
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [Musician]
+  # Corvax-Contraband-end
+  - type: Pda
+    id: MusicianIDCard
+  # VG-Tweak: no PdaVisuals.PdaType override here, see the ServiceWorkerPDA comment above.
   - type: PdaBorderColor
     borderColor: "#333333"
   # VG-Tweak End
-  - type: Pda
-    id: MusicianIDCard
   - type: Instrument
     allowPercussion: false
     handheld: true
@@ -1541,7 +1616,7 @@
     - DoorBumpOpener
 
 - type: entity
-  parent: BasePDA
+  parent: [BaseCorvaxContraband431JobsAtmosphericTechnician, BasePDA] # Corvax-Contraband
   id: AtmosPDA
   name: atmos PDA
   description: Still smells like plasma.
@@ -1607,7 +1682,16 @@
 
 - type: entity
   parent: ClearPDA
+  id: PrisonerPDA # This mostly just exists for the sake of the chameleon UI giving a clear PDA with a prisoner ID
+  suffix: Prisoner
+  components:
+  - type: Pda
+    id: PrisonerIDCard
+
+- type: entity
+  parent: ClearPDA
   id: VisitorPDA
+  suffix: Visitor
   components:
   - type: Pda
     id: VisitorIDCard
@@ -1616,7 +1700,7 @@
     - DoorBumpOpener
 
 - type: entity
-  parent: [ BasePDA, BaseSyndicateContraband ]
+  parent: [ BasePDA ] # Corvax-Contraband BaseSyndicateContraband
   id: SyndiPDA
   name: syndicate PDA
   description: Ok, time to be a productive member of- oh cool I'm a bad guy time to kill people!
@@ -1786,13 +1870,20 @@
       visible: false
     - state: "insert_overlay"
       map: [ "enum.PdaVisualLayers.Pen" ]
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [ERTLeader]
+  # Corvax-Contraband-end
+  - type: Pda
+    id: ERTLeaderIDCard
+  # VG-Tweak: no PdaVisuals.PdaType override here, see the ServiceWorkerPDA comment above.
   - type: PdaBorderColor
     borderColor: "#A32D26"
     accentHColor: "#447987"
     accentVColor: "#447987"
   # VG-Tweak End
-  - type: Pda
-    id: ERTLeaderIDCard
   - type: EntityTableContainerFill
     containers:
       preinstalled-program-container: !type:AllSelector
@@ -1824,6 +1915,12 @@
   suffix: Engineer
   description: Red for firepower, it's well-worn.
   components:
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [ERTEngineer]
+  # Corvax-Contraband-end
   - type: Pda
     id: ERTEngineerIDCard
 
@@ -1834,6 +1931,12 @@
   suffix: Janitor
   description: Red for firepower, it's squeaky clean.
   components:
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [ERTJanitor]
+  # Corvax-Contraband-end
   - type: Pda
     id: ERTJanitorIDCard
 
@@ -1844,6 +1947,12 @@
   suffix: Medic
   description: Red for firepower, it's shiny and sterile.
   components:
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [ERTMedical]
+  # Corvax-Contraband-end
   - type: Pda
     id: ERTMedicIDCard
 
@@ -1854,6 +1963,12 @@
   suffix: Security
   description: Red for firepower, it has tally marks etched on the side.
   components:
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [ERTSecurity]
+  # Corvax-Contraband-end
   - type: Pda
     id: ERTSecurityIDCard
 
@@ -1886,13 +2001,19 @@
       visible: false
     - state: "insert_overlay"
       map: [ "enum.PdaVisualLayers.Pen" ]
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [CBURN]
+  # Corvax-Contraband-end
+  - type: Pda
+    id: CBURNIDcard
   - type: PdaBorderColor
     borderColor: "#A32D26"
     accentHColor: "#447987"
     accentVColor: "#447987"
   # VG-Tweak End
-  - type: Pda
-    id: CBURNIDcard
 
 - type: entity
   parent: BasePDA
@@ -1921,12 +2042,19 @@
       visible: false
     - state: "insert_overlay"
       map: [ "enum.PdaVisualLayers.Pen" ]
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [Psychologist]
+  # Corvax-Contraband-end
+  - type: Pda
+    id: PsychologistIDCard
+  # VG-Tweak: no PdaVisuals.PdaType override here, see the ServiceWorkerPDA comment above.
   - type: PdaBorderColor
     borderColor: "#d7d7d0"
     accentVColor: "#447987"
   # VG-Tweak End
-  - type: Pda
-    id: PsychologistIDCard
 
 - type: entity
   parent: BasePDA
@@ -1955,12 +2083,19 @@
       visible: false
     - state: "insert_overlay"
       map: [ "enum.PdaVisualLayers.Pen" ]
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [TramDriver]
+  # Corvax-Contraband-end
+  - type: Pda
+    id: TramDriverIDCard
+  # VG-Tweak: no PdaVisuals.PdaType override here, see the ServiceWorkerPDA comment above.
   - type: PdaBorderColor
     borderColor: "#454a50"
     accentVColor: "#ffc500"
   # VG-Tweak End
-  - type: Pda
-    id: TramDriverIDCard
 
 - type: entity
   parent: BasePDA
@@ -1990,6 +2125,12 @@
   - type: PdaBorderColor
     borderColor: "#3f3f74"
   # VG-Tweak End
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [Reporter]
+  # Corvax-Contraband-end
   - type: Pda
     id: ReporterIDCard
     penSlot:
@@ -2065,7 +2206,7 @@
     id: BoxerIDCard
 
 - type: entity
-  parent: BaseSecurityPDA
+  parent: [BaseCorvaxContraband431JobsDetective, BaseSecurityPDA] # Corvax-Contraband
   id: DetectivePDA
   name: detective PDA
   description: Smells like rain... pouring down the rooftops...
@@ -2107,7 +2248,7 @@
         - id: LogProbeCartridge
 
 - type: entity
-  parent: BaseMedicalPDA
+  parent: [BaseCorvaxContraband431JobsBrigmedic, BaseMedicalPDA] # Corvax-Contraband
   id: BrigmedicPDA
   name: brigmedic PDA
   description: I wonder whose pulse is on the screen? I hope it doesn't stop...
@@ -2196,7 +2337,7 @@
   - type: Unremoveable
 
 - type: entity
-  parent: BasePDA
+  parent: [BaseCorvaxContraband431JobsSeniorEngineerStationEngineer, BasePDA] # Corvax-Contraband
   id: SeniorEngineerPDA
   name: senior engineer PDA
   description: Seems to have been taken apart and put back together several times.
@@ -2258,13 +2399,20 @@
       visible: false
     - state: "insert_overlay"
       map: [ "enum.PdaVisualLayers.Pen" ]
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [SeniorResearcher]
+  # Corvax-Contraband-end
+  - type: Pda
+    id: SeniorResearcherIDCard
+  # VG-Tweak: no PdaVisuals.PdaType override here, see the ServiceWorkerPDA comment above.
   - type: PdaBorderColor
     borderColor: "#d7d7d0"
     accentHColor: "#8900c9"
     accentVColor: "#8900c9"
   # VG-Tweak End
-  - type: Pda
-    id: SeniorResearcherIDCard
 
 - type: entity
   parent: BaseMedicalPDA
@@ -2295,13 +2443,20 @@
       visible: false
     - state: "insert_overlay"
       map: [ "enum.PdaVisualLayers.Pen" ]
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [SeniorPhysician]
+  # Corvax-Contraband-end
+  - type: Pda
+    id: SeniorPhysicianIDCard
+  # VG-Tweak: no PdaVisuals.PdaType override here, see the ServiceWorkerPDA comment above.
   - type: PdaBorderColor
     borderColor: "#d7d7d0"
     accentHColor: "#447987"
     accentVColor: "#B34200"
   # VG-Tweak End
-  - type: Pda
-    id: SeniorPhysicianIDCard
 
 - type: entity
   parent: BaseSecurityPDA
@@ -2330,15 +2485,22 @@
       visible: false
     - state: "insert_overlay"
       map: [ "enum.PdaVisualLayers.Pen" ]
+  # Corvax-Contraband-start
+  - type: Contraband
+    severity: Corvax431
+    allowedDepartments: []
+    allowedJobs: [SeniorOfficer]
+  # Corvax-Contraband-end
+  - type: Pda
+    id: SeniorOfficerIDCard
+  # VG-Tweak: no PdaVisuals.PdaType override here, see the ServiceWorkerPDA comment above.
   - type: PdaBorderColor
     borderColor: "#A32D26"
     accentVColor: "#DFDFDF"
   # VG-Tweak End
-  - type: Pda
-    id: SeniorOfficerIDCard
 
 - type: entity
-  parent: BasePDA
+  parent: [BaseCorvaxContraband431JobsCargoTechnician, BasePDA] # Corvax-Contraband
   id: SeniorCourierPDA
   name: senior courier PDA
   description: Smells like postage stamps and shuttle fuel.
@@ -2528,6 +2690,7 @@
 - type: entity
   parent: ClearPDA
   id: ScurretPDA
+  suffix: Scurret
   description: A temporary PDA granted to scurret temps. Doesn't do much. Wawa!
   components:
   - type: Pda

@@ -20,7 +20,7 @@ public sealed partial class EconomyPayrollSystem : EntitySystem
 {
     [Dependency] private EconomyBankSystem _bank = default!;
     [Dependency] private CargoSystem _cargo = default!;
-    [Dependency] private StationSystem _station = default!;
+    [Dependency] private ServerStationSystem _station = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private PopupSystem _popup = default!;
     [Dependency] private SharedIdCardSystem _idCard = default!;
