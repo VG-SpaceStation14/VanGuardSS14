@@ -17,111 +17,92 @@
     <Control Name="MainContainer" Access="Public" VerticalExpand="True" HorizontalExpand="True">
 
         <controls:StripeBack Name="TopPanel" Access="Public" Modulate="#FFFFFFD0" VerticalAlignment="Top">
-            <PanelContainer HorizontalExpand="True" VerticalAlignment="Center"
-                            MinHeight="48" Margin="6 6 6 0">
+            <PanelContainer HorizontalExpand="True" MinHeight="48" Margin="6 6 6 6" Modulate="#FFFFFFD0">
                 <PanelContainer.PanelOverride>
-                    <graphics:StyleBoxFlat BackgroundColor="#0A0E12"
-                                           BorderColor="#2E3B45"
-                                           BorderThickness="2" />
+                    <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#35434d" BackgroundColor="#141414"/>
                 </PanelContainer.PanelOverride>
-                <PanelContainer HorizontalExpand="True" VerticalAlignment="Center" Margin="2">
+                <PanelContainer HorizontalExpand="True" MinHeight="48" Margin="0 0 0 0" Modulate="#FFFFFFD0">
                     <PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BackgroundColor="#10161C"
-                                               BorderColor="#FF6A00"
-                                               BorderThickness="0 0 0 2" />
+                        <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#262626" BackgroundColor="#111111"/>
                     </PanelContainer.PanelOverride>
-                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" Margin="15 0">
-                        <BoxContainer Orientation="Horizontal" SeparationOverride="10" VerticalAlignment="Center">
-                            <Button Name="HideInterface" Text="Ø" MinSize="35 30" />
-                            <vote:VoteCallMenuButton Name="CallVoteButton" Access="Public" MinSize="100 30" />
-                            <Button Name="AHelpButton" Access="Public" Text="АХелп" MinSize="80 30" />
-                            <controls:VSpacer Spacing="10"/>
-                            <Label Name="ServerName" Access="Public"
-                                   StyleClasses="LabelHeadingBigger"
-                                   VerticalAlignment="Center"
-                                   Text="Vanguard Project" />
+                    <PanelContainer HorizontalExpand="True" MinHeight="48" Margin="3 3" Modulate="#FFFFFFD0">
+                        <PanelContainer.PanelOverride>
+                            <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#303030" BackgroundColor="#1f1f1f"/>
+                        </PanelContainer.PanelOverride>
+                        <BoxContainer Orientation="Horizontal" HorizontalExpand="True" Margin="15 0">
+                            <BoxContainer Orientation="Horizontal" SeparationOverride="10" VerticalAlignment="Center">
+                                <Button Name="HideInterface" Text="Ø" MinSize="35 30" />
+                                <vote:VoteCallMenuButton Name="CallVoteButton" Access="Public" MinSize="100 30" />
+                                <Button Name="AHelpButton" Access="Public" Text="АХелп" MinSize="80 30" />
+                                <controls:VSpacer Spacing="10"/>
+                                <Label Name="ServerName" Access="Public" StyleClasses="LabelHeadingBigger" VerticalAlignment="Center" Text="Vanguard Project" />
+                            </BoxContainer>
+                            <Control HorizontalExpand="True" />
+                            <info:LinkBanner Name="LinkBanner" Access="Public" VerticalAlignment="Center" />
                         </BoxContainer>
-                        <Control HorizontalExpand="True" />
-                        <info:LinkBanner Name="LinkBanner" Access="Public" VerticalAlignment="Center" />
-                    </BoxContainer>
+                    </PanelContainer>
                 </PanelContainer>
             </PanelContainer>
         </controls:StripeBack>
 
         <BoxContainer Name="MainHorizontalLayout" Orientation="Horizontal" VerticalExpand="True" SeparationOverride="15">
-
-            <BoxContainer Name="MenuControls" Orientation="Vertical"
-                          HorizontalAlignment="Left" VerticalAlignment="Bottom"
-                          Margin="25 25 0 45" SeparationOverride="12" MinWidth="380">
-
-                <PanelContainer Name="LeftSide" Access="Public" Modulate="#FFFFFFD0" MinHeight="200">
+            <BoxContainer Name="MenuControls" Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="25 25 0 45" SeparationOverride="12" MinWidth="380">
+                <PanelContainer Name="LeftSide" Access="Public" VerticalExpand="True" HorizontalExpand="True" Margin="6 6 6 6" Modulate="#FFFFFFD0">
                     <PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BackgroundColor="#10161C"
-                                               BorderColor="#2E3B45"
-                                               BorderThickness="2"
-                                               ContentMarginTopOverride="4"
-                                               ContentMarginBottomOverride="4"
-                                               ContentMarginLeftOverride="4"
-                                               ContentMarginRightOverride="4" />
+                        <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#35434d" BackgroundColor="#141414"/>
                     </PanelContainer.PanelOverride>
-                    <lobbyUi:LobbyCharacterPreviewPanel Name="CharacterPreview" Access="Public" MinHeight="200" />
+                    <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="0 0 0 0" Modulate="#FFFFFFD0">
+                        <PanelContainer.PanelOverride>
+                            <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#262626" BackgroundColor="#111111"/>
+                        </PanelContainer.PanelOverride>
+                        <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="3 3" Modulate="#FFFFFFD0">
+                            <PanelContainer.PanelOverride>
+                                <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#303030" BackgroundColor="#1f1f1f"/>
+                            </PanelContainer.PanelOverride>
+                            <lobbyUi:LobbyCharacterPreviewPanel Name="CharacterPreview" Access="Public" MinHeight="200" />
+                        </PanelContainer>
+                    </PanelContainer>
                 </PanelContainer>
 
-                <PanelContainer Modulate="#FFFFFFD0">
+                <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="6 6 6 6" Modulate="#FFFFFFD0">
                     <PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BackgroundColor="#10161C"
-                                               BorderColor="#2E3B45"
-                                               BorderThickness="2" />
+                        <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#35434d" BackgroundColor="#141414"/>
                     </PanelContainer.PanelOverride>
-                    <BoxContainer Orientation="Vertical" SeparationOverride="0">
-
-                        <PanelContainer MinHeight="30">
+                    <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="0 0 0 0" Modulate="#FFFFFFD0">
+                        <PanelContainer.PanelOverride>
+                            <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#262626" BackgroundColor="#111111"/>
+                        </PanelContainer.PanelOverride>
+                        <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="3 3" Modulate="#FFFFFFD0">
                             <PanelContainer.PanelOverride>
-                                <graphics:StyleBoxFlat BackgroundColor="#0A0E12"
-                                                       BorderColor="#FF6A00"
-                                                       BorderThickness="0 0 0 2" />
+                                <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#303030" BackgroundColor="#1f1f1f"/>
                             </PanelContainer.PanelOverride>
-                            <Label Name="StartTime" Access="Public"
-                                   StyleClasses="LabelBig"
-                                   Align="Center" VerticalAlignment="Center"
-                                   Margin="6" />
-                        </PanelContainer>
-
-                        <BoxContainer Orientation="Vertical" Margin="12 10" SeparationOverride="6" HorizontalExpand="True">
-                            <Button Name="ReadyButton" Access="Public" ToggleMode="True"
-                                    Text="ПРИСОЕДИНИТЬСЯ"
-                                    HorizontalExpand="True" MinHeight="40" StyleClasses="ButtonBig" />
-                            <cc:UICommandButton Command="observe" Name="ObserveButton" Access="Public"
-                                                Text="Наблюдать"
-                                                HorizontalExpand="True" MinHeight="32"
-                                                WindowType="{x:Type lobbyUi:ObserveWarningWindow}" />
-
-                            <BoxContainer Name="AdminButtons" Orientation="Vertical"
-                                          SeparationOverride="4" Visible="False">
-                                <controls:Separator Thickness="1" Margin="2 4" Modulate="#2E3B45" />
-                                <Label Text="Администрирование"
-                                       StyleClasses="LabelSubText"
-                                       HorizontalAlignment="Center" Margin="0 2" />
-                                <Button Name="StartRoundButton" Access="Public"
-                                        Text="Начать раунд"
-                                        HorizontalExpand="True" MinHeight="28" />
-                                <Button Name="DelayStartButton" Access="Public"
-                                        Text="Пауза в лобби"
-                                        HorizontalExpand="True" MinHeight="28" />
-                                <Button Name="SendLobbyMessageButton" Access="Public"
-                                        Text="Сообщение в лобби"
-                                        HorizontalExpand="True" MinHeight="28" />
+                            <BoxContainer Orientation="Vertical" SeparationOverride="0">
+                                <controls:StripeBack Modulate="#FFFFFFD0" HorizontalExpand="True">
+                                    <PanelContainer StyleClasses="BackgroundPanel" MinHeight="34" HorizontalExpand="True">
+                                        <Label Name="StartTime" Access="Public" StyleClasses="LabelBig" Align="Center" VerticalAlignment="Center" Margin="5" />
+                                    </PanelContainer>
+                                </controls:StripeBack>
+                                <BoxContainer Orientation="Vertical" Margin="0 12" SeparationOverride="6" HorizontalExpand="True">
+                                    <Button Name="ReadyButton" Access="Public" ToggleMode="True" Text="ПРИСОЕДИНИТЬСЯ" HorizontalExpand="True" MinHeight="40" StyleClasses="ButtonBig" />
+                                    <cc:UICommandButton Command="observe" Name="ObserveButton" Access="Public" Text="Наблюдать" HorizontalExpand="True" MinHeight="32" WindowType="{x:Type lobbyUi:ObserveWarningWindow}" />
+                                    <controls:Separator Thickness="1" Margin="2 4" Modulate="#FFFFFF30" />
+                                    <Button Name="CharacterSetup" Access="Public" Text="Персонаж" HorizontalExpand="True" MinHeight="32" />
+                                    <!-- VG-Tweak: Admin buttons -->
+                                    <BoxContainer Name="AdminButtons" Orientation="Vertical" SeparationOverride="4" Visible="False">
+                                        <controls:Separator Thickness="1" Margin="2 4" Modulate="#FFFFFF30" />
+                                        <Label Text="Администрирование" StyleClasses="LabelSubText" HorizontalAlignment="Center" Margin="0 2" />
+                                        <Button Name="StartRoundButton" Access="Public" Text="Начать раунд" HorizontalExpand="True" MinHeight="28" />
+                                        <Button Name="DelayStartButton" Access="Public" Text="Пауза в лобби" HorizontalExpand="True" MinHeight="28" />
+                                        <Button Name="SendLobbyMessageButton" Access="Public" Text="Сообщение в лобби" HorizontalExpand="True" MinHeight="28" />
+                                    </BoxContainer>
+                                    <!-- VG-Tweak end -->
+                                    <controls:Separator Thickness="1" Margin="2 4" Modulate="#FFFFFF30" />
+                                    <Button Name="OptionsButton" Access="Public" Text="Настройки" HorizontalExpand="True" MinHeight="32" />
+                                    <Button Name="LeaveButton" Access="Public" Text="Выйти" HorizontalExpand="True" MinHeight="32" StyleClasses="Caution" />
+                                </BoxContainer>
                             </BoxContainer>
-
-                            <controls:Separator Thickness="1" Margin="2 4" Modulate="#2E3B45" />
-                            <Button Name="CharacterSetup" Access="Public" Text="Персонаж"
-                                    HorizontalExpand="True" MinHeight="32" />
-                            <Button Name="OptionsButton" Access="Public" Text="Настройки"
-                                    HorizontalExpand="True" MinHeight="32" />
-                            <Button Name="LeaveButton" Access="Public" Text="Выйти"
-                                    HorizontalExpand="True" MinHeight="32" StyleClasses="Caution" />
-                        </BoxContainer>
-                    </BoxContainer>
+                        </PanelContainer>
+                    </PanelContainer>
                 </PanelContainer>
             </BoxContainer>
 
@@ -131,74 +112,61 @@
                      MinHeight="50"
                      HorizontalExpand="True" />
 
-            <BoxContainer Name="ChatContainer" Orientation="Vertical"
-                          HorizontalAlignment="Right" VerticalExpand="True"
-                          Margin="0 100 25 25" MinWidth="450" SeparationOverride="12">
-
-                <PanelContainer Modulate="#FFFFFFD0" VerticalExpand="False">
+            <BoxContainer Name="ChatContainer" Orientation="Vertical" HorizontalAlignment="Right" VerticalExpand="True" Margin="0 100 25 25" MinWidth="450" SeparationOverride="12">
+                <PanelContainer VerticalExpand="False" HorizontalExpand="True" MinHeight="140" Margin="0 0 0 0" Modulate="#FFFFFFD0">
                     <PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BackgroundColor="#10161C"
-                                               BorderColor="#2E3B45"
-                                               BorderThickness="2" />
+                        <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#35434d" BackgroundColor="#141414"/>
                     </PanelContainer.PanelOverride>
-                    <BoxContainer Orientation="Vertical" SeparationOverride="0">
-                        <PanelContainer MinHeight="2">
+                    <PanelContainer VerticalExpand="False" HorizontalExpand="True" Margin="0 0 0 0" Modulate="#FFFFFFD0">
+                        <PanelContainer.PanelOverride>
+                            <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#262626" BackgroundColor="#111111"/>
+                        </PanelContainer.PanelOverride>
+                        <PanelContainer VerticalExpand="False" HorizontalExpand="True" Margin="3 3" Modulate="#FFFFFFD0">
                             <PanelContainer.PanelOverride>
-                                <graphics:StyleBoxFlat BackgroundColor="#FF6A00" />
+                                <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#303030" BackgroundColor="#1f1f1f"/>
                             </PanelContainer.PanelOverride>
+                            <BoxContainer Orientation="Vertical" Margin="12" Name="DefaultState" Access="Public" MaxWidth="450" HorizontalExpand="True" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                <info:ServerInfo Name="ServerInfo" Access="Public" HorizontalExpand="True" />
+                                <Label Name="StatusLabel" Access="Public" Margin="0 4 0 0" />
+                            </BoxContainer>
                         </PanelContainer>
-                        <BoxContainer Orientation="Vertical" Margin="12" Name="DefaultState" Access="Public"
-                                      HorizontalExpand="True" VerticalAlignment="Top" HorizontalAlignment="Left">
-                            <info:ServerInfo Name="ServerInfo" Access="Public" HorizontalExpand="True" />
-                            <Label Name="StatusLabel" Access="Public" Margin="0 4 0 0" />
-                        </BoxContainer>
-                    </BoxContainer>
+                    </PanelContainer>
                 </PanelContainer>
 
-                <PanelContainer Name="RightSide" Access="Public"
-                                Modulate="#FFFFFFD0"
-                                VerticalExpand="True" HorizontalExpand="True">
+                <PanelContainer Name="RightSide" Access="Public" VerticalExpand="True" HorizontalExpand="True" Margin="0 0 0 0" Modulate="#FFFFFFD0">
                     <PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BackgroundColor="#10161C"
-                                               BorderColor="#2E3B45"
-                                               BorderThickness="2" />
+                        <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#35434d" BackgroundColor="#141414"/>
                     </PanelContainer.PanelOverride>
-                    <BoxContainer Orientation="Vertical" SeparationOverride="0"
-                                  VerticalExpand="True" HorizontalExpand="True">
-                        <PanelContainer MinHeight="26">
+                    <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="0 0 0 0" Modulate="#FFFFFFD0">
+                        <PanelContainer.PanelOverride>
+                            <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#262626" BackgroundColor="#111111"/>
+                        </PanelContainer.PanelOverride>
+                        <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="3 3" Modulate="#FFFFFFD0">
                             <PanelContainer.PanelOverride>
-                                <graphics:StyleBoxFlat BackgroundColor="#0A0E12"
-                                                       BorderColor="#FF6A00"
-                                                       BorderThickness="0 0 0 2" />
+                                <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#303030" BackgroundColor="#1f1f1f"/>
                             </PanelContainer.PanelOverride>
-                            <Label Text="{Loc 'ui-lobby-chat-title'}"
-                                   StyleClasses="LabelSubText"
-                                   Margin="10 4" VerticalAlignment="Center" />
+                            <BoxContainer Orientation="Vertical" Margin="3 3" HorizontalExpand="True" VerticalExpand="True">
+                                <controls:NanoHeading Text="{Loc 'ui-lobby-chat-title'}" Margin="0 0 0 4" />
+                                <widgets:ChatBox Name="Chat" Access="Public" VerticalExpand="True" HorizontalExpand="True" />
+                            </BoxContainer>
                         </PanelContainer>
-                        <BoxContainer Orientation="Vertical" Margin="6"
-                                      VerticalExpand="True" HorizontalExpand="True">
-                            <widgets:ChatBox Name="Chat" Access="Public"
-                                             VerticalExpand="True" HorizontalExpand="True" />
-                        </BoxContainer>
-                    </BoxContainer>
+                    </PanelContainer>
                 </PanelContainer>
             </BoxContainer>
         </BoxContainer>
 
-        <BoxContainer Name="VoteContainer" Access="Public"
-                      HorizontalAlignment="Left" VerticalAlignment="Top"
-                      Margin="25 100" Orientation="Vertical" MouseFilter="Ignore" />
+        <BoxContainer Name="VoteContainer" Access="Public" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25 100" Orientation="Vertical" MouseFilter="Ignore" />
 
-        <BoxContainer Name="MusicContainer" Orientation="Horizontal"
-                      VerticalAlignment="Bottom" HorizontalExpand="True"
-                      Margin="25 15" SeparationOverride="12">
+        <BoxContainer Name="MusicContainer" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalExpand="True" Margin="25 15" SeparationOverride="12">
             <RichTextLabel Name="LobbySong" Access="Public" MinWidth="350" VerticalAlignment="Center" />
             <RichTextLabel Name="LobbyBackground" Access="Public" MinWidth="350" VerticalAlignment="Center" />
         </BoxContainer>
 
-        <Control Name="CenterMessageContainer" Access="Public"
-                 HorizontalExpand="True" VerticalExpand="True"
-                 Margin="420 80 500 120" Visible="False" />
+        <Control Name="CenterMessageContainer"
+            Access="Public"
+            HorizontalExpand="True"
+            VerticalExpand="True"
+            Margin="420 80 500 120" Visible="False" />
 
         <Control Visible="False">
             <Button Name="CollapseButton" Access="Public" />
