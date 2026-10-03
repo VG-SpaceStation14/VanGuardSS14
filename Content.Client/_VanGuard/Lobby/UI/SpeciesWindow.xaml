@@ -5,43 +5,94 @@
          SetSize="900 700"
          MinSize="760 480"
          Resizable="False">
-    <BoxContainer Orientation="Horizontal" VerticalExpand="True">
-        <!-- Species list -->
-        <ScrollContainer Name="SpeciesScroll"
-                         HorizontalExpand="True" VerticalExpand="True"
-                         HScrollEnabled="False" Margin="5" MinWidth="220">
-            <PanelContainer VerticalExpand="True" HorizontalExpand="True">
-                <PanelContainer.PanelOverride>
-                    <graphics:StyleBoxFlat BackgroundColor="#1B1B1E" />
-                </PanelContainer.PanelOverride>
-                <BoxContainer Name="SpeciesList" Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True"/>
-            </PanelContainer>
-        </ScrollContainer>
-        <!-- Details -->
-        <BoxContainer Orientation="Vertical" VerticalExpand="True" Margin="5" HorizontalExpand="True" MinWidth="460">
-            <BoxContainer Orientation="Horizontal" VerticalAlignment="Top">
-                <PanelContainer SetSize="180 180" MaxSize="180 180" VerticalAlignment="Top" Margin="5">
+
+    <BoxContainer Orientation="Horizontal" VerticalExpand="True" Margin="4">
+
+        <PanelContainer MinWidth="220" Margin="4" HorizontalExpand="True">
+            <PanelContainer.PanelOverride>
+                <graphics:StyleBoxFlat BackgroundColor="#0A0E12"
+                                       BorderColor="#2E3B45"
+                                       BorderThickness="2"
+                                       ContentMarginTopOverride="4"
+                                       ContentMarginBottomOverride="4"
+                                       ContentMarginLeftOverride="4"
+                                       ContentMarginRightOverride="4" />
+            </PanelContainer.PanelOverride>
+            <ScrollContainer Name="SpeciesScroll"
+                             HorizontalExpand="True" VerticalExpand="True"
+                             HScrollEnabled="False">
+                <BoxContainer Name="SpeciesList" Orientation="Vertical"
+                              VerticalExpand="True" HorizontalExpand="True" />
+            </ScrollContainer>
+        </PanelContainer>
+
+        <BoxContainer Orientation="Vertical" VerticalExpand="True"
+                      Margin="4" HorizontalExpand="True" MinWidth="460"
+                      SeparationOverride="8">
+
+            <BoxContainer Orientation="Horizontal" VerticalAlignment="Top"
+                          HorizontalAlignment="Center" SeparationOverride="8">
+
+                <PanelContainer SetSize="180 180" MaxSize="180 180">
                     <PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BackgroundColor="#1B1B1E" />
+                        <graphics:StyleBoxFlat BackgroundColor="#0A0E12"
+                                               BorderColor="#2E3B45"
+                                               BorderThickness="2" />
                     </PanelContainer.PanelOverride>
                     <profile:ProfilePreviewSpriteView Name="NakedPreview" Scale="4 4"/>
                 </PanelContainer>
-                <PanelContainer SetSize="180 180" MaxSize="180 180" VerticalAlignment="Top" Margin="5">
+
+                <PanelContainer SetSize="180 180" MaxSize="180 180">
                     <PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BackgroundColor="#1B1B1E" />
+                        <graphics:StyleBoxFlat BackgroundColor="#0A0E12"
+                                               BorderColor="#2E3B45"
+                                               BorderThickness="2" />
                     </PanelContainer.PanelOverride>
                     <profile:ProfilePreviewSpriteView Name="UniformPreview" Scale="4 4"/>
                 </PanelContainer>
             </BoxContainer>
-            <Button Name="ChooseButton" Text="{Loc 'species-window-choose'}" SetWidth="370" MinWidth="370"/>
-            <ScrollContainer HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="5">
-                <PanelContainer VerticalExpand="True" HorizontalExpand="True">
-                    <PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BackgroundColor="#1B1B1E" />
-                    </PanelContainer.PanelOverride>
-                    <BoxContainer Name="Details" Orientation="Vertical" MaxWidth="380" VerticalExpand="True"/>
-                </PanelContainer>
-            </ScrollContainer>
+
+            <Button Name="ChooseButton"
+                    Text="{Loc 'species-window-choose'}"
+                    MinWidth="370" MaxWidth="370"
+                    MinHeight="34"
+                    HorizontalAlignment="Center"
+                    StyleClasses="ButtonBig" />
+
+            <PanelContainer HorizontalExpand="True" VerticalExpand="True">
+                <PanelContainer.PanelOverride>
+                    <graphics:StyleBoxFlat BackgroundColor="#0A0E12"
+                                           BorderColor="#2E3B45"
+                                           BorderThickness="2"
+                                           ContentMarginTopOverride="0"
+                                           ContentMarginBottomOverride="6"
+                                           ContentMarginLeftOverride="8"
+                                           ContentMarginRightOverride="8" />
+                </PanelContainer.PanelOverride>
+
+                <BoxContainer Orientation="Vertical"
+                              VerticalExpand="True" HorizontalExpand="True"
+                              SeparationOverride="0">
+
+                    <PanelContainer MinHeight="2" Margin="0 0 0 6">
+                        <PanelContainer.PanelOverride>
+                            <graphics:StyleBoxFlat BackgroundColor="#FF6A00" />
+                        </PanelContainer.PanelOverride>
+                    </PanelContainer>
+
+                    <ScrollContainer HorizontalExpand="True" VerticalExpand="True"
+                                     HScrollEnabled="False">
+                        <BoxContainer Name="Details" Orientation="Vertical"
+                                      MaxWidth="380" VerticalExpand="True" />
+                    </ScrollContainer>
+                </BoxContainer>
+            </PanelContainer>
+
+            <PanelContainer MinHeight="3">
+                <PanelContainer.PanelOverride>
+                    <graphics:StyleBoxFlat BackgroundColor="#FF6A00" />
+                </PanelContainer.PanelOverride>
+            </PanelContainer>
         </BoxContainer>
     </BoxContainer>
 </controls:FancyWindow>

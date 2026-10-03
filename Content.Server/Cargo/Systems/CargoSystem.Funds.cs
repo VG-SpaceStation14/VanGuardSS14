@@ -51,14 +51,14 @@ public sealed partial class CargoSystem
                 if (!_bank.TryGetPlayerAccount(actor, out var mindUid, out var account))
                 {
                     _popup.PopupCursor(Loc.GetString("cargo-console-no-account"), actor);
-                    PlayDenySound(ent, ent.Comp);
+                    PlayDenySound(ent);
                     return;
                 }
 
                 if (!_bank.Withdraw((mindUid, account), args.Amount, "station-deposit", GetNetEntity(station), primaryAccount))
                 {
                     _popup.PopupCursor(Loc.GetString("cargo-console-station-insufficient-funds"), actor);
-                    PlayDenySound(ent, ent.Comp);
+                    PlayDenySound(ent);
                     return;
                 }
 
@@ -74,7 +74,7 @@ public sealed partial class CargoSystem
                 if (!_accessReaderSystem.IsAllowed(actor, ent))
                 {
                     _popup.PopupCursor(Loc.GetString("cargo-console-order-not-allowed"), actor);
-                    PlayDenySound(ent, ent.Comp);
+                    PlayDenySound(ent);
                     return;
                 }
 
@@ -82,14 +82,14 @@ public sealed partial class CargoSystem
                 if (args.Amount > available)
                 {
                     _popup.PopupCursor(Loc.GetString("cargo-console-insufficient-station-funds"), actor);
-                    PlayDenySound(ent, ent.Comp);
+                    PlayDenySound(ent);
                     return;
                 }
 
                 if (!_bank.TryGetPlayerAccount(actor, out mindUid, out account))
                 {
                     _popup.PopupCursor(Loc.GetString("cargo-console-no-account"), actor);
-                    PlayDenySound(ent, ent.Comp);
+                    PlayDenySound(ent);
                     return;
                 }
 
@@ -105,7 +105,7 @@ public sealed partial class CargoSystem
     private void OnWithdrawFunds(Entity<CargoOrderConsoleComponent> ent, ref CargoConsoleWithdrawFundsMessage args)
     {
         if (_station.GetOwningStation(ent) is not { } station ||
-            !TryComp<StationBankAccountComponent>(station, out var bank))
+            !_bankQuery.TryComp(station, out var bank))
             return;
 
         if (args.Account == ent.Comp.Account ||
@@ -119,7 +119,7 @@ public sealed partial class CargoSystem
         if (!_accessReaderSystem.IsAllowed(args.Actor, ent))
         {
             _popup.PopupCursor(Loc.GetString("cargo-console-order-not-allowed"), args.Actor);
-            PlayDenySound(ent, ent.Comp);
+            PlayDenySound(ent);
             return;
         }
 
@@ -170,7 +170,7 @@ public sealed partial class CargoSystem
         if (!_accessReaderSystem.FindAccessTags(args.Actor).Intersect(ent.Comp.RemoveLimitAccess).Any())
         {
             _popup.PopupCursor(Loc.GetString("cargo-console-order-not-allowed"), args.Actor);
-            PlayDenySound(ent, ent.Comp);
+            PlayDenySound(ent);
             return;
         }
 
@@ -183,7 +183,7 @@ public sealed partial class CargoSystem
     private void OnSetFundingAllocation(Entity<FundingAllocationConsoleComponent> ent, ref SetFundingAllocationBuiMessage args)
     {
         if (_station.GetOwningStation(ent) is not { } station ||
-            !TryComp<StationBankAccountComponent>(station, out var bank))
+            !_bankQuery.TryComp(station, out var bank))
             return;
 
         var expectedCount = _allowPrimaryAccountAllocation ? bank.RevenueDistribution.Count : bank.RevenueDistribution.Count - 1;
