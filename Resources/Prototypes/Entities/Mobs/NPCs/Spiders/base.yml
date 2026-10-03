@@ -59,6 +59,9 @@
       reagents:
       - ReagentId: CopperBlood
         Quantity: 150
+  - type: LanguageSpeaker # VG-Tweak: language system.
+    languages:
+      Arachnid: Speak
   - type: Speech
     speechVerb: Arachnid
     speechSounds: Arachnid

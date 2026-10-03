@@ -66,7 +66,7 @@ public sealed class LanguageMobTest : GameTest
             ("MobMonkey", "Monkey"),
             ("MobMouse", "Mouse"),
             ("MobPig", "Pig"),
-            ("MobGiantSpider", "Arachnid"),
+            ("MobGiantSpiderTarantula", "Arachnid"),
             ("MobXeno", "Xeno"),
             ("MobDragon", "Dragon"),
             ("MobDionaNymph", "RootSpeak"),

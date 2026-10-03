@@ -7,6 +7,7 @@ using Content.Shared.GameTicking;
 using Content.Shared.GameTicking.Components;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
+using System.Linq;
 
 namespace Content.IntegrationTests.Tests.GameRules;
 
@@ -42,6 +43,14 @@ public sealed partial class EventSchedulerTest : GameTest
             ? ruleComp.ActivatedAt
             : TimeSpan.FromMinutes(eventComp!.EarliestStart);
         var players = Math.Max(ruleComp.MinPlayers, eventComp.MinimumPlayers);
+
+        // The round-start station variation may have already added an instance of this rule
+        // (e.g. SmugglerStashVariationPass). Such an instance would leave the rule on cooldown
+        // and break the assumptions below, so end any pre-existing instances first.
+        foreach (var existing in _gameTicker.GetAddedGameRules(ruleId).ToList())
+        {
+            _gameTicker.EndGameRule(existing);
+        }
 
         if (time > TimeSpan.Zero || players > 1)
         {
