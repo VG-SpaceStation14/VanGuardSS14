@@ -8,11 +8,11 @@
   <GuideEntityEmbed Entity="AppearanceDiona" Caption="Диона"/>
   <GuideEntityEmbed Entity="AppearanceDwarf" Caption="Дворф"/>
   <GuideEntityEmbed Entity="AppearanceHuman" Caption="Человек"/>
+    <GuideEntityEmbed Entity="AppearanceMoth" Caption="Ниан"/>
   </Box>
   <Box>
-  <GuideEntityEmbed Entity="AppearanceMoth" Caption="Ниан"/>
   <GuideEntityEmbed Entity="AppearanceReptilian" Caption="Унатх"/>
-  <GuideEntityEmbed Entity="AppearanceSlimePerson" Caption="Слаймалюд"/>
+  <GuideEntityEmbed Entity="AppearanceSlimePerson" Caption="Слаймолюд"/>
   <GuideEntityEmbed Entity="AppearanceVox" Caption="Вокс"/>
   </Box>
   <!-- VG-Tweak Start -->

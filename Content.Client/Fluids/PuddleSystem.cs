@@ -12,60 +12,58 @@ public sealed partial class PuddleSystem : SharedPuddleSystem
     [Dependency] private IconSmoothSystem _smooth = default!;
     [Dependency] private SpriteSystem _sprite = default!;
 
-    public override void Initialize()
-    {
-        base.Initialize();
-
-        SubscribeLocalEvent<PuddleComponent, AppearanceChangeEvent>(OnPuddleAppearance);
-    }
-
+    [SubscribeLocalEvent]
     private void OnPuddleAppearance(EntityUid uid, PuddleComponent component, ref AppearanceChangeEvent args)
     {
         if (args.Sprite == null)
             return;
 
-        var volume = 1f;
+        if (!args.TryGetData<float>(PuddleVisuals.CurrentVolume, out var volume))
+            volume = 1.0f;
 
-        if (args.AppearanceData.TryGetValue(PuddleVisuals.CurrentVolume, out var volumeObj))
-        {
-            volume = (float)volumeObj;
-        }
+        // VG-Tweak Start: puddles like Footstep/DragMark have no visual PuddleKey layer
+        // (their default PuddleKey is "direction", but the sprite has no layers at all).
+        // Bail out early so LayerSetRsiState doesn't spam "Layer with key 'direction' does not exist".
+        if (!_sprite.LayerMapTryGet((uid, args.Sprite), component.PuddleKey, out var puddleLayer, logMissing: false))
+            return;
+        // VG-Tweak End
+
+        // VG-Tweak Start: not every PuddleComponent has an IconSmoothComponent
+        // (Footstep, DragMark, custom micro-puddles). Cache it so SetEnabled
+        // can receive (uid, smooth) instead of just uid and skip the Resolve error.
+        TryComp<IconSmoothComponent>(uid, out var smooth);
+        // VG-Tweak End
 
         // Update smoothing and sprite based on volume.
-        if (TryComp<IconSmoothComponent>(uid, out var smooth))
+        if (volume < LowThreshold)
         {
-            if (volume < LowThreshold)
-            {
-                _sprite.LayerSetRsiState((uid, args.Sprite), 0, $"{smooth.StateBase}a");
-                _smooth.SetEnabled(uid, false, smooth);
-            }
-            else if (volume < MediumThreshold)
-            {
-                _sprite.LayerSetRsiState((uid, args.Sprite), 0, $"{smooth.StateBase}b");
-                _smooth.SetEnabled(uid, false, smooth);
-            }
-            else
-            {
-                if (!smooth.Enabled)
-                {
-                    _sprite.LayerSetRsiState((uid, args.Sprite), 0, $"{smooth.StateBase}0");
-                    _smooth.SetEnabled(uid, true, smooth);
-                    _smooth.DirtyNeighbours(uid);
-                }
-            }
+            // VG-Tweak: use cached layer index instead of re-resolving by string key
+            _sprite.LayerSetRsiState((uid, args.Sprite), puddleLayer, $"{component.PuddleState}a");
+            // VG-Tweak: pass (uid, smooth) instead of uid so Resolve is skipped on entities without the component
+            if (smooth != null)
+                _smooth.SetEnabled((uid, smooth), false, false);
+        }
+        else if (volume < MediumThreshold)
+        {
+            // VG-Tweak: use cached layer index instead of re-resolving by string key
+            _sprite.LayerSetRsiState((uid, args.Sprite), puddleLayer, $"{component.PuddleState}b");
+            // VG-Tweak: pass (uid, smooth) instead of uid so Resolve is skipped on entities without the component
+            if (smooth != null)
+                _smooth.SetEnabled((uid, smooth), false, false);
+        }
+        else
+        {
+            // VG-Tweak: pass (uid, smooth) instead of uid so Resolve is skipped on entities without the component
+            if (smooth != null)
+                _smooth.SetEnabled((uid, smooth), true);
         }
 
         var baseColor = Color.White;
 
-        if (args.AppearanceData.TryGetValue(PuddleVisuals.SolutionColor, out var colorObj))
-        {
-            var color = (Color)colorObj;
-            _sprite.SetColor((uid, args.Sprite), color * baseColor);
-        }
-        else
-        {
-            _sprite.SetColor((uid, args.Sprite), args.Sprite.Color * baseColor);
-        }
+        if (!args.TryGetData<Color>(PuddleVisuals.SolutionColor, out var color))
+            color = args.Sprite.Color;
+
+        _sprite.SetColor((uid, args.Sprite), color * baseColor);
     }
 
     #region Spill

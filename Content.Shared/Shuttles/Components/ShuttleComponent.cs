@@ -14,7 +14,6 @@ public sealed partial class ShuttleComponent : Component
     /// <summary>
     /// Thrust gets multiplied by this value if it's for braking.
     /// </summary>
-    // VG-Tweak: consts are static, Robust 290+ asserts that [DataField] is not used on static fields.
     public const float BrakeCoefficient = 1.5f;
 
     /// <summary>

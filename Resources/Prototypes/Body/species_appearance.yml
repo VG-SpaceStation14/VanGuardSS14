@@ -11,6 +11,8 @@
     - map: [ "enum.HumanoidVisualLayers.Head" ]
     - map: [ "enum.HumanoidVisualLayers.Snout" ]
     - map: [ "enum.HumanoidVisualLayers.Eyes" ]
+    - map: [ "enum.HumanoidVisualLayers.Eyelids" ]
+    - map: [ "enum.HumanoidVisualLayers.OverEyes" ]
 
     # Limbs
     - map: [ "enum.HumanoidVisualLayers.RArm" ]
@@ -77,7 +79,6 @@
   components:
   # VG-Tweak Start
   - type: VanGuardMovement
-  - type: Blink
   - type: CritHeartbeat
   - type: ExaminableCharacter
   - type: FootprintEmitter

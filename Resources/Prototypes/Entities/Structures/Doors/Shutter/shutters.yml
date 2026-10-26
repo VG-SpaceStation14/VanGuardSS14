@@ -74,7 +74,7 @@
   - type: DeviceNetwork
     deviceNetId: Wireless
     receiveFrequencyId: BasicDevice
-  - type: WirelessNetworkConnection
+  - type: WirelessNetwork
     range: 200
   - type: DeviceLinkSink
     ports:
@@ -96,7 +96,6 @@
     key: shutters
   - type: IconSmooth
     key: walls
-    mode: NoSprite
   # VG-Tweak Start
   - type: WeldingSparksAnimation
     startingOffset: -0.5, -0.5

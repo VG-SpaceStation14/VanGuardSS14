@@ -158,6 +158,7 @@
       - MobState
       - Door
       - Wall
+  - type: AntiRottingContainer
   - type: Tag
     tags:
     - CannotSuicide
@@ -181,6 +182,10 @@
     speedModifier: 2.5 # fast because dragon strong
     useSound:
       path: /Audio/Items/crowbar.ogg
+  - type: InnateWaypointer
+    waypointerProtoIds:
+    - NTStationWaypointer
+    - DragonRiftWaypointer
 
 - type: entity
   parent: BaseMobDragon
@@ -291,6 +296,7 @@
     event: !type:ProjectileSpellEvent
       prototype: ProjectileDragonsBreath
       projectileSpeed: 5
+      rearVelocityCompensation: 1.0 # slow projectile, speed it up if shooting backwards
 
 - type: entity
   parent: Smoke

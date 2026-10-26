@@ -80,7 +80,7 @@
       prefix: device-address-prefix-teg
       sendBroadcastAttemptEvent: true
       examinableAddress: true
-    - type: WiredNetworkConnection
+    - type: WiredNetwork
 
     - type: PowerSupplier
       # Have practically irrelevant supply ramping.
@@ -111,7 +111,8 @@
       - TEG
       - Power
     - type: StealTarget
-      stealGroup: Teg
+      stealGroup:
+      - Teg
 
 - type: entity
   id: TegCirculator
@@ -192,7 +193,8 @@
     - type: PipeRestrictOverlap
     - type: TegCirculator
     - type: StealTarget
-      stealGroup: Teg
+      stealGroup:
+      - Teg
     - type: DirectionalArrowIndicator
       arrows:
       - offset: 0, -1.5
