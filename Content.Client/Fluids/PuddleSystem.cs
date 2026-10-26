@@ -21,20 +21,41 @@ public sealed partial class PuddleSystem : SharedPuddleSystem
         if (!args.TryGetData<float>(PuddleVisuals.CurrentVolume, out var volume))
             volume = 1.0f;
 
+        // VG-Tweak Start: puddles like Footstep/DragMark have no visual PuddleKey layer
+        // (their default PuddleKey is "direction", but the sprite has no layers at all).
+        // Bail out early so LayerSetRsiState doesn't spam "Layer with key 'direction' does not exist".
+        if (!_sprite.LayerMapTryGet((uid, args.Sprite), component.PuddleKey, out var puddleLayer, logMissing: false))
+            return;
+        // VG-Tweak End
+
+        // VG-Tweak Start: not every PuddleComponent has an IconSmoothComponent
+        // (Footstep, DragMark, custom micro-puddles). Cache it so SetEnabled
+        // can receive (uid, smooth) instead of just uid and skip the Resolve error.
+        TryComp<IconSmoothComponent>(uid, out var smooth);
+        // VG-Tweak End
+
         // Update smoothing and sprite based on volume.
         if (volume < LowThreshold)
         {
-            _sprite.LayerSetRsiState((uid, args.Sprite), component.PuddleKey, $"{component.PuddleState}a");
-            _smooth.SetEnabled(uid, false, false);
+            // VG-Tweak: use cached layer index instead of re-resolving by string key
+            _sprite.LayerSetRsiState((uid, args.Sprite), puddleLayer, $"{component.PuddleState}a");
+            // VG-Tweak: pass (uid, smooth) instead of uid so Resolve is skipped on entities without the component
+            if (smooth != null)
+                _smooth.SetEnabled((uid, smooth), false, false);
         }
         else if (volume < MediumThreshold)
         {
-            _sprite.LayerSetRsiState((uid, args.Sprite), component.PuddleKey, $"{component.PuddleState}b");
-            _smooth.SetEnabled(uid, false, false);
+            // VG-Tweak: use cached layer index instead of re-resolving by string key
+            _sprite.LayerSetRsiState((uid, args.Sprite), puddleLayer, $"{component.PuddleState}b");
+            // VG-Tweak: pass (uid, smooth) instead of uid so Resolve is skipped on entities without the component
+            if (smooth != null)
+                _smooth.SetEnabled((uid, smooth), false, false);
         }
         else
         {
-            _smooth.SetEnabled(uid, true);
+            // VG-Tweak: pass (uid, smooth) instead of uid so Resolve is skipped on entities without the component
+            if (smooth != null)
+                _smooth.SetEnabled((uid, smooth), true);
         }
 
         var baseColor = Color.White;

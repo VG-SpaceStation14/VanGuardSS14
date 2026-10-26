@@ -79,7 +79,6 @@
   components:
   # VG-Tweak Start
   - type: VanGuardMovement
-  - type: Blink
   - type: CritHeartbeat
   - type: ExaminableCharacter
   - type: FootprintEmitter

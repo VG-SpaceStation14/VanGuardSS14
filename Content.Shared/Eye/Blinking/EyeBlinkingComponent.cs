@@ -18,13 +18,13 @@ public sealed partial class EyeBlinkingComponent : Component
 {
     #region Blink Timing
     /// <summary>
-    /// The minimum duration of a single blink, in seconds.
+    /// The minimum duration of a single blink, in seconds. Used when the entity is healthy.
     /// </summary>
     [DataField, AutoNetworkedField]
     public TimeSpan MinBlinkDuration = TimeSpan.FromSeconds(0.2f);
 
     /// <summary>
-    /// The maximum duration of a single blink, in seconds.
+    /// The maximum duration of a single blink, in seconds. Used when the entity is healthy.
     /// </summary>
     [DataField, AutoNetworkedField]
     public TimeSpan MaxBlinkDuration = TimeSpan.FromSeconds(0.5f);
@@ -36,13 +36,13 @@ public sealed partial class EyeBlinkingComponent : Component
     public TimeSpan NextOpenEyesTime;
 
     /// <summary>
-    /// The minimum interval between blinks, in seconds.
+    /// The minimum interval between blinks, in seconds. Used when the entity is healthy.
     /// </summary>
     [DataField, AutoNetworkedField]
     public TimeSpan MinBlinkInterval = TimeSpan.FromSeconds(3f);
 
     /// <summary>
-    /// The maximum interval between blinks, in seconds.
+    /// The maximum interval between blinks, in seconds. Used when the entity is healthy.
     /// </summary>
     [DataField, AutoNetworkedField]
     public TimeSpan MaxBlinkInterval = TimeSpan.FromSeconds(10f);
@@ -71,6 +71,101 @@ public sealed partial class EyeBlinkingComponent : Component
     [DataField]
     public bool BlinkInProgress;
     #endregion Blink Timing
+
+    // VG-Tweak Start: intensity-scaled blink parameters (ported from VanGuard BlinkSystem)
+    /// <summary>
+    /// Minimum blink duration when the entity is at maximum injury (intensity = 1).
+    /// Interpolated between <see cref="MinBlinkDuration"/> and this value based on damage/stamina.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public TimeSpan InjuredMinBlinkDuration = TimeSpan.FromSeconds(0.08f);
+
+    /// <summary>
+    /// Maximum blink duration when the entity is at maximum injury (intensity = 1).
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public TimeSpan InjuredMaxBlinkDuration = TimeSpan.FromSeconds(0.2f);
+
+    /// <summary>
+    /// Minimum blink interval when the entity is at maximum injury (intensity = 1).
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public TimeSpan InjuredMinBlinkInterval = TimeSpan.FromSeconds(0.6f);
+
+    /// <summary>
+    /// Maximum blink interval when the entity is at maximum injury (intensity = 1).
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public TimeSpan InjuredMaxBlinkInterval = TimeSpan.FromSeconds(2f);
+
+    /// <summary>
+    /// How strongly damage contributes to blink intensity.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public float DamageWeight = 1f;
+
+    /// <summary>
+    /// How strongly stamina damage contributes to blink intensity.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public float StaminaWeight = 0.7f;
+
+    /// <summary>
+    /// Chance to skip a scheduled blink entirely (scaled down by intensity).
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public float SkipBlinkChance = 0.05f;
+
+    /// <summary>
+    /// Base chance of a blink being a "long blink" (double or more duration).
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public float LongBlinkChance = 0.1f;
+
+    /// <summary>
+    /// How much intensity increases the long-blink chance on top of <see cref="LongBlinkChance"/>.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public float IntensityLongBlinkBonus = 0.3f;
+
+    /// <summary>
+    /// Duration multiplier applied to a "long blink".
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public float LongBlinkMultiplier = 2.5f;
+
+    /// <summary>
+    /// Base chance of a longer-than-usual interval between blinks (scaled down by intensity).
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public float LongIntervalChance = 0.2f;
+
+    /// <summary>
+    /// Interval multiplier applied when a "long interval" is rolled.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public float LongIntervalMultiplier = 2f;
+    // VG-Tweak End
+
+    // VG-Tweak Start: reflex blink on damage
+    /// <summary>
+    /// Minimum single-hit damage required to trigger a reflex blink.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public float ReflexBlinkDamageThreshold = 5f;
+
+    /// <summary>
+    /// Duration of a reflex blink. Overrides the normal duration range when the blink is triggered by damage.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public TimeSpan ReflexBlinkDuration = TimeSpan.FromSeconds(0.12f);
+
+    /// <summary>
+    /// Probability that damage above <see cref="ReflexBlinkDamageThreshold"/> causes a reflex blink.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public float ReflexBlinkChance = 0.9f;
+    // VG-Tweak End
 
     /// <summary>
     /// The blink status of this entity.

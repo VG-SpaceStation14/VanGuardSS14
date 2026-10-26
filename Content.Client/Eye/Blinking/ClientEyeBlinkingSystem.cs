@@ -79,7 +79,8 @@ public sealed partial class ClientEyeBlinkingSystem : EyeBlinkingSystem
         if (!ent.IsValid() || !EyeBlinkingQuery.TryComp(ent, out var blinkingComp))
             return;
 
-        Blink((ent, blinkingComp));
+        // VG-Tweak: pass the optional forced duration through (used for reflex blinks)
+        Blink((ent, blinkingComp), ev.ForceDuration);
     }
     #endregion Event Handlers
 
@@ -93,14 +94,29 @@ public sealed partial class ClientEyeBlinkingSystem : EyeBlinkingSystem
     /// durations.</remarks>
     /// <param name="ent">The entity containing the <see cref="EyeBlinkingComponent"/> to blink.
     /// The entity's owner must be valid, and its eyes must not already be closed.</param>
-    public void Blink(Entity<EyeBlinkingComponent> ent)
+    /// <param name="forceDuration">VG-Tweak: optional explicit duration. If set, the normal duration/skip/long-blink rolls are bypassed.</param>
+    public void Blink(Entity<EyeBlinkingComponent> ent, TimeSpan? forceDuration = null)
     {
         if (ent.Comp.Status != BlinkStatus.Normal)
             return;
 
-        // Checks if a blink is still in progress to avoid a "frozen eyes" effect caused by emote spamming. A blink must complete fully before the next one can start.
+        // VG-Tweak Start: reflex blink may extend an in-progress blink instead of being ignored
         if (ent.Comp.BlinkInProgress)
+        {
+            if (forceDuration is { } forcedExtend && ent.Comp.Eyelids.Count > 0)
+            {
+                var newOpenTime = _timing.CurTime + forcedExtend;
+                foreach (var eyelidState in ent.Comp.Eyelids)
+                {
+                    if (newOpenTime > eyelidState.ScheduledOpenTime)
+                        eyelidState.ScheduledOpenTime = newOpenTime;
+                }
+                if (newOpenTime > ent.Comp.NextOpenEyesTime)
+                    ent.Comp.NextOpenEyesTime = newOpenTime;
+            }
             return;
+        }
+        // VG-Tweak End
 
         if (ent.Comp.Eyelids.Count == 0)
             return;
@@ -111,10 +127,33 @@ public sealed partial class ClientEyeBlinkingSystem : EyeBlinkingSystem
         var curTime = _timing.CurTime;
         var maxOpenTime = curTime;
 
-        // Randomly determines the duration of the blink within the configured range.
-        var minDuration = ent.Comp.MinBlinkDuration;
-        var maxDuration = ent.Comp.MaxBlinkDuration;
-        var blinkDuration = _random.Next(minDuration, maxDuration);
+        // VG-Tweak Start: intensity-scaled duration + long blink + skip-blink chance
+        TimeSpan blinkDuration;
+
+        if (forceDuration is { } forced)
+        {
+            blinkDuration = forced;
+        }
+        else
+        {
+            var intensity = GetBlinkIntensity(ent);
+            var minDuration = LerpTimeSpan(ent.Comp.MinBlinkDuration, ent.Comp.InjuredMinBlinkDuration, intensity);
+            var maxDuration = LerpTimeSpan(ent.Comp.MaxBlinkDuration, ent.Comp.InjuredMaxBlinkDuration, intensity);
+            blinkDuration = _random.Next(minDuration, maxDuration);
+
+            var longBlinkChance = ent.Comp.LongBlinkChance + intensity * ent.Comp.IntensityLongBlinkBonus;
+            if (_random.Prob(longBlinkChance))
+                blinkDuration = TimeSpan.FromTicks((long)(blinkDuration.Ticks * ent.Comp.LongBlinkMultiplier));
+
+            var skipChance = ent.Comp.SkipBlinkChance * (1f - intensity);
+            if (_random.Prob(skipChance))
+            {
+                ent.Comp.BlinkInProgress = false;
+                ResetBlink(ent);
+                return;
+            }
+        }
+        // VG-Tweak End
 
         // Retrieves the eyelid states from the client component to schedule the blink timings for each eyelid.
         var eyelidStates = ent.Comp.Eyelids;
@@ -167,9 +206,22 @@ public sealed partial class ClientEyeBlinkingSystem : EyeBlinkingSystem
     /// with defined minimum and maximum blink intervals.</param>
     public void ResetBlink(Entity<EyeBlinkingComponent> ent)
     {
-        var minInterval = ent.Comp.MinBlinkInterval;
-        var maxInterval = ent.Comp.MaxBlinkInterval;
+        // VG-Tweak Start: intensity-scaled interval + long interval chance
+        var intensity = GetBlinkIntensity(ent);
+        var minInterval = LerpTimeSpan(ent.Comp.MinBlinkInterval, ent.Comp.InjuredMinBlinkInterval, intensity);
+        var maxInterval = LerpTimeSpan(ent.Comp.MaxBlinkInterval, ent.Comp.InjuredMaxBlinkInterval, intensity);
+
+        if (minInterval > maxInterval)
+            (minInterval, maxInterval) = (maxInterval, minInterval);
+
+        if (_random.Prob(ent.Comp.LongIntervalChance * (1f - intensity)))
+        {
+            minInterval = TimeSpan.FromTicks((long)(minInterval.Ticks * ent.Comp.LongIntervalMultiplier));
+            maxInterval = TimeSpan.FromTicks((long)(maxInterval.Ticks * ent.Comp.LongIntervalMultiplier));
+        }
+
         var randomBlinkInterval = _random.Next(minInterval, maxInterval);
+        // VG-Tweak End
 
         // Schedules the next blink time based on the last open eye time and the randomly determined interval.
         ent.Comp.NextBlinkingTime = ent.Comp.NextOpenEyesTime + randomBlinkInterval;

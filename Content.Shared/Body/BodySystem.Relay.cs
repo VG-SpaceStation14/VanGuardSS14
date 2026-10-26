@@ -2,6 +2,7 @@ using Content.Shared.Bed.Sleep;
 using Content.Shared.Body.Events;
 using Content.Shared.Chat;
 using Content.Shared.Cloning.Events;
+using Content.Shared.Damage.Systems; // VG-Tweak: DamageDealtEvent for organ-mounted EyeBlinkingComponent
 using Content.Shared.Eye.Blinding.Systems;
 using Content.Shared.Eye.Blinking;
 using Content.Shared.Gibbing;
@@ -30,6 +31,11 @@ public sealed partial class BodySystem
         SubscribeLocalEvent<BodyComponent, MobStateChangedEvent>(RefRelayBodyEvent);
         SubscribeLocalEvent<BodyComponent, BlindnessChangedEvent>(RefRelayBodyEvent);
         SubscribeLocalEvent<BodyComponent, CloningEvent>(RefRelayBodyEvent);
+
+        // VG-Tweak Start: relay damage events so organ-mounted EyeBlinkingComponent can trigger reflex blinks.
+        // DamageDealtEvent is a by-ref readonly struct raised on InjurableComponent, so we use RefRelayBodyEvent.
+        SubscribeLocalEvent<BodyComponent, DamageDealtEvent>(RefRelayBodyEvent);
+        // VG-Tweak End
 
         SubscribeLocalEvent<BodyComponent, ToggleEyesActionEvent>(RelayBodyEvent);
         SubscribeLocalEvent<BodyComponent, CanSeeAttemptEvent>(RelayBodyEvent);

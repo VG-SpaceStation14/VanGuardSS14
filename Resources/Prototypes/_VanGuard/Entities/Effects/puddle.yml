@@ -19,6 +19,9 @@
     solution: step
   - type: Appearance
   - type: DnaSubstanceTrace
+  - type: IconSmooth
+    key: Footstep
+    enabled: false
 
 - type: entity
   name: drag mark

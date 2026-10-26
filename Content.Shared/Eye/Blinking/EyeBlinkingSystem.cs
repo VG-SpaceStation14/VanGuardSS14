@@ -4,8 +4,13 @@ using Content.Shared.Bed.Sleep;
 using Content.Shared.Body;
 using Content.Shared.Chat;
 using Content.Shared.Cloning.Events;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Eye.Blinding.Systems;
+using Content.Shared.FixedPoint;
 using Content.Shared.Mobs;
+using Content.Shared.Mobs.Components;
+using Content.Shared.Stunnable;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared.Eye.Blinking;
@@ -21,6 +26,10 @@ public abstract partial class EyeBlinkingSystem : EntitySystem
     [Dependency] protected EntityQuery<EyeBlinkingComponent> EyeBlinkingQuery;
     [Dependency] protected EntityQuery<VisualOrganComponent> VisualOrganQuery;
     [Dependency] private EntityQuery<OrganComponent> _organQuery;
+
+    // VG-Tweak Start: dependencies for blink intensity calculation
+    [Dependency] private DamageableSystem _damageable = default!;
+    // VG-Tweak End
 
     #region Event Handlers
     [SubscribeLocalEvent]
@@ -84,6 +93,27 @@ public abstract partial class EyeBlinkingSystem : EntitySystem
         ent.Comp.MinBlinkDuration = cloneEyes.MinBlinkDuration;
         ent.Comp.MaxBlinkInterval = cloneEyes.MaxBlinkInterval;
         ent.Comp.MinBlinkInterval = cloneEyes.MinBlinkInterval;
+
+        // VG-Tweak Start: copy VG blink-tuning fields as well
+        ent.Comp.InjuredMinBlinkDuration = cloneEyes.InjuredMinBlinkDuration;
+        ent.Comp.InjuredMaxBlinkDuration = cloneEyes.InjuredMaxBlinkDuration;
+        ent.Comp.InjuredMinBlinkInterval = cloneEyes.InjuredMinBlinkInterval;
+        ent.Comp.InjuredMaxBlinkInterval = cloneEyes.InjuredMaxBlinkInterval;
+
+        ent.Comp.DamageWeight = cloneEyes.DamageWeight;
+        ent.Comp.StaminaWeight = cloneEyes.StaminaWeight;
+
+        ent.Comp.SkipBlinkChance = cloneEyes.SkipBlinkChance;
+        ent.Comp.LongBlinkChance = cloneEyes.LongBlinkChance;
+        ent.Comp.IntensityLongBlinkBonus = cloneEyes.IntensityLongBlinkBonus;
+        ent.Comp.LongBlinkMultiplier = cloneEyes.LongBlinkMultiplier;
+        ent.Comp.LongIntervalChance = cloneEyes.LongIntervalChance;
+        ent.Comp.LongIntervalMultiplier = cloneEyes.LongIntervalMultiplier;
+
+        ent.Comp.ReflexBlinkDamageThreshold = cloneEyes.ReflexBlinkDamageThreshold;
+        ent.Comp.ReflexBlinkDuration = cloneEyes.ReflexBlinkDuration;
+        ent.Comp.ReflexBlinkChance = cloneEyes.ReflexBlinkChance;
+        // VG-Tweak End
 
         ent.Comp.BlinkSkinColorMultiplier = cloneEyes.BlinkSkinColorMultiplier;
         ent.Comp.BlinkEmoteId = [.. cloneEyes.BlinkEmoteId];
@@ -198,6 +228,27 @@ public abstract partial class EyeBlinkingSystem : EntitySystem
         cloneComp.MaxBlinkInterval = ent.Comp.MaxBlinkInterval;
         cloneComp.MinBlinkInterval = ent.Comp.MinBlinkInterval;
 
+        // VG-Tweak Start: copy VG blink-tuning fields as well
+        cloneComp.InjuredMinBlinkDuration = ent.Comp.InjuredMinBlinkDuration;
+        cloneComp.InjuredMaxBlinkDuration = ent.Comp.InjuredMaxBlinkDuration;
+        cloneComp.InjuredMinBlinkInterval = ent.Comp.InjuredMinBlinkInterval;
+        cloneComp.InjuredMaxBlinkInterval = ent.Comp.InjuredMaxBlinkInterval;
+
+        cloneComp.DamageWeight = ent.Comp.DamageWeight;
+        cloneComp.StaminaWeight = ent.Comp.StaminaWeight;
+
+        cloneComp.SkipBlinkChance = ent.Comp.SkipBlinkChance;
+        cloneComp.LongBlinkChance = ent.Comp.LongBlinkChance;
+        cloneComp.IntensityLongBlinkBonus = ent.Comp.IntensityLongBlinkBonus;
+        cloneComp.LongBlinkMultiplier = ent.Comp.LongBlinkMultiplier;
+        cloneComp.LongIntervalChance = ent.Comp.LongIntervalChance;
+        cloneComp.LongIntervalMultiplier = ent.Comp.LongIntervalMultiplier;
+
+        cloneComp.ReflexBlinkDamageThreshold = ent.Comp.ReflexBlinkDamageThreshold;
+        cloneComp.ReflexBlinkDuration = ent.Comp.ReflexBlinkDuration;
+        cloneComp.ReflexBlinkChance = ent.Comp.ReflexBlinkChance;
+        // VG-Tweak End
+
         cloneComp.BlinkSkinColorMultiplier = ent.Comp.BlinkSkinColorMultiplier;
         cloneComp.BlinkEmoteId = [.. ent.Comp.BlinkEmoteId];
         cloneComp.StatePrefix = ent.Comp.StatePrefix;
@@ -290,18 +341,65 @@ public abstract partial class EyeBlinkingSystem : EntitySystem
         Dirty(eyes);
     }
     #endregion Internal
+
+    // VG-Tweak Start: helpers used by the client to scale blink timing based on damage/stamina
+    /// <summary>
+    /// Computes a 0..1 "blink intensity" from the entity's damage and stamina.
+    /// 0 = healthy, 1 = fully injured. Higher intensity → faster, shorter blinks.
+    /// </summary>
+    protected float GetBlinkIntensity(Entity<EyeBlinkingComponent> ent)
+    {
+        var target = ent.Comp.Body ?? ent.Owner;
+        var damage = GetDamageFraction(target);
+        var stamina = GetStaminaFraction(target);
+        return Math.Clamp(damage * ent.Comp.DamageWeight + stamina * ent.Comp.StaminaWeight, 0f, 1f);
+    }
+
+    protected float GetDamageFraction(EntityUid uid)
+    {
+        if (!TryComp<DamageableComponent>(uid, out var damageable))
+            return 0f;
+
+        var maxHp = FixedPoint2.New(100);
+        if (TryComp<MobThresholdsComponent>(uid, out var thresholds) && thresholds.Thresholds.Count > 0)
+            maxHp = thresholds.Thresholds.Keys.Max();
+
+        var totalDamage = _damageable.GetTotalDamage((uid, damageable));
+        return Math.Clamp((float)(totalDamage / maxHp), 0f, 1f);
+    }
+
+    protected float GetStaminaFraction(EntityUid uid)
+    {
+        if (!TryComp<StaminaComponent>(uid, out var stamina) || stamina.CritThreshold <= 0f)
+            return 0f;
+
+        return Math.Clamp(stamina.StaminaDamage / stamina.CritThreshold, 0f, 1f);
+    }
+
+    protected static TimeSpan LerpTimeSpan(TimeSpan a, TimeSpan b, float t)
+    {
+        return TimeSpan.FromTicks((long)(a.Ticks + (b.Ticks - a.Ticks) * t));
+    }
+    // VG-Tweak End
 }
 
 /// <summary>
 /// Event raised when an entity blinks due to an emote (<see cref="EmoteEvent"/>).
 /// </summary>
 [Serializable, NetSerializable]
-public sealed class BlinkEyeEvent(NetEntity netEntity) : EntityEventArgs
+public sealed class BlinkEyeEvent(NetEntity netEntity, TimeSpan? forceDuration = null) : EntityEventArgs
 {
     /// <summary>
     /// The entity performing the blink.
     /// </summary>
     public readonly NetEntity NetEntity = netEntity;
+
+    // VG-Tweak Start: optional forced duration (used by reflex blinks)
+    /// <summary>
+    /// If set, overrides the normal blink duration for this blink only.
+    /// </summary>
+    public readonly TimeSpan? ForceDuration = forceDuration;
+    // VG-Tweak End
 }
 
 /// <summary>
