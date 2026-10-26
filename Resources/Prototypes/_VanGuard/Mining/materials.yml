@@ -34,7 +34,7 @@
   stackEntity: IngotCopper1
   name: materials-copper
   unit: materials-unit-bar
-  icon: { sprite: Objects/Materials/ingots.rsi, state: copper }
+  icon: { sprite: _VanGuard/Objects/Materials/ingots.rsi, state: copper }
   color: "#dd7d00"
   price: 0.075
 

@@ -7,7 +7,7 @@
   parent: BaseMediumStack
   id: Copper
   name: stack-copper
-  icon: { sprite: /Textures/Objects/Materials/ingots.rsi, state: copper }
+  icon: { sprite: /Textures/_VanGuard/Objects/Materials/ingots.rsi, state: copper }
   spawn: IngotCopper1
 
 - type: stack

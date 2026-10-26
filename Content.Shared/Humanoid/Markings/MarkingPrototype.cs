@@ -19,7 +19,6 @@ public sealed partial class MarkingPrototype : IPrototype
     /// <summary>
     ///     The "body part" visual layer that this marking applies to.
     /// </summary>
-
     [DataField("bodyPart", required: true)]
     public HumanoidVisualLayers BodyPart { get; private set; } = default!;
 
@@ -42,7 +41,7 @@ public sealed partial class MarkingPrototype : IPrototype
 
     /// <summary>
     ///     Whether or not this marking's colors can be manually changed by the player.
-    ///     If not, then it will be forced to use a certain color depending on <see cref="Coloring">.
+    ///     If not, then it will be forced to use a certain color depending on <see cref="Coloring"/>.
     /// </summary>
     [DataField("forcedColoring")]
     public bool ForcedColoring { get; private set; } = false;
@@ -65,6 +64,17 @@ public sealed partial class MarkingPrototype : IPrototype
     /// </summary>
     [DataField("sprites", required: true)]
     public List<MarkingLayerData> Sprites { get; private set; } = default!;
+
+    /// <summary>
+    ///     Optional dictionary allowing assignment of shaders to sprite layers in a marking.
+    ///     This implementation is very messy but unfortunately Robust doesn't like shaders in SpriteSpecifiers.
+    /// </summary>
+    [DataField]
+    public Dictionary<string, string>? Shaders { get; private set; }
+
+    // VG-Tweak - allow markings to support shaders
+    [DataField("shader")]
+    public string? Shader { get; private set; } = null;
 
     /// <summary>
     /// Chance this marking will be added by appearance randomizer.
@@ -91,61 +101,6 @@ public sealed partial class MarkingPrototype : IPrototype
         return Sprites.Count;
     }
 
-        [DataField("bodyPart", required: true)]
-        public HumanoidVisualLayers BodyPart { get; private set; } = default!;
-
-        [DataField]
-        public List<ProtoId<MarkingsGroupPrototype>>? GroupWhitelist;
-
-        [DataField("sexRestriction")]
-        public Sex? SexRestriction { get; private set; }
-
-        // Corvax-Sponsors-Start
-        [DataField("sponsorOnly")]
-        public bool SponsorOnly = false;
-        // Corvax-Sponsors-End
-
-        [DataField("forcedColoring")]
-        public bool ForcedColoring { get; private set; } = false;
-
-        [DataField("coloring")]
-        public MarkingColors Coloring { get; private set; } = new();
-
-        /// <summary>
-        /// Do we need to apply any displacement maps to this marking? Set to false if your marking is incompatible
-        /// with a standard human doll, and is used for some special races with unusual shapes
-        /// </summary>
-        [DataField]
-        public bool CanBeDisplaced { get; private set; } = true;
-
-        [DataField("sprites", required: true)]
-        public List<SpriteSpecifier> Sprites { get; private set; } = default!;
-
-        /// <summary>
-        ///     Optional dictionary allowing assignment of shaders to sprite layers in a marking.
-        ///     This implementation is very messy but unfortunately Robust doesn't like shaders in SpriteSpecifiers.
-        /// </summary>
-        [DataField]
-        public Dictionary<string, string>? Shaders { get; private set; }
-        
-        public Marking AsMarking()
-        {
-            return new Marking(ID, Sprites.Count);
-        }
-
-        /// <summary>
-        /// Chance this marking will be added by appearance randomizer.
-        /// </summary>
-        /// <remarks>
-        /// Default value is 1.
-        /// </remarks>
-        [DataField]
-        public float RandomWeight = 1f;
-
-        //VG-Tweak - allow markings to support shaders
-        [DataField("shader")]
-        public string? Shader { get; private set; } = null;
-        //VG-Tweak impstation edit
     public Marking AsMarking()
     {
         return new Marking(ID, GetColorCount());

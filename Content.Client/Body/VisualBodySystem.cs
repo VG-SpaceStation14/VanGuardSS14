@@ -211,75 +211,7 @@ public sealed partial class VisualBodySystem : SharedVisualBodySystem
             // Get displacement data for this marking, if there is any
             ent.Comp.MarkingsDisplacement.TryGetValue(proto.BodyPart, out var displacement);
 
-            var numDisplacements = 0;
-            for (var i = 0; i < proto.Sprites.Count; i++)
-            {
-                var sprite = proto.Sprites[i];
-
-                DebugTools.Assert(sprite is SpriteSpecifier.Rsi);
-                if (sprite is not SpriteSpecifier.Rsi rsi)
-                    continue;
-
-                var layerId = $"{proto.ID}-{rsi.RsiState}";
-
-                if (!_sprite.LayerMapTryGet(target, layerId, out var spriteLayer, false))
-                {
-                    // Having three separate indices and a magic +1 is cursed, but:
-                    // - index refers to the index of the organ the marking is applied to
-                    // - i is the current sprite of the marking that is being applied
-                    // - numDisplacements tracks how many displacements have been applied, and is
-                    //   an additional offset to ensure that the order of the base sprites is correct
-                    //   after inserting a displacement layer
-                    // - The +1 ensures that markings render on top of the base organ
-                    spriteLayer = _sprite.AddLayer(target, sprite, index + i + numDisplacements + 1);
-                    _sprite.LayerMapSet(target, layerId, spriteLayer);
-                    _sprite.LayerSetSprite(target, spriteLayer, rsi);
-                    _sprite.LayerSetVisible(target, spriteLayer, bodypartLayer.Visible);
-                }
-
-                if (marking.MarkingColors is not null && i < marking.MarkingColors.Count)
-                    _sprite.LayerSetColor(target, spriteLayer, marking.MarkingColors[i]);
-                else
-                    _sprite.LayerSetColor(target, spriteLayer, Color.White);
-
-                if (displacement != null && proto.CanBeDisplaced)
-                {
-                    _displacement.TryAddDisplacement(
-                        displacement,
-                        (target, target.Comp),
-                        // Similar logic as above, but this makes the displacement layer go below the
-                        // original sprite. So it should be all the displacements, then all the sprite layers on top
-                        index + i + 1,
-                        layerId,
-                        out _
-                    );
-                    numDisplacements++;
-                }
-
-                // VG: apply the marking's shader. The single "shader" field acts as a fallback
-                // for all sprites of the marking, while the per-state "shaders" dictionary wins if set.
-                var shader = proto.Shader;
-                if (proto.Shaders is not null &&
-                    proto.Shaders.TryGetValue(rsi.RsiState, out var stateShader))
-                {
-                    shader = stateShader;
-                }
-
-                // VG: all markings on a ghost are forced unshaded so they match the ghost body.
-                // Species markings (ears/tails/snouts/etc.) can't carry "shader: unshaded" in their
-                // prototypes because those are shared with living players.
-                if (HasComp<GhostComponent>(target.Owner))
-                    shader = "unshaded";
-
-                if (shader is not null)
-                {
-                    // Resolve the layer by its map key rather than by raw index: the layer may
-                    // already exist from a previous apply pass and displacement layers shift indices.
-                    target.Comp.LayerSetShader(layerId, shader);
-                }
-            }
-
-            // Add the marking's layers to the target's sprite
+            // Apply all sprite layers belonging to this marking on top of the organ.
             ApplyMarkingLayers(target, organIndex, marking, proto, displacement);
             applied.Add(marking);
         }
@@ -373,11 +305,32 @@ public sealed partial class VisualBodySystem : SharedVisualBodySystem
             numDisplacements++;
         }
 
-        // Apply shaders
+        // Apply shaders.
+        // Priority (lowest to highest): marking-wide MarkingPrototype.Shader → per-layer
+        // MarkingLayerData.Shader → per-state MarkingPrototype.Shaders[rsiState] → ghost override.
+        // The ghost override is applied because species markings (ears, tails, snouts, etc.)
+        // can't bake "shader: unshaded" into their prototypes — those are shared with living
+        // players and would look wrong there.
+        var shader = markingProto.Shader;
+
         if (layerData.Shader != null)
+            shader = layerData.Shader;
+
+        if (markingProto.Shaders is not null
+            && layerData.Sprite is SpriteSpecifier.Rsi stateRsi
+            && markingProto.Shaders.TryGetValue(stateRsi.RsiState, out var stateShader))
         {
-            // TODO: fix this when LayerSetShader is moved out of component
-            target.Comp.LayerSetShader(spriteLayerIndex + numDisplacements, layerData.Shader);
+            shader = stateShader;
+        }
+
+        if (HasComp<GhostComponent>(target.Owner))
+            shader = "unshaded";
+
+        if (shader != null)
+        {
+            // Resolve by layer-map key rather than by raw index: the layer may already exist
+            // from a previous apply pass and displacement layers shift indices around.
+            target.Comp.LayerSetShader(layerData.GetLayerID(markingProto.ID), shader);
         }
     }
 
