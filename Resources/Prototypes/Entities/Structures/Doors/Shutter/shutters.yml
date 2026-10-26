@@ -96,13 +96,11 @@
     key: shutters
   - type: IconSmooth
     key: walls
-    mode: NoSprite
   # VG-Tweak Start
   - type: WeldingSparksAnimation
     startingOffset: -0.5, -0.5
     endingOffset: 0.5, -0.5
   # VG-Tweak End
-    key: doors
   - type: StructureAligner
   - type: StructureAlignerPylon
 

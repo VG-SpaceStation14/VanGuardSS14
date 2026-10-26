@@ -1484,6 +1484,50 @@
     listNumber: false
   # VG-Tweak End
 
+# VG-Tweak Start: restored SyndicateIDCardAdaptive + SyndicateIDCardAdaptivePassenger
+# (referenced by UplinkSyndicateIDCard, SyndimovCircuitKit, SyndiCovertPDA — lost during merge)
+- type: entity
+  parent: [ SyndicateIDCard, BaseSyndicateContraband ]
+  id: SyndicateIDCardAdaptive
+  name: syndicate ID card
+  suffix: Adaptive
+  components:
+  - type: AgentIDCard
+    iconGroups:
+    - CommandIconGroup
+    - SecurityIconGroup
+    - CargoIconGroup
+    - EngineeringIconGroup
+    - MedicalIconGroup
+    - ScienceIconGroup
+    - ServiceIconGroup
+    - TheatreIconGroup
+    - CivilianIconGroup
+    - SiliconIconGroup
+    - CentCommIconGroup
+    - TaskForceIconGroup
+    - AntagonistIconGroup
+    - MiscIconGroup
+    - BlankIconGroup
+  - type: UIRequiresLock
+  - type: ActivatableUI
+    key: enum.AgentIDCardUiKey.Key
+    verbText: agent-id-open-ui-verb
+  - type: UserInterface
+    interfaces:
+      enum.AgentIDCardUiKey.Key:
+        type: AgentIDCardBoundUserInterface
+
+# Used for reinforcements so someone isn't immediately outed if they forget to change their ID on spawn.
+- type: entity
+  parent: SyndicateIDCardAdaptive
+  id: SyndicateIDCardAdaptivePassenger
+  suffix: Adaptive, Passenger Icon
+  components:
+  - type: IdCard
+    jobIcon: JobIconPassenger
+# VG-Tweak End
+
 - type: entity
   parent: [ SyndicateIDCard, BaseSyndicateContraband ]
   id: SyndiOperativeIDCard
