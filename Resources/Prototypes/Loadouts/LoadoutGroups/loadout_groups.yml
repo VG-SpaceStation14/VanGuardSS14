@@ -732,6 +732,7 @@
   - QuartermasterTurtleneck
   - QuartermasterTurtleneckSkirt
   - QuartermasterFormalSuit
+  - QuartermasterFormalDress
 
 - type: loadoutGroup
   id: QuartermasterNeck
@@ -1395,6 +1396,7 @@
   maxLimit: 1
   loadouts:
   - TramDriverJumpsuit
+  - TramDriverJumpskirt
 
 - type: loadoutGroup
   id: TramDriverOuterClothing
