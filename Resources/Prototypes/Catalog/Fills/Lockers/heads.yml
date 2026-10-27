@@ -15,6 +15,7 @@
     - id: PlushieLizardJobQuartermaster
       prob: 0.02
     - id: PrinterDocFlatpack # Corvax-Printer
+    - id: HandheldSalvageShuttleConsole # VG-Added: Handheld console for the salvage shuttle, for quartermasters on the go.
 
 - type: entity
   id: LockerQuarterMasterFilled

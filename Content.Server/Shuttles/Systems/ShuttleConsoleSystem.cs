@@ -162,14 +162,28 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
 
     private bool TryPilot(EntityUid user, EntityUid uid)
     {
+        // VG-Tweak Start: handheld drone consoles (e.g. portable salvage console)
+        // are not anchored and not connected to an APC by design.
+        // Skip power/anchor checks for unanchored drone consoles.
+        var isHandheldDrone = HasComp<DroneConsoleComponent>(uid) && !Transform(uid).Anchored;
+        // VG-Tweak End
+
         if (!_tags.HasTag(user, CanPilotTag) ||
-            !TryComp<ShuttleConsoleComponent>(uid, out var component) ||
-            !this.IsPowered(uid, EntityManager) ||
-            !Transform(uid).Anchored ||
-            !_blocker.CanInteract(user, uid))
+            !TryComp<ShuttleConsoleComponent>(uid, out var component))
         {
             return false;
         }
+
+        // VG-Tweak Start: only require power + anchor for non-handheld consoles
+        if (!isHandheldDrone &&
+            (!this.IsPowered(uid, EntityManager) || !Transform(uid).Anchored))
+        {
+            return false;
+        }
+        // VG-Tweak End
+
+        if (!_blocker.CanInteract(user, uid))
+            return false;
 
         var pilotComponent = EnsureComp<PilotComponent>(user);
         var console = pilotComponent.Console;
