@@ -29,7 +29,13 @@ DISCORD_SPLIT_LIMIT = 2000
 DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
 TRUNCATION_SUFFIX = " [...]"
 
-CHANGELOG_FILES = ["Resources/Changelog/Changelog.yml", "Resources/Changelog/ChangelogSyndie.yml"] # Corvax-MultiChangelog
+# VG-Tweak Start: added VanGuard changelog
+CHANGELOG_FILES = [
+    "Resources/Changelog/Changelog.yml",
+    "Resources/Changelog/ChangelogSyndie.yml",
+    "Resources/Changelog/ChangelogVanGuard.yml"
+]
+# VG-Tweak End
 
 TYPES_TO_EMOJI = {
     "Fix":    "🐛",
@@ -54,16 +60,30 @@ def main():
         # a separate local file as the old changelog
         last_changelog_stream = DEBUG_CHANGELOG_FILE_OLD.read_text(encoding="utf-8-sig")
     else:
-        # when running this normally in a GitHub actions workflow,
-        # it will get the old changelog from the GitHub API
-        last_changelog_stream = get_last_changelog()
+        pass # VG-Tweak: Moved inside the loop below
 
-    last_changelog = yaml.safe_load(last_changelog_stream)
-    with open(CHANGELOG_FILE, "r", encoding="utf-8-sig") as f:
-        cur_changelog = yaml.safe_load(f)
+    message_lines = []
 
-    diff = diff_changelog(last_changelog, cur_changelog)
-    message_lines = changelog_entries_to_message_lines(diff)
+    # VG-Tweak Start: loop over all changelog files
+    for changelog_file in CHANGELOG_FILES:
+        if not os.path.exists(changelog_file):
+            continue
+
+        if DEBUG:
+            last_changelog = yaml.safe_load(last_changelog_stream)
+        else:
+            last_changelog_stream = get_last_changelog(changelog_file)
+            last_changelog = yaml.safe_load(last_changelog_stream) if last_changelog_stream else {"Entries": []}
+
+        with open(changelog_file, "r", encoding="utf-8-sig") as f:
+            cur_changelog = yaml.safe_load(f)
+
+        if not cur_changelog or "Entries" not in cur_changelog:
+            continue
+
+        diff = diff_changelog(last_changelog, cur_changelog)
+        message_lines.extend(changelog_entries_to_message_lines(diff))
+    # VG-Tweak End
 
     if DEBUG:
         dump_debug_markdown(message_lines)
@@ -76,7 +96,9 @@ def main():
     send_message_lines(message_lines)
 
 
-def get_last_changelog() -> str:
+# VG-Tweak Start: added changelog_file parameter
+def get_last_changelog(changelog_file: str) -> str:
+# VG-Tweak End
     github_repository, github_run, github_token = (
         actions_changelog_github.get_required_github_env()
     )
@@ -93,12 +115,15 @@ def get_last_changelog() -> str:
             session, github_repository, github_run
         )
 
-    return get_last_changelog_by_sha(session, last_sha, github_repository)
+    # VG-Tweak: pass changelog_file down
+    return get_last_changelog_by_sha(session, last_sha, github_repository, changelog_file)
 
 
+# VG-Tweak Start: added changelog_file parameter and updated URL
 def get_last_changelog_by_sha(
-    sess: requests.Session, sha: str, github_repository: str
+    sess: requests.Session, sha: str, github_repository: str, changelog_file: str
 ) -> str:
+# VG-Tweak End
     """
     Use GitHub API to get the previous version of the changelog YAML (Actions builds are fetched with a shallow clone)
     """
@@ -108,7 +133,8 @@ def get_last_changelog_by_sha(
     headers = {"Accept": "application/vnd.github.raw"}
 
     resp = sess.get(
-        f"{actions_changelog_github.GITHUB_API_URL}/repos/{github_repository}/contents/{CHANGELOG_FILE}",
+        # VG-Tweak: use changelog_file instead of static CHANGELOG_FILE
+        f"{actions_changelog_github.GITHUB_API_URL}/repos/{github_repository}/contents/{changelog_file}",
         headers=headers,
         params=params,
     )
@@ -248,7 +274,7 @@ def dump_debug_markdown(message_lines: list[str]):
     with DEBUG_DISCORD_DUMP_FILE.open("w", encoding="utf-8", newline="\n") as f:
         f.write("# Discord Changelog Debug Dump\n\n")
         f.write(
-            f"Generated from `{DEBUG_CHANGELOG_FILE_OLD}` to `{CHANGELOG_FILE}`.\n\n"
+            f"Generated from `{DEBUG_CHANGELOG_FILE_OLD}` to `{CHANGELOG_FILES}`.\n\n"
         )
 
         if not chunks:
