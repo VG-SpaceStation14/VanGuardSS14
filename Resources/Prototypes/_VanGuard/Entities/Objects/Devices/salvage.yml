@@ -10,7 +10,6 @@
   - type: Item
     size: Small
     sprite: _VanGuard/Objects/Devices/handheld_shuttle.rsi
-    state: salvage_bug
   - type: StationTracker
   - type: ShuttleConsole
   - type: ActivatableUI
