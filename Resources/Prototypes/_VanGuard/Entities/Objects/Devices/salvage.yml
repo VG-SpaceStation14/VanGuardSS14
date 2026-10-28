@@ -1,0 +1,43 @@
+- type: entity
+  parent: BaseItem
+  id: HandheldSalvageShuttleConsole
+  name: portable salvage shuttle console
+  description: A handheld console used to remotely pilot the salvage shuttle.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Objects/Devices/handheld_shuttle.rsi
+    state: salvage_bug
+  - type: Item
+    size: Small
+    sprite: _VanGuard/Objects/Devices/handheld_shuttle.rsi
+  - type: StationTracker
+  - type: ShuttleConsole
+  - type: ActivatableUI
+    key: enum.ShuttleConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.ShuttleConsoleUiKey.Key:
+        type: ShuttleConsoleBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: RadarConsole
+    maxRange: 256
+  - type: DroneConsole
+    components:
+    - type: SalvageShuttle
+  - type: PointLight
+    radius: 1.5
+    energy: 1.6
+    color: "#c94242"
+  - type: Computer
+    board: SalvageShuttleConsoleCircuitboard
+  - type: GuideHelp
+    guides:
+    - ShuttleCraft
+  - type: EmitSoundOnUIOpen
+    sound:
+      collection: Keyboard
+      params:
+        volume: -1
+        variation: 0.10
+        pitch: 1.10
