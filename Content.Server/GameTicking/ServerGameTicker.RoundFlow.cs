@@ -15,6 +15,7 @@ using Content.Shared.Players;
 using Content.Shared.Preferences;
 using Content.Shared.Roles.Components;
 using Content.Shared.Voting; // VG-Tweak
+using Content.Server._VanGuard.CrewOmen; // VG-Tweak
 using JetBrains.Annotations;
 using Prometheus;
 using Robust.Shared.Asynchronous;
@@ -34,6 +35,8 @@ public sealed partial class ServerGameTicker
     [Dependency] private RoleSystem _role = default!;
     [Dependency] private IVoteManager _voteManager = default!; // VG-Tweak
     [Dependency] private ITaskManager _taskManager = default!;
+    [Dependency] private CrewOmenSystem _crewOmen = default!; // VG-Tweak
+
 
     private static readonly Counter RoundNumberMetric = Metrics.CreateCounter(
         "ss14_round_number",
@@ -497,6 +500,17 @@ public sealed partial class ServerGameTicker
         //Generate a list of basic player info to display in the end round summary.
         var listOfPlayerInfo = new List<RoundEndMessageEvent.RoundEndPlayerInfo>();
         // Grab the great big book of all the Minds, we'll need them for this.
+
+        // VG-Tweak Start: assign crew omen titles before building player info
+        var crewOmenMindIds = new List<EntityUid>();
+        var crewOmenMindsQuery = EntityQueryEnumerator<MindComponent>();
+        while (crewOmenMindsQuery.MoveNext(out var crewOmenMindId, out _))
+        {
+            crewOmenMindIds.Add(crewOmenMindId);
+        }
+        var crewOmenTitles = _crewOmen.AssignTitles(crewOmenMindIds);
+        // VG-Tweak End
+
         var allMinds = EntityQueryEnumerator<MindComponent>();
         var pvsOverride = Cfg.GetCVar(CCVars.RoundEndPVSOverrides);
         while (allMinds.MoveNext(out var mindId, out var mind))
@@ -552,7 +566,8 @@ public sealed partial class ServerGameTicker
                 JobPrototypes = roles.Where(role => !role.Antagonist).Select(role => role.Prototype).ToArray(),
                 AntagPrototypes = roles.Where(role => role.Antagonist).Select(role => role.Prototype).ToArray(),
                 Observer = observer,
-                Connected = connected
+                Connected = connected,
+                CrewOmenTitle = crewOmenTitles.GetValueOrDefault(mindId), // VG-Tweak
             };
             listOfPlayerInfo.Add(playerEndRoundInfo);
         }

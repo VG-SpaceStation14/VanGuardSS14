@@ -217,6 +217,11 @@ public sealed partial class RoundEndMessageEvent : EntityEventArgs
         public bool Observer;
 
         public bool Connected;
+
+        // VG-Tweak Start: crew omen title shown in the round-end manifest
+        [DataField]
+        public string? CrewOmenTitle;
+        // VG-Tweak End
     }
 
     public string GamemodeTitle { get; }

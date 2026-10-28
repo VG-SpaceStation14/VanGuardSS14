@@ -276,7 +276,15 @@ public sealed partial class RoundEndSummaryWindow : DefaultWindow
             });
         }
 
-        // IC Name column
+        // VG-Tweak Start: IC Name column now stacks the crew omen title underneath
+        var icNameContainer = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Vertical,
+            VerticalAlignment = VAlignment.Center,
+            HorizontalExpand = true,
+            SeparationOverride = 0,
+        };
+
         var icNameLabel = new Label
         {
             Text = playerInfo.PlayerICName ?? playerInfo.PlayerOOCName,
@@ -291,7 +299,25 @@ public sealed partial class RoundEndSummaryWindow : DefaultWindow
             icNameLabel.FontColorOverride = Color.Red;
         }
 
-        _playerGrid.AddChild(icNameLabel);
+        icNameContainer.AddChild(icNameLabel);
+
+        if (!string.IsNullOrWhiteSpace(playerInfo.CrewOmenTitle))
+        {
+            var titleText = Loc.GetString("round-end-summary-window-crew-omen", ("title", playerInfo.CrewOmenTitle));
+
+            var titleLabel = new RichTextLabel
+            {
+                VerticalAlignment = VAlignment.Center,
+                HorizontalExpand = true,
+            };
+
+            titleLabel.SetMarkup($"[color=gold]{titleText}[/color]");
+
+            icNameContainer.AddChild(titleLabel);
+        }
+
+        _playerGrid.AddChild(icNameContainer);
+        // VG-Tweak End
 
         _playerGrid.AddChild(new Control
         {
