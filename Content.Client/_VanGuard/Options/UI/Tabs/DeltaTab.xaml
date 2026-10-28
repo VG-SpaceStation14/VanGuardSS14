@@ -13,6 +13,10 @@
                    FontColorOverride="{xNamespace:Static s:StyleNano.NanoGold}"
                    StyleClasses="LabelKeyText"/>
             <CheckBox Name="DisableBloomCheckBox" Text="{Loc 'ui-options-bloom'}" />
+            <Label Text="{Loc 'ui-options-header-ui'}"
+                   FontColorOverride="{xNamespace:Static s:StyleNano.NanoGold}"
+                   StyleClasses="LabelKeyText"/>
+            <CheckBox Name="PointingChatSpritesCheckBox" Text="{Loc 'ui-options-pointing-chat-sprites'}" />
         </BoxContainer>
         <controls:StripeBack HasBottomEdge="False" HasMargins="False">
             <Button Name="ApplyButton"

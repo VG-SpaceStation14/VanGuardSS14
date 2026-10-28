@@ -19,6 +19,8 @@ public sealed partial class DeltaTab : Control
 
         DisableBloomCheckBox.OnToggled += OnCheckBoxToggled;
         DisableBloomCheckBox.Pressed = _cfg.GetCVar(VGCCVars.BloomEnabled);
+        PointingChatSpritesCheckBox.OnToggled += OnCheckBoxToggled;
+        PointingChatSpritesCheckBox.Pressed = _cfg.GetCVar(VGCCVars.PointingChatSprites);
 
         ApplyButton.OnPressed += OnApplyButtonPressed;
         UpdateApplyButton();
@@ -32,6 +34,7 @@ public sealed partial class DeltaTab : Control
     private void OnApplyButtonPressed(BaseButton.ButtonEventArgs args)
     {
         _cfg.SetCVar(VGCCVars.BloomEnabled, DisableBloomCheckBox.Pressed);
+        _cfg.SetCVar(VGCCVars.PointingChatSprites, PointingChatSpritesCheckBox.Pressed);
 
         _cfg.SaveToFile();
         UpdateApplyButton();
@@ -41,6 +44,7 @@ public sealed partial class DeltaTab : Control
     {
         var isBloomSame = DisableBloomCheckBox.Pressed == _cfg.GetCVar(VGCCVars.BloomEnabled);
 
-        ApplyButton.Disabled = isBloomSame;
+        var isPointingChatSpritesSame = PointingChatSpritesCheckBox.Pressed == _cfg.GetCVar(VGCCVars.PointingChatSprites);
+        ApplyButton.Disabled = isBloomSame && isPointingChatSpritesSame;
     }
 }

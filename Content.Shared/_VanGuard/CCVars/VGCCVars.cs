@@ -47,4 +47,10 @@ public sealed class VGCCVars
     /// </summary>
     public static readonly CVarDef<float> VolumetricLightStrength =
         CVarDef.Create("vg.volumetric_light_strength", 0.001f, CVar.CLIENT | CVar.ARCHIVE);
+
+    /// <summary>
+    ///     Should the client render inline sprites (icons) in pointing chat messages?
+    /// </summary>
+    public static readonly CVarDef<bool> PointingChatSprites =
+        CVarDef.Create("vg.pointing_chat_sprites", true, CVar.CLIENT | CVar.ARCHIVE);
 }

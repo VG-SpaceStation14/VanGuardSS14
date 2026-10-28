@@ -1,21 +1,32 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using Content.Shared._VanGuard.CCVars;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.RichText;
+using Robust.Shared.Configuration;
 using Robust.Shared.GameObjects;
+using Robust.Shared.IoC;
 using Robust.Shared.Maths;
 using Robust.Shared.Utility;
 
 namespace Content.Client._VanGuard.UserInterface.RichText;
 
-public sealed class EntityMarkupTag : IMarkupTagHandler
+public sealed partial class EntityMarkupTag : IMarkupTagHandler
 {
+    [Dependency] private IConfigurationManager _cfg = default!;
+
     public string Name => "enttex";
 
     public bool TryCreateControl(MarkupNode node, [NotNullWhen(true)] out Control? control)
     {
         control = null;
+
+        if (!_cfg.GetCVar(VGCCVars.PointingChatSprites))
+        {
+            control = new Control { Visible = false };
+            return true;
+        }
 
         if (!node.Attributes.TryGetValue("id", out var idParam) || !TryParseLong(idParam, out var id))
             return false;
