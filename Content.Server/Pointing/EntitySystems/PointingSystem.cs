@@ -78,12 +78,14 @@ namespace Content.Server.Pointing.EntitySystems
 
         // TODO: FOV
         private void SendMessage(
+            ICommonSession? session, // VG-Tweak
             EntityUid source,
             IEnumerable<ICommonSession> viewers,
             EntityUid pointed,
             string selfMessage,
             string viewerMessage,
-            string? viewerPointedAtMessage = null)
+            string? viewerPointedAtMessage = null,
+            EntityUid? iconTarget = null) // VG-Tweak
         {
             var netSource = GetNetEntity(source);
 
@@ -107,6 +109,10 @@ namespace Content.Server.Pointing.EntitySystems
             }
 
             _replay.RecordServerMessage(new PopupEntityEvent(viewerMessage, PopupType.Small, _gameTiming.CurTick, netSource));
+
+            // VG-Tweak Start: Hook to custom VanGuard chat system
+            SendChatMessage(session, source, viewers, pointed, selfMessage, viewerMessage, viewerPointedAtMessage, iconTarget);
+            // VG-Tweak End
         }
 
         public bool InRange(EntityUid pointer, EntityCoordinates coordinates)
@@ -207,6 +213,9 @@ namespace Content.Server.Pointing.EntitySystems
             string? viewerPointedAtMessage = null;
             var playerName = Identity.Entity(player, EntityManager);
 
+            // VG-Tweak: Save the original pointed entity to render its icon in chat
+            EntityUid? iconTarget = Exists(pointed) ? pointed : null;
+
             if (Exists(pointed))
             {
                 var pointedName = Identity.Entity(pointed, EntityManager);
@@ -301,7 +310,8 @@ namespace Content.Server.Pointing.EntitySystems
 
             _pointers[session] = _gameTiming.CurTime;
 
-            SendMessage(player, viewers, pointed, selfMessage, viewerMessage, viewerPointedAtMessage);
+            // VG-Tweak: Pass session and iconTarget to SendMessage
+            SendMessage(session, player, viewers, pointed, selfMessage, viewerMessage, viewerPointedAtMessage, iconTarget);
 
             return true;
         }
