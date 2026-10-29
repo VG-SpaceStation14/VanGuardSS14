@@ -18,7 +18,7 @@
         visible: false
   - type: Appearance
   - type: SolutionContainerVisuals
-    maxFillLevels: 3
+    maxFillLevels: 5 # VG-Tweak
     fillBaseName: generictank-1- # VG-Tweak
   - type: ExaminableSolution
     solution: tank
@@ -57,10 +57,11 @@
   - type: Sprite
     sprite: _VanGuard/Structures/Storage/tanks.rsi # VG-Tweak
     layers:
-      - state: highwatertank-2 # VG-Tweak
+      - state: highfueltank-2 # VG-Tweak
       - state: highgenerictank-2-5 # VG-Tweak
         map: ["enum.SolutionContainerLayers.Fill"]
         visible: false
+  - type: Appearance # VG-Tweak
   - type: SolutionContainerVisuals
     maxFillLevels: 7
     fillBaseName: highgenerictank-2- # VG-Tweak
