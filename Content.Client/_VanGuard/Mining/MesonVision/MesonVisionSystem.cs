@@ -13,6 +13,8 @@ public sealed partial class MesonVisionSystem : SharedMesonVisionSystem
     [Dependency] private IOverlayManager _overlay = default!;
     [Dependency] private IPlayerManager _player = default!;
 
+    private MesonVisionOverlay? _overlayInstance;
+
     public override void Initialize()
     {
         base.Initialize();
@@ -53,8 +55,22 @@ public sealed partial class MesonVisionSystem : SharedMesonVisionSystem
         Off();
     }
 
-    private void Off() => _overlay.RemoveOverlay(new MesonVisionOverlay());
+    private void Off()
+    {
+        if (_overlayInstance == null)
+            return;
 
-    private void Full() => _overlay.AddOverlay(new MesonVisionOverlay());
+        _overlay.RemoveOverlay(_overlayInstance);
+        _overlayInstance = null;
+    }
+
+    private void Full()
+    {
+        if (_overlayInstance != null)
+            return;
+
+        _overlayInstance = new MesonVisionOverlay();
+        _overlay.AddOverlay(_overlayInstance);
+    }
 }
 
