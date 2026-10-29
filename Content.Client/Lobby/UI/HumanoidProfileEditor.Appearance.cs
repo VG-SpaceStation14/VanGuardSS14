@@ -210,6 +210,7 @@ public sealed partial class HumanoidProfileEditor
         UpdateVoiceControls();
         UpdateTTSVoicesControls(); // Corvax-TTS
         UpdateSpeciesGuidebookIcon();
+        RefreshLanguages(); // VG-Tweak
         ReloadPreview();
     }
 
