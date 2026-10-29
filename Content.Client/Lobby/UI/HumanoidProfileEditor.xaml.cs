@@ -464,12 +464,14 @@ namespace Content.Client.Lobby.UI
             UpdateSexControls();
             UpdateVoiceControls();
             UpdateGenderControls();
+            // VG-Tweak Start: markings have to know the profile's colors before the skin controls get synced.
+            UpdateMarkings();
+            // VG-Tweak End
             UpdateSkinColor();
             UpdateSpawnPriorityControls();
             UpdateAgeEdit();
             UpdateEyePickers();
             UpdateSaveButton();
-            UpdateMarkings();
             UpdateTTSVoicesControls(); // Corvax-TTS
 
             RefreshAntags();
