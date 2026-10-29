@@ -92,29 +92,183 @@ public sealed partial class MarkingsViewModel
 
     /// <summary>
     /// Sets the skin color of all organ profiles in the view model.
+    /// Markings that still use automatically generated colors are recolored so that they keep following the skin color.
     /// </summary>
     /// <param name="skinColor">The new skin color</param>
     public void SetOrganSkinColor(Color skinColor)
     {
-        foreach (var (organ, data) in _organProfileData)
+        // VG-Tweak Start: markings with automatic colors keep following the skin color.
+        // Colors are stored quantized in the character profile, so quantize them the same way here.
+        skinColor = HumanoidCharacterAppearance.ClampColor(skinColor);
+
+        foreach (var organ in _organProfileData.Keys.ToList())
         {
+            var data = _organProfileData[organ];
+            if (data.SkinColor == skinColor)
+                continue;
+
+            RecolorAutomaticMarkings(organ, data.SkinColor, skinColor, data.EyeColor, data.EyeColor);
             _organProfileData[organ] = data with { SkinColor = skinColor };
         }
+        // VG-Tweak End
+
         OrganProfileDataChanged?.Invoke(false);
     }
 
     /// <summary>
     /// Sets the eye color of all organ profiles in the view model.
+    /// Markings that still use automatically generated colors are recolored so that they keep following the eye color.
     /// </summary>
     /// <param name="eyeColor">The new eye color</param>
     public void SetOrganEyeColor(Color eyeColor)
     {
-        foreach (var (organ, data) in _organProfileData)
+        // VG-Tweak Start: markings with automatic colors keep following the eye color.
+        eyeColor = HumanoidCharacterAppearance.ClampColor(eyeColor);
+
+        foreach (var organ in _organProfileData.Keys.ToList())
         {
+            var data = _organProfileData[organ];
+            if (data.EyeColor == eyeColor)
+                continue;
+
+            RecolorAutomaticMarkings(organ, data.SkinColor, data.SkinColor, data.EyeColor, eyeColor);
             _organProfileData[organ] = data with { EyeColor = eyeColor };
         }
+        // VG-Tweak End
+
         OrganProfileDataChanged?.Invoke(false);
     }
+
+    // VG-Tweak Start: recoloring of markings that still use automatically generated colors.
+    /// <summary>
+    /// Recolors every marking on the given organ whose colors are still generated automatically, so that they
+    /// follow the character's skin and eye colors. Layers that the player has recolored manually are left alone.
+    /// </summary>
+    private void RecolorAutomaticMarkings(ProtoId<OrganCategoryPrototype> organ,
+        Color oldSkinColor,
+        Color newSkinColor,
+        Color oldEyeColor,
+        Color newEyeColor)
+    {
+        if (!_markings.TryGetValue(organ, out var organMarkings))
+            return;
+
+        foreach (var (layer, markings) in organMarkings)
+        {
+            var layerChanged = false;
+
+            for (var i = 0; i < markings.Count; i++)
+            {
+                var marking = markings[i];
+
+                if (!_prototype.TryIndex(marking.MarkingId, out var prototype))
+                    continue;
+
+                if (!UsesAutomaticColors(organ, prototype))
+                    continue;
+
+                var otherMarkings = GetOtherMarkings(markings, i);
+                var oldColors = MarkingColoring.GetMarkingLayerColors(prototype, oldSkinColor, oldEyeColor, otherMarkings);
+                var newColors = MarkingColoring.GetMarkingLayerColors(prototype, newSkinColor, newEyeColor, otherMarkings);
+
+                var colors = marking.MarkingColors.ToList();
+                var markingChanged = false;
+
+                for (var j = 0; j < colors.Count && j < oldColors.Count && j < newColors.Count; j++)
+                {
+                    // The stored color no longer matches the automatic one, so it was picked manually.
+                    if (colors[j] != oldColors[j])
+                        continue;
+
+                    if (colors[j] == newColors[j])
+                        continue;
+
+                    colors[j] = newColors[j];
+                    markingChanged = true;
+                }
+
+                if (!markingChanged)
+                    continue;
+
+                markings[i] = new Marking(marking.MarkingId, colors) { Forced = marking.Forced };
+                layerChanged = true;
+            }
+
+            if (layerChanged)
+                MarkingsChanged?.Invoke(organ, layer);
+        }
+    }
+
+    /// <summary>
+    /// Returns whether all the colors of the marking at the given index are still generated automatically.
+    /// </summary>
+    private bool IsUsingAutomaticColors(ProtoId<OrganCategoryPrototype> organ, List<Marking> layerMarkings, int index)
+    {
+        var marking = layerMarkings[index];
+
+        if (!_prototype.TryIndex(marking.MarkingId, out var prototype))
+            return false;
+
+        if (!UsesAutomaticColors(organ, prototype))
+            return false;
+
+        if (!_organProfileData.TryGetValue(organ, out var profileData))
+            return false;
+
+        var automaticColors = MarkingColoring.GetMarkingLayerColors(prototype,
+            profileData.SkinColor,
+            profileData.EyeColor,
+            GetOtherMarkings(layerMarkings, index));
+
+        var colors = marking.MarkingColors;
+        for (var i = 0; i < colors.Count; i++)
+        {
+            if (i >= automaticColors.Count || colors[i] != automaticColors[i])
+                return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Returns whether the colors of the marking are generated automatically from the character's colors,
+    /// meaning that they should follow those colors until the player picks a color manually.
+    /// </summary>
+    private bool UsesAutomaticColors(ProtoId<OrganCategoryPrototype> organ, MarkingPrototype prototype)
+    {
+        // Hair keeps its own color scheme and should never follow the skin color.
+        if (prototype.BodyPart is HumanoidVisualLayers.Hair or HumanoidVisualLayers.FacialHair)
+            return false;
+
+        // Forced colors are recomputed by the appearance system whenever the profile is applied.
+        if (prototype.ForcedColoring)
+            return false;
+
+        if (!_organData.TryGetValue(organ, out var organData))
+            return false;
+
+        if (!_prototype.TryIndex(organData.Group, out var groupPrototype))
+            return false;
+
+        // Layers matching the skin color are always recolored when the profile is applied.
+        return groupPrototype.Appearances.GetValueOrDefault(prototype.BodyPart)?.MatchSkin != true;
+    }
+
+    /// <summary>
+    /// Returns the markings that can affect the color of the marking at the given index.
+    /// </summary>
+    private static List<Marking> GetOtherMarkings(List<Marking> layerMarkings, int index)
+    {
+        var otherMarkings = new List<Marking>(layerMarkings.Count);
+        for (var i = 0; i < layerMarkings.Count; i++)
+        {
+            if (i != index)
+                otherMarkings.Add(layerMarkings[i]);
+        }
+
+        return otherMarkings;
+    }
+    // VG-Tweak End
 
     /// <summary>
     /// Raised whenever the organ profile data changes.
@@ -352,10 +506,11 @@ public sealed partial class MarkingsViewModel
         if (EnforceLimits && limits is not null && limits.Required && (layerMarkings.Count - count) <= 0)
             return false;
 
-        if (layerMarkings.Find(marking => marking.MarkingId == markingId) is { } removingMarking)
-        {
-            _previousColors[removingMarking.MarkingId] = removingMarking.MarkingColors.ToList();
-        }
+        // VG-Tweak Start: only remember manually picked colors, automatic ones are regenerated for the current skin color.
+        var removeIndex = layerMarkings.FindIndex(marking => marking.MarkingId == markingId);
+        if (removeIndex >= 0 && !IsUsingAutomaticColors(organ, layerMarkings, removeIndex))
+            _previousColors[layerMarkings[removeIndex].MarkingId] = layerMarkings[removeIndex].MarkingColors.ToList();
+        // VG-Tweak End
         layerMarkings.RemoveAll(marking => marking.MarkingId == markingId);
         MarkingsChanged?.Invoke(organ, layer);
 

@@ -20,6 +20,11 @@ public sealed partial class HumanoidProfileEditor
     private List<EmoteSoundsPrototype> _voices = new();
     private static readonly ProtoId<GuideEntryPrototype> DefaultSpeciesGuidebook = "Species";
 
+    // VG-Tweak Start: set while the skin color controls are synced with the profile,
+    // so the resulting control events are not treated as user input.
+    private bool _updatingSkinControls;
+    // VG-Tweak End
+
     public void UpdateSpeciesGuidebookIcon()
     {
         SpeciesInfoButton.StyleClasses.Clear();
@@ -135,6 +140,10 @@ public sealed partial class HumanoidProfileEditor
         var skin = _prototypeManager.Index<SpeciesPrototype>(Profile.Species).SkinColoration;
         var strategy = _prototypeManager.Index(skin).Strategy;
 
+        // VG-Tweak Start: syncing the controls must not be treated as user input.
+        _updatingSkinControls = true;
+        // VG-Tweak End
+
         switch (strategy.InputType)
         {
             case SkinColorationStrategyInput.Unary:
@@ -162,6 +171,10 @@ public sealed partial class HumanoidProfileEditor
                     break;
                 }
         }
+
+        // VG-Tweak Start
+        _updatingSkinControls = false;
+        // VG-Tweak End
     }
 
     private void UpdateSpawnPriorityControls()
@@ -199,8 +212,20 @@ public sealed partial class HumanoidProfileEditor
     private void SetSpecies(string newSpecies)
     {
         Profile = Profile?.WithSpecies(newSpecies);
-        OnSkinColorOnValueChanged(); // Species may have special color prefs, make sure to update it.
+
+        // VG-Tweak Start: markings have to know about the new species' organs before any colors get resolved.
+        // The profile data has to be refreshed first, as the marking UI is rebuilt from the organ data.
+        if (Profile != null)
+        {
+            _markingsModel.OrganProfileData = _markingManager.GetProfileData(newSpecies,
+                Profile.Sex,
+                Profile.Appearance.SkinColor,
+                Profile.Appearance.EyeColor);
+        }
+        // VG-Tweak End
         _markingsModel.OrganData = _markingManager.GetMarkingData(newSpecies);
+
+        OnSkinColorOnValueChanged(); // Species may have special color prefs, make sure to update it.
         _markingsModel.ValidateMarkings();
         // In case there's job restrictions for the species
         RefreshJobs();
@@ -290,7 +315,9 @@ public sealed partial class HumanoidProfileEditor
 
     private void OnSkinColorOnValueChanged()
     {
-        if (Profile is null) return;
+        // VG-Tweak Start: ignore control sync and let automatically colored markings follow the skin color.
+        if (Profile is null || _updatingSkinControls) return;
+        // VG-Tweak End
 
         var skin = _prototypeManager.Index<SpeciesPrototype>(Profile.Species).SkinColoration;
         var strategy = _prototypeManager.Index(skin).Strategy;
@@ -307,8 +334,10 @@ public sealed partial class HumanoidProfileEditor
 
                     var color = strategy.FromUnary(Skin.Value);
 
-                    _markingsModel.SetOrganSkinColor(color);
+                    // VG-Tweak Start: update the profile first, then recolor markings that use automatic colors.
                     Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
+                    _markingsModel.SetOrganSkinColor(Profile.Appearance.SkinColor);
+                    // VG-Tweak End
 
                     break;
                 }
@@ -322,8 +351,10 @@ public sealed partial class HumanoidProfileEditor
 
                     var color = strategy.ClosestSkinColor(_rgbSkinColorSelector.Color);
 
-                    _markingsModel.SetOrganSkinColor(color);
+                    // VG-Tweak Start: update the profile first, then recolor markings that use automatic colors.
                     Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
+                    _markingsModel.SetOrganSkinColor(Profile.Appearance.SkinColor);
+                    // VG-Tweak End
 
                     break;
                 }
