@@ -31,6 +31,11 @@
   components:
   - type: Projectile
     deleteOnCollide: false
+    # The railgun bolt keeps going through broken rock: it only stops once it has chewed through
+    # this much structural health, or once it hits something it cannot break (e.g. a steel wall).
+    penetrationThreshold: 1200
+    penetrationDamageTypeRequirement:
+    - Structural
     impactEffect: BulletImpactEffectKinetic
     damage:
       types:
