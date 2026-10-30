@@ -439,6 +439,9 @@
     successChance: 0.2
   - type: GibOnTrigger
   - type: ProtectedFromStepTriggers
+  # VG-Tweak Start: cockroaches, mothroaches and other critters are too small to slip on slippery surfaces.
+  - type: NoSlip
+  # VG-Tweak End
   - type: MeleeWeapon
     soundHit:
       path: /Audio/Effects/bite.ogg
@@ -2357,6 +2360,9 @@
   - type: Tag
     tags:
     - VimPilot
+  # VG-Tweak Start: lizards are too small to slip on puddles, banana peels and other slippery surfaces.
+  - type: NoSlip
+  # VG-Tweak End
 
 - type: entity
   name: slug
@@ -2407,6 +2413,9 @@
       reagents:
       - ReagentId: Blood
         Quantity: 50
+  # VG-Tweak Start: slugs are too small to slip on puddles, banana peels and other slippery surfaces.
+  - type: NoSlip
+  # VG-Tweak End
 
 - type: entity
   name: frog
