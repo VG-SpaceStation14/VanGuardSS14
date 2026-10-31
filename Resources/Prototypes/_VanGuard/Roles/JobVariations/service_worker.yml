@@ -1,0 +1,38 @@
+# RP variations of the ServiceWorker job.
+# The job itself never changes: access, salary, department and duties stay with the base job.
+# Only the PDA and the job title shown on its ID card differ. To add a variation, copy a block
+# below and add its loadout id to the loadout group.
+
+- type: loadoutGroup
+  id: ServiceWorkerID
+  name: loadout-group-service-worker-id
+  loadouts:
+  - ServiceWorkerPDA
+  - WaiterPDA
+
+- type: loadout
+  id: ServiceWorkerPDA
+  equipment:
+    id: ServiceWorkerPDA
+
+- type: entity
+  parent: ServiceWorkerPDA
+  id: WaiterPDA
+  name: waiter PDA
+  description: "Balances six plates and one apology."
+  components:
+  - type: Pda
+    id: WaiterIDCard
+
+- type: entity
+  parent: ServiceWorkerIDCard
+  id: WaiterIDCard
+  name: waiter ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-waiter
+
+- type: loadout
+  id: WaiterPDA
+  equipment:
+    id: WaiterPDA

@@ -1,0 +1,130 @@
+# RP variations of the Chaplain job.
+# The job itself never changes: access, salary, department and duties stay with the base job.
+# Only the PDA and the job title shown on its ID card differ. To add a variation, copy a block
+# below and add its loadout id to the loadout group.
+
+- type: loadoutGroup
+  id: ChaplainID
+  name: loadout-group-chaplain-id
+  loadouts:
+  - ChaplainPDA
+  - MonkPDA
+  - ExorcistPDA
+  - PriestPDA
+  - ShepherdPDA
+  - ClergymanPDA
+
+- type: loadout
+  id: ChaplainPDA
+  equipment:
+    id: ChaplainPDA
+
+- type: entity
+  parent: ChaplainPDA
+  id: MonkPDA
+  name: monk PDA
+  description: "Quiet devotion and a very tidy cell."
+  components:
+  - type: Pda
+    id: MonkIDCard
+
+- type: entity
+  parent: ChaplainIDCard
+  id: MonkIDCard
+  name: monk ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-monk
+
+- type: loadout
+  id: MonkPDA
+  equipment:
+    id: MonkPDA
+
+- type: entity
+  parent: ChaplainPDA
+  id: ExorcistPDA
+  name: exorcist PDA
+  description: "Blesses the airlocks, just in case."
+  components:
+  - type: Pda
+    id: ExorcistIDCard
+
+- type: entity
+  parent: ChaplainIDCard
+  id: ExorcistIDCard
+  name: exorcist ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-exorcist
+
+- type: loadout
+  id: ExorcistPDA
+  equipment:
+    id: ExorcistPDA
+
+- type: entity
+  parent: ChaplainPDA
+  id: PriestPDA
+  name: priest PDA
+  description: "Sermons, rites and a kind word for everyone."
+  components:
+  - type: Pda
+    id: PriestIDCard
+
+- type: entity
+  parent: ChaplainIDCard
+  id: PriestIDCard
+  name: priest ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-priest
+
+- type: loadout
+  id: PriestPDA
+  equipment:
+    id: PriestPDA
+
+- type: entity
+  parent: ChaplainPDA
+  id: ShepherdPDA
+  name: shepherd PDA
+  description: "Guides the flock through maintenance tunnels."
+  components:
+  - type: Pda
+    id: ShepherdIDCard
+
+- type: entity
+  parent: ChaplainIDCard
+  id: ShepherdIDCard
+  name: shepherd ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-shepherd
+
+- type: loadout
+  id: ShepherdPDA
+  equipment:
+    id: ShepherdPDA
+
+- type: entity
+  parent: ChaplainPDA
+  id: ClergymanPDA
+  name: clergyman PDA
+  description: "Paperwork for the soul."
+  components:
+  - type: Pda
+    id: ClergymanIDCard
+
+- type: entity
+  parent: ChaplainIDCard
+  id: ClergymanIDCard
+  name: clergyman ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-clergyman
+
+- type: loadout
+  id: ClergymanPDA
+  equipment:
+    id: ClergymanPDA

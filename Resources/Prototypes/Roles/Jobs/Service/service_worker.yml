@@ -24,7 +24,9 @@
   id: ServiceWorkerGear
   equipment:
     shoes: ClothingShoesColorBlack
-    id: ServiceWorkerPDA
+    # VG-Tweak Start: the PDA is handed out by the ServiceWorkerID loadout group so RP variations can replace it.
+    # id: ServiceWorkerPDA
+    # VG-Tweak End
     ears: ClothingHeadsetService
   #storage:
     #back:

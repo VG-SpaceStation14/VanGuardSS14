@@ -803,6 +803,10 @@
   name: loadout-group-cargo-technician-id
   loadouts:
   - CargoTechnicianPDA
+  # VG-Tweak Start: RP PDA variations, see Resources/Prototypes/_VanGuard/Roles/JobVariations.
+  - PostmanPDA
+  - InventoryAssociatePDA
+  # VG-Tweak End
   - SeniorCourierPDA
 
 #- type: loadoutGroup

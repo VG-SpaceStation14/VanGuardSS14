@@ -80,6 +80,9 @@
   id: JobBrigmedic
   groups:
   - Inventory # Corvax-Loadouts
+  # VG-Tweak Start: Brigmedic PDA loadout group (RP variations).
+  - BrigmedicID
+  # VG-Tweak End
   - BrigmedicHead
   - BrigmedicMask
   - BrigmedicJumpsuit

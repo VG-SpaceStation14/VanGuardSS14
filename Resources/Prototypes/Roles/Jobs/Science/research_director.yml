@@ -36,7 +36,9 @@
 - type: startingGear
   id: ResearchDirectorGear
   equipment:
-    id: RnDPDA
+    # VG-Tweak Start: the PDA is handed out by the ResearchDirectorID loadout group so RP variations can replace it.
+    # id: RnDPDA
+    # VG-Tweak End
     ears: ClothingHeadsetRD
   storage:
     back:

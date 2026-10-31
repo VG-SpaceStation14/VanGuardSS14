@@ -18,7 +18,9 @@
   id: PsychologistGear
   equipment:
     shoes: ClothingShoesLeather
-    id: PsychologistPDA
+    # VG-Tweak Start: the PDA is handed out by the PsychologistID loadout group so RP variations can replace it.
+    # id: PsychologistPDA
+    # VG-Tweak End
     ears: ClothingHeadsetMedical
   storage:
     back:

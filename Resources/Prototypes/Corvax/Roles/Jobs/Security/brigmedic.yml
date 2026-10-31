@@ -30,7 +30,9 @@
   id: BrigmedicGear
   equipment:
     eyes: ClothingEyesHudMedical
-    id: BrigmedicPDA
+    # VG-Tweak Start: the PDA is handed out by the BrigmedicID loadout group so RP variations can replace it.
+    # id: BrigmedicPDA
+    # VG-Tweak End
     ears: ClothingHeadsetBrigmedic
     belt: ClothingBeltMedicalFilled
   storage:

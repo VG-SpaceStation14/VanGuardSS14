@@ -1,0 +1,84 @@
+# RP variations of the Bartender job.
+# The job itself never changes: access, salary, department and duties stay with the base job.
+# Only the PDA and the job title shown on its ID card differ. To add a variation, copy a block
+# below and add its loadout id to the loadout group.
+
+- type: loadoutGroup
+  id: BartenderID
+  name: loadout-group-bartender-id
+  loadouts:
+  - BartenderPDA
+  - MixologistPDA
+  - TavernkeepPDA
+  - BaristaPDA
+
+- type: loadout
+  id: BartenderPDA
+  equipment:
+    id: BartenderPDA
+
+- type: entity
+  parent: BartenderPDA
+  id: MixologistPDA
+  name: mixologist PDA
+  description: "Turns any bottle into a small piece of art."
+  components:
+  - type: Pda
+    id: MixologistIDCard
+
+- type: entity
+  parent: BartenderIDCard
+  id: MixologistIDCard
+  name: mixologist ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-mixologist
+
+- type: loadout
+  id: MixologistPDA
+  equipment:
+    id: MixologistPDA
+
+- type: entity
+  parent: BartenderPDA
+  id: TavernkeepPDA
+  name: tavernkeep PDA
+  description: "Serves drinks the old-fashioned way: loudly."
+  components:
+  - type: Pda
+    id: TavernkeepIDCard
+
+- type: entity
+  parent: BartenderIDCard
+  id: TavernkeepIDCard
+  name: tavernkeep ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-tavernkeep
+
+- type: loadout
+  id: TavernkeepPDA
+  equipment:
+    id: TavernkeepPDA
+
+- type: entity
+  parent: BartenderPDA
+  id: BaristaPDA
+  name: barista PDA
+  description: "Coffee first, emergencies later."
+  components:
+  - type: Pda
+    id: BaristaIDCard
+
+- type: entity
+  parent: BartenderIDCard
+  id: BaristaIDCard
+  name: barista ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-barista
+
+- type: loadout
+  id: BaristaPDA
+  equipment:
+    id: BaristaPDA

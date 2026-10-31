@@ -1,0 +1,20 @@
+# Loadout groups for the RP PDA variations.
+loadout-group-passenger-id = Passenger ID
+loadout-group-bartender-id = Bartender ID
+loadout-group-chef-id = Chef ID
+loadout-group-service-worker-id = Service Worker ID
+loadout-group-medical-intern-id = Medical Intern ID
+loadout-group-atmospheric-technician-id = Atmospheric Technician ID
+loadout-group-quartermaster-id = Quartermaster ID
+loadout-group-clown-id = Clown ID
+loadout-group-musician-id = Musician ID
+loadout-group-reporter-id = Reporter ID
+loadout-group-detective-id = Detective ID
+loadout-group-janitor-id = Janitor ID
+loadout-group-botanist-id = Botanist ID
+loadout-group-librarian-id = Librarian ID
+loadout-group-chaplain-id = Chaplain ID
+loadout-group-psychologist-id = Psychologist ID
+loadout-group-research-director-id = Research Director ID
+loadout-group-chief-medical-officer-id = Chief Medical Officer ID
+loadout-group-brigmedic-id = Brigmedic ID

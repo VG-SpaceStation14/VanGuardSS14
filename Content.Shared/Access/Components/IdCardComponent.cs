@@ -29,6 +29,18 @@ public sealed partial class IdCardComponent : Component
     [Access(typeof(SharedIdCardSystem), typeof(SharedPdaSystem), typeof(SharedAgentIdCardSystem), Other = AccessPermissions.ReadWriteExecute)]
     public string? LocalizedJobTitle { set => _jobTitle = value; get => _jobTitle ?? (JobTitle != null ? Loc.GetString(JobTitle) : string.Empty); }
 
+    // VG-Tweak Start: RP variations of a job.
+    /// <summary>
+    ///     When set, this title is displayed on the card instead of the title of the card's job.
+    ///     Used for RP job variations (e.g. a cargo technician picking the postman PDA): the card keeps
+    ///     the original job for access, department and salary, but shows a different title.
+    /// </summary>
+    /// <seealso cref="JobTitle"/>
+    [DataField]
+    [Access(typeof(SharedIdCardSystem), typeof(SharedPdaSystem), typeof(SharedAgentIdCardSystem), Other = AccessPermissions.ReadWrite)]
+    public LocId? JobTitleOverride;
+    // VG-Tweak End
+
     /// <summary>
     /// The state of the job icon rsi.
     /// </summary>

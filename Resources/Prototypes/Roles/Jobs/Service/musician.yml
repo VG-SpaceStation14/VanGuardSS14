@@ -21,7 +21,9 @@
   equipment:
     eyes: ClothingEyesGlassesSunglasses
     shoes: ClothingShoesBootsLaceup
-    id: MusicianPDA
+    # VG-Tweak Start: the PDA is handed out by the MusicianID loadout group so RP variations can replace it.
+    # id: MusicianPDA
+    # VG-Tweak End
     ears: ClothingHeadsetService
   #storage:
     #back:

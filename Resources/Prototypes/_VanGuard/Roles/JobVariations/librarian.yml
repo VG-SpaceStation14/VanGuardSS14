@@ -1,0 +1,61 @@
+# RP variations of the Librarian job.
+# The job itself never changes: access, salary, department and duties stay with the base job.
+# Only the PDA and the job title shown on its ID card differ. To add a variation, copy a block
+# below and add its loadout id to the loadout group.
+
+- type: loadoutGroup
+  id: LibrarianID
+  name: loadout-group-librarian-id
+  loadouts:
+  - LibrarianPDA
+  - MythologistPDA
+  - EthnologistPDA
+
+- type: loadout
+  id: LibrarianPDA
+  equipment:
+    id: LibrarianPDA
+
+- type: entity
+  parent: LibrarianPDA
+  id: MythologistPDA
+  name: mythologist PDA
+  description: "Collects stories that may or may not be true."
+  components:
+  - type: Pda
+    id: MythologistIDCard
+
+- type: entity
+  parent: LibrarianIDCard
+  id: MythologistIDCard
+  name: mythologist ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-mythologist
+
+- type: loadout
+  id: MythologistPDA
+  equipment:
+    id: MythologistPDA
+
+- type: entity
+  parent: LibrarianPDA
+  id: EthnologistPDA
+  name: ethnologist PDA
+  description: "Studies station cultures, including the cargo cult."
+  components:
+  - type: Pda
+    id: EthnologistIDCard
+
+- type: entity
+  parent: LibrarianIDCard
+  id: EthnologistIDCard
+  name: ethnologist ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-ethnologist
+
+- type: loadout
+  id: EthnologistPDA
+  equipment:
+    id: EthnologistPDA

@@ -5,6 +5,9 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: ChiefMedicalOfficer PDA loadout group (RP variations).
+  - ChiefMedicalOfficerID
+  # VG-Tweak End
   - ChiefMedicalOfficerHead
   - MedicalMask
   - ChiefMedicalOfficerJumpsuit
@@ -45,6 +48,9 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: MedicalIntern PDA loadout group (RP variations).
+  - MedicalInternID
+  # VG-Tweak End
   - MedicalInternJumpsuit
   - MedicalBackpack
   - Glasses

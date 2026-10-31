@@ -1,0 +1,61 @@
+# RP variations of the AtmosphericTechnician job.
+# The job itself never changes: access, salary, department and duties stay with the base job.
+# Only the PDA and the job title shown on its ID card differ. To add a variation, copy a block
+# below and add its loadout id to the loadout group.
+
+- type: loadoutGroup
+  id: AtmosphericTechnicianID
+  name: loadout-group-atmospheric-technician-id
+  loadouts:
+  - AtmosPDA
+  - LifeSupportTechPDA
+  - PlasmaScientistPDA
+
+- type: loadout
+  id: AtmosPDA
+  equipment:
+    id: AtmosPDA
+
+- type: entity
+  parent: AtmosPDA
+  id: LifeSupportTechPDA
+  name: life Support Technician PDA
+  description: "Keeps the air breathable and the pipes honest."
+  components:
+  - type: Pda
+    id: LifeSupportTechIDCard
+
+- type: entity
+  parent: AtmosIDCard
+  id: LifeSupportTechIDCard
+  name: life Support Technician ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-life-support-tech
+
+- type: loadout
+  id: LifeSupportTechPDA
+  equipment:
+    id: LifeSupportTechPDA
+
+- type: entity
+  parent: AtmosPDA
+  id: PlasmaScientistPDA
+  name: plasma Scientist PDA
+  description: "Finds plasma fascinating and slightly alarming."
+  components:
+  - type: Pda
+    id: PlasmaScientistIDCard
+
+- type: entity
+  parent: AtmosIDCard
+  id: PlasmaScientistIDCard
+  name: plasma Scientist ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-plasma-scientist
+
+- type: loadout
+  id: PlasmaScientistPDA
+  equipment:
+    id: PlasmaScientistPDA

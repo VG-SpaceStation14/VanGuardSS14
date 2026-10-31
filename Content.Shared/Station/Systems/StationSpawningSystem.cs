@@ -279,7 +279,13 @@ public sealed partial class StationSpawningSystem : EntitySystem
             return;
 
         _cardSystem.TryChangeFullName(cardId, characterName, card);
-        _cardSystem.TryChangeJobTitle(cardId, jobPrototype.LocalizedName, card);
+
+        // VG-Tweak Start: RP job variations keep their own title instead of the base job's title.
+        if (card.JobTitleOverride != null)
+            _cardSystem.TryChangeJobTitle(cardId, Loc.GetString(card.JobTitleOverride.Value), card);
+        else
+            _cardSystem.TryChangeJobTitle(cardId, jobPrototype.LocalizedName, card);
+        // VG-Tweak End
 
         if (ProtoMan.Resolve(jobPrototype.Icon, out var jobIcon))
             _cardSystem.TryChangeJobIcon(cardId, jobIcon, card);

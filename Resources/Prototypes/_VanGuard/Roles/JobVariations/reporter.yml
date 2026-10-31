@@ -1,0 +1,38 @@
+# RP variations of the Reporter job.
+# The job itself never changes: access, salary, department and duties stay with the base job.
+# Only the PDA and the job title shown on its ID card differ. To add a variation, copy a block
+# below and add its loadout id to the loadout group.
+
+- type: loadoutGroup
+  id: ReporterID
+  name: loadout-group-reporter-id
+  loadouts:
+  - ReporterPDA
+  - JournalistPDA
+
+- type: loadout
+  id: ReporterPDA
+  equipment:
+    id: ReporterPDA
+
+- type: entity
+  parent: ReporterPDA
+  id: JournalistPDA
+  name: journalist PDA
+  description: "Asks the questions nobody wanted asked."
+  components:
+  - type: Pda
+    id: JournalistIDCard
+
+- type: entity
+  parent: ReporterIDCard
+  id: JournalistIDCard
+  name: journalist ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-journalist
+
+- type: loadout
+  id: JournalistPDA
+  equipment:
+    id: JournalistPDA

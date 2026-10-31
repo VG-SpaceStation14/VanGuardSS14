@@ -21,7 +21,9 @@
   id: JanitorGear
   equipment:
     shoes: ClothingShoesGaloshes
-    id: JanitorPDA
+    # VG-Tweak Start: the PDA is handed out by the JanitorID loadout group so RP variations can replace it.
+    # id: JanitorPDA
+    # VG-Tweak End
     ears: ClothingHeadsetService
     belt: ClothingBeltJanitorFilled
   #storage:

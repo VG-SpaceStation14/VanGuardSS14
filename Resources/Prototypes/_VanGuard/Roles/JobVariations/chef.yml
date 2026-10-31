@@ -1,0 +1,107 @@
+# RP variations of the Chef job.
+# The job itself never changes: access, salary, department and duties stay with the base job.
+# Only the PDA and the job title shown on its ID card differ. To add a variation, copy a block
+# below and add its loadout id to the loadout group.
+
+- type: loadoutGroup
+  id: ChefID
+  name: loadout-group-chef-id
+  loadouts:
+  - ChefPDA
+  - BakerPDA
+  - ButcherPDA
+  - PizzaioloPDA
+  - ConfectionerPDA
+
+- type: loadout
+  id: ChefPDA
+  equipment:
+    id: ChefPDA
+
+- type: entity
+  parent: ChefPDA
+  id: BakerPDA
+  name: baker PDA
+  description: "Fresh bread is the only acceptable fuel."
+  components:
+  - type: Pda
+    id: BakerIDCard
+
+- type: entity
+  parent: ChefIDCard
+  id: BakerIDCard
+  name: baker ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-baker
+
+- type: loadout
+  id: BakerPDA
+  equipment:
+    id: BakerPDA
+
+- type: entity
+  parent: ChefPDA
+  id: ButcherPDA
+  name: butcher PDA
+  description: "Knows exactly which cut goes where."
+  components:
+  - type: Pda
+    id: ButcherIDCard
+
+- type: entity
+  parent: ChefIDCard
+  id: ButcherIDCard
+  name: butcher ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-butcher
+
+- type: loadout
+  id: ButcherPDA
+  equipment:
+    id: ButcherPDA
+
+- type: entity
+  parent: ChefPDA
+  id: PizzaioloPDA
+  name: pizzaiolo PDA
+  description: "Every shift is a good shift for pizza."
+  components:
+  - type: Pda
+    id: PizzaioloIDCard
+
+- type: entity
+  parent: ChefIDCard
+  id: PizzaioloIDCard
+  name: pizzaiolo ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-pizzaiolo
+
+- type: loadout
+  id: PizzaioloPDA
+  equipment:
+    id: PizzaioloPDA
+
+- type: entity
+  parent: ChefPDA
+  id: ConfectionerPDA
+  name: confectioner PDA
+  description: "Sugar, patience and a very steady hand."
+  components:
+  - type: Pda
+    id: ConfectionerIDCard
+
+- type: entity
+  parent: ChefIDCard
+  id: ConfectionerIDCard
+  name: confectioner ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-confectioner
+
+- type: loadout
+  id: ConfectionerPDA
+  equipment:
+    id: ConfectionerPDA
