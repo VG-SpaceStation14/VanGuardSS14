@@ -18,12 +18,13 @@
   conflicts:
   - VGQuirkHeavyGait
   specials:
-  - !type: AddComponentSpecial
+  - !type:AddComponentSpecial
     removeExisting: false
     components:
     - type: QuirkMovementSpeed
       walkModifier: 1.02
       sprintModifier: 1.07
+
 
 - type: trait
   id: VGQuirkSturdyNerves
@@ -34,12 +35,13 @@
   conflicts:
   - VGQuirkWeakNerves
   specials:
-  - !type: AddComponentSpecial
+  - !type:AddComponentSpecial
     removeExisting: false
     components:
     - type: StaminaResistance
       damageCoefficient: 0.85
       worn: false
+
 
 - type: trait
   id: VGQuirkColdHardened
@@ -48,16 +50,20 @@
   category: VGQuirks
   cost: 2
   conflicts:
+  - VGQuirkFragile
   - VGQuirkFrostbite
+  - VGQuirkRadHardened
+  - VGQuirkRadSensitive
   speciesBlacklist:
   - Diona
   specials:
-  - !type: AddComponentSpecial
+  - !type:AddComponentSpecial
     removeExisting: false
     components:
     - type: QuirkDamageTypeResistance
       modifiers:
         Cold: 0.75
+
 
 - type: trait
   id: VGQuirkClearHead
@@ -71,11 +77,12 @@
   - Diona
   - SlimePerson
   specials:
-  - !type: AddComponentSpecial
+  - !type:AddComponentSpecial
     removeExisting: false
     components:
     - type: LightweightDrunk
       boozeStrengthMultiplier: 0.5
+
 
 - type: trait
   id: VGQuirkQuickClot
@@ -86,11 +93,12 @@
   conflicts:
   - VGQuirkThinBlood
   specials:
-  - !type: AddComponentSpecial
+  - !type:AddComponentSpecial
     removeExisting: false
     components:
     - type: QuirkBleedRate
       bleedMultiplier: 0.75
+
 
 - type: trait
   id: VGQuirkRadHardened
@@ -99,16 +107,20 @@
   category: VGQuirks
   cost: 1
   conflicts:
+  - VGQuirkColdHardened
+  - VGQuirkFragile
+  - VGQuirkFrostbite
   - VGQuirkRadSensitive
   speciesWhitelist:
   - Diona
   specials:
-  - !type: AddComponentSpecial
+  - !type:AddComponentSpecial
     removeExisting: false
     components:
     - type: QuirkDamageTypeResistance
       modifiers:
         Radiation: 0.8
+
 
 # Negative quirks
 
@@ -121,12 +133,13 @@
   conflicts:
   - VGQuirkFleetFooted
   specials:
-  - !type: AddComponentSpecial
+  - !type:AddComponentSpecial
     removeExisting: false
     components:
     - type: QuirkMovementSpeed
       walkModifier: 0.97
       sprintModifier: 0.93
+
 
 - type: trait
   id: VGQuirkWeakNerves
@@ -137,12 +150,13 @@
   conflicts:
   - VGQuirkSturdyNerves
   specials:
-  - !type: AddComponentSpecial
+  - !type:AddComponentSpecial
     removeExisting: false
     components:
     - type: StaminaResistance
       damageCoefficient: 1.2
       worn: false
+
 
 - type: trait
   id: VGQuirkFragile
@@ -150,8 +164,13 @@
   description: vg-trait-fragile-desc
   category: VGQuirks
   cost: -2
+  conflicts:
+  - VGQuirkColdHardened
+  - VGQuirkFrostbite
+  - VGQuirkRadHardened
+  - VGQuirkRadSensitive
   specials:
-  - !type: AddComponentSpecial
+  - !type:AddComponentSpecial
     removeExisting: false
     components:
     - type: QuirkDamageTypeResistance
@@ -159,6 +178,7 @@
         Blunt: 1.2
         Slash: 1.2
         Piercing: 1.2
+
 
 - type: trait
   id: VGQuirkFrostbite
@@ -168,13 +188,17 @@
   cost: -1
   conflicts:
   - VGQuirkColdHardened
+  - VGQuirkFragile
+  - VGQuirkRadHardened
+  - VGQuirkRadSensitive
   specials:
-  - !type: AddComponentSpecial
+  - !type:AddComponentSpecial
     removeExisting: false
     components:
     - type: QuirkDamageTypeResistance
       modifiers:
         Cold: 1.25
+
 
 - type: trait
   id: VGQuirkThinBlood
@@ -185,11 +209,12 @@
   conflicts:
   - VGQuirkQuickClot
   specials:
-  - !type: AddComponentSpecial
+  - !type:AddComponentSpecial
     removeExisting: false
     components:
     - type: QuirkBleedRate
       bleedMultiplier: 1.3
+
 
 - type: trait
   id: VGQuirkRadSensitive
@@ -198,13 +223,17 @@
   category: VGQuirks
   cost: -1
   conflicts:
+  - VGQuirkColdHardened
+  - VGQuirkFragile
+  - VGQuirkFrostbite
   - VGQuirkRadHardened
   speciesBlacklist:
   - Diona
   specials:
-  - !type: AddComponentSpecial
+  - !type:AddComponentSpecial
     removeExisting: false
     components:
     - type: QuirkDamageTypeResistance
       modifiers:
         Radiation: 1.3
+
