@@ -1,0 +1,38 @@
+# RP variations of the ChiefMedicalOfficer job.
+# The job itself never changes: access, salary, department and duties stay with the base job.
+# Only the PDA and the job title shown on its ID card differ. To add a variation, copy a block
+# below and add its loadout id to the loadout group.
+
+- type: loadoutGroup
+  id: ChiefMedicalOfficerID
+  name: loadout-group-chief-medical-officer-id
+  loadouts:
+  - CMOPDA
+  - SeniorMedicalOfficerPDA
+
+- type: loadout
+  id: CMOPDA
+  equipment:
+    id: CMOPDA
+
+- type: entity
+  parent: CMOPDA
+  id: SeniorMedicalOfficerPDA
+  name: senior Medical Officer PDA
+  description: "More medical than the chief, more officer than the doctor."
+  components:
+  - type: Pda
+    id: SeniorMedicalOfficerIDCard
+
+- type: entity
+  parent: CMOIDCard
+  id: SeniorMedicalOfficerIDCard
+  name: senior Medical Officer ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-senior-medical-officer
+
+- type: loadout
+  id: SeniorMedicalOfficerPDA
+  equipment:
+    id: SeniorMedicalOfficerPDA

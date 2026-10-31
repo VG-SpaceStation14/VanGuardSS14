@@ -1,0 +1,38 @@
+# RP variations of the Detective job.
+# The job itself never changes: access, salary, department and duties stay with the base job.
+# Only the PDA and the job title shown on its ID card differ. To add a variation, copy a block
+# below and add its loadout id to the loadout group.
+
+- type: loadoutGroup
+  id: DetectiveID
+  name: loadout-group-detective-id
+  loadouts:
+  - DetectivePDA
+  - InvestigatorPDA
+
+- type: loadout
+  id: DetectivePDA
+  equipment:
+    id: DetectivePDA
+
+- type: entity
+  parent: DetectivePDA
+  id: InvestigatorPDA
+  name: investigator PDA
+  description: "A case is never closed, only paused."
+  components:
+  - type: Pda
+    id: InvestigatorIDCard
+
+- type: entity
+  parent: DetectiveIDCard
+  id: InvestigatorIDCard
+  name: investigator ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-investigator
+
+- type: loadout
+  id: InvestigatorPDA
+  equipment:
+    id: InvestigatorPDA

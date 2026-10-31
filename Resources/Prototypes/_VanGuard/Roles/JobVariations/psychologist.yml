@@ -1,0 +1,61 @@
+# RP variations of the Psychologist job.
+# The job itself never changes: access, salary, department and duties stay with the base job.
+# Only the PDA and the job title shown on its ID card differ. To add a variation, copy a block
+# below and add its loadout id to the loadout group.
+
+- type: loadoutGroup
+  id: PsychologistID
+  name: loadout-group-psychologist-id
+  loadouts:
+  - PsychologistPDA
+  - PsychiatristPDA
+  - PsychotherapistPDA
+
+- type: loadout
+  id: PsychologistPDA
+  equipment:
+    id: PsychologistPDA
+
+- type: entity
+  parent: PsychologistPDA
+  id: PsychiatristPDA
+  name: psychiatrist PDA
+  description: "Makes the voices at least give a straight answer."
+  components:
+  - type: Pda
+    id: PsychiatristIDCard
+
+- type: entity
+  parent: PsychologistIDCard
+  id: PsychiatristIDCard
+  name: psychiatrist ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-psychiatrist
+
+- type: loadout
+  id: PsychiatristPDA
+  equipment:
+    id: PsychiatristPDA
+
+- type: entity
+  parent: PsychologistPDA
+  id: PsychotherapistPDA
+  name: psychotherapist PDA
+  description: "Talks it through, one shift at a time."
+  components:
+  - type: Pda
+    id: PsychotherapistIDCard
+
+- type: entity
+  parent: PsychologistIDCard
+  id: PsychotherapistIDCard
+  name: psychotherapist ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-psychotherapist
+
+- type: loadout
+  id: PsychotherapistPDA
+  equipment:
+    id: PsychotherapistPDA

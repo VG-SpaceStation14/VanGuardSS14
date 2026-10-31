@@ -52,6 +52,9 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: Passenger PDA loadout group (RP variations).
+  - PassengerID
+  # VG-Tweak End
   - PassengerJumpsuit
   - CommonBackpack
   - PassengerNeck
@@ -72,6 +75,9 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: Bartender PDA loadout group (RP variations).
+  - BartenderID
+  # VG-Tweak End
   - BartenderHead
   - BartenderJumpsuit
   - CommonBackpack
@@ -89,6 +95,9 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: ServiceWorker PDA loadout group (RP variations).
+  - ServiceWorkerID
+  # VG-Tweak End
   - BartenderJumpsuit
   - CommonBackpack
   - Glasses
@@ -104,6 +113,9 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: Chef PDA loadout group (RP variations).
+  - ChefID
+  # VG-Tweak End
   - ChefHead
   - ChefMask
   - ChefJumpsuit
@@ -122,6 +134,9 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: Librarian PDA loadout group (RP variations).
+  - LibrarianID
+  # VG-Tweak End
   - LibrarianJumpsuit
   - CommonBackpack
   - Glasses
@@ -154,6 +169,9 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: Chaplain PDA loadout group (RP variations).
+  - ChaplainID
+  # VG-Tweak End
   - ChaplainHead
   - ChaplainMask
   - ChaplainNeck
@@ -175,6 +193,9 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: Janitor PDA loadout group (RP variations).
+  - JanitorID
+  # VG-Tweak End
   - JanitorHead
   - JanitorJumpsuit
   - JanitorGloves
@@ -193,6 +214,9 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: Botanist PDA loadout group (RP variations).
+  - BotanistID
+  # VG-Tweak End
   - BotanistHead
   - BotanistJumpsuit
   - BotanistBackpack
@@ -211,6 +235,9 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: Clown PDA loadout group (RP variations).
+  - ClownID
+  # VG-Tweak End
   - ClownHead
   - ClownJumpsuit
   - ClownBackpack
@@ -248,6 +275,9 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: Musician PDA loadout group (RP variations).
+  - MusicianID
+  # VG-Tweak End
   - MusicianJumpsuit
   - CommonBackpack
   - MusicianOuterClothing
@@ -266,6 +296,9 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: Quartermaster PDA loadout group (RP variations).
+  - QuartermasterID
+  # VG-Tweak End
   - QuartermasterHead
   - QuartermasterNeck
   - QuartermasterJumpsuit
@@ -371,6 +404,9 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: AtmosphericTechnician PDA loadout group (RP variations).
+  - AtmosphericTechnicianID
+  # VG-Tweak End
   - AtmosphericTechnicianJumpsuit
   - AtmosphericTechnicianBackpack
   - AtmosphericTechnicianOuterClothing
@@ -388,6 +424,9 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: ResearchDirector PDA loadout group (RP variations).
+  - ResearchDirectorID
+  # VG-Tweak End
   - ResearchDirectorHead
   - ResearchDirectorNeck
   - ResearchDirectorJumpsuit
@@ -497,6 +536,9 @@
   id: JobDetective
   groups:
   - Inventory # Corvax-Loadouts
+  # VG-Tweak Start: Detective PDA loadout group (RP variations).
+  - DetectiveID
+  # VG-Tweak End
   - DetectiveHead
   - DetectiveNeck
   - DetectiveJumpsuit
@@ -529,6 +571,9 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: Reporter PDA loadout group (RP variations).
+  - ReporterID
+  # VG-Tweak End
   - ReporterJumpsuit
   - ReporterHead
   - ReporterOuterClothing
@@ -546,6 +591,9 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: Psychologist PDA loadout group (RP variations).
+  - PsychologistID
+  # VG-Tweak End
   - PsychologistJumpsuit
   - MedicalBackpack
   - Glasses

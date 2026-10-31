@@ -16,7 +16,9 @@
   id: ReporterGear
   equipment:
     shoes: ClothingShoesColorWhite
-    id: ReporterPDA
+    # VG-Tweak Start: the PDA is handed out by the ReporterID loadout group so RP variations can replace it.
+    # id: ReporterPDA
+    # VG-Tweak End
     ears: ClothingHeadsetService
   #storage:
     #back:

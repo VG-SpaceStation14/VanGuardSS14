@@ -1,0 +1,20 @@
+# Loadout groups for the RP PDA variations.
+loadout-group-passenger-id = Пассажир, ID
+loadout-group-bartender-id = Бармен, ID
+loadout-group-chef-id = Шеф-повар, ID
+loadout-group-service-worker-id = Сервисный работник, ID
+loadout-group-medical-intern-id = Интерн, ID
+loadout-group-atmospheric-technician-id = Атмосферный техник, ID
+loadout-group-quartermaster-id = Квартирмейстер, ID
+loadout-group-clown-id = Клоун, ID
+loadout-group-musician-id = Музыкант, ID
+loadout-group-reporter-id = Репортёр, ID
+loadout-group-detective-id = Детектив, ID
+loadout-group-janitor-id = Уборщик, ID
+loadout-group-botanist-id = Ботаник, ID
+loadout-group-librarian-id = Библиотекарь, ID
+loadout-group-chaplain-id = Священник, ID
+loadout-group-psychologist-id = Психолог, ID
+loadout-group-research-director-id = Научный руководитель, ID
+loadout-group-chief-medical-officer-id = Главный врач, ID
+loadout-group-brigmedic-id = Бригмедик, ID

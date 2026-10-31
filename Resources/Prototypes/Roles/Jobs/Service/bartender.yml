@@ -24,7 +24,9 @@
   id: BartenderGear
   equipment:
     shoes: ClothingShoesColorBlack
-    id: BartenderPDA
+    # VG-Tweak Start: the PDA is handed out by the BartenderID loadout group so RP variations can replace it.
+    # id: BartenderPDA
+    # VG-Tweak End
     ears: ClothingHeadsetService
   #storage:
     #back:

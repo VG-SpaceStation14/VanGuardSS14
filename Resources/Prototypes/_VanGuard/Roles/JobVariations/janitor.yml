@@ -1,0 +1,38 @@
+# RP variations of the Janitor job.
+# The job itself never changes: access, salary, department and duties stay with the base job.
+# Only the PDA and the job title shown on its ID card differ. To add a variation, copy a block
+# below and add its loadout id to the loadout group.
+
+- type: loadoutGroup
+  id: JanitorID
+  name: loadout-group-janitor-id
+  loadouts:
+  - JanitorPDA
+  - MaidPDA
+
+- type: loadout
+  id: JanitorPDA
+  equipment:
+    id: JanitorPDA
+
+- type: entity
+  parent: JanitorPDA
+  id: MaidPDA
+  name: maid PDA
+  description: "Everything spotless, including the details."
+  components:
+  - type: Pda
+    id: MaidIDCard
+
+- type: entity
+  parent: JanitorIDCard
+  id: MaidIDCard
+  name: maid ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-maid
+
+- type: loadout
+  id: MaidPDA
+  equipment:
+    id: MaidPDA

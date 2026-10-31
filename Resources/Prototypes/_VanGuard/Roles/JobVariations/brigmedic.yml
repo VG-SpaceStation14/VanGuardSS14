@@ -1,0 +1,38 @@
+# RP variations of the Brigmedic job.
+# The job itself never changes: access, salary, department and duties stay with the base job.
+# Only the PDA and the job title shown on its ID card differ. To add a variation, copy a block
+# below and add its loadout id to the loadout group.
+
+- type: loadoutGroup
+  id: BrigmedicID
+  name: loadout-group-brigmedic-id
+  loadouts:
+  - BrigmedicPDA
+  - FieldDoctorPDA
+
+- type: loadout
+  id: BrigmedicPDA
+  equipment:
+    id: BrigmedicPDA
+
+- type: entity
+  parent: BrigmedicPDA
+  id: FieldDoctorPDA
+  name: field Doctor PDA
+  description: "Surgery under fire, bedside manner under pressure."
+  components:
+  - type: Pda
+    id: FieldDoctorIDCard
+
+- type: entity
+  parent: BrigmedicIDCard
+  id: FieldDoctorIDCard
+  name: field Doctor ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-field-doctor
+
+- type: loadout
+  id: FieldDoctorPDA
+  equipment:
+    id: FieldDoctorPDA

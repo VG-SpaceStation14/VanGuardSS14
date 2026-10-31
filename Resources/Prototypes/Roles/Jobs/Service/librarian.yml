@@ -16,7 +16,9 @@
   id: LibrarianGear
   equipment:
     shoes: ClothingShoesBootsLaceup
-    id: LibrarianPDA
+    # VG-Tweak Start: the PDA is handed out by the LibrarianID loadout group so RP variations can replace it.
+    # id: LibrarianPDA
+    # VG-Tweak End
     ears: ClothingHeadsetService
     pocket1: d20Dice
     pocket2: HandLabeler # for making named bestsellers

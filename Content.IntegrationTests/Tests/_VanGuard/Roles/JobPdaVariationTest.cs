@@ -1,7 +1,7 @@
+#nullable enable
+using System.Collections.Generic;
 using System.Linq;
 using Content.IntegrationTests.Fixtures;
-using Content.Server.Access.Components;
-using Content.Shared.Access;
 using Content.Shared.Access.Components;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Prototypes;
@@ -21,35 +21,112 @@ using Robust.Shared.Prototypes;
 namespace Content.IntegrationTests.Tests._VanGuard.Roles;
 
 /// <summary>
-///     Checks the RP PDA variations of a job: the character keeps the job itself (access, department, salary),
+///     Checks the RP PDA variations of jobs: the character keeps the job itself (access, department, salary),
 ///     while the chosen PDA and the job title shown on its ID card can differ.
 /// </summary>
 [TestFixture]
 public sealed class JobPdaVariationTest : GameTest
 {
-    private static readonly ProtoId<JobPrototype> Job = "CargoTechnician";
-    private static readonly ProtoId<RoleLoadoutPrototype> RoleLoadout = "JobCargoTechnician";
-    private static readonly ProtoId<LoadoutGroupPrototype> PdaGroup = "CargoTechnicianID";
-    private static readonly ProtoId<LoadoutPrototype> VariantPdaLoadout = "PostmanPDA";
+    /// <summary>
+    ///     Every job that is supposed to have RP PDA variations. The list is intentionally explicit so that
+    ///     accidentally losing a variation is caught.
+    /// </summary>
+    private static readonly string[] ExpectedJobs =
+    [
+        "AtmosphericTechnician", "Bartender", "Botanist", "Brigmedic", "CargoTechnician", "Chaplain", "Chef",
+        "ChiefMedicalOfficer", "Clown", "Detective", "Janitor", "Librarian", "MedicalIntern", "Musician",
+        "Passenger", "Psychologist", "Quartermaster", "Reporter", "ResearchDirector", "ServiceWorker",
+    ];
+
     private static readonly ProtoId<SpeciesPrototype> HumanSpecies = "Human";
-    private static readonly EntProtoId DefaultPda = "CargoPDA";
-    private static readonly EntProtoId VariantPda = "PostmanPDA";
-    private static readonly LocId VariantTitle = "job-title-postman";
+
+    private sealed record PdaGroup(
+        ProtoId<JobPrototype> Job,
+        ProtoId<RoleLoadoutPrototype> Role,
+        ProtoId<LoadoutGroupPrototype> Group,
+        ProtoId<LoadoutPrototype> Default,
+        EntProtoId DefaultPda,
+        List<(ProtoId<LoadoutPrototype> Loadout, EntProtoId Pda)> Variants);
 
     private static HumanoidCharacterProfile CreateProfile() =>
         HumanoidCharacterProfile.DefaultWithSpecies(HumanSpecies, Sex.Male);
 
-    private static HumanoidCharacterProfile CreateProfileWithVariant()
+    private static IPrototypeManager ProtoMan => IoCManager.Instance!.Resolve<IPrototypeManager>();
+
+    private static ILocalizationManager LocMan => IoCManager.Instance!.Resolve<ILocalizationManager>();
+
+    private static string LocString(LocId id) => LocMan.GetString(id);
+
+    /// <summary>
+    ///     Collects every job PDA loadout group that offers more than the default PDA.
+    ///     Loadouts with effects (like the senior PDAs) are skipped, as those are gated by playtime,
+    ///     not by an RP choice.
+    /// </summary>
+    private static List<PdaGroup> GetPdaGroups()
     {
+        var protoMan = ProtoMan;
+        var factory = IoCManager.Instance!.Resolve<IComponentFactory>();
+        var groups = new List<PdaGroup>();
+
+        foreach (var role in protoMan.EnumeratePrototypes<RoleLoadoutPrototype>())
+        {
+            if (!role.ID.StartsWith("Job"))
+                continue;
+
+            var jobId = role.ID[3..];
+            if (!protoMan.TryIndex<JobPrototype>(jobId, out var job))
+                continue;
+
+            foreach (var groupId in role.Groups)
+            {
+                if (!protoMan.TryIndex(groupId, out var groupProto))
+                    continue;
+
+                var pdaLoadouts = new List<(ProtoId<LoadoutPrototype> Loadout, EntProtoId Pda)>();
+                foreach (var loadoutId in groupProto.Loadouts)
+                {
+                    if (!protoMan.TryIndex(loadoutId, out var loadout) || loadout.Effects.Count > 0)
+                        continue;
+
+                    if (!loadout.Equipment.TryGetValue("id", out var pdaId))
+                        continue;
+
+                    if (!protoMan.TryIndex(pdaId, out var pdaProto) ||
+                        !pdaProto.TryComp<PdaComponent>(out _, factory))
+                    {
+                        continue;
+                    }
+
+                    pdaLoadouts.Add((loadoutId, pdaId));
+                }
+
+                if (pdaLoadouts.Count < 2)
+                    continue;
+
+                groups.Add(new PdaGroup(
+                    job.ID,
+                    role.ID,
+                    groupId,
+                    pdaLoadouts[0].Loadout,
+                    pdaLoadouts[0].Pda,
+                    pdaLoadouts.Skip(1).ToList()));
+            }
+        }
+
+        return groups;
+    }
+
+    private HumanoidCharacterProfile CreateProfileWith(PdaGroup group, ProtoId<LoadoutPrototype> loadout)
+    {
+        var protoMan = ProtoMan;
         var profile = CreateProfile();
-        var protoMan = IoCManager.Instance!.Resolve<IPrototypeManager>();
+        var roleLoadout = new RoleLoadout(group.Role);
+        roleLoadout.SetDefault(profile, ServerSession, protoMan, force: true);
 
-        var loadout = new RoleLoadout(RoleLoadout);
-        loadout.SetDefault(profile, null, protoMan, force: true);
-        Assert.That(loadout.AddLoadout(PdaGroup, VariantPdaLoadout, protoMan), Is.True,
-            "The variation should be selectable in the job's PDA loadout group");
+        Assert.That(roleLoadout.AddLoadout(group.Group, loadout, protoMan), Is.True,
+            $"Loadout {loadout} should be selectable in group {group.Group}");
 
-        return profile.WithLoadout(loadout);
+        return profile.WithLoadout(roleLoadout);
     }
 
     /// <summary>
@@ -76,9 +153,6 @@ public sealed class JobPdaVariationTest : GameTest
     private string GetPdaPrototype(EntityUid pda) =>
         SEntMan.GetComponent<MetaDataComponent>(pda).EntityPrototype?.ID ?? string.Empty;
 
-    private static string LocString(LocId id) =>
-        IoCManager.Instance!.Resolve<ILocalizationManager>().GetString(id);
-
     /// <summary>
     ///     Counts the PDAs that belong to the mob, to make sure a variation does not hand out several of them.
     /// </summary>
@@ -96,78 +170,125 @@ public sealed class JobPdaVariationTest : GameTest
     }
 
     [Test]
-    public async Task DefaultPdaIsUsedWhenNoVariationIsSelected()
+    public async Task AllVariationsAreWellFormed()
     {
-        var map = await Pair.CreateTestMap();
-
         await Server.WaitAssertion(() =>
         {
-            var (_, pda) = SpawnWithJob(new EntityCoordinates(map.Grid, 0, 0), Job);
+            var factory = SEntMan.ComponentFactory;
+            var groups = GetPdaGroups();
 
-            Assert.That(pda, Is.Not.Null, "The character should get a PDA");
-            Assert.That(GetPdaPrototype(pda!.Value), Is.EqualTo(DefaultPda.Id),
-                "Without a variation the default job PDA should be used");
+            Assert.That(groups.Select(g => g.Job.Id), Is.SupersetOf(ExpectedJobs),
+                "Every job from the old build that exists here should have a PDA variation group");
 
-            var card = GetCard(pda.Value);
-            Assert.That(SEntMan.GetComponent<IdCardComponent>(card).LocalizedJobTitle,
-                Is.EqualTo(LocString("job-name-cargotech")),
-                "The default card should show the job's own title");
+            Assert.That(groups.Sum(g => g.Variants.Count), Is.GreaterThanOrEqualTo(40),
+                "All RP variations from the old build should be present");
+
+            foreach (var group in groups)
+            {
+                var defaultPda = ProtoMan.Index(group.DefaultPda);
+                Assert.That(defaultPda.TryComp<PdaComponent>(out var defaultPdaComp, factory), Is.True,
+                    $"{group.DefaultPda} should be a PDA");
+                Assert.That(defaultPdaComp!.IdCard, Is.Not.Null, $"{group.DefaultPda} should contain an ID card");
+
+                foreach (var (loadoutId, pdaId) in group.Variants)
+                {
+                    var pda = ProtoMan.Index(pdaId);
+
+                    Assert.That(pda.TryComp<PdaComponent>(out var pdaComp, factory), Is.True,
+                        $"{pdaId} should be a PDA");
+                    Assert.That(pdaComp!.IdCard, Is.Not.Null, $"{pdaId} should contain an ID card");
+
+                    var card = ProtoMan.Index(pdaComp.IdCard!.Value);
+                    Assert.That(card.TryComp<IdCardComponent>(out var idCard, factory), Is.True,
+                        $"{pdaId} should contain an ID card");
+                    Assert.That(idCard!.JobTitleOverride, Is.Not.Null,
+                        $"{pdaId} should display an RP title instead of the job title");
+                    Assert.That(LocMan.HasString(idCard.JobTitleOverride!.Value), Is.True,
+                        $"Missing localization for {idCard.JobTitleOverride.Value}");
+
+                    var loadout = ProtoMan.Index(loadoutId);
+                    Assert.That(loadout.Equipment, Has.Count.EqualTo(1),
+                        $"Loadout {loadoutId} should only hand out its PDA");
+                }
+            }
         });
     }
 
     [Test]
-    public async Task SelectedVariationReplacesTheDefaultPda()
+    public async Task EveryJobGivesItsDefaultPdaWithoutASelection()
     {
         var map = await Pair.CreateTestMap();
 
         await Server.WaitAssertion(() =>
         {
-            var (mob, pda) = SpawnWithJob(new EntityCoordinates(map.Grid, 0, 0), Job, CreateProfileWithVariant());
+            var groups = GetPdaGroups();
+            var x = 0;
+            foreach (var group in groups)
+            {
+                var (mob, pda) = SpawnWithJob(new EntityCoordinates(map.Grid, x, 0), group.Job);
+                x += 2;
 
-            Assert.That(pda, Is.Not.Null, "The character should get a PDA");
-            Assert.That(GetPdaPrototype(pda!.Value), Is.EqualTo(VariantPda.Id),
-                "The chosen variation PDA should be used");
+                Assert.That(pda, Is.Not.Null, $"{group.Job} should get a PDA");
+                Assert.That(GetPdaPrototype(pda!.Value), Is.EqualTo(group.DefaultPda.Id),
+                    $"{group.Job} should use its default PDA when no variation is selected");
 
-            Assert.That(CountPdAs(mob), Is.EqualTo(1),
-                "Selecting a variation must not hand out the default PDA as well");
+                Assert.That(CountPdAs(mob), Is.EqualTo(1),
+                    $"{group.Job} should only get its default PDA");
 
-            var card = GetCard(pda.Value);
-            var idCard = SEntMan.GetComponent<IdCardComponent>(card);
-
-            Assert.That(idCard.LocalizedJobTitle, Is.EqualTo(LocString(VariantTitle)),
-                "The variation title should be shown on the ID card");
+                var card = GetCard(pda.Value);
+                Assert.That(SEntMan.GetComponent<IdCardComponent>(card).LocalizedJobTitle,
+                    Is.EqualTo(ProtoMan.Index(group.Job).LocalizedName),
+                    $"{group.Job} default card should show the job's own title");
+            }
         });
     }
 
     [Test]
-    public async Task VariationKeepsTheBaseJobData()
+    public async Task EveryVariationSpawnsItsOwnPda()
     {
         var map = await Pair.CreateTestMap();
 
         await Server.WaitAssertion(() =>
         {
-            var (_, defaultPda) = SpawnWithJob(new EntityCoordinates(map.Grid, 0, 0), Job);
-            var (_, variantPda) = SpawnWithJob(new EntityCoordinates(map.Grid, 2, 0), Job, CreateProfileWithVariant());
+            var groups = GetPdaGroups();
+            var x = 0;
+            foreach (var group in groups)
+            {
+                // Reference spawn with the default PDA, to compare the job data with.
+                var (_, defaultPda) = SpawnWithJob(new EntityCoordinates(map.Grid, x, 0), group.Job);
+                x += 2;
 
-            Assert.That(defaultPda, Is.Not.Null);
-            Assert.That(variantPda, Is.Not.Null);
+                Assert.That(defaultPda, Is.Not.Null);
+                var defaultCard = GetCard(defaultPda!.Value);
+                var defaultAccess = SEntMan.GetComponent<AccessComponent>(defaultCard).Tags;
+                var defaultDepartments = SEntMan.GetComponent<IdCardComponent>(defaultCard).JobDepartments;
 
-            var defaultCard = SEntMan.GetComponent<IdCardComponent>(GetCard(defaultPda!.Value));
-            var variantCard = SEntMan.GetComponent<IdCardComponent>(GetCard(variantPda!.Value));
+                foreach (var (loadoutId, pdaId) in group.Variants)
+                {
+                    var profile = CreateProfileWith(group, loadoutId);
+                    var (mob, pda) = SpawnWithJob(new EntityCoordinates(map.Grid, x, 0), group.Job, profile);
+                    x += 2;
 
-            var presetCard = SEntMan.GetComponent<PresetIdCardComponent>(GetCard(variantPda.Value));
-            Assert.That(presetCard.JobName, Is.EqualTo(Job),
-                "The variation card should still belong to the base job");
-            Assert.That(variantCard.JobDepartments, Is.EquivalentTo(defaultCard.JobDepartments),
-                "The variation should keep the department of the base job");
+                    Assert.That(pda, Is.Not.Null, $"{group.Job} should get a PDA for {loadoutId}");
+                    Assert.That(GetPdaPrototype(pda!.Value), Is.EqualTo(pdaId.Id),
+                        $"{loadoutId} should hand out {pdaId}");
 
-            var defaultAccess = SEntMan.GetComponent<AccessComponent>(GetCard(defaultPda.Value));
-            var variantAccess = SEntMan.GetComponent<AccessComponent>(GetCard(variantPda.Value));
+                    Assert.That(CountPdAs(mob), Is.EqualTo(1),
+                        $"{loadoutId} must not hand out the default PDA as well");
 
-            Assert.That(variantAccess.Tags, Is.EquivalentTo(defaultAccess.Tags),
-                "The variation should keep the access of the base job");
-            Assert.That(variantAccess.Tags, Does.Contain(new ProtoId<AccessLevelPrototype>("Cargo")),
-                "The variation card should still have the job's access");
+                    var card = GetCard(pda.Value);
+                    var idCard = SEntMan.GetComponent<IdCardComponent>(card);
+
+                    Assert.That(idCard.JobTitleOverride, Is.Not.Null);
+                    Assert.That(idCard.LocalizedJobTitle, Is.EqualTo(LocString(idCard.JobTitleOverride!.Value)),
+                        $"{loadoutId} should show its RP title on the ID card");
+
+                    Assert.That(SEntMan.GetComponent<AccessComponent>(card).Tags, Is.EquivalentTo(defaultAccess),
+                        $"{loadoutId} should keep the access of the base job");
+                    Assert.That(idCard.JobDepartments, Is.EquivalentTo(defaultDepartments),
+                        $"{loadoutId} should keep the department of the base job");
+                }
+            }
         });
     }
 
@@ -176,24 +297,27 @@ public sealed class JobPdaVariationTest : GameTest
     {
         await Server.WaitAssertion(() =>
         {
-            var profile = CreateProfileWithVariant();
+            var protoMan = ProtoMan;
+            var groups = GetPdaGroups().Where(g => g.Variants.Count > 0).Take(3);
 
-            // Simulate a relog: the server validates stored loadouts and fills in default groups again.
-            foreach (var (_, loadout) in profile.Loadouts)
+            foreach (var group in groups)
             {
-                loadout.EnsureValid(profile, null!, IoCManager.Instance!);
-                loadout.SetDefault(profile, null, IoCManager.Instance!.Resolve<IPrototypeManager>());
+                var chosen = group.Variants[0].Loadout;
+                var profile = CreateProfileWith(group, chosen);
+
+                // Simulate a relog: the server validates stored loadouts and fills in default groups again.
+                foreach (var (_, loadout) in profile.Loadouts)
+                {
+                    loadout.EnsureValid(profile, ServerSession!, IoCManager.Instance!);
+                    loadout.SetDefault(profile, ServerSession, protoMan);
+                }
+
+                var reloaded = profile.GetLoadoutOrDefault(group.Role.Id, ServerSession, null, SEntMan, protoMan);
+
+                Assert.That(reloaded.SelectedLoadouts[group.Group].Select(l => l.Prototype.Id),
+                    Is.EquivalentTo(new[] { chosen.Id }),
+                    $"{chosen} should survive profile validation for {group.Job}");
             }
-
-            var reloaded = profile.GetLoadoutOrDefault(RoleLoadout.Id,
-                null,
-                null,
-                SEntMan,
-                IoCManager.Instance!.Resolve<IPrototypeManager>());
-
-            Assert.That(reloaded.SelectedLoadouts[PdaGroup].Select(x => x.Prototype.Id),
-                Is.EquivalentTo(new[] { VariantPdaLoadout.Id }),
-                "The chosen variation should survive profile validation");
         });
     }
 
@@ -204,23 +328,55 @@ public sealed class JobPdaVariationTest : GameTest
 
         await Server.WaitAssertion(() =>
         {
+            var group = GetPdaGroups().First(g => g.Job.Id == "Bartender");
             var profile = CreateProfile();
-            var protoMan = IoCManager.Instance!.Resolve<IPrototypeManager>();
+            var protoMan = ProtoMan;
 
-            var loadout = new RoleLoadout(RoleLoadout);
-            loadout.SetDefault(profile, null, protoMan, force: true);
+            var loadout = new RoleLoadout(group.Role);
+            loadout.SetDefault(profile, ServerSession, protoMan, force: true);
 
             // Pretend the variation prototype got removed from the game.
-            loadout.SelectedLoadouts[PdaGroup] = [new Loadout { Prototype = "RemovedVariationPDA" }];
-            loadout.EnsureValid(profile, null!, IoCManager.Instance!);
+            loadout.SelectedLoadouts[group.Group] = [new Loadout { Prototype = "RemovedVariationPDA" }];
+            loadout.EnsureValid(profile, ServerSession!, IoCManager.Instance!);
 
             profile.SetLoadout(loadout);
 
-            var (_, pda) = SpawnWithJob(new EntityCoordinates(map.Grid, 0, 0), Job, profile);
+            var (_, pda) = SpawnWithJob(new EntityCoordinates(map.Grid, 0, 0), group.Job, profile);
 
             Assert.That(pda, Is.Not.Null, "The character should still get a PDA");
-            Assert.That(GetPdaPrototype(pda!.Value), Is.EqualTo(DefaultPda.Id),
+            Assert.That(GetPdaPrototype(pda!.Value), Is.EqualTo(group.DefaultPda.Id),
                 "A missing variation should fall back to the default job PDA");
+        });
+    }
+
+    [Test]
+    public async Task ProfileWithoutVariationGroupFallsBackToTheDefaultPda()
+    {
+        var map = await Pair.CreateTestMap();
+
+        await Server.WaitAssertion(() =>
+        {
+            var group = GetPdaGroups().First(g => g.Job.Id == "Chef");
+            var protoMan = ProtoMan;
+            var profile = CreateProfile();
+
+            var loadout = new RoleLoadout(group.Role);
+            loadout.SetDefault(profile, ServerSession, protoMan, force: true);
+
+            // Simulate a profile saved before the variation group was added to the job.
+            loadout.SelectedLoadouts.Remove(group.Group);
+            loadout.EnsureValid(profile, ServerSession!, IoCManager.Instance!);
+            profile.SetLoadout(loadout);
+
+            Assert.That(loadout.SelectedLoadouts[group.Group].Select(l => l.Prototype.Id),
+                Is.EquivalentTo(new[] { group.Default.Id }),
+                "An old profile should be defaulted to the base PDA");
+
+            var (_, pda) = SpawnWithJob(new EntityCoordinates(map.Grid, 0, 0), group.Job, profile);
+
+            Assert.That(pda, Is.Not.Null, "The character should still get a PDA");
+            Assert.That(GetPdaPrototype(pda!.Value), Is.EqualTo(group.DefaultPda.Id),
+                "An old profile should spawn with the default job PDA");
         });
     }
 
@@ -231,11 +387,15 @@ public sealed class JobPdaVariationTest : GameTest
 
         await Server.WaitAssertion(() =>
         {
-            var (_, pda) = SpawnWithJob(new EntityCoordinates(map.Grid, 0, 0), "Passenger");
+            // Chemist was not touched by the variation work, its PDA still comes from the starting gear.
+            var (_, pda) = SpawnWithJob(new EntityCoordinates(map.Grid, 0, 0), "Chemist");
 
             Assert.That(pda, Is.Not.Null, "Jobs without variations should still get their PDA");
-            Assert.That(GetPdaPrototype(pda!.Value), Is.EqualTo("PassengerPDA"),
+            Assert.That(GetPdaPrototype(pda!.Value), Is.EqualTo("ChemistryPDA"),
                 "Jobs without variations should keep their usual PDA");
+
+            Assert.That(GetPdaGroups().Any(g => g.Job.Id == "Chemist"), Is.False,
+                "Chemist should not be considered a job with RP variations");
         });
     }
 }

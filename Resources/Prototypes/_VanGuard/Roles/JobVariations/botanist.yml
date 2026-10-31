@@ -1,0 +1,61 @@
+# RP variations of the Botanist job.
+# The job itself never changes: access, salary, department and duties stay with the base job.
+# Only the PDA and the job title shown on its ID card differ. To add a variation, copy a block
+# below and add its loadout id to the loadout group.
+
+- type: loadoutGroup
+  id: BotanistID
+  name: loadout-group-botanist-id
+  loadouts:
+  - BotanistPDA
+  - GardenerPDA
+  - EcologistPDA
+
+- type: loadout
+  id: BotanistPDA
+  equipment:
+    id: BotanistPDA
+
+- type: entity
+  parent: BotanistPDA
+  id: GardenerPDA
+  name: gardener PDA
+  description: "Grows more than the botany budget allows."
+  components:
+  - type: Pda
+    id: GardenerIDCard
+
+- type: entity
+  parent: BotanistIDCard
+  id: GardenerIDCard
+  name: gardener ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-gardener
+
+- type: loadout
+  id: GardenerPDA
+  equipment:
+    id: GardenerPDA
+
+- type: entity
+  parent: BotanistPDA
+  id: EcologistPDA
+  name: ecologist PDA
+  description: "Worries about the station's ecosystem so you don't have to."
+  components:
+  - type: Pda
+    id: EcologistIDCard
+
+- type: entity
+  parent: BotanistIDCard
+  id: EcologistIDCard
+  name: ecologist ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-ecologist
+
+- type: loadout
+  id: EcologistPDA
+  equipment:
+    id: EcologistPDA

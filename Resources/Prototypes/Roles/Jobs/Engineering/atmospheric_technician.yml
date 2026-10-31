@@ -26,7 +26,9 @@
   id: AtmosphericTechnicianGear
   equipment:
     eyes: ClothingEyesGlassesMeson
-    id: AtmosPDA
+    # VG-Tweak Start: the PDA is handed out by the AtmosphericTechnicianID loadout group so RP variations can replace it.
+    # id: AtmosPDA
+    # VG-Tweak End
     belt: ClothingBeltUtilityEngineering
     ears: ClothingHeadsetEngineering
   #storage:

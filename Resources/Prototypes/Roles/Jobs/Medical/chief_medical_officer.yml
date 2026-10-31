@@ -44,7 +44,9 @@
 - type: startingGear
   id: CMOGear
   equipment:
-    id: CMOPDA
+    # VG-Tweak Start: the PDA is handed out by the ChiefMedicalOfficerID loadout group so RP variations can replace it.
+    # id: CMOPDA
+    # VG-Tweak End
     ears: ClothingHeadsetCMO
   storage:
     back:

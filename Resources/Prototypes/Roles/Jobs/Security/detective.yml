@@ -31,7 +31,9 @@
   id: DetectiveGear
   equipment:
     eyes: ClothingEyesGlassesSecurity
-    id: DetectivePDA
+    # VG-Tweak Start: the PDA is handed out by the DetectiveID loadout group so RP variations can replace it.
+    # id: DetectivePDA
+    # VG-Tweak End
     ears: ClothingHeadsetSecurity
     belt: ClothingBeltHolsterFilled
   storage:

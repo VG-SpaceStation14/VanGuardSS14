@@ -1,0 +1,38 @@
+# RP variations of the Quartermaster job.
+# The job itself never changes: access, salary, department and duties stay with the base job.
+# Only the PDA and the job title shown on its ID card differ. To add a variation, copy a block
+# below and add its loadout id to the loadout group.
+
+- type: loadoutGroup
+  id: QuartermasterID
+  name: loadout-group-quartermaster-id
+  loadouts:
+  - QuartermasterPDA
+  - IntendantPDA
+
+- type: loadout
+  id: QuartermasterPDA
+  equipment:
+    id: QuartermasterPDA
+
+- type: entity
+  parent: QuartermasterPDA
+  id: IntendantPDA
+  name: intendant PDA
+  description: "Runs the cargo bay like a small, loud kingdom."
+  components:
+  - type: Pda
+    id: IntendantIDCard
+
+- type: entity
+  parent: QuartermasterIDCard
+  id: IntendantIDCard
+  name: intendant ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-intendant
+
+- type: loadout
+  id: IntendantPDA
+  equipment:
+    id: IntendantPDA

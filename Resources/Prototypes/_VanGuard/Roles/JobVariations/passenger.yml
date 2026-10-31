@@ -1,0 +1,61 @@
+# RP variations of the Passenger job.
+# The job itself never changes: access, salary, department and duties stay with the base job.
+# Only the PDA and the job title shown on its ID card differ. To add a variation, copy a block
+# below and add its loadout id to the loadout group.
+
+- type: loadoutGroup
+  id: PassengerID
+  name: loadout-group-passenger-id
+  loadouts:
+  - PassengerPDA
+  - TouristPDA
+  - StudentPDA
+
+- type: loadout
+  id: PassengerPDA
+  equipment:
+    id: PassengerPDA
+
+- type: entity
+  parent: PassengerPDA
+  id: TouristPDA
+  name: tourist PDA
+  description: "Here for the sights, the souvenirs and the gravity."
+  components:
+  - type: Pda
+    id: TouristIDCard
+
+- type: entity
+  parent: PassengerIDCard
+  id: TouristIDCard
+  name: tourist ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-tourist
+
+- type: loadout
+  id: TouristPDA
+  equipment:
+    id: TouristPDA
+
+- type: entity
+  parent: PassengerPDA
+  id: StudentPDA
+  name: student PDA
+  description: "Studying hard, partying harder."
+  components:
+  - type: Pda
+    id: StudentIDCard
+
+- type: entity
+  parent: PassengerIDCard
+  id: StudentIDCard
+  name: student ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-student
+
+- type: loadout
+  id: StudentPDA
+  equipment:
+    id: StudentPDA

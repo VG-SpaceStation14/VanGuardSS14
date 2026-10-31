@@ -24,7 +24,9 @@
   id: ChefGear
   equipment:
     shoes: ClothingShoesChef
-    id: ChefPDA
+    # VG-Tweak Start: the PDA is handed out by the ChefID loadout group so RP variations can replace it.
+    # id: ChefPDA
+    # VG-Tweak End
     ears: ClothingHeadsetService
     belt: ClothingBeltChefFilled
   #storage:

@@ -1,0 +1,38 @@
+# RP variations of the ResearchDirector job.
+# The job itself never changes: access, salary, department and duties stay with the base job.
+# Only the PDA and the job title shown on its ID card differ. To add a variation, copy a block
+# below and add its loadout id to the loadout group.
+
+- type: loadoutGroup
+  id: ResearchDirectorID
+  name: loadout-group-research-director-id
+  loadouts:
+  - RnDPDA
+  - DirectorOfResearchPDA
+
+- type: loadout
+  id: RnDPDA
+  equipment:
+    id: RnDPDA
+
+- type: entity
+  parent: RnDPDA
+  id: DirectorOfResearchPDA
+  name: director of Research PDA
+  description: "Research, directed. Mostly."
+  components:
+  - type: Pda
+    id: DirectorOfResearchIDCard
+
+- type: entity
+  parent: RDIDCard
+  id: DirectorOfResearchIDCard
+  name: director of Research ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-director-of-research
+
+- type: loadout
+  id: DirectorOfResearchPDA
+  equipment:
+    id: DirectorOfResearchPDA

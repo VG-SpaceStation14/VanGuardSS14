@@ -1,0 +1,130 @@
+# RP variations of the Musician job.
+# The job itself never changes: access, salary, department and duties stay with the base job.
+# Only the PDA and the job title shown on its ID card differ. To add a variation, copy a block
+# below and add its loadout id to the loadout group.
+
+- type: loadoutGroup
+  id: MusicianID
+  name: loadout-group-musician-id
+  loadouts:
+  - MusicianPDA
+  - PerformerPDA
+  - ConcertmasterPDA
+  - ComposerPDA
+  - BardPDA
+  - DJPDA
+
+- type: loadout
+  id: MusicianPDA
+  equipment:
+    id: MusicianPDA
+
+- type: entity
+  parent: MusicianPDA
+  id: PerformerPDA
+  name: performer PDA
+  description: "The stage is wherever people are looking."
+  components:
+  - type: Pda
+    id: PerformerIDCard
+
+- type: entity
+  parent: MusicianIDCard
+  id: PerformerIDCard
+  name: performer ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-performer
+
+- type: loadout
+  id: PerformerPDA
+  equipment:
+    id: PerformerPDA
+
+- type: entity
+  parent: MusicianPDA
+  id: ConcertmasterPDA
+  name: concertmaster PDA
+  description: "Tunes the whole department by ear."
+  components:
+  - type: Pda
+    id: ConcertmasterIDCard
+
+- type: entity
+  parent: MusicianIDCard
+  id: ConcertmasterIDCard
+  name: concertmaster ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-concertmaster
+
+- type: loadout
+  id: ConcertmasterPDA
+  equipment:
+    id: ConcertmasterPDA
+
+- type: entity
+  parent: MusicianPDA
+  id: ComposerPDA
+  name: composer PDA
+  description: "Writes the soundtrack for routine shifts."
+  components:
+  - type: Pda
+    id: ComposerIDCard
+
+- type: entity
+  parent: MusicianIDCard
+  id: ComposerIDCard
+  name: composer ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-composer
+
+- type: loadout
+  id: ComposerPDA
+  equipment:
+    id: ComposerPDA
+
+- type: entity
+  parent: MusicianPDA
+  id: BardPDA
+  name: bard PDA
+  description: "Stories, songs and slightly exaggerated deeds."
+  components:
+  - type: Pda
+    id: BardIDCard
+
+- type: entity
+  parent: MusicianIDCard
+  id: BardIDCard
+  name: bard ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-bard
+
+- type: loadout
+  id: BardPDA
+  equipment:
+    id: BardPDA
+
+- type: entity
+  parent: MusicianPDA
+  id: DJPDA
+  name: DJ PDA
+  description: "Keeps the station dancing through the night shift."
+  components:
+  - type: Pda
+    id: DJIDCard
+
+- type: entity
+  parent: MusicianIDCard
+  id: DJIDCard
+  name: DJ ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-dj
+
+- type: loadout
+  id: DJPDA
+  equipment:
+    id: DJPDA

@@ -1,0 +1,61 @@
+# RP variations of the Clown job.
+# The job itself never changes: access, salary, department and duties stay with the base job.
+# Only the PDA and the job title shown on its ID card differ. To add a variation, copy a block
+# below and add its loadout id to the loadout group.
+
+- type: loadoutGroup
+  id: ClownID
+  name: loadout-group-clown-id
+  loadouts:
+  - ClownPDA
+  - JesterPDA
+  - FoolPDA
+
+- type: loadout
+  id: ClownPDA
+  equipment:
+    id: ClownPDA
+
+- type: entity
+  parent: ClownPDA
+  id: JesterPDA
+  name: jester PDA
+  description: "Honest advice, delivered with bells on."
+  components:
+  - type: Pda
+    id: JesterIDCard
+
+- type: entity
+  parent: ClownIDCard
+  id: JesterIDCard
+  name: jester ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-jester
+
+- type: loadout
+  id: JesterPDA
+  equipment:
+    id: JesterPDA
+
+- type: entity
+  parent: ClownPDA
+  id: FoolPDA
+  name: fool PDA
+  description: "The only one allowed to say the obvious."
+  components:
+  - type: Pda
+    id: FoolIDCard
+
+- type: entity
+  parent: ClownIDCard
+  id: FoolIDCard
+  name: fool ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-fool
+
+- type: loadout
+  id: FoolPDA
+  equipment:
+    id: FoolPDA

@@ -51,3 +51,26 @@
   id: PostmanPDA
   equipment:
     id: PostmanPDA
+
+# Inventory associate: keeps the cargo bay and its stock in order.
+- type: entity
+  parent: CargoPDA
+  id: InventoryAssociatePDA
+  name: inventory associate PDA
+  description: "Knows where every crate is, and where it should have been."
+  components:
+  - type: Pda
+    id: InventoryAssociateIDCard
+
+- type: entity
+  parent: CargoIDCard
+  id: InventoryAssociateIDCard
+  name: inventory associate ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-inventory-associate
+
+- type: loadout
+  id: InventoryAssociatePDA
+  equipment:
+    id: InventoryAssociatePDA

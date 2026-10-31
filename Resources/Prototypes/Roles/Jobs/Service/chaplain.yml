@@ -19,7 +19,9 @@
 - type: startingGear
   id: ChaplainGear
   equipment:
-    id: ChaplainPDA
+    # VG-Tweak Start: the PDA is handed out by the ChaplainID loadout group so RP variations can replace it.
+    # id: ChaplainPDA
+    # VG-Tweak End
     ears: ClothingHeadsetService
   storage:
     back:

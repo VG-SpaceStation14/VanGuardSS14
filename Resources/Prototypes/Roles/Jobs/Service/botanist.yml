@@ -24,7 +24,9 @@
   id: BotanistGear
   equipment:
     shoes: ClothingShoesColorBrown
-    id: BotanistPDA
+    # VG-Tweak Start: the PDA is handed out by the BotanistID loadout group so RP variations can replace it.
+    # id: BotanistPDA
+    # VG-Tweak End
     ears: ClothingHeadsetService
     belt: ClothingBeltPlantFilled
   #storage:

@@ -21,7 +21,9 @@
   id: MedicalInternGear
   equipment:
     shoes: ClothingShoesColorWhite
-    id: MedicalInternPDA
+    # VG-Tweak Start: the PDA is handed out by the MedicalInternID loadout group so RP variations can replace it.
+    # id: MedicalInternPDA
+    # VG-Tweak End
     ears: ClothingHeadsetMedical
     pocket2: BookMedicalReferenceBook
 

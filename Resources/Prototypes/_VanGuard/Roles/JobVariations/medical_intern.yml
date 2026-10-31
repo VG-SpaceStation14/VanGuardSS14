@@ -1,0 +1,61 @@
+# RP variations of the MedicalIntern job.
+# The job itself never changes: access, salary, department and duties stay with the base job.
+# Only the PDA and the job title shown on its ID card differ. To add a variation, copy a block
+# below and add its loadout id to the loadout group.
+
+- type: loadoutGroup
+  id: MedicalInternID
+  name: loadout-group-medical-intern-id
+  loadouts:
+  - MedicalInternPDA
+  - PracticalNursePDA
+  - ResidentPDA
+
+- type: loadout
+  id: MedicalInternPDA
+  equipment:
+    id: MedicalInternPDA
+
+- type: entity
+  parent: MedicalInternPDA
+  id: PracticalNursePDA
+  name: practical Nurse PDA
+  description: "Practical help, practical hands."
+  components:
+  - type: Pda
+    id: PracticalNurseIDCard
+
+- type: entity
+  parent: MedicalInternIDCard
+  id: PracticalNurseIDCard
+  name: practical Nurse ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-practical-nurse
+
+- type: loadout
+  id: PracticalNursePDA
+  equipment:
+    id: PracticalNursePDA
+
+- type: entity
+  parent: MedicalInternPDA
+  id: ResidentPDA
+  name: resident PDA
+  description: "Still learning, already indispensable."
+  components:
+  - type: Pda
+    id: ResidentIDCard
+
+- type: entity
+  parent: MedicalInternIDCard
+  id: ResidentIDCard
+  name: resident ID card
+  components:
+  - type: IdCard
+    jobTitleOverride: job-title-resident
+
+- type: loadout
+  id: ResidentPDA
+  equipment:
+    id: ResidentPDA

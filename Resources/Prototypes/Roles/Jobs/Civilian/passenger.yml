@@ -14,7 +14,9 @@
 - type: startingGear
   id: PassengerGear
   equipment:
-    id: PassengerPDA
+    # VG-Tweak Start: the PDA is handed out by the PassengerID loadout group so RP variations can replace it.
+    # id: PassengerPDA
+    # VG-Tweak End
     ears: ClothingHeadsetGrey
   #storage:
     #back:
