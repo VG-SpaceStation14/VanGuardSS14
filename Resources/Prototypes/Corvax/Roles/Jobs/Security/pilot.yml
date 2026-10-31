@@ -29,7 +29,9 @@
   id: PilotGear
   equipment:
     eyes: ClothingEyesGlassesSecurity
-    id: PilotPDA
+    # VG-Tweak Start: the PDA is handed out by the PilotID loadout group so pen choices can replace the pen.
+    # id: PilotPDA
+    # VG-Tweak End
     ears: ClothingHeadsetSecurity
     pocket1: WeaponPistolMk58
   storage:

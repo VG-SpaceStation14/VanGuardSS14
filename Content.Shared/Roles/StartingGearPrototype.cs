@@ -53,6 +53,9 @@ public interface IEquipmentLoadout
     /// <summary>
     /// Inserts entities into the specified slot's storage (if it does have storage).
     /// </summary>
+    // VG-Tweak Start: if the equipped item has no storage, the entities are put into a compatible item slot of
+    // that item instead (e.g. a pen chosen in the loadout goes into the PDA pen slot, replacing the default pen).
+    // VG-Tweak End
     public Dictionary<string, List<EntProtoId>> Storage { get; set; }
 
     /// <summary>

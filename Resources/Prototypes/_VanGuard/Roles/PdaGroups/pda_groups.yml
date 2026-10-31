@@ -1,0 +1,189 @@
+# Default PDA loadout groups for jobs that get the PDA from their loadout.
+# The groups only contain the job's own PDA; RP variations and the pen selection are separate groups.
+
+- type: loadoutGroup
+  id: ChemistID
+  name: loadout-group-chemist-id
+  loadouts:
+  - ChemistryPDA
+
+- type: loadout
+  id: ChemistryPDA
+  equipment:
+    id: ChemistryPDA
+
+- type: loadoutGroup
+  id: LawyerID
+  name: loadout-group-lawyer-id
+  loadouts:
+  - LawyerPDA
+
+- type: loadout
+  id: LawyerPDA
+  equipment:
+    id: LawyerPDA
+
+- type: loadoutGroup
+  id: MimeID
+  name: loadout-group-mime-id
+  loadouts:
+  - MimePDA
+
+- type: loadout
+  id: MimePDA
+  equipment:
+    id: MimePDA
+
+- type: loadoutGroup
+  id: ParamedicID
+  name: loadout-group-paramedic-id
+  loadouts:
+  - ParamedicPDA
+
+- type: loadout
+  id: ParamedicPDA
+  equipment:
+    id: ParamedicPDA
+
+- type: loadoutGroup
+  id: ResearchAssistantID
+  name: loadout-group-research-assistant-id
+  loadouts:
+  - ResearchAssistantPDA
+
+- type: loadout
+  id: ResearchAssistantPDA
+  equipment:
+    id: ResearchAssistantPDA
+
+- type: loadoutGroup
+  id: SalvageSpecialistID
+  name: loadout-group-salvage-specialist-id
+  loadouts:
+  - SalvagePDA
+
+- type: loadout
+  id: SalvagePDA
+  equipment:
+    id: SalvagePDA
+
+- type: loadoutGroup
+  id: SecurityCadetID
+  name: loadout-group-security-cadet-id
+  loadouts:
+  - SecurityCadetPDA
+
+- type: loadout
+  id: SecurityCadetPDA
+  equipment:
+    id: SecurityCadetPDA
+
+- type: loadoutGroup
+  id: TechnicalAssistantID
+  name: loadout-group-technical-assistant-id
+  loadouts:
+  - TechnicalAssistantPDA
+
+- type: loadout
+  id: TechnicalAssistantPDA
+  equipment:
+    id: TechnicalAssistantPDA
+
+- type: loadoutGroup
+  id: TramDriverID
+  name: loadout-group-tram-driver-id
+  loadouts:
+  - TramDriverPDA
+
+- type: loadout
+  id: TramDriverPDA
+  equipment:
+    id: TramDriverPDA
+
+- type: loadoutGroup
+  id: WardenID
+  name: loadout-group-warden-id
+  loadouts:
+  - WardenPDA
+
+- type: loadout
+  id: WardenPDA
+  equipment:
+    id: WardenPDA
+
+- type: loadoutGroup
+  id: IAAID
+  name: loadout-group-iaa-id
+  loadouts:
+  - IAAPDA
+
+- type: loadout
+  id: IAAPDA
+  equipment:
+    id: IAAPDA
+
+- type: loadoutGroup
+  id: MagistrateID
+  name: loadout-group-magistrate-id
+  loadouts:
+  - MagistratePDA
+
+- type: loadout
+  id: MagistratePDA
+  equipment:
+    id: MagistratePDA
+
+- type: loadoutGroup
+  id: PilotID
+  name: loadout-group-pilot-id
+  loadouts:
+  - PilotPDA
+
+- type: loadout
+  id: PilotPDA
+  equipment:
+    id: PilotPDA
+
+- type: loadoutGroup
+  id: SeniorEngineerID
+  name: loadout-group-senior-engineer-id
+  loadouts:
+  - SeniorEngineerPDA
+
+- type: loadout
+  id: SeniorEngineerJobPDA
+  equipment:
+    id: SeniorEngineerPDA
+
+- type: loadoutGroup
+  id: SeniorOfficerID
+  name: loadout-group-senior-officer-id
+  loadouts:
+  - SeniorOfficerPDA
+
+- type: loadout
+  id: SeniorOfficerJobPDA
+  equipment:
+    id: SeniorOfficerPDA
+
+- type: loadoutGroup
+  id: SeniorPhysicianID
+  name: loadout-group-senior-physician-id
+  loadouts:
+  - SeniorPhysicianPDA
+
+- type: loadout
+  id: SeniorPhysicianJobPDA
+  equipment:
+    id: SeniorPhysicianPDA
+
+- type: loadoutGroup
+  id: SeniorResearcherID
+  name: loadout-group-senior-researcher-id
+  loadouts:
+  - SeniorResearcherPDA
+
+- type: loadout
+  id: SeniorResearcherJobPDA
+  equipment:
+    id: SeniorResearcherPDA

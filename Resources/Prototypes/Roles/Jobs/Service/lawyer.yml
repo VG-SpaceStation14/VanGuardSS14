@@ -22,7 +22,9 @@
   id: LawyerGear
   equipment:
     shoes: ClothingShoesBootsLaceup
-    id: LawyerPDA
+    # VG-Tweak Start: the PDA is handed out by the LawyerID loadout group so pen choices can replace the pen.
+    # id: LawyerPDA
+    # VG-Tweak End
     ears: ClothingHeadsetSecurity
   inhand:
     - BriefcaseBrownFilled

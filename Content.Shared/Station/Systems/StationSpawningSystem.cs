@@ -4,6 +4,7 @@ using Content.Shared.Access.Systems;
 using Content.Shared.Body;
 using Content.Shared.CCVar;
 using Content.Shared.Clothing;
+using Content.Shared.Containers.ItemSlots;
 using Content.Shared.DetailExaminable;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
@@ -41,6 +42,9 @@ public sealed partial class StationSpawningSystem : EntitySystem
     [Dependency] private SharedHandsSystem _handsSystem = default!;
     [Dependency] private SharedMindSystem _mindSystem = default!;
     [Dependency] private SharedStorageSystem _storage = default!;
+    // VG-Tweak Start: loadout items can be placed into item slots of the equipped item (e.g. a pen into a PDA).
+    [Dependency] private ItemSlotsSystem _itemSlots = default!;
+    // VG-Tweak End
     [Dependency] private SharedTransformSystem _xformSystem = default!;
     [Dependency] private SharedVisualBodySystem _visualBody = default!;
     [Dependency] private SharedAccessSystem _accessSystem = default!;
@@ -177,11 +181,14 @@ public sealed partial class StationSpawningSystem : EntitySystem
                 if (entProtos.Count == 0)
                     continue;
 
-                if (inventoryComp != null &&
-                    _inventory.TryGetSlotEntity(entity, slotName, out var slotEnt, inventoryComponent: inventoryComp) &&
-                    _storageQuery.TryComp(slotEnt, out var storage))
+                if (inventoryComp == null ||
+                    !_inventory.TryGetSlotEntity(entity, slotName, out var slotEnt, inventoryComponent: inventoryComp))
                 {
+                    continue;
+                }
 
+                if (_storageQuery.TryComp(slotEnt, out var storage))
+                {
                     foreach (var entProto in entProtos)
                     {
                         var spawnedEntity = Spawn(entProto, coords);
@@ -189,6 +196,17 @@ public sealed partial class StationSpawningSystem : EntitySystem
                         _storage.Insert(slotEnt.Value, spawnedEntity, out _, storageComp: storage, playSound: false);
                     }
                 }
+                // VG-Tweak Start: if the equipped item has no storage, try to put the items into its item slots.
+                // This is used by the PDA pen selection: the chosen pen is inserted into the PDA pen slot,
+                // replacing the pen the PDA was spawned with.
+                else if (TryComp<ItemSlotsComponent>(slotEnt, out var itemSlots))
+                {
+                    foreach (var entProto in entProtos)
+                    {
+                        InsertIntoItemSlots(slotEnt.Value, entProto, itemSlots, coords);
+                    }
+                }
+                // VG-Tweak End
             }
         }
 
@@ -413,6 +431,69 @@ public sealed partial class StationSpawningSystem : EntitySystem
         }
     }
     #endregion Player spawning helpers
+
+    /// <summary>
+    ///     VG-Tweak: inserts a nested loadout item into a suitable item slot of <paramref name="holder"/>.
+    ///     Empty compatible slots are preferred; otherwise the item replaces the content of a compatible slot
+    ///     (for example the default PDA pen is replaced by the pen chosen in the loadout).
+    /// </summary>
+    private void InsertIntoItemSlots(EntityUid holder, EntProtoId proto, ItemSlotsComponent itemSlots, MapCoordinates coords)
+    {
+        var item = Spawn(proto, coords);
+
+        if (TryInsertIntoEmptyItemSlot(holder, item, itemSlots))
+            return;
+
+        if (TryReplaceItemSlotContent(holder, item, itemSlots))
+            return;
+
+        // No compatible slot at all: do not leave the item floating around.
+        QueueDel(item);
+    }
+
+    /// <summary>
+    ///     VG-Tweak: puts <paramref name="item"/> into an empty compatible item slot, using the same slot ordering
+    ///     as <see cref="ItemSlotsSystem"/> (empty slots first, then by slot priority).
+    /// </summary>
+    private bool TryInsertIntoEmptyItemSlot(EntityUid holder, EntityUid item, ItemSlotsComponent itemSlots)
+    {
+        return _itemSlots.TryGetAvailableSlot((holder, itemSlots), item, null, out var slot, emptyOnly: true) &&
+               _itemSlots.TryInsert(holder, slot, item, null);
+    }
+
+    /// <summary>
+    ///     VG-Tweak: replaces the content of a compatible item slot with <paramref name="item"/>. The previous item
+    ///     is only removed after the replacement was inserted successfully, and is put back if the insertion fails.
+    /// </summary>
+    private bool TryReplaceItemSlotContent(EntityUid holder, EntityUid item, ItemSlotsComponent itemSlots)
+    {
+        foreach (var slot in itemSlots.Slots.Values.Where(s => s.HasItem).OrderBy(s => s.Priority))
+        {
+            // Validates the whitelist, the lock and that the current content may be ejected.
+            if (!_itemSlots.CanInsert(holder, slot, item, null, swap: true))
+                continue;
+
+            if (!_itemSlots.TryEject(holder, slot, null, out var oldItem))
+                continue;
+
+            // TryInsert validates again: the slot state changed after the ejection.
+            if (_itemSlots.TryInsert(holder, slot, item, null))
+            {
+                if (oldItem != null)
+                    QueueDel(oldItem.Value);
+
+                return true;
+            }
+
+            // The replacement could not be inserted: restore the previous item instead of losing it.
+            if (oldItem != null && !_itemSlots.TryInsert(holder, slot, oldItem.Value, null))
+            {
+                Log.Error($"Failed to restore {ToPrettyString(oldItem.Value)} into the item slot of {ToPrettyString(holder)} after a failed loadout replacement.");
+            }
+        }
+
+        return false;
+    }
 }
 
 /// <summary>
@@ -446,4 +527,5 @@ public sealed class PlayerSpawningEvent : EntityEventArgs
         HumanoidCharacterProfile = humanoidCharacterProfile;
         Station = station;
     }
+
 }

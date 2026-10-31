@@ -24,7 +24,9 @@
   id: TechnicalAssistantGear
   equipment:
     shoes: ClothingShoesBootsWork
-    id: TechnicalAssistantPDA
+    # VG-Tweak Start: the PDA is handed out by the TechnicalAssistantID loadout group so pen choices can replace the pen.
+    # id: TechnicalAssistantPDA
+    # VG-Tweak End
     belt: ClothingBeltUtilityEngineering
     ears: ClothingHeadsetEngineering
     pocket2: BookEngineersHandbook

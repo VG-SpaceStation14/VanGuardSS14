@@ -22,7 +22,9 @@
   id: SalvageSpecialistGear
   equipment:
     jumpsuit: ClothingUniformJumpsuitSalvageSpecialist
-    id: SalvagePDA
+    # VG-Tweak Start: the PDA is handed out by the SalvageSpecialistID loadout group so pen choices can replace the pen.
+    # id: SalvagePDA
+    # VG-Tweak End
     ears: ClothingHeadsetCargo
   #storage:
     #back:

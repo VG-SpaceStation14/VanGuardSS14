@@ -34,7 +34,9 @@
   equipment:
     shoes: ClothingShoesBootsJackSec # Corvax-Resprite-MRP
     outerClothing: ClothingOuterArmorBasic
-    id: SecurityCadetPDA
+    # VG-Tweak Start: the PDA is handed out by the SecurityCadetID loadout group so pen choices can replace the pen.
+    # id: SecurityCadetPDA
+    # VG-Tweak End
     ears: ClothingHeadsetSecurity
     belt: ClothingBeltSecurityFilled
     pocket1: WeaponPistolMk58

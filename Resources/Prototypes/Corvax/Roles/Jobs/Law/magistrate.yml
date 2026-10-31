@@ -32,7 +32,9 @@
   equipment:
     shoes: ClothingShoesBootsLaceup
     neck: ClothingNeckLawyerbadge
-    id: MagistratePDA
+    # VG-Tweak Start: the PDA is handed out by the MagistrateID loadout group so pen choices can replace the pen.
+    # id: MagistratePDA
+    # VG-Tweak End
     eyes: ClothingEyesGlassesCommand
     gloves: ClothingHandsGlovesColorWhite
     ears: ClothingHeadsetMagistrate

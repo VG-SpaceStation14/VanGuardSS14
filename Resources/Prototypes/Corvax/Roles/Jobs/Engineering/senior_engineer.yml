@@ -26,7 +26,9 @@
   id: SeniorEngineerGear
   equipment:
     shoes: ClothingShoesBootsWork
-    id: SeniorEngineerPDA
+    # VG-Tweak Start: the PDA is handed out by the SeniorEngineerID loadout group so pen choices can replace the pen.
+    # id: SeniorEngineerPDA
+    # VG-Tweak End
     eyes: ClothingEyesGlassesMeson
     belt: ClothingBeltUtilityEngineering
     ears: ClothingHeadsetEngineering

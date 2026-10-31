@@ -34,7 +34,9 @@
   equipment:
     shoes: ClothingShoesBootsCombatFilled
     eyes: ClothingEyesGlassesSecurity
-    id: SeniorOfficerPDA
+    # VG-Tweak Start: the PDA is handed out by the SeniorOfficerID loadout group so pen choices can replace the pen.
+    # id: SeniorOfficerPDA
+    # VG-Tweak End
     ears: ClothingHeadsetSecurity
     pocket1: WeaponPistolMk58
   storage:
