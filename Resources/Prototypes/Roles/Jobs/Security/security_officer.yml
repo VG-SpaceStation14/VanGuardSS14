@@ -22,6 +22,10 @@
   - Maintenance
   - External
   - Cryogenics
+  # VG-Tweak Start: officers escort prisoners, so they need the genpop doors, as in the old build.
+  - GenpopEnter
+  - GenpopLeave
+  # VG-Tweak End
   special:
   - !type:AddImplantSpecial
     implants: [ MindShieldImplant ]
