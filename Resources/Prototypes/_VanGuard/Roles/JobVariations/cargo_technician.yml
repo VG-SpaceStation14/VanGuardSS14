@@ -1,0 +1,53 @@
+# RP variations of the Cargo Technician job.
+#
+# The character stays a Cargo Technician: access, salary, department and duties are all taken from
+# the base job. Only the PDA and the job title shown on its ID card are different, which is what
+# makes the variation visible in RP. Every variation is just a PDA entity, an ID card entity and a
+# loadout entry in the job's id loadout group, so adding a new one needs no code changes.
+
+- type: entity
+  parent: CargoPDA
+  id: PostmanPDA
+  name: postman PDA
+  description: Smells of postage stamps. Technically still cargo equipment.
+  components:
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda_base
+      color: "#B8860B"
+    - state: pda_buttons
+    - state: pda_stripe_thick
+      color: "#E8E8E8"
+    - map: [ "enum.PdaVisualLayers.Screen" ]
+      state: pda_screen_borders
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+    - state: "insert_overlay"
+      map: [ "enum.PdaVisualLayers.Pen" ]
+  - type: PdaBorderColor
+    borderColor: "#B8860B"
+    accentVColor: "#E8E8E8"
+  - type: Pda
+    id: PostmanIDCard
+
+- type: entity
+  parent: CargoIDCard
+  id: PostmanIDCard
+  name: postman ID card
+  components:
+  # The card stays a Cargo Technician card (same job, access and department),
+  # it only shows a different title to everyone who looks at it.
+  - type: IdCard
+    jobTitleOverride: job-title-postman
+
+- type: loadout
+  id: PostmanPDA
+  equipment:
+    id: PostmanPDA

@@ -1,5 +1,8 @@
 using Content.Server.Access.Components;
 using Content.Server.Station.Systems;
+// VG-Tweak Start: RP job variations need the ID card component.
+using Content.Shared.Access.Components;
+// VG-Tweak End
 using Content.Shared.Access.Systems;
 using Content.Shared.GameTicking;
 using Content.Shared.Station.Components;
@@ -72,7 +75,13 @@ public sealed partial class PresetIdCardSystem : EntitySystem
 
         _access.SetAccessToJob(ent, job, extended);
 
-        _card.TryChangeJobTitle(ent, job.LocalizedName);
+        // VG-Tweak Start: RP job variations may display their own title instead of the job's title.
+        if (TryComp<IdCardComponent>(ent, out var card) && card.JobTitleOverride != null)
+            _card.TryChangeJobTitle(ent, Loc.GetString(card.JobTitleOverride.Value));
+        else
+            _card.TryChangeJobTitle(ent, job.LocalizedName);
+        // VG-Tweak End
+
         _card.TryChangeJobDepartment(ent, job);
 
         if (ProtoMan.Resolve(job.Icon, out var jobIcon))
