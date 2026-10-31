@@ -434,41 +434,65 @@ public sealed partial class StationSpawningSystem : EntitySystem
 
     /// <summary>
     ///     VG-Tweak: inserts a nested loadout item into a suitable item slot of <paramref name="holder"/>.
-    ///     If every suitable slot is occupied, the item replaces the content of the first suitable slot
+    ///     Empty compatible slots are preferred; otherwise the item replaces the content of a compatible slot
     ///     (for example the default PDA pen is replaced by the pen chosen in the loadout).
     /// </summary>
     private void InsertIntoItemSlots(EntityUid holder, EntProtoId proto, ItemSlotsComponent itemSlots, MapCoordinates coords)
     {
         var item = Spawn(proto, coords);
 
-        // Prefer an empty compatible slot.
-        foreach (var slot in itemSlots.Slots.Values)
-        {
-            if (slot.HasItem || !_itemSlots.CanInsert(holder, slot, item, null))
-                continue;
+        if (TryInsertIntoEmptyItemSlot(holder, item, itemSlots))
+            return;
 
-            if (_itemSlots.TryInsert(holder, slot, item, null))
-                return;
-        }
+        if (TryReplaceItemSlotContent(holder, item, itemSlots))
+            return;
 
-        // Otherwise replace the content of a compatible slot, e.g. the default PDA pen.
-        foreach (var slot in itemSlots.Slots.Values)
+        // No compatible slot at all: do not leave the item floating around.
+        QueueDel(item);
+    }
+
+    /// <summary>
+    ///     VG-Tweak: puts <paramref name="item"/> into an empty compatible item slot, using the same slot ordering
+    ///     as <see cref="ItemSlotsSystem"/> (empty slots first, then by slot priority).
+    /// </summary>
+    private bool TryInsertIntoEmptyItemSlot(EntityUid holder, EntityUid item, ItemSlotsComponent itemSlots)
+    {
+        return _itemSlots.TryGetAvailableSlot((holder, itemSlots), item, null, out var slot, emptyOnly: true) &&
+               _itemSlots.TryInsert(holder, slot, item, null);
+    }
+
+    /// <summary>
+    ///     VG-Tweak: replaces the content of a compatible item slot with <paramref name="item"/>. The previous item
+    ///     is only removed after the replacement was inserted successfully, and is put back if the insertion fails.
+    /// </summary>
+    private bool TryReplaceItemSlotContent(EntityUid holder, EntityUid item, ItemSlotsComponent itemSlots)
+    {
+        foreach (var slot in itemSlots.Slots.Values.Where(s => s.HasItem).OrderBy(s => s.Priority))
         {
-            if (!slot.HasItem || !_itemSlots.CanInsert(holder, slot, item, null, swap: true))
+            // Validates the whitelist, the lock and that the current content may be ejected.
+            if (!_itemSlots.CanInsert(holder, slot, item, null, swap: true))
                 continue;
 
             if (!_itemSlots.TryEject(holder, slot, null, out var oldItem))
                 continue;
 
-            if (oldItem != null)
-                QueueDel(oldItem.Value);
-
+            // TryInsert validates again: the slot state changed after the ejection.
             if (_itemSlots.TryInsert(holder, slot, item, null))
-                return;
+            {
+                if (oldItem != null)
+                    QueueDel(oldItem.Value);
+
+                return true;
+            }
+
+            // The replacement could not be inserted: restore the previous item instead of losing it.
+            if (oldItem != null && !_itemSlots.TryInsert(holder, slot, oldItem.Value, null))
+            {
+                Log.Error($"Failed to restore {ToPrettyString(oldItem.Value)} into the item slot of {ToPrettyString(holder)} after a failed loadout replacement.");
+            }
         }
 
-        // No compatible slot at all: do not leave the item floating around.
-        QueueDel(item);
+        return false;
     }
 }
 

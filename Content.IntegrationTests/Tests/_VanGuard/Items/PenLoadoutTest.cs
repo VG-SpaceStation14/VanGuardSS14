@@ -1,7 +1,9 @@
+#nullable enable
 using System.Collections.Generic;
 using System.Linq;
 using Content.IntegrationTests.Fixtures;
 using Content.Shared._VanGuard.Paper;
+using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Prototypes;
 using Content.Shared.Inventory;
@@ -15,7 +17,6 @@ using Robust.Shared.Enums;
 using Robust.Client.GameObjects;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
-using Robust.Shared.Localization;
 using Robust.Shared.Localization;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
@@ -87,6 +88,9 @@ public sealed class PenLoadoutTest : GameTest
 
     private const string PenGroup = "PdaPen";
 
+    private static readonly ProtoId<LoadoutPrototype> GreenPenLoadout = "PenGreen";
+    private static readonly ProtoId<LoadoutPrototype> CigPackLoadout = "CigPackBlack";
+
     private static IPrototypeManager ProtoMan => IoCManager.Instance!.Resolve<IPrototypeManager>();
 
     private static HumanoidCharacterProfile CreateProfile() =>
@@ -130,6 +134,18 @@ public sealed class PenLoadoutTest : GameTest
             return null;
 
         return SEntMan.GetComponent<MetaDataComponent>(pen).EntityPrototype?.ID;
+    }
+
+    private int CountPrototype(string id)
+    {
+        var count = 0;
+        foreach (var (_, meta) in SEntMan.EntityQueryEnumerator<MetaDataComponent>())
+        {
+            if (meta.EntityPrototype?.ID == id)
+                count++;
+        }
+
+        return count;
     }
 
     private bool HasPenGroup(string job)
@@ -360,20 +376,143 @@ public sealed class PenLoadoutTest : GameTest
             var rsi = cache.GetResource<Robust.Client.ResourceManagement.RSIResource>(
                 new Robust.Shared.Utility.ResPath("/Textures/_VanGuard/Objects/Misc/pens.rsi"));
 
-            var states = new HashSet<string>();
+            var states = new HashSet<Robust.Client.Graphics.RSI.StateId>();
             foreach (var id in PortedPens.Keys)
             {
                 var proto = CProtoMan.Index<EntityPrototype>(id);
                 Assert.That(proto.TryComp<SpriteComponent>(out var sprite, CEntMan.ComponentFactory), Is.True,
                     $"{id} should have a sprite");
 
-                var state = sprite!.LayerGetState(0);
+                var state = sprite!.LayerData[0].State;
                 Assert.That(rsi.RSI.TryGetState(state, out _), Is.True,
                     $"{id} references the missing sprite state {state}");
 
-                Assert.That(states.Add(state.ToString()), Is.True,
+                Assert.That(states.Add(state), Is.True,
                     $"{id} must not share its sprite with another ported pen");
             }
+        });
+    }
+
+
+    [Test]
+    public async Task PenIsInsertedIntoAnEmptyPenSlot()
+    {
+        var map = await Pair.CreateTestMap();
+
+        await Server.WaitAssertion(() =>
+        {
+            var (mob, pda) = SpawnWithJob(new EntityCoordinates(map.Grid, 0, 0), "Passenger");
+            Assert.That(pda, Is.Not.Null);
+
+            // Free the pen slot so the loadout has to use an empty slot.
+            var itemSlots = SEntMan.System<ItemSlotsSystem>();
+            var slots = SEntMan.GetComponent<ItemSlotsComponent>(pda!.Value);
+            Assert.That(itemSlots.TryEject(pda.Value, slots.Slots[PdaComponent.PdaPenSlotId], null, out _), Is.True);
+
+            var loadout = ProtoMan.Index(GreenPenLoadout);
+            SEntMan.System<StationSpawningSystem>().EquipStartingGear(mob, loadout, raiseEvent: false);
+
+            Assert.That(GetPen(pda.Value), Is.EqualTo("PenGreen"),
+                "The loadout item should be put into the empty item slot");
+        });
+    }
+
+    [Test]
+    public async Task ReplacedPenIsDeletedAndOtherSlotsAreUntouched()
+    {
+        var map = await Pair.CreateTestMap();
+        EntityUid? pda = null;
+
+        await Server.WaitAssertion(() =>
+        {
+            var profile = CreateProfileWithPen("Bartender", "PenBrigmedic");
+            var (_, spawnedPda) = SpawnWithJob(new EntityCoordinates(map.Grid, 0, 0), "Bartender", profile);
+            pda = spawnedPda;
+
+            Assert.That(pda, Is.Not.Null);
+            Assert.That(GetPen(pda!.Value), Is.EqualTo("PenBrigmedic"));
+        });
+
+        await Server.WaitRunTicks(1);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(CountPrototype("Pen"), Is.Zero,
+                "The replaced default pen should be deleted instead of left in the world");
+            Assert.That(CountPrototype("PenBrigmedic"), Is.EqualTo(1),
+                "The chosen pen should exist exactly once");
+
+            var pdaComp = SEntMan.GetComponent<PdaComponent>(pda!.Value);
+            Assert.That(pdaComp.IdSlot.HasItem, Is.True, "The ID card should stay in its own slot");
+            Assert.That(pdaComp.PaiSlot.HasItem, Is.False, "The pen must not land in the PAI slot");
+        });
+    }
+
+    [Test]
+    public async Task NoCompatibleSlotLeavesNothingBehind()
+    {
+        var map = await Pair.CreateTestMap();
+        EntityUid? pda = null;
+
+        await Server.WaitAssertion(() =>
+        {
+            var (mob, spawnedPda) = SpawnWithJob(new EntityCoordinates(map.Grid, 0, 0), "Passenger");
+            pda = spawnedPda;
+            Assert.That(pda, Is.Not.Null);
+
+            // Lock the pen slot: the default pen can not be replaced and no other slot accepts a pen.
+            SEntMan.System<ItemSlotsSystem>().SetLock(pda!.Value, PdaComponent.PdaPenSlotId, true);
+
+            var loadout = ProtoMan.Index(GreenPenLoadout);
+            SEntMan.System<StationSpawningSystem>().EquipStartingGear(mob, loadout, raiseEvent: false);
+
+            Assert.That(GetPen(pda.Value), Is.EqualTo("Pen"),
+                "Without a compatible slot the default pen must be kept");
+        });
+
+        await Server.WaitRunTicks(1);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(CountPrototype("PenGreen"), Is.Zero,
+                "The loadout item must not stay in the world when it can not be inserted");
+            Assert.That(GetPen(pda!.Value), Is.EqualTo("Pen"));
+        });
+    }
+
+    [Test]
+    public async Task BackpackStorageLoadoutsStillWork()
+    {
+        var map = await Pair.CreateTestMap();
+        EntityUid? backpack = null;
+
+        await Server.WaitAssertion(() =>
+        {
+            var (mob, _) = SpawnWithJob(new EntityCoordinates(map.Grid, 0, 0), "Passenger");
+            Assert.That(SEntMan.System<InventorySystem>().TryGetSlotEntity(mob, "back", out var back), Is.True);
+            backpack = back;
+
+            // A regular trinket loadout: storage: back: [CigPackBlack]
+            var loadout = ProtoMan.Index(CigPackLoadout);
+            SEntMan.System<StationSpawningSystem>().EquipStartingGear(mob, loadout, raiseEvent: false);
+        });
+
+        await Server.WaitRunTicks(1);
+
+        await Server.WaitAssertion(() =>
+        {
+            var found = false;
+            foreach (var (uid, meta) in SEntMan.EntityQueryEnumerator<MetaDataComponent>())
+            {
+                if (meta.EntityPrototype?.ID != "CigPackBlack")
+                    continue;
+
+                found = true;
+                Assert.That(SEntMan.GetComponent<TransformComponent>(uid).ParentUid, Is.EqualTo(backpack!.Value),
+                    "The trinket should be inserted into the backpack storage");
+            }
+
+            Assert.That(found, Is.True, "The trinket should have been spawned and inserted");
         });
     }
 
