@@ -1,0 +1,210 @@
+# Character quirks for the VanGuard build.
+# A quirk is a small, situational trait: positives cost trait points, negatives refund them.
+# Every quirk below has a real gameplay effect that is applied when the character spawns.
+
+- type: traitCategory
+  id: VGQuirks
+  name: vg-trait-category-quirks
+  maxTraitPoints: 5
+
+# Positive quirks
+
+- type: trait
+  id: VGQuirkFleetFooted
+  name: vg-trait-fleet-footed-name
+  description: vg-trait-fleet-footed-desc
+  category: VGQuirks
+  cost: 3
+  conflicts:
+  - VGQuirkHeavyGait
+  specials:
+  - !type: AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: QuirkMovementSpeed
+      walkModifier: 1.02
+      sprintModifier: 1.07
+
+- type: trait
+  id: VGQuirkSturdyNerves
+  name: vg-trait-sturdy-nerves-name
+  description: vg-trait-sturdy-nerves-desc
+  category: VGQuirks
+  cost: 2
+  conflicts:
+  - VGQuirkWeakNerves
+  specials:
+  - !type: AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: StaminaResistance
+      damageCoefficient: 0.85
+      worn: false
+
+- type: trait
+  id: VGQuirkColdHardened
+  name: vg-trait-cold-hardened-name
+  description: vg-trait-cold-hardened-desc
+  category: VGQuirks
+  cost: 2
+  conflicts:
+  - VGQuirkFrostbite
+  speciesBlacklist:
+  - Diona
+  specials:
+  - !type: AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: QuirkDamageTypeResistance
+      modifiers:
+        Cold: 0.75
+
+- type: trait
+  id: VGQuirkClearHead
+  name: vg-trait-clear-head-name
+  description: vg-trait-clear-head-desc
+  category: VGQuirks
+  cost: 2
+  conflicts:
+  - LightweightDrunk
+  speciesBlacklist:
+  - Diona
+  - SlimePerson
+  specials:
+  - !type: AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: LightweightDrunk
+      boozeStrengthMultiplier: 0.5
+
+- type: trait
+  id: VGQuirkQuickClot
+  name: vg-trait-quick-clot-name
+  description: vg-trait-quick-clot-desc
+  category: VGQuirks
+  cost: 1
+  conflicts:
+  - VGQuirkThinBlood
+  specials:
+  - !type: AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: QuirkBleedRate
+      bleedMultiplier: 0.75
+
+- type: trait
+  id: VGQuirkRadHardened
+  name: vg-trait-rad-hardened-name
+  description: vg-trait-rad-hardened-desc
+  category: VGQuirks
+  cost: 1
+  conflicts:
+  - VGQuirkRadSensitive
+  speciesWhitelist:
+  - Diona
+  specials:
+  - !type: AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: QuirkDamageTypeResistance
+      modifiers:
+        Radiation: 0.8
+
+# Negative quirks
+
+- type: trait
+  id: VGQuirkHeavyGait
+  name: vg-trait-heavy-gait-name
+  description: vg-trait-heavy-gait-desc
+  category: VGQuirks
+  cost: -2
+  conflicts:
+  - VGQuirkFleetFooted
+  specials:
+  - !type: AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: QuirkMovementSpeed
+      walkModifier: 0.97
+      sprintModifier: 0.93
+
+- type: trait
+  id: VGQuirkWeakNerves
+  name: vg-trait-weak-nerves-name
+  description: vg-trait-weak-nerves-desc
+  category: VGQuirks
+  cost: -1
+  conflicts:
+  - VGQuirkSturdyNerves
+  specials:
+  - !type: AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: StaminaResistance
+      damageCoefficient: 1.2
+      worn: false
+
+- type: trait
+  id: VGQuirkFragile
+  name: vg-trait-fragile-name
+  description: vg-trait-fragile-desc
+  category: VGQuirks
+  cost: -2
+  specials:
+  - !type: AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: QuirkDamageTypeResistance
+      modifiers:
+        Blunt: 1.2
+        Slash: 1.2
+        Piercing: 1.2
+
+- type: trait
+  id: VGQuirkFrostbite
+  name: vg-trait-frostbite-name
+  description: vg-trait-frostbite-desc
+  category: VGQuirks
+  cost: -1
+  conflicts:
+  - VGQuirkColdHardened
+  specials:
+  - !type: AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: QuirkDamageTypeResistance
+      modifiers:
+        Cold: 1.25
+
+- type: trait
+  id: VGQuirkThinBlood
+  name: vg-trait-thin-blood-name
+  description: vg-trait-thin-blood-desc
+  category: VGQuirks
+  cost: -1
+  conflicts:
+  - VGQuirkQuickClot
+  specials:
+  - !type: AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: QuirkBleedRate
+      bleedMultiplier: 1.3
+
+- type: trait
+  id: VGQuirkRadSensitive
+  name: vg-trait-rad-sensitive-name
+  description: vg-trait-rad-sensitive-desc
+  category: VGQuirks
+  cost: -1
+  conflicts:
+  - VGQuirkRadHardened
+  speciesBlacklist:
+  - Diona
+  specials:
+  - !type: AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: QuirkDamageTypeResistance
+      modifiers:
+        Radiation: 1.3

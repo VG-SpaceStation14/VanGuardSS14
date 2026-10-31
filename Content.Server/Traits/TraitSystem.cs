@@ -42,6 +42,32 @@ public sealed partial class TraitSystem : EntitySystem
                 _whitelistSystem.IsWhitelistPass(traitPrototype.Blacklist, args.Mob))
                 continue;
 
+            // VG-Tweak Start: skip quirks that are not available for the character's species or that conflict with
+            // another selected trait. Profile validation normally removes these, this is a safety net for bad data.
+            if (traitPrototype.SpeciesBlacklist.Contains(args.Profile.Species) ||
+                (traitPrototype.SpeciesWhitelist.Count > 0 &&
+                 !traitPrototype.SpeciesWhitelist.Contains(args.Profile.Species)))
+            {
+                continue;
+            }
+
+            var hasConflict = false;
+            foreach (var otherId in args.Profile.TraitPreferences)
+            {
+                if (otherId == traitId || !ProtoMan.TryIndex(otherId, out var otherTrait))
+                    continue;
+
+                if (otherTrait.Conflicts.Contains(traitPrototype.ID) || traitPrototype.Conflicts.Contains(otherTrait.ID))
+                {
+                    hasConflict = true;
+                    break;
+                }
+            }
+
+            if (hasConflict)
+                continue;
+            // VG-Tweak End
+
             // Add all components required by the prototype
 #pragma warning disable CS0618 // Enabling compatibility behaviour for TraitPrototype.Components
             if (traitPrototype.Components.Count > 0)

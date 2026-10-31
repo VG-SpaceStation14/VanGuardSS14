@@ -1,3 +1,4 @@
+using Content.Shared.Humanoid.Prototypes;
 using Content.Shared.Roles;
 using Content.Shared.Whitelist;
 using Robust.Shared.Prototypes;
@@ -69,4 +70,24 @@ public sealed partial class TraitPrototype : IPrototype
     /// </summary>
     [DataField]
     public ProtoId<TraitCategoryPrototype>? Category;
+
+    // VG-Tweak Start: quirk restrictions (used by the character quirks added in _VanGuard).
+    /// <summary>
+    ///     Traits that can not be selected together with this one. The restriction is checked in both directions.
+    /// </summary>
+    [DataField]
+    public List<ProtoId<TraitPrototype>> Conflicts = new();
+
+    /// <summary>
+    ///     Species this trait can not be selected for.
+    /// </summary>
+    [DataField]
+    public List<ProtoId<SpeciesPrototype>> SpeciesBlacklist = new();
+
+    /// <summary>
+    ///     If not empty, the trait can only be selected for these species.
+    /// </summary>
+    [DataField]
+    public List<ProtoId<SpeciesPrototype>> SpeciesWhitelist = new();
+    // VG-Tweak End
 }

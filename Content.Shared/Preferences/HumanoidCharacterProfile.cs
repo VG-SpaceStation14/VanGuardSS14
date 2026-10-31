@@ -605,6 +605,11 @@ namespace Content.Shared.Preferences
             if (!protoManager.TryIndex(traitId, out var traitProto))
                 return new(this);
 
+            // VG-Tweak Start: quirks may be restricted by species or be incompatible with other selected traits.
+            if (!IsTraitAllowedForSpecies(traitProto) || HasConflictingTrait(traitProto, protoManager))
+                return new(this);
+            // VG-Tweak End
+
             var category = traitProto.Category;
 
             // Category not found so dump it.
@@ -925,6 +930,12 @@ namespace Content.Shared.Preferences
                 if (!protoManager.Resolve(traitProto.Category, out var category))
                     continue;
 
+                // VG-Tweak Start: drop traits that the current species can not have or that conflict with an already
+                // accepted trait. This also cleans up preferences saved by older versions of the game.
+                if (!IsTraitAllowedForSpecies(traitProto) || HasConflictingTrait(traitProto, protoManager, result))
+                    continue;
+                // VG-Tweak End
+
                 var existing = groups.GetOrNew(category.ID);
                 existing += traitProto.Cost;
 
@@ -938,6 +949,39 @@ namespace Content.Shared.Preferences
 
             return result;
         }
+
+        // VG-Tweak Start: helpers for the quirk restrictions.
+        /// <summary>
+        ///     Checks whether the trait is available for the species of this profile.
+        /// </summary>
+        public bool IsTraitAllowedForSpecies(TraitPrototype trait)
+        {
+            if (trait.SpeciesBlacklist.Contains(Species))
+                return false;
+
+            return trait.SpeciesWhitelist.Count == 0 || trait.SpeciesWhitelist.Contains(Species);
+        }
+
+        /// <summary>
+        ///     Checks whether the trait is incompatible with any trait of this profile or of the given collection.
+        ///     Conflict declarations are checked in both directions.
+        /// </summary>
+        public bool HasConflictingTrait(TraitPrototype trait,
+            IPrototypeManager protoManager,
+            IEnumerable<ProtoId<TraitPrototype>>? otherTraits = null)
+        {
+            foreach (var otherId in otherTraits ?? _traitPreferences)
+            {
+                if (otherId == trait.ID || !protoManager.TryIndex(otherId, out var otherTrait))
+                    continue;
+
+                if (otherTrait.Conflicts.Contains(trait.ID) || trait.Conflicts.Contains(otherTrait.ID))
+                    return true;
+            }
+
+            return false;
+        }
+        // VG-Tweak End
 
         // Corvax-TTS-Start
         // SHOULD BE NOT PUBLIC, BUT.... Похуй
