@@ -1,0 +1,111 @@
+# Anomaly floors are entities placed on top of the station floor: they can be broken with melee attacks,
+# revealing the ordinary tile underneath. They are spawned by flesh, rock and flora anomalies.
+
+- type: entity
+  id: AnomalyFloorBase
+  abstract: true
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Sprite
+    drawdepth: FloorObjects
+    sprite: _VanGuard/Objects/Misc/anomaly_floor.rsi
+  - type: Clickable
+  - type: Transform
+    anchored: true
+  - type: Physics
+  - type: Fixtures
+    fixtures:
+      fix1:
+        hard: false
+        density: 7
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4,-0.4,0.4,0.4"
+        layer:
+        - MidImpassable
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Metallic
+  - type: Injurable
+    damageContainer: StructuralInorganic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 10
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  id: AnomalyFloorRock
+  parent: AnomalyFloorBase
+  name: anomaly-floor-rock-name
+  description: anomaly-floor-desc
+  components:
+  - type: Sprite
+    drawdepth: FloorObjects
+    sprite: _VanGuard/Objects/Misc/anomaly_floor.rsi
+    layers:
+    - state: sand
+  - type: IconSmooth
+    key: anomaly_floor_rock
+    states:
+    - !type:EdgeSpriteSmoothing
+      mask: [ anomaly_floor_rock ]
+      base: sand_
+
+- type: entity
+  id: AnomalyFloorFlesh
+  parent: AnomalyFloorBase
+  name: anomaly-floor-flesh-name
+  description: anomaly-floor-desc
+  components:
+  - type: Sprite
+    drawdepth: FloorObjects
+    sprite: _VanGuard/Objects/Misc/anomaly_floor.rsi
+    layers:
+    - state: meat
+  - type: IconSmooth
+    key: anomaly_floor_flesh
+    states:
+    - !type:EdgeSpriteSmoothing
+      mask: [ anomaly_floor_flesh ]
+      base: meat_
+  - type: Damageable
+    damageContainer: Biological
+    damageModifierSet: Wood
+  - type: Injurable
+    damageContainer: Biological
+  - type: MeleeSound
+    soundGroups:
+      Brute:
+        path: "/Audio/Weapons/slash.ogg"
+
+- type: entity
+  id: AnomalyFloorGrass
+  parent: AnomalyFloorBase
+  name: anomaly-floor-grass-name
+  description: anomaly-floor-desc
+  components:
+  - type: Sprite
+    drawdepth: FloorObjects
+    sprite: _VanGuard/Objects/Misc/anomaly_floor.rsi
+    layers:
+    - state: grass
+  - type: IconSmooth
+    key: anomaly_floor_grass
+    states:
+    - !type:EdgeSpriteSmoothing
+      mask: [ anomaly_floor_grass ]
+      base: grass_
+  - type: Damageable
+    damageContainer: Biological
+    damageModifierSet: Wood
+  - type: Injurable
+    damageContainer: Biological
+  - type: MeleeSound
+    soundGroups:
+      Brute:
+        path: "/Audio/Weapons/slash.ogg"
