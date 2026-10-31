@@ -40,3 +40,6 @@ loadout-group-senior-engineer-id = Ведущий инженер, ID
 loadout-group-senior-officer-id = Инструктор СБ, ID
 loadout-group-senior-physician-id = Ведущий врач, ID
 loadout-group-senior-researcher-id = Ведущий учёный, ID
+loadout-group-salvage-specialist-neck = Шея утилизатора
+loadout-group-salvage-specialist-jumpsuit = Комбинезон утилизатора
+loadout-group-atmospheric-technician-neck = Шея атмосферного техника

@@ -383,6 +383,10 @@
   - PdaPen
   # VG-Tweak End
   - SalvageSpecialistBackpack
+  # VG-Tweak Start: restored long-service neckwear and jumpsuit options.
+  - SalvageSpecialistNeck
+  - SalvageSpecialistJumpsuit
+  # VG-Tweak End
   - SalvageSpecialistOuterClothing
   - SalvageSpecialistShoes
   - Glasses
@@ -463,6 +467,9 @@
   # VG-Tweak End
   # VG-Tweak End
   - AtmosphericTechnicianJumpsuit
+  # VG-Tweak Start: long-service neckwear.
+  - AtmosphericTechnicianNeck
+  # VG-Tweak End
   - AtmosphericTechnicianBackpack
   - AtmosphericTechnicianOuterClothing
   - AtmosphericTechnicianShoes

@@ -14,6 +14,9 @@
   id: ClothingNeckCloakCapFormalAltLoadout
   equipment:
     neck: ClothingNeckCloakCapFormalAlt
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterCap
 
 - type: loadout
   id: ClothingNeckCaptainWideLoadout
@@ -39,21 +42,33 @@
   id: ClothingNeckLongCloakHOPLoadout
   equipment:
     neck: ClothingNeckLongCloakHOP
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterHoP
 
 - type: loadout
   id: ClothingNeckCloakHosOriginalLoadout
   equipment:
     neck: ClothingNeckCloakHosOriginal
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterHoS
 
 - type: loadout
   id: ClothingNeckCloakHosAltLoadout
   equipment:
     neck: ClothingNeckCloakHosAlt
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterHoS
 
 - type: loadout
   id: ClothingNeckLongCloakHOSLoadout
   equipment:
     neck: ClothingNeckLongCloakHOS
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterHoS
 
 - type: loadout
   id: ClothingNeckCloakCeOriginalLoadout
@@ -69,6 +84,9 @@
   id: ClothingNeckLongCloakCELoadout
   equipment:
     neck: ClothingNeckLongCloakCE
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterCE
 
 - type: loadout
   id: ClothingNeckMantleCEOriginalLoadout
@@ -79,16 +97,25 @@
   id: ClothingNeckCloakCmoAltLoadout
   equipment:
     neck: ClothingNeckCloakCmoAlt
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterCMO
 
 - type: loadout
   id: ClothingNeckCloakCmoTurquoiseLoadout
   equipment:
     neck: ClothingNeckCloakCmoTurquoise
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterCMO
 
 - type: loadout
   id: ClothingNeckLongCloakCMOLoadout
   equipment:
     neck: ClothingNeckLongCloakCMO
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterCMO
 
 - type: loadout
   id: ClothingNeckMantleCMOOriginalLoadout
@@ -104,11 +131,17 @@
   id: ClothingNeckCloakRdAltLoadout
   equipment:
     neck: ClothingNeckCloakRdAlt
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterRD
 
 - type: loadout
   id: ClothingNeckLongCloakRDLoadout
   equipment:
     neck: ClothingNeckLongCloakRD
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterRD
 
 - type: loadout
   id: ClothingNeckMantleRDOriginalLoadout
@@ -119,11 +152,17 @@
   id: ClothingNeckCloakQmAltLoadout
   equipment:
     neck: ClothingNeckCloakQmAlt
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterQM
 
 - type: loadout
   id: ClothingNeckLongCloakQMLoadout
   equipment:
     neck: ClothingNeckLongCloakQM
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterQM
 
 - type: loadout
   id: ClothingHeadHatBeretCaptainWhiteLoadout
@@ -164,11 +203,17 @@
   id: ClothingUniformJumpskirtCaptainWhiteLoadout
   equipment:
     jumpsuit: ClothingUniformJumpskirtCaptainWhite
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterCap
 
 - type: loadout
   id: ClothingUniformJumpsuitCommandCaptainLoadout
   equipment:
     jumpsuit: ClothingUniformJumpsuitCommandCaptain
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterCap
 
 - type: loadout
   id: ClothingUniformJumpsuitCaptainParadeMaleLoadout
@@ -224,11 +269,17 @@
   id: ClothingUniformJumpsuitCargoPostalLoadout
   equipment:
     jumpsuit: ClothingUniformJumpsuitCargoPostal
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: CargoVeteran
 
 - type: loadout
   id: ClothingUniformJumpskirtCargoPostalLoadout
   equipment:
     jumpsuit: ClothingUniformJumpskirtCargoPostal
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: CargoVeteran
 
 - type: loadout
   id: ClothingUniformJumpsuitAtmosCasualOriginalLoadout

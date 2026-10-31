@@ -1015,6 +1015,9 @@
   loadouts:
   - AtmosphericTechnicianWintercoat
   - AtmosphericsOveralls # CorvaxAtmosFashion
+  # VG-Tweak Start: long-service bomber jacket.
+  - AtmosphericTechnicianBomber
+  # VG-Tweak End
 
 - type: loadoutGroup
   id: AtmosphericTechnicianBackpack
@@ -1116,6 +1119,9 @@
   minLimit: 0
   loadouts:
   - ScientistTie
+  # VG-Tweak Start: senior researcher cloak.
+  - SeniorResearcherCloak
+  # VG-Tweak End
 
 - type: loadoutGroup
   id: ScientistJumpsuit

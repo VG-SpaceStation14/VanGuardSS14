@@ -138,3 +138,15 @@ ent-ClothingUniformJumpsuitRndAlt = профессорский костюм
 
 ent-ClothingUniformJumpsuitScientistOriginal = простой комбинезон учёного
     .desc = Элемент классического гардероба станции.
+
+ent-ClothingNeckGloomyCloakSalvager = мрачный плащ утилизатора
+    .desc = Потрёпанный плащ утилизатора, проведшего годы в глубоком космосе.
+
+ent-ClothingUniformJumpsuitSalvageSpecialistAlt = грязный комбинезон шахтёра
+    .desc = Прочный шахтёрский комбинезон, покрытый космической пылью.
+
+ent-ClothingCloakAtmosian = плащ атмосферного техника
+    .desc = Тяжёлый плащ атмосферного техника, пережившего худшее, что могут предложить трубы.
+
+ent-ClothingOuterAtmosianBomberJacket = бомбер атмосферного техника
+    .desc = Плотная потёртая кожаная куртка бывалого атмосферного техника.

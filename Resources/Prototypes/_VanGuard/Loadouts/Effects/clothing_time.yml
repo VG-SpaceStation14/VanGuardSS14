@@ -1,0 +1,37 @@
+# Long-service clothing requirements.
+
+- type: loadoutEffectGroup
+  id: SalvageElite
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobSalvageSpecialist
+      time: 100h
+
+- type: loadoutEffectGroup
+  id: SalvageVeteran
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobSalvageSpecialist
+      time: 300h
+
+- type: loadoutEffectGroup
+  id: AtmosVeteran
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobAtmosphericTechnician
+      time: 180h
+
+- type: loadoutEffectGroup
+  id: CargoVeteran
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:DepartmentTimeRequirement
+      department: Cargo
+      time: 15h
