@@ -23,8 +23,14 @@
   - Security
   - Brig
   - Maintenance
+  # VG-Tweak Start: a cadet patrols outside and handles prisoners only together with an officer,
+  # so this access is extended (lowpop) only, like in the old build.
+  extendedAccess:
   - External
   - Cryogenics
+  - GenpopEnter
+  - GenpopLeave
+  # VG-Tweak End
   special:
   - !type:AddImplantSpecial
     implants: [ MindShieldImplant ]

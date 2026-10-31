@@ -57,8 +57,9 @@
   - Cargo
   - Atmospherics
   - Medical
-  - GenpopEnter
-  - GenpopLeave
+  # VG-Tweak Start: the HoP manages personnel, not prisoners, so genpop belongs to security only.
+  # The old build did not grant genpop access to the HoP either.
+  # VG-Tweak End
   special:
   - !type:AddImplantSpecial
     implants: [ MindShieldImplant ]

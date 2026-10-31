@@ -11,8 +11,9 @@
   access:
   - Cargo
   - Maintenance
-  extendedAccess:
-  - Salvage
+  # VG-Tweak Start: cargo technicians no longer receive salvage access, even with extended access.
+  # Salvage specialists hand their finds over in the cargo bay, which keeps both jobs distinct.
+  # VG-Tweak End
   special:
   - !type:GiveItemOnHolidaySpecial
     holiday: BoxingDay

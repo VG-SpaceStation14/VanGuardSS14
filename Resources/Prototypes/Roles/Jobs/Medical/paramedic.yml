@@ -15,6 +15,9 @@
   access:
   - Medical
   - Maintenance
+  # VG-Tweak Start: paramedics recover patients from external areas, as in the old build.
+  - External
+  # VG-Tweak End
   extendedAccess:
   - Chemistry
 
