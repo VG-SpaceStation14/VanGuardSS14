@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Shared._VanGuard.Quirks.Components;
 using System.Numerics;
 using Content.Server.Announcements;
 using Content.Server.Discord;
@@ -554,7 +555,11 @@ public sealed partial class ServerGameTicker
             {
                 // Note that contentPlayerData?.Name sticks around after the player is disconnected.
                 // This is as opposed to ply?.Name which doesn't.
-                PlayerOOCName = contentPlayerData?.Name ?? "(IMPOSSIBLE: REGISTERED MIND WITH NO OWNER)",
+                // VG-Tweak Start: incognito characters hide the player's nickname in the round-end list.
+                PlayerOOCName = HasComp<IncognitoComponent>(mindId)
+                    ? Loc.GetString("game-ticker-unknown-role")
+                    : contentPlayerData?.Name ?? "(IMPOSSIBLE: REGISTERED MIND WITH NO OWNER)",
+                // VG-Tweak End
                 // Character name takes precedence over current entity name
                 PlayerICName = playerIcName,
                 PlayerGuid = userId,

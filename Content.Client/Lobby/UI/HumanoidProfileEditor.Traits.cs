@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Client._VanGuard.Quirks.UI;
 using Content.Client.Lobby.UI.Roles;
 using Content.Client.Stylesheets;
 using Content.Shared.Traits;
@@ -15,6 +16,19 @@ public sealed partial class HumanoidProfileEditor
     /// </summary>
     public void RefreshTraits()
     {
+        // VG-Tweak Start: the character quirks are rendered by the quirk tab from _VanGuard. The upstream
+        // checklist below only runs before a profile is assigned, so no duplicate UI is ever built.
+        QuirkTab.BuildInto(TraitsList, Profile, profile =>
+        {
+            Profile = profile;
+            SetDirty();
+            RefreshTraits();
+        });
+
+        if (Profile != null)
+            return;
+        // VG-Tweak End
+
         TraitsList.RemoveAllChildren();
 
         var traits = _prototypeManager.EnumeratePrototypes<TraitPrototype>().OrderBy(t => Loc.GetString(t.Name)).ToList();
@@ -67,9 +81,7 @@ public sealed partial class HumanoidProfileEditor
                 });
             }
 
-            // VG-Tweak Start: keep the trait next to its selector so availability can be explained per trait.
-            List<(TraitPrototype Trait, TraitPreferenceSelector Selector)> selectors = new();
-            // VG-Tweak End
+            List<TraitPreferenceSelector?> selectors = new();
             var selectionCount = 0;
 
             foreach (var traitProto in categoryTraits)
@@ -95,9 +107,7 @@ public sealed partial class HumanoidProfileEditor
                     SetDirty();
                     RefreshTraits(); // If too many traits are selected, they will be reset to the real value.
                 };
-                // VG-Tweak Start: store both the trait and its selector.
-                selectors.Add((trait, selector));
-                // VG-Tweak End
+                selectors.Add(selector);
             }
 
             // Selection counter
@@ -110,20 +120,12 @@ public sealed partial class HumanoidProfileEditor
                 });
             }
 
-            // VG-Tweak Start: explain why a trait can not be picked right now (conflict, species, point limit).
-            foreach (var (trait, selector) in selectors)
+            foreach (var selector in selectors)
             {
-                var selected = Profile?.TraitPreferences.Contains(trait.ID) == true;
+                if (selector == null)
+                    continue;
 
-                if (!selected)
-                {
-                    var reason = GetTraitUnavailableReason(trait, category, selectionCount);
-                    if (reason != null)
-                        selector.SetAvailability(false, reason);
-                }
-
-                if (!selected &&
-                    category is { MaxTraitPoints: >= 0 } &&
+                if (category is { MaxTraitPoints: >= 0 } &&
                     selector.Cost + selectionCount > category.MaxTraitPoints)
                 {
                     selector.Checkbox.Label.FontColorOverride = Color.Red;
@@ -131,57 +133,6 @@ public sealed partial class HumanoidProfileEditor
 
                 TraitsList.AddChild(selector);
             }
-            // VG-Tweak End
         }
     }
-
-    /// <summary>
-    ///     VG-Tweak: returns a localized reason why the given trait can not be selected, or null if it can.
-    /// </summary>
-    private string? GetTraitUnavailableReason(TraitPrototype trait,
-        TraitCategoryPrototype? category,
-        int selectionCount)
-    {
-        var profile = Profile;
-        if (profile == null)
-            return null;
-
-        if (!profile.IsTraitAllowedForSpecies(trait))
-            return Loc.GetString("vg-trait-reason-species");
-
-        var conflicting = FindConflictingTrait(trait);
-        if (conflicting != null)
-            return Loc.GetString("vg-trait-reason-conflict", ("trait", Loc.GetString(conflicting.Name)));
-
-        if (category is { MaxTraitPoints: >= 0 } &&
-            trait.Cost != 0 &&
-            selectionCount + trait.Cost > category.MaxTraitPoints)
-        {
-            return Loc.GetString("vg-trait-reason-points");
-        }
-
-        return null;
-    }
-
-    /// <summary>
-    ///     VG-Tweak: finds an already selected trait that conflicts with the given one.
-    /// </summary>
-    private TraitPrototype? FindConflictingTrait(TraitPrototype trait)
-    {
-        var profile = Profile;
-        if (profile == null)
-            return null;
-
-        foreach (var selectedId in profile.TraitPreferences)
-        {
-            if (selectedId == trait.ID || !_prototypeManager.TryIndex(selectedId, out var selected))
-                continue;
-
-            if (selected.Conflicts.Contains(trait.ID) || trait.Conflicts.Contains(selected.ID))
-                return selected;
-        }
-
-        return null;
-    }
-
 }

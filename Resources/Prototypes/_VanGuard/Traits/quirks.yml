@@ -2,21 +2,42 @@
 # A quirk is a small, situational trait: positives cost trait points, negatives refund them.
 # Every quirk below has a real gameplay effect that is applied when the character spawns.
 
+# Account-level quirks are shown first in the quirk tab.
 - type: traitCategory
-  id: VGQuirks
-  name: vg-trait-category-quirks
+  id: PrivacyTraits
+  name: quirk-category-privacy
+  priority: 0
+  accentColor: "#9AA5B1"
+
+- type: trait
+  id: QuirkIncognito
+  name: quirk-incognito-name
+  description: quirk-incognito-desc
+  category: PrivacyTraits
+  cost: 0
+  specials:
+  - !type:AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: Incognito
+
+- type: traitCategory
+  id: CharacterQuirks
+  name: quirk-category-name
   maxTraitPoints: 5
+  priority: 5
+  accentColor: "#C9A227"
 
 # Positive quirks
 
 - type: trait
-  id: VGQuirkFleetFooted
-  name: vg-trait-fleet-footed-name
-  description: vg-trait-fleet-footed-desc
-  category: VGQuirks
+  id: QuirkFleetFooted
+  name: quirk-fleet-footed-name
+  description: quirk-fleet-footed-desc
+  category: CharacterQuirks
   cost: 3
   conflicts:
-  - VGQuirkHeavyGait
+  - QuirkHeavyGait
   specials:
   - !type:AddComponentSpecial
     removeExisting: false
@@ -27,13 +48,13 @@
 
 
 - type: trait
-  id: VGQuirkSturdyNerves
-  name: vg-trait-sturdy-nerves-name
-  description: vg-trait-sturdy-nerves-desc
-  category: VGQuirks
+  id: QuirkSturdyNerves
+  name: quirk-sturdy-nerves-name
+  description: quirk-sturdy-nerves-desc
+  category: CharacterQuirks
   cost: 2
   conflicts:
-  - VGQuirkWeakNerves
+  - QuirkWeakNerves
   specials:
   - !type:AddComponentSpecial
     removeExisting: false
@@ -44,16 +65,16 @@
 
 
 - type: trait
-  id: VGQuirkColdHardened
-  name: vg-trait-cold-hardened-name
-  description: vg-trait-cold-hardened-desc
-  category: VGQuirks
+  id: QuirkColdHardened
+  name: quirk-cold-hardened-name
+  description: quirk-cold-hardened-desc
+  category: CharacterQuirks
   cost: 2
   conflicts:
-  - VGQuirkFragile
-  - VGQuirkFrostbite
-  - VGQuirkRadHardened
-  - VGQuirkRadSensitive
+  - QuirkFragile
+  - QuirkFrostbite
+  - QuirkRadHardened
+  - QuirkRadSensitive
   speciesBlacklist:
   - Diona
   specials:
@@ -66,10 +87,10 @@
 
 
 - type: trait
-  id: VGQuirkClearHead
-  name: vg-trait-clear-head-name
-  description: vg-trait-clear-head-desc
-  category: VGQuirks
+  id: QuirkClearHead
+  name: quirk-clear-head-name
+  description: quirk-clear-head-desc
+  category: CharacterQuirks
   cost: 2
   conflicts:
   - LightweightDrunk
@@ -85,13 +106,13 @@
 
 
 - type: trait
-  id: VGQuirkQuickClot
-  name: vg-trait-quick-clot-name
-  description: vg-trait-quick-clot-desc
-  category: VGQuirks
+  id: QuirkQuickClot
+  name: quirk-quick-clot-name
+  description: quirk-quick-clot-desc
+  category: CharacterQuirks
   cost: 1
   conflicts:
-  - VGQuirkThinBlood
+  - QuirkThinBlood
   specials:
   - !type:AddComponentSpecial
     removeExisting: false
@@ -101,16 +122,16 @@
 
 
 - type: trait
-  id: VGQuirkRadHardened
-  name: vg-trait-rad-hardened-name
-  description: vg-trait-rad-hardened-desc
-  category: VGQuirks
+  id: QuirkRadHardened
+  name: quirk-rad-hardened-name
+  description: quirk-rad-hardened-desc
+  category: CharacterQuirks
   cost: 1
   conflicts:
-  - VGQuirkColdHardened
-  - VGQuirkFragile
-  - VGQuirkFrostbite
-  - VGQuirkRadSensitive
+  - QuirkColdHardened
+  - QuirkFragile
+  - QuirkFrostbite
+  - QuirkRadSensitive
   speciesWhitelist:
   - Diona
   specials:
@@ -125,13 +146,13 @@
 # Negative quirks
 
 - type: trait
-  id: VGQuirkHeavyGait
-  name: vg-trait-heavy-gait-name
-  description: vg-trait-heavy-gait-desc
-  category: VGQuirks
+  id: QuirkHeavyGait
+  name: quirk-heavy-gait-name
+  description: quirk-heavy-gait-desc
+  category: CharacterQuirks
   cost: -2
   conflicts:
-  - VGQuirkFleetFooted
+  - QuirkFleetFooted
   specials:
   - !type:AddComponentSpecial
     removeExisting: false
@@ -142,13 +163,13 @@
 
 
 - type: trait
-  id: VGQuirkWeakNerves
-  name: vg-trait-weak-nerves-name
-  description: vg-trait-weak-nerves-desc
-  category: VGQuirks
+  id: QuirkWeakNerves
+  name: quirk-weak-nerves-name
+  description: quirk-weak-nerves-desc
+  category: CharacterQuirks
   cost: -1
   conflicts:
-  - VGQuirkSturdyNerves
+  - QuirkSturdyNerves
   specials:
   - !type:AddComponentSpecial
     removeExisting: false
@@ -159,16 +180,16 @@
 
 
 - type: trait
-  id: VGQuirkFragile
-  name: vg-trait-fragile-name
-  description: vg-trait-fragile-desc
-  category: VGQuirks
+  id: QuirkFragile
+  name: quirk-fragile-name
+  description: quirk-fragile-desc
+  category: CharacterQuirks
   cost: -2
   conflicts:
-  - VGQuirkColdHardened
-  - VGQuirkFrostbite
-  - VGQuirkRadHardened
-  - VGQuirkRadSensitive
+  - QuirkColdHardened
+  - QuirkFrostbite
+  - QuirkRadHardened
+  - QuirkRadSensitive
   specials:
   - !type:AddComponentSpecial
     removeExisting: false
@@ -181,16 +202,16 @@
 
 
 - type: trait
-  id: VGQuirkFrostbite
-  name: vg-trait-frostbite-name
-  description: vg-trait-frostbite-desc
-  category: VGQuirks
+  id: QuirkFrostbite
+  name: quirk-frostbite-name
+  description: quirk-frostbite-desc
+  category: CharacterQuirks
   cost: -1
   conflicts:
-  - VGQuirkColdHardened
-  - VGQuirkFragile
-  - VGQuirkRadHardened
-  - VGQuirkRadSensitive
+  - QuirkColdHardened
+  - QuirkFragile
+  - QuirkRadHardened
+  - QuirkRadSensitive
   specials:
   - !type:AddComponentSpecial
     removeExisting: false
@@ -201,13 +222,13 @@
 
 
 - type: trait
-  id: VGQuirkThinBlood
-  name: vg-trait-thin-blood-name
-  description: vg-trait-thin-blood-desc
-  category: VGQuirks
+  id: QuirkThinBlood
+  name: quirk-thin-blood-name
+  description: quirk-thin-blood-desc
+  category: CharacterQuirks
   cost: -1
   conflicts:
-  - VGQuirkQuickClot
+  - QuirkQuickClot
   specials:
   - !type:AddComponentSpecial
     removeExisting: false
@@ -217,16 +238,16 @@
 
 
 - type: trait
-  id: VGQuirkRadSensitive
-  name: vg-trait-rad-sensitive-name
-  description: vg-trait-rad-sensitive-desc
-  category: VGQuirks
+  id: QuirkRadSensitive
+  name: quirk-rad-sensitive-name
+  description: quirk-rad-sensitive-desc
+  category: CharacterQuirks
   cost: -1
   conflicts:
-  - VGQuirkColdHardened
-  - VGQuirkFragile
-  - VGQuirkFrostbite
-  - VGQuirkRadHardened
+  - QuirkColdHardened
+  - QuirkFragile
+  - QuirkFrostbite
+  - QuirkRadHardened
   speciesBlacklist:
   - Diona
   specials:
