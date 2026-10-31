@@ -1,0 +1,236 @@
+# Loadout entries restoring the classic command wardrobe.
+
+- type: loadout
+  id: ClothingNeckCloakCapOriginalLoadout
+  equipment:
+    neck: ClothingNeckCloakCapOriginal
+
+- type: loadout
+  id: ClothingNeckCloakCapAltLoadout
+  equipment:
+    neck: ClothingNeckCloakCapAlt
+
+- type: loadout
+  id: ClothingNeckCloakCapFormalAltLoadout
+  equipment:
+    neck: ClothingNeckCloakCapFormalAlt
+
+- type: loadout
+  id: ClothingNeckCaptainWideLoadout
+  equipment:
+    neck: ClothingNeckCaptainWide
+
+- type: loadout
+  id: ClothingNeckMantleCaptainAltLoadout
+  equipment:
+    neck: ClothingNeckMantleCaptainAlt
+
+- type: loadout
+  id: ClothingNeckMantleCaptainWhiteLoadout
+  equipment:
+    neck: ClothingNeckMantleCaptainWhite
+
+- type: loadout
+  id: ClothingNeckCloakHopAltLoadout
+  equipment:
+    neck: ClothingNeckCloakHopAlt
+
+- type: loadout
+  id: ClothingNeckLongCloakHOPLoadout
+  equipment:
+    neck: ClothingNeckLongCloakHOP
+
+- type: loadout
+  id: ClothingNeckCloakHosOriginalLoadout
+  equipment:
+    neck: ClothingNeckCloakHosOriginal
+
+- type: loadout
+  id: ClothingNeckCloakHosAltLoadout
+  equipment:
+    neck: ClothingNeckCloakHosAlt
+
+- type: loadout
+  id: ClothingNeckLongCloakHOSLoadout
+  equipment:
+    neck: ClothingNeckLongCloakHOS
+
+- type: loadout
+  id: ClothingNeckCloakCeOriginalLoadout
+  equipment:
+    neck: ClothingNeckCloakCeOriginal
+
+- type: loadout
+  id: ClothingNeckCloakCeAltLoadout
+  equipment:
+    neck: ClothingNeckCloakCeAlt
+
+- type: loadout
+  id: ClothingNeckLongCloakCELoadout
+  equipment:
+    neck: ClothingNeckLongCloakCE
+
+- type: loadout
+  id: ClothingNeckMantleCEOriginalLoadout
+  equipment:
+    neck: ClothingNeckMantleCEOriginal
+
+- type: loadout
+  id: ClothingNeckCloakCmoAltLoadout
+  equipment:
+    neck: ClothingNeckCloakCmoAlt
+
+- type: loadout
+  id: ClothingNeckCloakCmoTurquoiseLoadout
+  equipment:
+    neck: ClothingNeckCloakCmoTurquoise
+
+- type: loadout
+  id: ClothingNeckLongCloakCMOLoadout
+  equipment:
+    neck: ClothingNeckLongCloakCMO
+
+- type: loadout
+  id: ClothingNeckMantleCMOOriginalLoadout
+  equipment:
+    neck: ClothingNeckMantleCMOOriginal
+
+- type: loadout
+  id: ClothingNeckCloakRdOriginalLoadout
+  equipment:
+    neck: ClothingNeckCloakRdOriginal
+
+- type: loadout
+  id: ClothingNeckCloakRdAltLoadout
+  equipment:
+    neck: ClothingNeckCloakRdAlt
+
+- type: loadout
+  id: ClothingNeckLongCloakRDLoadout
+  equipment:
+    neck: ClothingNeckLongCloakRD
+
+- type: loadout
+  id: ClothingNeckMantleRDOriginalLoadout
+  equipment:
+    neck: ClothingNeckMantleRDOriginal
+
+- type: loadout
+  id: ClothingNeckCloakQmAltLoadout
+  equipment:
+    neck: ClothingNeckCloakQmAlt
+
+- type: loadout
+  id: ClothingNeckLongCloakQMLoadout
+  equipment:
+    neck: ClothingNeckLongCloakQM
+
+- type: loadout
+  id: ClothingHeadHatBeretCaptainWhiteLoadout
+  equipment:
+    head: ClothingHeadHatBeretCaptainWhite
+
+- type: loadout
+  id: ClothingHeadHatCapcapWhiteLoadout
+  equipment:
+    head: ClothingHeadHatCapcapWhite
+
+- type: loadout
+  id: ClothingHeadHatBeretCmoOriginalLoadout
+  equipment:
+    head: ClothingHeadHatBeretCmoOriginal
+
+- type: loadout
+  id: ClothingHeadHatCapSecLoadout
+  equipment:
+    head: ClothingHeadHatCapSec
+
+- type: loadout
+  id: ClothingHeadHatFlightCapSecLoadout
+  equipment:
+    head: ClothingHeadHatFlightCapSec
+
+- type: loadout
+  id: ClothingHeadHatCargoPostalsoftLoadout
+  equipment:
+    head: ClothingHeadHatCargoPostalsoft
+
+- type: loadout
+  id: ClothingUniformJumpsuitCaptainWhiteLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCaptainWhite
+
+- type: loadout
+  id: ClothingUniformJumpskirtCaptainWhiteLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtCaptainWhite
+
+- type: loadout
+  id: ClothingUniformJumpsuitCommandCaptainLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCommandCaptain
+
+- type: loadout
+  id: ClothingUniformJumpsuitCaptainParadeMaleLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCaptainParadeMale
+
+- type: loadout
+  id: ClothingUniformJumpsuitHoSOriginalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitHoSOriginal
+
+- type: loadout
+  id: ClothingUniformJumpsuitHoSParadeMaleOriginalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitHoSParadeMaleOriginal
+
+- type: loadout
+  id: ClothingUniformJumpskirtHoSOriginalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtHoSOriginal
+
+- type: loadout
+  id: ClothingUniformJumpskirtHoSParadeFemaleOriginalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtHoSParadeFemaleOriginal
+
+- type: loadout
+  id: ClothingUniformJumpsuitScientistOriginalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitScientistOriginal
+
+- type: loadout
+  id: ClothingUniformJumpskirtScientistOriginalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtScientistOriginal
+
+- type: loadout
+  id: ClothingUniformJumpsuitRndAltLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitRndAlt
+
+- type: loadout
+  id: ClothingUniformJumpsuitPsychologistOriginalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitPsychologistOriginal
+
+- type: loadout
+  id: ClothingUniformJumpskirtPsychologistOriginalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtPsychologistOriginal
+
+- type: loadout
+  id: ClothingUniformJumpsuitCargoPostalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCargoPostal
+
+- type: loadout
+  id: ClothingUniformJumpskirtCargoPostalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtCargoPostal
+
+- type: loadout
+  id: ClothingUniformJumpsuitAtmosCasualOriginalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitAtmosCasualOriginal
