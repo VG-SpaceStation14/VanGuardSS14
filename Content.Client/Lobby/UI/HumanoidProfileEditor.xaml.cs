@@ -301,7 +301,9 @@ namespace Content.Client.Lobby.UI
 
             RefreshTraits();
 
-            TabContainer.SetTabTitle(4, Loc.GetString("humanoid-profile-editor-traits-tab")); // Corvax-TTS-Edit
+            // VG-Tweak Start: the traits tab is the VanGuard character quirk tab.
+            TabContainer.SetTabTitle(4, Loc.GetString("quirk-tab-title"));
+            // VG-Tweak End
 
             #region Markings
 

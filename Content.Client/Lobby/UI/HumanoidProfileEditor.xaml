@@ -4,6 +4,7 @@
          xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
          xmlns:ui="clr-namespace:Content.Client.Lobby.UI"
          xmlns:profile="clr-namespace:Content.Client.Lobby.UI.ProfileEditorControls"
+         xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
          HorizontalExpand="True">
         <!-- Left side -->
         <BoxContainer Orientation="Vertical" Margin="10 10 10 10" HorizontalExpand="True">
@@ -148,16 +149,26 @@
                     </ScrollContainer>
                 </BoxContainer>
                 <!-- VG-Tweak End -->
-                <!-- Jobs Tab - изменен на два столбца -->
-                <BoxContainer Orientation="Vertical">
-                    <OptionButton Name="PreferenceUnavailableButton" />
-                    <ScrollContainer VerticalExpand="True">
-                        <GridContainer Name="JobsGrid" Columns="2" HorizontalExpand="True">
-                            <BoxContainer Name="LeftJobsColumn" Orientation="Vertical" HorizontalExpand="True" Margin="5" />
-                            <BoxContainer Name="RightJobsColumn" Orientation="Vertical" HorizontalExpand="True" Margin="5" />
-                        </GridContainer>
+                <!-- Jobs Tab - VG-Tweak Start: upstream list layout -->
+                <BoxContainer Orientation="Vertical" Margin="10 10 10 10">
+                    <PanelContainer MinHeight="40" Margin="0 0 0 8">
+                        <PanelContainer.PanelOverride>
+                            <gfx:StyleBoxFlat BackgroundColor="#10161C" BorderColor="#C9A227"
+                                              BorderThickness="0 0 0 2" ContentMarginLeftOverride="10"
+                                              ContentMarginRightOverride="10" ContentMarginTopOverride="6"
+                                              ContentMarginBottomOverride="6" />
+                        </PanelContainer.PanelOverride>
+                        <BoxContainer Orientation="Horizontal" SeparationOverride="10" VerticalAlignment="Center">
+                            <Label Text="{Loc 'humanoid-profile-editor-preference-unavailable-label'}"
+                                   StyleClasses="LabelSubText" VerticalAlignment="Center" />
+                            <OptionButton Name="PreferenceUnavailableButton" HorizontalExpand="True" />
+                        </BoxContainer>
+                    </PanelContainer>
+                    <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+                        <BoxContainer Name="JobList" Orientation="Vertical" HorizontalExpand="True" />
                     </ScrollContainer>
                 </BoxContainer>
+                <!-- VG-Tweak End -->
                 <!-- Antags Tab - изменен на сетку иконок -->
                 <BoxContainer Orientation="Vertical" Margin="10">
                     <Label Text="{Loc 'humanoid-profile-editor-antags-tab'}" StyleClasses="LabelHeading" Margin="0 0 0 10" />

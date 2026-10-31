@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Client._VanGuard.Quirks.UI;
 using Content.Client.Lobby.UI.Roles;
 using Content.Client.Stylesheets;
 using Content.Shared.Traits;
@@ -15,6 +16,19 @@ public sealed partial class HumanoidProfileEditor
     /// </summary>
     public void RefreshTraits()
     {
+        // VG-Tweak Start: the character quirks are rendered by the quirk tab from _VanGuard. The upstream
+        // checklist below only runs before a profile is assigned, so no duplicate UI is ever built.
+        QuirkTab.BuildInto(TraitsList, Profile, profile =>
+        {
+            Profile = profile;
+            SetDirty();
+            RefreshTraits();
+        });
+
+        if (Profile != null)
+            return;
+        // VG-Tweak End
+
         TraitsList.RemoveAllChildren();
 
         var traits = _prototypeManager.EnumeratePrototypes<TraitPrototype>().OrderBy(t => Loc.GetString(t.Name)).ToList();

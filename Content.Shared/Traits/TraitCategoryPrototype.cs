@@ -1,3 +1,4 @@
+using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
 
 namespace Content.Shared.Traits;
@@ -25,4 +26,18 @@ public sealed partial class TraitCategoryPrototype : IPrototype
     /// </summary>
     [DataField]
     public int? MaxTraitPoints;
+
+    // VG-Tweak Start: category presentation used by the character quirk tab.
+    /// <summary>
+    ///     Display order of the category. Lower values are shown first.
+    /// </summary>
+    [DataField]
+    public int Priority;
+
+    /// <summary>
+    ///     Accent color of the category header and its quirk rows.
+    /// </summary>
+    [DataField]
+    public Color AccentColor = Color.FromHex("#9AA5B1");
+    // VG-Tweak End
 }

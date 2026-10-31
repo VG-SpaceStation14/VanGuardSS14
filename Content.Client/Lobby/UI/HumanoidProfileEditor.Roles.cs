@@ -6,13 +6,12 @@ using Content.Shared.Clothing;
 using Content.Shared.Preferences;
 using Content.Shared.Preferences.Loadouts;
 using Content.Shared.Roles;
-using Content.Shared.Guidebook;
 using Robust.Client.Graphics;
+using Robust.Shared.Utility;
 using Robust.Client.UserInterface;
+using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Prototypes;
-using Robust.Client.ResourceManagement;
-using Robust.Shared.Utility;
 
 namespace Content.Client.Lobby.UI;
 
@@ -31,11 +30,7 @@ public sealed partial class HumanoidProfileEditor
 
     private readonly Dictionary<string, BoxContainer> _jobCategories;
 
-    // VG-Tweak Start
-    private Dictionary<string, OptionButton> _jobPriorityButtons = new();
-    private Dictionary<string, TextureButton> _jobLoadoutButtons = new();
-    private Dictionary<string, TextureRect> _jobPriorityIndicators = new();
-
+    // VG-Tweak Start: antagonist pictures are kept from the VanGuard build.
     private const string AntagIconPath = "/Textures/_VanGuard/Interface/Antagonists/antag_icons.rsi";
     // VG-Tweak End
 
@@ -118,254 +113,249 @@ public sealed partial class HumanoidProfileEditor
         UpdateJobPriorities();
     }
 
-    // VG-Tweak Start
+    /// <summary>
+    /// Refreshes all job selectors.
+    /// </summary>
     public void RefreshJobs()
     {
-        LeftJobsColumn.RemoveAllChildren();
-        RightJobsColumn.RemoveAllChildren();
-        _jobPriorityButtons.Clear();
-        _jobLoadoutButtons.Clear();
-        _jobPriorityIndicators.Clear();
+        JobList.RemoveAllChildren();
+        _jobCategories.Clear();
+        _jobPriorities.Clear();
+        var firstCategory = true;
 
+        // Get all displayed departments
         var departments = new List<DepartmentPrototype>();
         foreach (var department in _prototypeManager.EnumeratePrototypes<DepartmentPrototype>())
         {
-            if (department.EditorHidden) continue;
+            if (department.EditorHidden)
+                continue;
+
             departments.Add(department);
         }
+
         departments.Sort(DepartmentUIComparer.Instance);
 
-        if (departments.Count == 0) return;
-
-        var priorityItems = new[]
+        var items = new[]
         {
-            (Loc.GetString("humanoid-profile-editor-job-priority-never-button"), JobPriority.Never),
-            (Loc.GetString("humanoid-profile-editor-job-priority-low-button"), JobPriority.Low),
-            (Loc.GetString("humanoid-profile-editor-job-priority-medium-button"), JobPriority.Medium),
-            (Loc.GetString("humanoid-profile-editor-job-priority-high-button"), JobPriority.High),
-        };
-
-        bool addToLeft = true;
-        var resourceCache = IoCManager.Resolve<IResourceCache>();
-        var dotTexture = resourceCache.GetResource<TextureResource>("/Textures/Interface/VerbIcons/dot.svg.192dpi.png");
+                ("humanoid-profile-editor-job-priority-never-button", (int) JobPriority.Never),
+                ("humanoid-profile-editor-job-priority-low-button", (int) JobPriority.Low),
+                ("humanoid-profile-editor-job-priority-medium-button", (int) JobPriority.Medium),
+                ("humanoid-profile-editor-job-priority-high-button", (int) JobPriority.High),
+            };
 
         foreach (var department in departments)
         {
-            var jobs = department.Roles
-                .Select(jobId => _prototypeManager.Index<JobPrototype>(jobId))
+            var departmentName = Loc.GetString(department.Name);
+
+            if (!_jobCategories.TryGetValue(department.ID, out var category))
+            {
+                category = new BoxContainer
+                {
+                    Orientation = LayoutOrientation.Vertical,
+                    Name = department.ID,
+                    ToolTip = Loc.GetString("humanoid-profile-editor-jobs-amount-in-department-tooltip",
+                        ("departmentName", departmentName))
+                };
+
+                if (firstCategory)
+                {
+                    firstCategory = false;
+                }
+                else
+                {
+                    category.AddChild(new Control
+                    {
+                        MinSize = new Vector2(0, 23),
+                    });
+                }
+
+                // VG-Tweak Start: department header and panel in the VanGuard style.
+                category.AddChild(new PanelContainer
+                {
+                    PanelOverride = new StyleBoxFlat
+                    {
+                        BackgroundColor = Color.FromHex("#10161C"),
+                        BorderColor = department.Color.WithAlpha(0.85f),
+                        BorderThickness = new Thickness(0, 0, 0, 2),
+                        ContentMarginLeftOverride = 8,
+                        ContentMarginRightOverride = 8,
+                        ContentMarginTopOverride = 4,
+                        ContentMarginBottomOverride = 4,
+                    },
+                    Children =
+                        {
+                            new Label
+                            {
+                                Text = Loc.GetString("humanoid-profile-editor-department-jobs-label",
+                                    ("departmentName", departmentName)),
+                                FontColorOverride = Color.White,
+                            }
+                        }
+                });
+
+                var departmentPanel = new PanelContainer
+                {
+                    HorizontalExpand = true,
+                    Margin = new Thickness(0, 0, 0, 10),
+                    PanelOverride = new StyleBoxFlat
+                    {
+                        BackgroundColor = department.Color.WithAlpha(0.07f),
+                        BorderColor = department.Color.WithAlpha(0.45f),
+                        BorderThickness = new Thickness(1),
+                        ContentMarginLeftOverride = 6,
+                        ContentMarginRightOverride = 6,
+                        ContentMarginTopOverride = 6,
+                        ContentMarginBottomOverride = 6,
+                    }
+                };
+                departmentPanel.AddChild(category);
+
+                _jobCategories[department.ID] = category;
+                JobList.AddChild(departmentPanel);
+                // VG-Tweak End
+            }
+
+            var jobs = department.Roles.Select(jobId => _prototypeManager.Index(jobId))
                 .Where(job => job.SetPreference)
                 .ToArray();
 
             if (JobUIComparer.TryCreate(_prototypeManager, null, out var comparer))
                 Array.Sort(jobs, comparer);
 
-            if (jobs.Length == 0) continue;
-
-            var departmentColor = department.Color;
-
-            var departmentPanel = new PanelContainer
-            {
-                PanelOverride = new StyleBoxFlat
-                {
-                    BackgroundColor = departmentColor.WithAlpha(0.15f),
-                    BorderColor = departmentColor,
-                    BorderThickness = new Thickness(1)
-                },
-                Margin = new Thickness(0, 0, 0, 10)
-            };
-
-            var categoryContainer = new BoxContainer
-            {
-                Orientation = LayoutOrientation.Vertical,
-                Margin = new Thickness(8)
-            };
-
-            var darkenedColor = new Color(
-                departmentColor.R * 0.8f,
-                departmentColor.G * 0.8f,
-                departmentColor.B * 0.8f,
-                departmentColor.A
-            );
-            var header = new PanelContainer
-            {
-            PanelOverride = new StyleBoxFlat { BackgroundColor = darkenedColor },
-                Children =
-                {
-                    new Label
-                    {
-                        Text = Loc.GetString(department.Name),
-                        Margin = new Thickness(8, 4, 8, 4),
-                        FontColorOverride = Color.White,
-                        HorizontalAlignment = HAlignment.Center
-                    }
-                }
-            };
-            categoryContainer.AddChild(header);
-
             foreach (var job in jobs)
             {
-                var row = new BoxContainer
+                // VG-Tweak Start: compact row panel with the same RequirementsSelector as upstream.
+                var jobContainer = new BoxContainer()
                 {
                     Orientation = LayoutOrientation.Horizontal,
-                    SeparationOverride = 6,
-                    Margin = new Thickness(3, 3, 3, 0)
+                    SeparationOverride = 4,
                 };
 
-                // Job icon
+                var selector = new RequirementsSelector()
+                {
+                    Margin = new Thickness(3f, 3f, 3f, 0f),
+                };
+                selector.OnOpenGuidebook += OnOpenGuidebook;
+
                 var icon = new TextureRect
                 {
                     TextureScale = new Vector2(2, 2),
-                    VerticalAlignment = VAlignment.Center,
-                    SetSize = new Vector2(16, 16)
-                };
-                if (_prototypeManager.TryIndex(job.Icon, out var iconProto))
-                    icon.Texture = _sprite.Frame0(iconProto.Icon);
-                row.AddChild(icon);
-
-                // Job name
-                var nameLabel = new Label
-                {
-                    Text = job.LocalizedName,
-                    VerticalAlignment = VAlignment.Center,
-                    HorizontalExpand = true,
-                    MouseFilter = MouseFilterMode.Stop
-                };
-                if (!string.IsNullOrWhiteSpace(job.LocalizedDescription))
-                    nameLabel.ToolTip = job.LocalizedDescription;
-                else
-                    nameLabel.ToolTip = Loc.GetString("humanoid-profile-editor-no-description");
-                row.AddChild(nameLabel);
-
-                // Color priority indicator (dot)
-                var priorityIndicator = new TextureRect
-                {
-                    Texture = dotTexture,
-                    TextureScale = new Vector2(0.75f, 0.75f),
-                    VerticalAlignment = VAlignment.Center,
-                    HorizontalAlignment = HAlignment.Left,
-                    Margin = new Thickness(0, 0, 4, 0)
-                };
-                var currentPriority = Profile?.JobPriorities.GetValueOrDefault(job.ID, JobPriority.Never) ?? JobPriority.Never;
-                UpdatePriorityIndicatorColor(priorityIndicator, currentPriority);
-                row.AddChild(priorityIndicator);
-                _jobPriorityIndicators[job.ID] = priorityIndicator;
-
-                // Priority dropdown
-                var priorityDropdown = new OptionButton
-                {
-                    MinWidth = 120,
                     VerticalAlignment = VAlignment.Center
                 };
-                foreach (var (text, prio) in priorityItems)
-                    priorityDropdown.AddItem(text, (int)prio);
+                var jobIcon = _prototypeManager.Index(job.Icon);
+                icon.Texture = _sprite.Frame0(jobIcon.Icon);
+                selector.Setup(items, job.LocalizedName, 200, job.LocalizedDescription, icon, job.Guides);
 
-                priorityDropdown.SelectId((int)currentPriority);
-
-                bool isAllowed = _requirements.IsAllowed(job, Profile, out var reason);
-                if (!isAllowed)
+                if (!_requirements.IsAllowed(job, (HumanoidCharacterProfile?)_preferencesManager.Preferences?.SelectedCharacter, out var reason))
                 {
-                    priorityDropdown.Disabled = true;
-                    priorityDropdown.ToolTip = reason?.ToString() ?? Loc.GetString("generic-requirements-not-met");
-                    priorityDropdown.SelectId((int)JobPriority.Never);
-                    UpdatePriorityIndicatorColor(priorityIndicator, JobPriority.Never);
+                    selector.LockRequirements(reason);
+                }
+                else
+                {
+                    selector.UnlockRequirements();
                 }
 
-                priorityDropdown.OnItemSelected += args =>
+                selector.OnSelected += selectedPrio =>
                 {
-                    var newPriority = (JobPriority)args.Id;
-                    priorityDropdown.SelectId(args.Id);
-                    UpdatePriorityIndicatorColor(priorityIndicator, newPriority);
+                    var selectedJobPrio = (JobPriority)selectedPrio;
+                    Profile = Profile?.WithJobPriority(job.ID, selectedJobPrio);
 
-                    if (newPriority == JobPriority.High)
+                    foreach (var (jobId, other) in _jobPriorities)
                     {
-                        foreach (var (otherJobId, otherDropdown) in _jobPriorityButtons)
+                        // Sync other selectors with the same job in case of multiple department jobs
+                        if (jobId == job.ID)
                         {
-                            if (otherJobId == job.ID) continue;
-                            if ((JobPriority)otherDropdown.SelectedId == JobPriority.High)
-                            {
-                                otherDropdown.SelectId((int)JobPriority.Medium);
-                                UpdatePriorityIndicatorColor(_jobPriorityIndicators[otherJobId], JobPriority.Medium);
-                                Profile = Profile?.WithJobPriority(otherJobId, JobPriority.Medium);
-                            }
+                            other.Select(selectedPrio);
+                            continue;
                         }
+
+                        if (selectedJobPrio != JobPriority.High || (JobPriority)other.Selected != JobPriority.High)
+                            continue;
+
+                        // Lower any other high priorities to medium.
+                        other.Select((int)JobPriority.Medium);
+                        Profile = Profile?.WithJobPriority(jobId, JobPriority.Medium);
                     }
 
-                    Profile = Profile?.WithJobPriority(job.ID, newPriority);
-                    SetDirty();
+                    // TODO: Only reload on high change (either to or from).
+                    ReloadPreview();
 
-                    if (newPriority == JobPriority.High ||
-                        (currentPriority == JobPriority.High && newPriority != JobPriority.High))
-                        ReloadPreview();
-                    else
-                        ReloadProfilePreview();
+                    UpdateJobPriorities();
+                    SetDirty();
                 };
 
-                row.AddChild(priorityDropdown);
-                _jobPriorityButtons[job.ID] = priorityDropdown;
-
-                // Loadout button
-                var loadoutButton = new TextureButton
+                // VG-Tweak Start: gear icon instead of the upstream text button.
+                var loadoutWindowBtn = new TextureButton()
                 {
                     SetSize = new Vector2(24, 24),
+                    HorizontalAlignment = HAlignment.Right,
                     VerticalAlignment = VAlignment.Center,
-                    ToolTip = Loc.GetString("lobby-character-preview-panel-character-setup-button")
+                    Margin = new Thickness(3f, 3f, 0f, 0f),
+                    ToolTip = Loc.GetString("lobby-character-preview-panel-character-setup-button"),
                 };
+
+                var resourceCache = IoCManager.Resolve<IResourceCache>();
                 if (resourceCache.TryGetResource<TextureResource>("/Textures/Interface/VerbIcons/settings.svg.192dpi.png", out var gearTexture))
-                    loadoutButton.TextureNormal = gearTexture;
+                    loadoutWindowBtn.TextureNormal = gearTexture;
+                // VG-Tweak End
 
-                var loadoutProtoId = LoadoutSystem.GetJobPrototype(job.ID);
-                bool hasLoadout = _prototypeManager.HasIndex<RoleLoadoutPrototype>(loadoutProtoId);
-                loadoutButton.Disabled = !hasLoadout || !isAllowed || Profile == null;
+                var collection = IoCManager.Instance!;
+                var protoManager = collection.Resolve<IPrototypeManager>();
 
-                if (hasLoadout && Profile != null)
+                // If no loadout found then disabled button
+                if (!protoManager.TryIndex<RoleLoadoutPrototype>(LoadoutSystem.GetJobPrototype(job.ID), out var roleLoadoutProto))
                 {
-                    loadoutButton.OnPressed += _ =>
+                    loadoutWindowBtn.Disabled = true;
+                }
+                // else
+                else
+                {
+                    loadoutWindowBtn.OnPressed += args =>
                     {
                         RoleLoadout? loadout = null;
-                        Profile?.Loadouts.TryGetValue(loadoutProtoId, out loadout);
+
+                        // Clone so we don't modify the underlying loadout.
+                        Profile?.Loadouts.TryGetValue(LoadoutSystem.GetJobPrototype(job.ID), out loadout);
                         loadout = loadout?.Clone();
+
                         if (loadout == null)
                         {
-                            loadout = new RoleLoadout(loadoutProtoId);
+                            loadout = new RoleLoadout(roleLoadoutProto.ID);
                             loadout.SetDefault(Profile, _playerManager.LocalSession, _prototypeManager);
                         }
 
-                        OpenLoadout(job, loadout, _prototypeManager.Index<RoleLoadoutPrototype>(loadoutProtoId));
+                        OpenLoadout(job, loadout, roleLoadoutProto);
                     };
                 }
 
-                row.AddChild(loadoutButton);
-                _jobLoadoutButtons[job.ID] = loadoutButton;
+                _jobPriorities.Add((job.ID, selector));
+                jobContainer.AddChild(selector);
+                jobContainer.AddChild(loadoutWindowBtn);
 
-                categoryContainer.AddChild(row);
+                category.AddChild(new PanelContainer
+                {
+                    HorizontalExpand = true,
+                    Margin = new Thickness(0, 0, 0, 2),
+                    PanelOverride = new StyleBoxFlat
+                    {
+                        BackgroundColor = Color.FromHex("#0C1116"),
+                        BorderColor = Color.FromHex("#26323B"),
+                        BorderThickness = new Thickness(1),
+                        ContentMarginLeftOverride = 4,
+                        ContentMarginRightOverride = 4,
+                        ContentMarginTopOverride = 2,
+                        ContentMarginBottomOverride = 2,
+                    },
+                    Children = { jobContainer }
+                });
+                // VG-Tweak End
             }
-
-            departmentPanel.AddChild(categoryContainer);
-
-            if (addToLeft)
-                LeftJobsColumn.AddChild(departmentPanel);
-            else
-                RightJobsColumn.AddChild(departmentPanel);
-
-            addToLeft = !addToLeft;
         }
+
+        UpdateJobPriorities();
     }
 
-    private void UpdatePriorityIndicatorColor(TextureRect indicator, JobPriority priority)
-    {
-        Color color = priority switch
-        {
-            JobPriority.High => Color.LimeGreen,
-            JobPriority.Medium => Color.Gold,
-            JobPriority.Low => Color.Orange,
-            JobPriority.Never => Color.Gray,
-            _ => Color.White
-        };
-        indicator.ModulateSelfOverride = color;
-    }
-    // VG-Tweak End
-
-    // VG-Tweak Start
+    // VG-Tweak Start: upstream antag preference logic with the VanGuard antagonist pictures.
     public void RefreshAntags()
     {
         AntagGrid.RemoveAllChildren();
@@ -408,6 +398,14 @@ public sealed partial class HumanoidProfileEditor
                 (HumanoidCharacterProfile?)_preferencesManager.Preferences?.SelectedCharacter, out var reason);
             bool isEnabled = Profile?.AntagPreferences.Contains(antag.ID) == true;
 
+            // Upstream behaviour: unavailable antagonists are removed from the profile.
+            if (!isAvailable && isEnabled)
+            {
+                Profile = Profile?.WithAntagPreference(antag.ID, false);
+                SetDirty();
+                isEnabled = false;
+            }
+
             string state;
             if (!isAvailable)
                 state = $"{antag.ID}-disable";
@@ -434,7 +432,7 @@ public sealed partial class HumanoidProfileEditor
             {
                 HorizontalAlignment = HAlignment.Stretch,
                 VerticalAlignment = VAlignment.Stretch,
-                ToolTip = !isAvailable ? (reason?.ToString() ?? "") : Loc.GetString(antag.Objective),
+                ToolTip = !isAvailable ? (reason?.ToString() ?? Loc.GetString("generic-requirements-not-met")) : Loc.GetString(antag.Objective),
                 Disabled = !isAvailable
             };
 
@@ -488,8 +486,8 @@ public sealed partial class HumanoidProfileEditor
             var msg = new FormattedMessage();
             msg.AddMarkup($"[font size=11][color={(isAvailable ? "white" : "gray")}]{Loc.GetString(antag.Name)}[/color][/font]");
             label.SetMessage(msg);
-
             container.AddChild(label);
+
             row!.AddChild(container);
             count++;
         }

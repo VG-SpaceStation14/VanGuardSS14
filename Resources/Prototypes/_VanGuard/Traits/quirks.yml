@@ -1,0 +1,260 @@
+# Character quirks for the VanGuard build.
+# A quirk is a small, situational trait: positives cost trait points, negatives refund them.
+# Every quirk below has a real gameplay effect that is applied when the character spawns.
+
+# Account-level quirks are shown first in the quirk tab.
+- type: traitCategory
+  id: PrivacyTraits
+  name: quirk-category-privacy
+  priority: 0
+  accentColor: "#9AA5B1"
+
+- type: trait
+  id: QuirkIncognito
+  name: quirk-incognito-name
+  description: quirk-incognito-desc
+  category: PrivacyTraits
+  cost: 0
+  specials:
+  - !type:AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: Incognito
+
+- type: traitCategory
+  id: CharacterQuirks
+  name: quirk-category-name
+  maxTraitPoints: 5
+  priority: 5
+  accentColor: "#C9A227"
+
+# Positive quirks
+
+- type: trait
+  id: QuirkFleetFooted
+  name: quirk-fleet-footed-name
+  description: quirk-fleet-footed-desc
+  category: CharacterQuirks
+  cost: 3
+  conflicts:
+  - QuirkHeavyGait
+  specials:
+  - !type:AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: QuirkMovementSpeed
+      walkModifier: 1.02
+      sprintModifier: 1.07
+
+
+- type: trait
+  id: QuirkSturdyNerves
+  name: quirk-sturdy-nerves-name
+  description: quirk-sturdy-nerves-desc
+  category: CharacterQuirks
+  cost: 2
+  conflicts:
+  - QuirkWeakNerves
+  specials:
+  - !type:AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: StaminaResistance
+      damageCoefficient: 0.85
+      worn: false
+
+
+- type: trait
+  id: QuirkColdHardened
+  name: quirk-cold-hardened-name
+  description: quirk-cold-hardened-desc
+  category: CharacterQuirks
+  cost: 2
+  conflicts:
+  - QuirkFragile
+  - QuirkFrostbite
+  - QuirkRadHardened
+  - QuirkRadSensitive
+  speciesBlacklist:
+  - Diona
+  specials:
+  - !type:AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: QuirkDamageTypeResistance
+      modifiers:
+        Cold: 0.75
+
+
+- type: trait
+  id: QuirkClearHead
+  name: quirk-clear-head-name
+  description: quirk-clear-head-desc
+  category: CharacterQuirks
+  cost: 2
+  conflicts:
+  - LightweightDrunk
+  speciesBlacklist:
+  - Diona
+  - SlimePerson
+  specials:
+  - !type:AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: LightweightDrunk
+      boozeStrengthMultiplier: 0.5
+
+
+- type: trait
+  id: QuirkQuickClot
+  name: quirk-quick-clot-name
+  description: quirk-quick-clot-desc
+  category: CharacterQuirks
+  cost: 1
+  conflicts:
+  - QuirkThinBlood
+  specials:
+  - !type:AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: QuirkBleedRate
+      bleedMultiplier: 0.75
+
+
+- type: trait
+  id: QuirkRadHardened
+  name: quirk-rad-hardened-name
+  description: quirk-rad-hardened-desc
+  category: CharacterQuirks
+  cost: 1
+  conflicts:
+  - QuirkColdHardened
+  - QuirkFragile
+  - QuirkFrostbite
+  - QuirkRadSensitive
+  speciesWhitelist:
+  - Diona
+  specials:
+  - !type:AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: QuirkDamageTypeResistance
+      modifiers:
+        Radiation: 0.8
+
+
+# Negative quirks
+
+- type: trait
+  id: QuirkHeavyGait
+  name: quirk-heavy-gait-name
+  description: quirk-heavy-gait-desc
+  category: CharacterQuirks
+  cost: -2
+  conflicts:
+  - QuirkFleetFooted
+  specials:
+  - !type:AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: QuirkMovementSpeed
+      walkModifier: 0.97
+      sprintModifier: 0.93
+
+
+- type: trait
+  id: QuirkWeakNerves
+  name: quirk-weak-nerves-name
+  description: quirk-weak-nerves-desc
+  category: CharacterQuirks
+  cost: -1
+  conflicts:
+  - QuirkSturdyNerves
+  specials:
+  - !type:AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: StaminaResistance
+      damageCoefficient: 1.2
+      worn: false
+
+
+- type: trait
+  id: QuirkFragile
+  name: quirk-fragile-name
+  description: quirk-fragile-desc
+  category: CharacterQuirks
+  cost: -2
+  conflicts:
+  - QuirkColdHardened
+  - QuirkFrostbite
+  - QuirkRadHardened
+  - QuirkRadSensitive
+  specials:
+  - !type:AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: QuirkDamageTypeResistance
+      modifiers:
+        Blunt: 1.2
+        Slash: 1.2
+        Piercing: 1.2
+
+
+- type: trait
+  id: QuirkFrostbite
+  name: quirk-frostbite-name
+  description: quirk-frostbite-desc
+  category: CharacterQuirks
+  cost: -1
+  conflicts:
+  - QuirkColdHardened
+  - QuirkFragile
+  - QuirkRadHardened
+  - QuirkRadSensitive
+  specials:
+  - !type:AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: QuirkDamageTypeResistance
+      modifiers:
+        Cold: 1.25
+
+
+- type: trait
+  id: QuirkThinBlood
+  name: quirk-thin-blood-name
+  description: quirk-thin-blood-desc
+  category: CharacterQuirks
+  cost: -1
+  conflicts:
+  - QuirkQuickClot
+  specials:
+  - !type:AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: QuirkBleedRate
+      bleedMultiplier: 1.3
+
+
+- type: trait
+  id: QuirkRadSensitive
+  name: quirk-rad-sensitive-name
+  description: quirk-rad-sensitive-desc
+  category: CharacterQuirks
+  cost: -1
+  conflicts:
+  - QuirkColdHardened
+  - QuirkFragile
+  - QuirkFrostbite
+  - QuirkRadHardened
+  speciesBlacklist:
+  - Diona
+  specials:
+  - !type:AddComponentSpecial
+    removeExisting: false
+    components:
+    - type: QuirkDamageTypeResistance
+      modifiers:
+        Radiation: 1.3
+

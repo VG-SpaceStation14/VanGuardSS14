@@ -1,12 +1,24 @@
 - type: traitCategory
   id: Disabilities
   name: trait-category-disabilities
+  # VG-Tweak Start: quirk tab presentation.
+  priority: 30
+  accentColor: "#D96C6C"
+  # VG-Tweak End
 
 - type: traitCategory
   id: SpeechTraits
   name: trait-category-speech
   maxTraitPoints: 2
+  # VG-Tweak Start: quirk tab presentation.
+  priority: 20
+  accentColor: "#8E7CF3"
+  # VG-Tweak End
 
 - type: traitCategory
   id: Quirks
   name: trait-category-quirks
+  # VG-Tweak Start: quirk tab presentation.
+  priority: 10
+  accentColor: "#6FCF97"
+  # VG-Tweak End
