@@ -41,8 +41,8 @@
 - type: entity
   id: AnomalyFloorRock
   parent: AnomalyFloorBase
-  name: anomaly-floor-rock-name
-  description: anomaly-floor-desc
+  name: anomalous stone floor
+  description: A surface transformed by an anomaly. It looks fragile.
   components:
   - type: Sprite
     drawdepth: FloorObjects
@@ -59,8 +59,8 @@
 - type: entity
   id: AnomalyFloorFlesh
   parent: AnomalyFloorBase
-  name: anomaly-floor-flesh-name
-  description: anomaly-floor-desc
+  name: fleshy floor
+  description: A surface transformed by an anomaly. It looks fragile.
   components:
   - type: Sprite
     drawdepth: FloorObjects
@@ -86,8 +86,8 @@
 - type: entity
   id: AnomalyFloorGrass
   parent: AnomalyFloorBase
-  name: anomaly-floor-grass-name
-  description: anomaly-floor-desc
+  name: overgrown floor
+  description: A surface transformed by an anomaly. It looks fragile.
   components:
   - type: Sprite
     drawdepth: FloorObjects

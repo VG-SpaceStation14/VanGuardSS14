@@ -1,4 +1,8 @@
-anomaly-floor-rock-name = anomalous stone floor
-anomaly-floor-flesh-name = fleshy floor
-anomaly-floor-grass-name = overgrown floor
-anomaly-floor-desc = A surface transformed by an anomaly. It looks fragile.
+ent-AnomalyFloorRock = anomalous stone floor
+    .desc = A surface transformed by an anomaly. It looks fragile.
+
+ent-AnomalyFloorFlesh = fleshy floor
+    .desc = A surface transformed by an anomaly. It looks fragile.
+
+ent-AnomalyFloorGrass = overgrown floor
+    .desc = A surface transformed by an anomaly. It looks fragile.

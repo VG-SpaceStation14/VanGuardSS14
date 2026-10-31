@@ -1,4 +1,8 @@
-anomaly-floor-rock-name = аномальный каменный пол
-anomaly-floor-flesh-name = мясной пол
-anomaly-floor-grass-name = заросший пол
-anomaly-floor-desc = Поверхность, изменённая аномалией. Выглядит хрупкой.
+ent-AnomalyFloorRock = аномальный каменный пол
+    .desc = Поверхность, изменённая аномалией. Выглядит хрупкой.
+
+ent-AnomalyFloorFlesh = мясной пол
+    .desc = Поверхность, изменённая аномалией. Выглядит хрупкой.
+
+ent-AnomalyFloorGrass = заросший пол
+    .desc = Поверхность, изменённая аномалией. Выглядит хрупкой.
