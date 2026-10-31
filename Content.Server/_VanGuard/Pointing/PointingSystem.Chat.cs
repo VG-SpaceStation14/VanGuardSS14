@@ -9,7 +9,7 @@ using Robust.Shared.IoC;
 
 namespace Content.Server.Pointing.EntitySystems;
 
-internal sealed partial class PointingSystem
+public sealed partial class PointingSystem
 {
     [Dependency] private IChatManager _chatManager = default!;
 
