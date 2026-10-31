@@ -4,6 +4,9 @@
   name: pig
   description: Oink.
   components:
+  - type: LanguageSpeaker
+    languages:
+      Pig: Speak
   - type: Sprite
     sprite: Mobs/Animals/Farm/pig.rsi
     drawdepth: Mobs

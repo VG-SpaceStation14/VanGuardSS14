@@ -4,6 +4,9 @@
   name: goat
   description: Her spine consists of long sharp segments, no wonder she is so grumpy.
   components:
+  - type: LanguageSpeaker
+    languages:
+      Goat: Speak
   - type: Sprite
     sprite: Mobs/Animals/Farm/goat.rsi
     drawdepth: Mobs

@@ -4,6 +4,10 @@
   name: mouse
   description: Squeak!
   components:
+  - type: LanguageSpeaker
+    languages:
+      Mouse: Speak
+  - type: NoSlip
   - type: Sprite
     drawdepth: SmallMobs
     sprite: Mobs/Animals/Rodents/mouse.rsi

@@ -4,6 +4,9 @@
   name: chicken
   description: Comes before an egg, and IS a dinosaur!
   components:
+  - type: LanguageSpeaker
+    languages:
+      Chicken: Speak
   - type: Sprite
     sprite: Mobs/Animals/Farm/chicken.rsi
     drawdepth: Mobs

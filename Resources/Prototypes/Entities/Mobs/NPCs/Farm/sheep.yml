@@ -5,6 +5,9 @@
   name: sheepBase
   description: A sheep.
   components:
+  - type: LanguageSpeaker
+    languages:
+      Sheep: Speak
   - type: Sprite
     sprite: Mobs/Animals/Farm/sheep.rsi
     drawdepth: Mobs

@@ -4,6 +4,9 @@
   name: bee
   description: Nice to have, but you can't build a civilization on a foundation of honey alone.
   components:
+  - type: LanguageSpeaker
+    languages:
+      Bee: Speak
   - type: Sprite
     drawdepth: Mobs
     layers:

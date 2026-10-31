@@ -19,6 +19,9 @@
   parent: MobBaseMonkey
   id: MobMonkey
   components:
+  - type: LanguageSpeaker
+    languages:
+      Monkey: Speak
   - type: PermanentStatusEffects
     statusEffects:
     - StatusEffectClumsyMonkey
@@ -35,6 +38,9 @@
   id: MobBaseSyndicateMonkey
   suffix: syndicate base
   components:
+  - type: LanguageSpeaker
+    languages:
+      Monkey: Speak
   - type: NpcFactionMember
     factions:
     - Syndicate

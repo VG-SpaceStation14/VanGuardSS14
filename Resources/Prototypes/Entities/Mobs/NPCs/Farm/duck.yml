@@ -7,6 +7,9 @@
   name: mallard duck #Quack
   description: An adorable mallard duck, it's fluffy and soft!
   components:
+  - type: LanguageSpeaker
+    languages:
+      Duck: Speak
   - type: Sprite
     sprite: Mobs/Animals/Farm/duck.rsi
     drawdepth: Mobs

@@ -4,6 +4,9 @@
   name: cow
   description: Moo.
   components:
+  - type: LanguageSpeaker
+    languages:
+      Cow: Speak
   - type: Sprite
     sprite: Mobs/Animals/Farm/cow.rsi
     drawdepth: Mobs

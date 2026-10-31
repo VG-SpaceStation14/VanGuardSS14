@@ -3,6 +3,7 @@
   parent: [ SolutionFood, SolutionTiny, SimpleMobBase, BaseSlicingRefinableButchering, MobNightVision ]
   id: BaseCockroach
   components:
+  - type: NoSlip
   - type: Sprite
     drawdepth: SmallMobs
   - type: Physics
