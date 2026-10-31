@@ -1,0 +1,210 @@
+# Pen selection for the PDA pen slot.
+# Pens are grouped by ink colour with the GroupBy field, so the loadout UI shows the colours
+# as nested subgroups. The pen names state their ink colour explicitly.
+
+- type: loadoutGroup
+  id: PdaPen
+  name: loadout-group-pda-pen
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - PenAtmos
+  - PenCargo
+  - PenChaplain
+  - PenChemist
+  - PenEngineering
+  - PenGreen
+  - PenHearts
+  - PenHydroponics
+  - PenJanitor
+  - PenMedical1
+  - PenCamouflage
+  - PenPink
+  - PenPurple
+  - PenRainbow
+  - PenMedia
+  - PenYellow
+  - PenViolet
+  - PenStarry
+  - PenScienceOverpriced
+  - PenScience
+  - PenBrigmedic
+  - PenSecurityBlack
+  - PenSecurityRed
+  - PenSecurityFountain
+  - BlackFountainPen
+
+- type: loadout
+  id: PenAtmos
+  groupBy: pen-blue
+  storage:
+    id:
+    - PenAtmos
+
+- type: loadout
+  id: PenCargo
+  groupBy: pen-orange
+  storage:
+    id:
+    - PenCargo
+
+- type: loadout
+  id: PenChaplain
+  groupBy: pen-black
+  storage:
+    id:
+    - PenChaplain
+
+- type: loadout
+  id: PenChemist
+  groupBy: pen-orange
+  storage:
+    id:
+    - PenChemist
+
+- type: loadout
+  id: PenEngineering
+  groupBy: pen-yellow
+  storage:
+    id:
+    - PenEngineering
+
+- type: loadout
+  id: PenGreen
+  groupBy: pen-green
+  storage:
+    id:
+    - PenGreen
+
+- type: loadout
+  id: PenHearts
+  groupBy: pen-pink
+  storage:
+    id:
+    - PenHearts
+
+- type: loadout
+  id: PenHydroponics
+  groupBy: pen-green
+  storage:
+    id:
+    - PenHydroponics
+
+- type: loadout
+  id: PenJanitor
+  groupBy: pen-purple
+  storage:
+    id:
+    - PenJanitor
+
+- type: loadout
+  id: PenMedical1
+  groupBy: pen-blue
+  storage:
+    id:
+    - PenMedical1
+
+- type: loadout
+  id: PenCamouflage
+  groupBy: pen-green
+  storage:
+    id:
+    - PenCamouflage
+
+- type: loadout
+  id: PenPink
+  groupBy: pen-pink
+  storage:
+    id:
+    - PenPink
+
+- type: loadout
+  id: PenPurple
+  groupBy: pen-purple
+  storage:
+    id:
+    - PenPurple
+
+- type: loadout
+  id: PenRainbow
+  groupBy: pen-purple
+  storage:
+    id:
+    - PenRainbow
+
+- type: loadout
+  id: PenMedia
+  groupBy: pen-blue
+  storage:
+    id:
+    - PenMedia
+
+- type: loadout
+  id: PenYellow
+  groupBy: pen-yellow
+  storage:
+    id:
+    - PenYellow
+
+- type: loadout
+  id: PenViolet
+  groupBy: pen-purple
+  storage:
+    id:
+    - PenViolet
+
+- type: loadout
+  id: PenStarry
+  groupBy: pen-purple
+  storage:
+    id:
+    - PenStarry
+
+- type: loadout
+  id: PenScienceOverpriced
+  groupBy: pen-blue
+  storage:
+    id:
+    - PenScienceOverpriced
+
+- type: loadout
+  id: PenScience
+  groupBy: pen-blue
+  storage:
+    id:
+    - PenScience
+
+- type: loadout
+  id: PenBrigmedic
+  groupBy: pen-red
+  storage:
+    id:
+    - PenBrigmedic
+
+- type: loadout
+  id: PenSecurityBlack
+  groupBy: pen-black
+  storage:
+    id:
+    - PenSecurityBlack
+
+- type: loadout
+  id: PenSecurityRed
+  groupBy: pen-red
+  storage:
+    id:
+    - PenSecurityRed
+
+- type: loadout
+  id: PenSecurityFountain
+  groupBy: pen-red
+  storage:
+    id:
+    - PenSecurityFountain
+
+- type: loadout
+  id: BlackFountainPen
+  groupBy: pen-black
+  storage:
+    id:
+    - BlackFountainPen

@@ -18,7 +18,9 @@
   id: SeniorResearcherGear
   equipment:
     shoes: ClothingShoesColorBlack
-    id: SeniorResearcherPDA
+    # VG-Tweak Start: the PDA is handed out by the SeniorResearcherID loadout group so pen choices can replace the pen.
+    # id: SeniorResearcherPDA
+    # VG-Tweak End
     ears: ClothingHeadsetScience
 
 - type: chameleonOutfit

@@ -54,6 +54,9 @@
   - GroupTankHarness
   # VG-Tweak Start: Passenger PDA loadout group (RP variations).
   - PassengerID
+  # VG-Tweak Start: pen selection for the PDA pen slot.
+  - PdaPen
+  # VG-Tweak End
   # VG-Tweak End
   - PassengerJumpsuit
   - CommonBackpack
@@ -77,6 +80,9 @@
   - GroupTankHarness
   # VG-Tweak Start: Bartender PDA loadout group (RP variations).
   - BartenderID
+  # VG-Tweak Start: pen selection for the PDA pen slot.
+  - PdaPen
+  # VG-Tweak End
   # VG-Tweak End
   - BartenderHead
   - BartenderJumpsuit
@@ -97,6 +103,9 @@
   - GroupTankHarness
   # VG-Tweak Start: ServiceWorker PDA loadout group (RP variations).
   - ServiceWorkerID
+  # VG-Tweak Start: pen selection for the PDA pen slot.
+  - PdaPen
+  # VG-Tweak End
   # VG-Tweak End
   - BartenderJumpsuit
   - CommonBackpack
@@ -115,6 +124,9 @@
   - GroupTankHarness
   # VG-Tweak Start: Chef PDA loadout group (RP variations).
   - ChefID
+  # VG-Tweak Start: pen selection for the PDA pen slot.
+  - PdaPen
+  # VG-Tweak End
   # VG-Tweak End
   - ChefHead
   - ChefMask
@@ -136,6 +148,9 @@
   - GroupTankHarness
   # VG-Tweak Start: Librarian PDA loadout group (RP variations).
   - LibrarianID
+  # VG-Tweak Start: pen selection for the PDA pen slot.
+  - PdaPen
+  # VG-Tweak End
   # VG-Tweak End
   - LibrarianJumpsuit
   - CommonBackpack
@@ -152,6 +167,10 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: Lawyer PDA loadout group and pen selection.
+  - LawyerID
+  - PdaPen
+  # VG-Tweak End
   - LawyerNeck
   - LawyerJumpsuit
   - CommonBackpack
@@ -171,6 +190,9 @@
   - GroupTankHarness
   # VG-Tweak Start: Chaplain PDA loadout group (RP variations).
   - ChaplainID
+  # VG-Tweak Start: pen selection for the PDA pen slot.
+  - PdaPen
+  # VG-Tweak End
   # VG-Tweak End
   - ChaplainHead
   - ChaplainMask
@@ -195,6 +217,9 @@
   - GroupTankHarness
   # VG-Tweak Start: Janitor PDA loadout group (RP variations).
   - JanitorID
+  # VG-Tweak Start: pen selection for the PDA pen slot.
+  - PdaPen
+  # VG-Tweak End
   # VG-Tweak End
   - JanitorHead
   - JanitorJumpsuit
@@ -216,6 +241,9 @@
   - GroupTankHarness
   # VG-Tweak Start: Botanist PDA loadout group (RP variations).
   - BotanistID
+  # VG-Tweak Start: pen selection for the PDA pen slot.
+  - PdaPen
+  # VG-Tweak End
   # VG-Tweak End
   - BotanistHead
   - BotanistJumpsuit
@@ -237,6 +265,9 @@
   - GroupTankHarness
   # VG-Tweak Start: Clown PDA loadout group (RP variations).
   - ClownID
+  # VG-Tweak Start: pen selection for the PDA pen slot.
+  - PdaPen
+  # VG-Tweak End
   # VG-Tweak End
   - ClownHead
   - ClownJumpsuit
@@ -256,6 +287,10 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: Mime PDA loadout group and pen selection.
+  - MimeID
+  - PdaPen
+  # VG-Tweak End
   - MimeHead
   - MimeMask
   - MimeJumpsuit
@@ -277,6 +312,9 @@
   - GroupTankHarness
   # VG-Tweak Start: Musician PDA loadout group (RP variations).
   - MusicianID
+  # VG-Tweak Start: pen selection for the PDA pen slot.
+  - PdaPen
+  # VG-Tweak End
   # VG-Tweak End
   - MusicianJumpsuit
   - CommonBackpack
@@ -324,6 +362,9 @@
   - CargoTechnicianOuterClothing
   - CargoTechnicianShoes
   - CargoTechnicianID
+  # VG-Tweak Start: pen selection for the PDA pen slot.
+  - PdaPen
+  # VG-Tweak End
   - Glasses
   - AssistiveItems
   - Survival
@@ -337,6 +378,10 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: SalvageSpecialist PDA loadout group and pen selection.
+  - SalvageSpecialistID
+  - PdaPen
+  # VG-Tweak End
   - SalvageSpecialistBackpack
   - SalvageSpecialistOuterClothing
   - SalvageSpecialistShoes
@@ -372,6 +417,10 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: TechnicalAssistant PDA loadout group and pen selection.
+  - TechnicalAssistantID
+  - PdaPen
+  # VG-Tweak End
   - TechnicalAssistantJumpsuit
   - StationEngineerBackpack
   - AssistiveItems
@@ -392,6 +441,9 @@
   - StationEngineerOuterClothing
   - StationEngineerShoes
   - StationEngineerID
+  # VG-Tweak Start: pen selection for the PDA pen slot.
+  - PdaPen
+  # VG-Tweak End
   - AssistiveItems
   - SurvivalExtended
   - Trinkets
@@ -406,6 +458,9 @@
   - GroupTankHarness
   # VG-Tweak Start: AtmosphericTechnician PDA loadout group (RP variations).
   - AtmosphericTechnicianID
+  # VG-Tweak Start: pen selection for the PDA pen slot.
+  - PdaPen
+  # VG-Tweak End
   # VG-Tweak End
   - AtmosphericTechnicianJumpsuit
   - AtmosphericTechnicianBackpack
@@ -455,6 +510,9 @@
   - ScientistGloves
   - ScientistShoes
   - ScientistPDA
+  # VG-Tweak Start: pen selection for the PDA pen slot.
+  - PdaPen
+  # VG-Tweak End
   - Glasses
   - AssistiveItems
   - Survival
@@ -468,6 +526,10 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: ResearchAssistant PDA loadout group and pen selection.
+  - ResearchAssistantID
+  - PdaPen
+  # VG-Tweak End
   - ResearchAssistantJumpsuit
   - ScientistBackpack
   - Glasses
@@ -500,7 +562,11 @@
 - type: roleLoadout
   id: JobWarden
   groups:
-  - Inventory # Corvax-Loadouts
+  - Inventory
+  # VG-Tweak Start: Warden PDA loadout group and pen selection.
+  - WardenID
+  - PdaPen
+  # VG-Tweak End # Corvax-Loadouts
   - WardenHead
   - WardenJumpsuit
   - SecurityBackpack
@@ -524,6 +590,9 @@
   - SecurityOuterClothing
   - SecurityShoes
   - SecurityPDA
+  # VG-Tweak Start: pen selection for the PDA pen slot.
+  - PdaPen
+  # VG-Tweak End
   - SecurityBelt
   - AssistiveItems
   - SurvivalSecurity
@@ -538,6 +607,9 @@
   - Inventory # Corvax-Loadouts
   # VG-Tweak Start: Detective PDA loadout group (RP variations).
   - DetectiveID
+  # VG-Tweak Start: pen selection for the PDA pen slot.
+  - PdaPen
+  # VG-Tweak End
   # VG-Tweak End
   - DetectiveHead
   - DetectiveNeck
@@ -555,7 +627,11 @@
 - type: roleLoadout
   id: JobSecurityCadet
   groups:
-  - Inventory # Corvax-Loadouts
+  - Inventory
+  # VG-Tweak Start: SecurityCadet PDA loadout group and pen selection.
+  - SecurityCadetID
+  - PdaPen
+  # VG-Tweak End # Corvax-Loadouts
   - SecurityCadetJumpsuit
   - SecurityBackpack
   - AssistiveItems
@@ -573,6 +649,9 @@
   - GroupTankHarness
   # VG-Tweak Start: Reporter PDA loadout group (RP variations).
   - ReporterID
+  # VG-Tweak Start: pen selection for the PDA pen slot.
+  - PdaPen
+  # VG-Tweak End
   # VG-Tweak End
   - ReporterJumpsuit
   - ReporterHead
@@ -593,6 +672,9 @@
   - GroupTankHarness
   # VG-Tweak Start: Psychologist PDA loadout group (RP variations).
   - PsychologistID
+  # VG-Tweak Start: pen selection for the PDA pen slot.
+  - PdaPen
+  # VG-Tweak End
   # VG-Tweak End
   - PsychologistJumpsuit
   - MedicalBackpack
@@ -608,6 +690,10 @@
   id: JobTramDriver
   groups:
   - GroupTankHarness
+  # VG-Tweak Start: TramDriver PDA loadout group and pen selection.
+  - TramDriverID
+  - PdaPen
+  # VG-Tweak End
   - CommonBackpack
   - TramDriverJumpsuit
   - TramDriverOuterClothing #Vest and such

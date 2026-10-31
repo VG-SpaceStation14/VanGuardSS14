@@ -35,6 +35,9 @@
   - MedicalDoctorOuterClothing
   - MedicalShoes
   - MedicalDoctorPDA
+  # VG-Tweak Start: pen selection for the PDA pen slot.
+  - PdaPen
+  # VG-Tweak End
   - Glasses
   - AssistiveItems
   - SurvivalMedical
@@ -50,6 +53,9 @@
   - GroupTankHarness
   # VG-Tweak Start: MedicalIntern PDA loadout group (RP variations).
   - MedicalInternID
+  # VG-Tweak Start: pen selection for the PDA pen slot.
+  - PdaPen
+  # VG-Tweak End
   # VG-Tweak End
   - MedicalInternJumpsuit
   - MedicalBackpack
@@ -66,6 +72,10 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: Chemist PDA loadout group and pen selection.
+  - ChemistID
+  - PdaPen
+  # VG-Tweak End
   - MedicalMask
   - ChemistJumpsuit
   - ChemistBackpack
@@ -84,6 +94,10 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: Paramedic PDA loadout group and pen selection.
+  - ParamedicID
+  - PdaPen
+  # VG-Tweak End
   - ParamedicHead
   - MedicalMask
   - ParamedicJumpsuit

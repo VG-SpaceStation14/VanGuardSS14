@@ -32,7 +32,9 @@
   id: IAAGear
   equipment:
     shoes: ClothingShoesColorBlack
-    id: IAAPDA
+    # VG-Tweak Start: the PDA is handed out by the IAAID loadout group so pen choices can replace the pen.
+    # id: IAAPDA
+    # VG-Tweak End
     eyes: ClothingEyesGlassesSunglasses
     ears: ClothingHeadsetIAA
     pocket1: RubberStampIAA

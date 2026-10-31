@@ -2,7 +2,11 @@
 - type: roleLoadout
   id: JobIAA
   groups:
-  - Inventory # Corvax-Loadouts
+  - Inventory
+  # VG-Tweak Start: IAA PDA loadout group and pen selection.
+  - IAAID
+  - PdaPen
+  # VG-Tweak End # Corvax-Loadouts
   - LawyerNeck
   - LawyerJumpsuit
   - CommonBackpack
@@ -16,7 +20,11 @@
 - type: roleLoadout
   id: JobMagistrate
   groups:
-  - Inventory # Corvax-Loadouts
+  - Inventory
+  # VG-Tweak Start: Magistrate PDA loadout group and pen selection.
+  - MagistrateID
+  - PdaPen
+  # VG-Tweak End # Corvax-Loadouts
   - MagistrateHead
   - MagistrateJumpsuit
   - MagistrateOuterClothing
@@ -32,6 +40,10 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: SeniorEngineer PDA loadout group and pen selection.
+  - SeniorEngineerID
+  - PdaPen
+  # VG-Tweak End
   - SeniorEngineerHead
   - SeniorEngineerJumpsuit
   - SeniorEngineerBackpack
@@ -48,6 +60,10 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: SeniorResearcher PDA loadout group and pen selection.
+  - SeniorResearcherID
+  - PdaPen
+  # VG-Tweak End
   - SeniorResearcherHead
   - SeniorResearcherJumpsuit
   - SeniorResearcherBackpack
@@ -64,7 +80,11 @@
 - type: roleLoadout
   id: JobPilot
   groups:
-  - Inventory # Corvax-Loadouts
+  - Inventory
+  # VG-Tweak Start: Pilot PDA loadout group and pen selection.
+  - PilotID
+  - PdaPen
+  # VG-Tweak End # Corvax-Loadouts
   - PilotHead
   - PilotJumpsuit
   - SecurityBackpack
@@ -82,6 +102,9 @@
   - Inventory # Corvax-Loadouts
   # VG-Tweak Start: Brigmedic PDA loadout group (RP variations).
   - BrigmedicID
+  # VG-Tweak Start: pen selection for the PDA pen slot.
+  - PdaPen
+  # VG-Tweak End
   # VG-Tweak End
   - BrigmedicHead
   - BrigmedicMask
@@ -98,7 +121,11 @@
 - type: roleLoadout
   id: JobSeniorOfficer
   groups:
-  - Inventory # Corvax-Loadouts
+  - Inventory
+  # VG-Tweak Start: SeniorOfficer PDA loadout group and pen selection.
+  - SeniorOfficerID
+  - PdaPen
+  # VG-Tweak End # Corvax-Loadouts
   - SeniorOfficerHead
   - SeniorOfficerJumpsuit
   - SeniorOfficerBackpack
@@ -116,6 +143,10 @@
   groups:
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
+  # VG-Tweak Start: SeniorPhysician PDA loadout group and pen selection.
+  - SeniorPhysicianID
+  - PdaPen
+  # VG-Tweak End
   - SeniorPhysicianHead
   - MedicalMask
   - SeniorPhysicianJumpsuit

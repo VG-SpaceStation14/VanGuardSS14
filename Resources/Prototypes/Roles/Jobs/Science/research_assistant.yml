@@ -21,7 +21,9 @@
   id: ResearchAssistantGear
   equipment:
     shoes: ClothingShoesColorWhite
-    id: ResearchAssistantPDA
+    # VG-Tweak Start: the PDA is handed out by the ResearchAssistantID loadout group so pen choices can replace the pen.
+    # id: ResearchAssistantPDA
+    # VG-Tweak End
     ears: ClothingHeadsetScience
     pocket2: BookScientistsGuidebook
   #storage:

@@ -720,6 +720,14 @@
   # VG-Tweak End
   - type: Pda
     id: QuartermasterIDCard
+    # VG-Tweak Start: the quartermaster keeps the VanGuard fountain pen in the PDA.
+    penSlot:
+      startingItem: PenCargo1QM
+      priority: -1
+      whitelist:
+        tags:
+        - Write
+    # VG-Tweak End
   - type: EntityTableContainerFill
     containers:
       preinstalled-program-container: !type:AllSelector
@@ -1091,6 +1099,14 @@
   # VG-Tweak End
   - type: Pda
     id: CEIDCard
+    # VG-Tweak Start: the chief engineer keeps the VanGuard fountain pen in the PDA.
+    penSlot:
+      startingItem: PenEngineeringCE
+      priority: -1
+      whitelist:
+        tags:
+        - Write
+    # VG-Tweak End
 
 - type: entity
   parent: [BaseCorvaxContraband431JobsStationEngineer, BasePDA] # Corvax-Contraband
@@ -1161,6 +1177,14 @@
   # VG-Tweak End
   - type: Pda
     id: CMOIDCard
+    # VG-Tweak Start: the chief medical officer keeps the VanGuard fountain pen in the PDA.
+    penSlot:
+      startingItem: PenMedicalCMO
+      priority: -1
+      whitelist:
+        tags:
+        - Write
+    # VG-Tweak End
 
 - type: entity
   parent: BaseMedicalPDA
@@ -1313,6 +1337,14 @@
   # VG-Tweak End
   - type: Pda
     id: RDIDCard
+    # VG-Tweak Start: the research director keeps the VanGuard fountain pen in the PDA.
+    penSlot:
+      startingItem: PenScienceFountain
+      priority: -1
+      whitelist:
+        tags:
+        - Write
+    # VG-Tweak End
 
 - type: entity
   parent: BasePDA
@@ -1380,6 +1412,14 @@
   # VG-Tweak End
   - type: Pda
     id: HoSIDCard
+    # VG-Tweak Start: the head of security keeps the VanGuard fountain pen in the PDA.
+    penSlot:
+      startingItem: PenSecurityFountainMetallic
+      priority: -1
+      whitelist:
+        tags:
+        - Write
+    # VG-Tweak End
   - type: EntityTableContainerFill
     containers:
       preinstalled-program-container: !type:AllSelector
