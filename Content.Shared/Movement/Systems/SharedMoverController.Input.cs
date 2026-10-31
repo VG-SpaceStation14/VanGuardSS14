@@ -135,7 +135,12 @@ namespace Content.Shared.Movement.Systems
             args.State = new InputMoverComponentState()
             {
                 CanMove = entity.Comp.CanMove,
-                RelativeEntity = GetNetEntity(entity.Comp.RelativeEntity),
+                // VG-Tweak Start: a grid or map can be deleted before the mover state is serialized;
+                // send null instead of throwing while looking up the stale entity.
+                RelativeEntity = entity.Comp.RelativeEntity is { } relative && Exists(relative)
+                    ? GetNetEntity(relative)
+                    : null,
+                // VG-Tweak End
                 LerpTarget = entity.Comp.LerpTarget,
                 HeldMoveButtons = entity.Comp.HeldMoveButtons,
                 RelativeRotation = entity.Comp.RelativeRotation,

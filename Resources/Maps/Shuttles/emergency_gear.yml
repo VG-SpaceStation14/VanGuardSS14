@@ -1440,8 +1440,7 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 1296
-      configurators:
-      - invalid
+      configurators: []
   - uid: 1302
     components:
     - type: Transform
@@ -22582,8 +22581,7 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 1296
-      configurators:
-      - invalid
+      configurators: []
   - uid: 1284
     components:
     - type: Transform
@@ -22593,8 +22591,7 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 1296
-      configurators:
-      - invalid
+      configurators: []
   - uid: 1285
     components:
     - type: Transform
