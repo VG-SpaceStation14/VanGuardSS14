@@ -2,17 +2,20 @@ using Robust.Shared.Serialization;
 
 namespace Content.Shared._VanGuard.Tools;
 
+/// <summary>
+/// Tells clients to animate a welding spark effect between two entities for the duration of a do-after.
+/// </summary>
 [Serializable, NetSerializable]
 public sealed class SpawnedWeldingSparksEvent : EntityEventArgs
 {
-    public NetEntity Target { get; }
-    public NetEntity Sparks { get; }
-    public TimeSpan Duration { get; }
+    public NetEntity ToolTarget { get; }
+    public NetEntity SparkEffect { get; }
+    public TimeSpan Lifetime { get; }
 
-    public SpawnedWeldingSparksEvent(NetEntity target, NetEntity sparks, TimeSpan duration)
+    public SpawnedWeldingSparksEvent(NetEntity toolTarget, NetEntity sparkEffect, TimeSpan lifetime)
     {
-        Target = target;
-        Sparks = sparks;
-        Duration = duration;
+        ToolTarget = toolTarget;
+        SparkEffect = sparkEffect;
+        Lifetime = lifetime;
     }
 }
