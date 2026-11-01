@@ -1,0 +1,284 @@
+# Formal command neckwear: cloaks and mantles for the station leadership.
+
+- type: entity
+  parent: [ClothingNeckBase, BaseCommandContraband]
+  id: ClothingNeckCloakCapOriginal
+  name: old-fashioned captain's cloak
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/original_cap.rsi
+  - type: StealTarget
+    stealGroup:
+    - HeadCloak
+
+- type: entity
+  parent: [ClothingNeckBase, BaseCommandContraband]
+  id: ClothingNeckCloakCapAlt
+  name: captain's gilded cloak
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/alt_cap.rsi
+  - type: StealTarget
+    stealGroup:
+    - HeadCloak
+
+- type: entity
+  parent: [ClothingNeckBase, BaseCommandContraband]
+  id: ClothingNeckCloakCapFormalAlt
+  name: captain's long formal cloak
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/alt_capcloakformal.rsi
+  - type: StealTarget
+    stealGroup:
+    - HeadCloak
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckCaptainWide
+  name: captain wide overcoat
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/wide_captain_cloak.rsi
+  - type: StealTarget
+    stealGroup:
+    - HeadCloak
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckMantleCaptainAlt
+  name: captain's shoulder mantle
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Mantles/alt_capmantle.rsi
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckMantleCaptainWhite
+  name: white captain mantle
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Mantles/white_captain_mantle.rsi
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckCloakHopAlt
+  name: sleek head of personnel's cloak
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/alt_hop.rsi
+  - type: StealTarget
+    stealGroup:
+    - HeadCloak
+
+- type: entity
+  parent: [ClothingNeckBase, BaseCommandContraband]
+  id: ClothingNeckLongCloakHOP
+  name: long head of personnel cloak
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/Long/hop.rsi
+  - type: StealTarget
+    stealGroup:
+    - HeadCloak
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckCloakHosOriginal
+  name: bleak head of security's cloak
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/original_hos.rsi
+  - type: StealTarget
+    stealGroup:
+    - HeadCloak
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckCloakHosAlt
+  name: vibrant head of security's cloak
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/alt_hos.rsi
+  - type: StealTarget
+    stealGroup:
+    - HeadCloak
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckLongCloakHOS
+  name: long head of security cloak
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/Long/hos.rsi
+  - type: StealTarget
+    stealGroup:
+    - HeadCloak
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckCloakCeOriginal
+  name: cybercloak
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/original_ce.rsi
+  - type: StealTarget
+    stealGroup:
+    - HeadCloak
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckCloakCeAlt
+  name: honored chief engineer's cloak
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/alt_ce.rsi
+  - type: StealTarget
+    stealGroup:
+    - HeadCloak
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckLongCloakCE
+  name: long chief engineer cloak
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/Long/ce.rsi
+  - type: StealTarget
+    stealGroup:
+    - HeadCloak
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckMantleCEOriginal
+  name: technological mantle
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Mantles/original_cemantle.rsi
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckCloakCmoAlt
+  name: chief medical officer's classic cloak
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/alt_cmo.rsi
+  - type: StealTarget
+    stealGroup:
+    - HeadCloak
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckCloakCmoTurquoise
+  name: chief medical officer's turquoise cloak
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/turquoise_cmo.rsi
+  - type: StealTarget
+    stealGroup:
+    - HeadCloak
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckLongCloakCMO
+  name: long chief medical officer cloak
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/Long/cmo.rsi
+  - type: StealTarget
+    stealGroup:
+    - HeadCloak
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckMantleCMOOriginal
+  name: master physician's mantle
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Mantles/original_cmomantle.rsi
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckCloakRdOriginal
+  name: white science cloak
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/original_rd.rsi
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckCloakRdAlt
+  name: research director's warm cloak
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/alt_rd.rsi
+  - type: StealTarget
+    stealGroup:
+    - HeadCloak
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckLongCloakRD
+  name: long research director cloak
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/Long/rd.rsi
+  - type: StealTarget
+    stealGroup:
+    - HeadCloak
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckMantleRDOriginal
+  name: royal mantle
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Mantles/original_rdmantle.rsi
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckCloakQmAlt
+  name: quartermaster's leather cloak
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/alt_qm.rsi
+  - type: StealTarget
+    stealGroup:
+    - HeadCloak
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckLongCloakQM
+  name: long quartermaster cloak
+  description: A formal cloak kept in the command wardrobe.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/Long/qm.rsi
+  - type: StealTarget
+    stealGroup:
+    - HeadCloak
+

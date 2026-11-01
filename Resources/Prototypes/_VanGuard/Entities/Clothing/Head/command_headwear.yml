@@ -1,0 +1,56 @@
+# Alternate command headwear.
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatBeretCaptainWhite
+  name: white captain beret
+  description: An alternate headwear piece for the command staff.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Head/Hats/white_beret.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatCapcapWhite
+  name: white cap cap
+  description: An alternate headwear piece for the command staff.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Head/Hats/white_capcap.rsi
+
+- type: entity
+  parent: ClothingHeadHatBeretCmo
+  id: ClothingHeadHatBeretCmoOriginal
+  name: classic chief medical officer's beret
+  description: An alternate headwear piece for the command staff.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Head/Hats/original_beret_cmo.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatCapSec
+  name: security officer's cap
+  description: An alternate headwear piece for the command staff.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Head/Hats/seccap.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatFlightCapSec
+  name: security flight cap
+  description: An alternate headwear piece for the command staff.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Head/Soft/secflightcap.rsi
+
+- type: entity
+  parent: ClothingHeadHeadHatBaseFlippable
+  id: ClothingHeadHatCargoPostalsoft
+  name: postal cap
+  description: An alternate headwear piece for the command staff.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Head/Soft/cargopostalsoft.rsi
+

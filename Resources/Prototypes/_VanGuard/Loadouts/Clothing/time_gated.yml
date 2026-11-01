@@ -1,0 +1,49 @@
+# Long-service clothing loadouts.
+
+- type: loadout
+  id: SalvageSpecialistSupremeCloak
+  equipment:
+    neck: ClothingNeckCloakSalvagerSupreme
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: SalvageElite
+
+- type: loadout
+  id: SalvageSpecialistGloomyCloak
+  equipment:
+    neck: ClothingNeckGloomyCloakSalvager
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: SalvageVeteran
+
+- type: loadout
+  id: SalvageSpecialistGrimyJumpsuit
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitSalvageSpecialistAlt
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: SalvageVeteran
+
+- type: loadout
+  id: AtmosphericTechnicianCloak
+  equipment:
+    neck: ClothingCloakAtmosian
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: AtmosVeteran
+
+- type: loadout
+  id: AtmosphericTechnicianBomber
+  equipment:
+    outerClothing: ClothingOuterAtmosianBomberJacket
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: AtmosVeteran
+
+- type: loadout
+  id: SeniorResearcherCloak
+  equipment:
+    neck: ClothingNeckCloakRdOriginal
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: SeniorResearcher

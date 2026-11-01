@@ -1,0 +1,287 @@
+# Loadout entries restoring the classic command wardrobe.
+
+- type: loadout
+  id: ClothingNeckCloakCapOriginalLoadout
+  equipment:
+    neck: ClothingNeckCloakCapOriginal
+
+- type: loadout
+  id: ClothingNeckCloakCapAltLoadout
+  equipment:
+    neck: ClothingNeckCloakCapAlt
+
+- type: loadout
+  id: ClothingNeckCloakCapFormalAltLoadout
+  equipment:
+    neck: ClothingNeckCloakCapFormalAlt
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterCap
+
+- type: loadout
+  id: ClothingNeckCaptainWideLoadout
+  equipment:
+    neck: ClothingNeckCaptainWide
+
+- type: loadout
+  id: ClothingNeckMantleCaptainAltLoadout
+  equipment:
+    neck: ClothingNeckMantleCaptainAlt
+
+- type: loadout
+  id: ClothingNeckMantleCaptainWhiteLoadout
+  equipment:
+    neck: ClothingNeckMantleCaptainWhite
+
+- type: loadout
+  id: ClothingNeckCloakHopAltLoadout
+  equipment:
+    neck: ClothingNeckCloakHopAlt
+
+- type: loadout
+  id: ClothingNeckLongCloakHOPLoadout
+  equipment:
+    neck: ClothingNeckLongCloakHOP
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterHoP
+
+- type: loadout
+  id: ClothingNeckCloakHosOriginalLoadout
+  equipment:
+    neck: ClothingNeckCloakHosOriginal
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterHoS
+
+- type: loadout
+  id: ClothingNeckCloakHosAltLoadout
+  equipment:
+    neck: ClothingNeckCloakHosAlt
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterHoS
+
+- type: loadout
+  id: ClothingNeckLongCloakHOSLoadout
+  equipment:
+    neck: ClothingNeckLongCloakHOS
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterHoS
+
+- type: loadout
+  id: ClothingNeckCloakCeOriginalLoadout
+  equipment:
+    neck: ClothingNeckCloakCeOriginal
+
+- type: loadout
+  id: ClothingNeckCloakCeAltLoadout
+  equipment:
+    neck: ClothingNeckCloakCeAlt
+
+- type: loadout
+  id: ClothingNeckLongCloakCELoadout
+  equipment:
+    neck: ClothingNeckLongCloakCE
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterCE
+
+- type: loadout
+  id: ClothingNeckMantleCEOriginalLoadout
+  equipment:
+    neck: ClothingNeckMantleCEOriginal
+
+- type: loadout
+  id: ClothingNeckCloakCmoAltLoadout
+  equipment:
+    neck: ClothingNeckCloakCmoAlt
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterCMO
+
+- type: loadout
+  id: ClothingNeckCloakCmoTurquoiseLoadout
+  equipment:
+    neck: ClothingNeckCloakCmoTurquoise
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterCMO
+
+- type: loadout
+  id: ClothingNeckLongCloakCMOLoadout
+  equipment:
+    neck: ClothingNeckLongCloakCMO
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterCMO
+
+- type: loadout
+  id: ClothingNeckMantleCMOOriginalLoadout
+  equipment:
+    neck: ClothingNeckMantleCMOOriginal
+
+- type: loadout
+  id: ClothingNeckCloakRdOriginalLoadout
+  equipment:
+    neck: ClothingNeckCloakRdOriginal
+
+- type: loadout
+  id: ClothingNeckCloakRdAltLoadout
+  equipment:
+    neck: ClothingNeckCloakRdAlt
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterRD
+
+- type: loadout
+  id: ClothingNeckLongCloakRDLoadout
+  equipment:
+    neck: ClothingNeckLongCloakRD
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterRD
+
+- type: loadout
+  id: ClothingNeckMantleRDOriginalLoadout
+  equipment:
+    neck: ClothingNeckMantleRDOriginal
+
+- type: loadout
+  id: ClothingNeckCloakQmAltLoadout
+  equipment:
+    neck: ClothingNeckCloakQmAlt
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterQM
+
+- type: loadout
+  id: ClothingNeckLongCloakQMLoadout
+  equipment:
+    neck: ClothingNeckLongCloakQM
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterQM
+
+- type: loadout
+  id: ClothingHeadHatBeretCaptainWhiteLoadout
+  equipment:
+    head: ClothingHeadHatBeretCaptainWhite
+
+- type: loadout
+  id: ClothingHeadHatCapcapWhiteLoadout
+  equipment:
+    head: ClothingHeadHatCapcapWhite
+
+- type: loadout
+  id: ClothingHeadHatBeretCmoOriginalLoadout
+  equipment:
+    head: ClothingHeadHatBeretCmoOriginal
+
+- type: loadout
+  id: ClothingHeadHatCapSecLoadout
+  equipment:
+    head: ClothingHeadHatCapSec
+
+- type: loadout
+  id: ClothingHeadHatFlightCapSecLoadout
+  equipment:
+    head: ClothingHeadHatFlightCapSec
+
+- type: loadout
+  id: ClothingHeadHatCargoPostalsoftLoadout
+  equipment:
+    head: ClothingHeadHatCargoPostalsoft
+
+- type: loadout
+  id: ClothingUniformJumpsuitCaptainWhiteLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCaptainWhite
+
+- type: loadout
+  id: ClothingUniformJumpskirtCaptainWhiteLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtCaptainWhite
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterCap
+
+- type: loadout
+  id: ClothingUniformJumpsuitCommandCaptainLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCommandCaptain
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterCap
+
+- type: loadout
+  id: ClothingUniformJumpsuitCaptainParadeMaleLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCaptainParadeMale
+
+- type: loadout
+  id: ClothingUniformJumpsuitHoSOriginalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitHoSOriginal
+
+- type: loadout
+  id: ClothingUniformJumpsuitHoSParadeMaleOriginalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitHoSParadeMaleOriginal
+
+- type: loadout
+  id: ClothingUniformJumpskirtHoSOriginalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtHoSOriginal
+
+- type: loadout
+  id: ClothingUniformJumpskirtHoSParadeFemaleOriginalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtHoSParadeFemaleOriginal
+
+- type: loadout
+  id: ClothingUniformJumpsuitScientistOriginalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitScientistOriginal
+
+- type: loadout
+  id: ClothingUniformJumpskirtScientistOriginalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtScientistOriginal
+
+- type: loadout
+  id: ClothingUniformJumpsuitRndAltLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitRndAlt
+
+- type: loadout
+  id: ClothingUniformJumpsuitPsychologistOriginalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitPsychologistOriginal
+
+- type: loadout
+  id: ClothingUniformJumpskirtPsychologistOriginalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtPsychologistOriginal
+
+- type: loadout
+  id: ClothingUniformJumpsuitCargoPostalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCargoPostal
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: CargoVeteran
+
+- type: loadout
+  id: ClothingUniformJumpskirtCargoPostalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtCargoPostal
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: CargoVeteran
+
+- type: loadout
+  id: ClothingUniformJumpsuitAtmosCasualOriginalLoadout
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitAtmosCasualOriginal

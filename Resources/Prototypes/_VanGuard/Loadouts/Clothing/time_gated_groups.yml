@@ -1,0 +1,21 @@
+- type: loadoutGroup
+  id: SalvageSpecialistNeck
+  name: loadout-group-salvage-specialist-neck
+  minLimit: 0
+  loadouts:
+  - SalvageSpecialistSupremeCloak
+  - SalvageSpecialistGloomyCloak
+
+- type: loadoutGroup
+  id: SalvageSpecialistJumpsuit
+  name: loadout-group-salvage-specialist-jumpsuit
+  minLimit: 0
+  loadouts:
+  - SalvageSpecialistGrimyJumpsuit
+
+- type: loadoutGroup
+  id: AtmosphericTechnicianNeck
+  name: loadout-group-atmospheric-technician-neck
+  minLimit: 0
+  loadouts:
+  - AtmosphericTechnicianCloak

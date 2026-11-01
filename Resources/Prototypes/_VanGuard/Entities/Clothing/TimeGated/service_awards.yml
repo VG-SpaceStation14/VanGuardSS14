@@ -1,0 +1,41 @@
+# Specialized clothing awarded for long service in a department.
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckGloomyCloakSalvager
+  name: gloomy salvager's cloak
+  description: A weathered cloak for a salvager who has spent years in deep space.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/alt_miner.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitSalvageSpecialistAlt
+  name: grimy shaft miner's jumpsuit
+  description: A sturdy mining jumpsuit worn by veteran salvagers, covered in cosmic dust.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Uniforms/Jumpsuit/alt_salvage.rsi
+  - type: Clothing
+    sprite: _VanGuard/Clothing/Uniforms/Jumpsuit/alt_salvage.rsi
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingCloakAtmosian
+  name: atmosian's cloak
+  description: A heavy cloak worn by atmospheric technicians who have survived the worst the pipes can offer.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/atmosian.rsi
+
+- type: entity
+  parent: ClothingOuterStorageBase
+  id: ClothingOuterAtmosianBomberJacket
+  name: atmosian bomber jacket
+  description: A thick, well-worn leather bomber jacket used by veteran atmospheric technicians.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/OuterClothing/Coats/atmosian.rsi
+  - type: Clothing
+    sprite: _VanGuard/Clothing/OuterClothing/Coats/atmosian.rsi

@@ -1,0 +1,146 @@
+# Alternate uniforms for command and department staff.
+
+- type: entity
+  parent: ClothingUniformJumpsuitCaptain
+  id: ClothingUniformJumpsuitCaptainWhite
+  name: white captain jumpsuit
+  description: An alternate duty uniform.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Uniforms/Jumpsuit/captain_white.rsi
+
+- type: entity
+  parent: ClothingUniformJumpskirtCaptain
+  id: ClothingUniformJumpskirtCaptainWhite
+  name: white captain jumpskirt
+  description: An alternate duty uniform.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Uniforms/Jumpskirt/white_captain.rsi
+
+- type: entity
+  parent: ClothingUniformJumpsuitCaptain
+  id: ClothingUniformJumpsuitCommandCaptain
+  name: captain command jumpsuit
+  description: An alternate duty uniform.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Uniforms/Jumpsuit/captain_command.rsi
+
+- type: entity
+  parent: ClothingUniformJumpsuitCaptain
+  id: ClothingUniformJumpsuitCaptainParadeMale
+  name: captain's parade uniform
+  description: An alternate duty uniform.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Uniforms/Jumpsuit/original_capformal.rsi
+
+- type: entity
+  parent: ClothingUniformJumpsuitHoS
+  id: ClothingUniformJumpsuitHoSOriginal
+  name: head of security's colorful jumpsuit
+  description: An alternate duty uniform.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Uniforms/Jumpsuit/original_hos.rsi
+
+- type: entity
+  parent: ClothingUniformJumpsuitHoS
+  id: ClothingUniformJumpsuitHoSParadeMaleOriginal
+  name: head of security's parade uniform
+  description: An alternate duty uniform.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Uniforms/Jumpsuit/original_hos_parade.rsi
+
+- type: entity
+  parent: ClothingUniformJumpskirtHoS
+  id: ClothingUniformJumpskirtHoSOriginal
+  name: head of security's colorful jumpskirt
+  description: An alternate duty uniform.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Uniforms/Jumpskirt/original_hos.rsi
+
+- type: entity
+  parent: ClothingUniformJumpskirtHoS
+  id: ClothingUniformJumpskirtHoSParadeFemaleOriginal
+  name: head of security's parade uniform
+  description: An alternate duty uniform.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Uniforms/Jumpskirt/original_hos_parade.rsi
+
+- type: entity
+  parent: ClothingUniformJumpsuitScientist
+  id: ClothingUniformJumpsuitScientistOriginal
+  name: scientist's plain jumpsuit
+  description: An alternate duty uniform.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Uniforms/Jumpsuit/original_scientist.rsi
+
+- type: entity
+  parent: ClothingUniformJumpskirtScientist
+  id: ClothingUniformJumpskirtScientistOriginal
+  name: scientist's plain jumpskirt
+  description: An alternate duty uniform.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Uniforms/Jumpskirt/original_scientist.rsi
+
+- type: entity
+  parent: ClothingUniformJumpsuitScientist
+  id: ClothingUniformJumpsuitRndAlt
+  name: science professor's suit
+  description: An alternate duty uniform.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Uniforms/Jumpsuit/alt_rnd.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitPsychologistOriginal
+  name: psychologist suit
+  description: An alternate duty uniform.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Uniforms/Jumpsuit/original_psychologist.rsi
+
+- type: entity
+  parent: ClothingUniformSkirtBase
+  id: ClothingUniformJumpskirtPsychologistOriginal
+  name: psychologist suitskirt
+  description: An alternate duty uniform.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Uniforms/Jumpskirt/original_psychologist.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitCargoPostal
+  name: postal jumpsuit
+  description: An alternate duty uniform.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Uniforms/Jumpsuit/cargopostal.rsi
+
+- type: entity
+  parent: ClothingUniformSkirtBase
+  id: ClothingUniformJumpskirtCargoPostal
+  name: postal jumpskirt
+  description: An alternate duty uniform.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Uniforms/Jumpskirt/cargopostal.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitAtmosCasualOriginal
+  name: atmospheric technician's casual jumpsuit
+  description: An alternate duty uniform.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Uniforms/Jumpsuit/original_atmos_casual.rsi
+

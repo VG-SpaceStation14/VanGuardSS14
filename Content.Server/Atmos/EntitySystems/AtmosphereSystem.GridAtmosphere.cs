@@ -276,7 +276,12 @@ public sealed partial class AtmosphereSystem
             return;
 
         if (tile.Air.Immutable)
-            tile.Air = tile.Air.Clone();
+        {
+            // GasMixture.Clone() returns the same immutable instance, so build a mutable copy.
+            var mutableAir = new GasMixture(tile.Air.Volume);
+            mutableAir.CopyFrom(tile.Air);
+            tile.Air = mutableAir;
+        }
         // VG-Tweak End
 
         DebugTools.AssertNotNull(tile.Air);

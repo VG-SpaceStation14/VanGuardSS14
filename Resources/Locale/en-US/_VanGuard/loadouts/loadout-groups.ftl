@@ -40,3 +40,6 @@ loadout-group-senior-engineer-id = Senior Engineer, ID
 loadout-group-senior-officer-id = Senior Officer, ID
 loadout-group-senior-physician-id = Senior Physician, ID
 loadout-group-senior-researcher-id = Senior Researcher, ID
+loadout-group-salvage-specialist-neck = Salvage Specialist neckwear
+loadout-group-salvage-specialist-jumpsuit = Salvage Specialist jumpsuit
+loadout-group-atmospheric-technician-neck = Atmospheric Technician neckwear
