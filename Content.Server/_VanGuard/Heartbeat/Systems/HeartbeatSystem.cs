@@ -5,6 +5,7 @@ using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
 using Content.Shared.GameTicking;
 using Content.Shared.Mobs;
+using Content.Shared.Mobs.Systems;
 using Robust.Server.Audio;
 using Robust.Shared.Audio;
 using Robust.Shared.Player;
@@ -12,109 +13,103 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._VanGuard.Heartbeat.Systems;
 
+/// <summary>
+/// Plays a looping heartbeat while a mob is in critical condition. The beat interval and pitch are
+/// derived from the amount of damage the mob has accumulated.
+/// </summary>
 public sealed partial class HeartbeatSystem : EntitySystem
 {
     [Dependency] private AudioSystem _audio = default!;
-    [Dependency] private ISharedPlayerManager _player = default!;
+    [Dependency] private ISharedPlayerManager _players = default!;
     [Dependency] private IGameTiming _timing = default!;
-    [Dependency] private DamageableSystem _damageable = default!;
+    [Dependency] private DamageableSystem _damage = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
 
-    private const float MinimumCooldown = 0.5f;
-    private const float MaximumCooldown = 3f;
+    private const float FastestInterval = 0.5f;
+    private const float SlowestInterval = 3f;
 
-    private static readonly SoundSpecifier HeartbeatSound =
-        new SoundPathSpecifier("/Audio/_VanGuard/Effects/heartbeat.ogg", AudioParams.Default.WithVolume(-3f));
+    private static readonly SoundSpecifier BeatSound = new SoundPathSpecifier(
+        "/Audio/_VanGuard/Effects/heartbeat.ogg",
+        AudioParams.Default.WithVolume(-3f));
 
-    private static readonly HashSet<ICommonSession> DisabledSessions = [];
+    private readonly HashSet<ICommonSession> _mutedSessions = new();
 
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<CritHeartbeatComponent, MobStateChangedEvent>(OnMobStateChanged);
-        SubscribeLocalEvent<ActiveHeartbeatComponent, DamageChangedEvent>(OnDamageChanged);
-        SubscribeNetworkEvent<HeartbeatOptionsChangedEvent>(OnOptionsChanged);
-        SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => DisabledSessions.Clear());
+        SubscribeLocalEvent<CritHeartbeatComponent, DamageChangedEvent>(OnDamageChanged);
+        SubscribeNetworkEvent<HeartbeatOptionsChangedEvent>(OnPreferencesChanged);
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
 
-        var query = EntityQueryEnumerator<ActiveHeartbeatComponent>();
-
-        while (query.MoveNext(out var uid, out var activeHeartbeat))
+        var query = EntityQueryEnumerator<CritHeartbeatComponent>();
+        while (query.MoveNext(out var uid, out var heartbeat))
         {
-            if (_timing.CurTime < activeHeartbeat.NextHeartbeatTime)
+            if (!_mobState.IsCritical(uid))
                 continue;
 
-            if (IsDisabledByClient(uid))
+            if (_timing.CurTime < heartbeat.NextBeat)
                 continue;
 
-            _audio.PlayGlobal(HeartbeatSound, uid, AudioParams.Default.WithPitchScale(activeHeartbeat.Pitch));
-            SetNextTime(activeHeartbeat);
+            if (_players.TryGetSessionByEntity(uid, out var session) && _mutedSessions.Contains(session))
+                continue;
+
+            _audio.PlayGlobal(BeatSound, uid, AudioParams.Default.WithPitchScale(heartbeat.Pitch));
+            heartbeat.NextBeat = _timing.CurTime + heartbeat.Interval;
         }
+    }
+
+    private void OnRoundRestart(RoundRestartCleanupEvent args)
+    {
+        _mutedSessions.Clear();
+    }
+
+    private void OnPreferencesChanged(HeartbeatOptionsChangedEvent args, EntitySessionEventArgs session)
+    {
+        if (args.IsEnabled)
+            _mutedSessions.Remove(session.SenderSession);
+        else
+            _mutedSessions.Add(session.SenderSession);
     }
 
     private void OnMobStateChanged(Entity<CritHeartbeatComponent> ent, ref MobStateChangedEvent args)
     {
         if (args.NewMobState != MobState.Critical)
         {
-            RemComp<ActiveHeartbeatComponent>(ent);
+            ent.Comp.NextBeat = TimeSpan.Zero;
             return;
         }
 
-        var activeHeartbeat = EnsureComp<ActiveHeartbeatComponent>(ent);
-        TryCalculateCurrentState((ent.Owner, activeHeartbeat));
-        SetNextTime(activeHeartbeat);
+        RecalculateBeat(ent);
     }
 
-    private void OnDamageChanged(Entity<ActiveHeartbeatComponent> ent, ref DamageChangedEvent args)
+    private void OnDamageChanged(Entity<CritHeartbeatComponent> ent, ref DamageChangedEvent args)
     {
-        if (!args.DamageIncreased)
+        if (!args.DamageIncreased || !_mobState.IsCritical(ent.Owner))
             return;
 
-        TryCalculateCurrentState((ent.Owner, ent.Comp), args.Damageable);
+        RecalculateBeat(ent);
     }
 
-    private bool TryCalculateCurrentState(Entity<ActiveHeartbeatComponent> ent, DamageableComponent? damageable = null)
+    private void RecalculateBeat(Entity<CritHeartbeatComponent> ent)
     {
-        if (!Resolve(ent.Owner, ref damageable))
-            return false;
+        if (!TryComp<DamageableComponent>(ent, out var damageable))
+            return;
 
-        var totalDamage = (float)_damageable.GetTotalDamage((ent.Owner, damageable));
+        var total = (float) _damage.GetTotalDamage((ent.Owner, damageable));
+        if (total <= 0f)
+            return;
 
-        if (totalDamage <= 0)
-            return false;
+        ent.Comp.Pitch = MathF.Min(1f, 100f / total);
 
-        var pitch = Math.Min(1f, 100f / totalDamage);
-        var excess = Math.Max(0f, totalDamage - 100f);
-        var cooldownSeconds = MinimumCooldown + (excess / 100f) * (MaximumCooldown - MinimumCooldown);
-
-        ent.Comp.Pitch = pitch;
-        ent.Comp.NextHeartbeatCooldown = TimeSpan.FromSeconds(cooldownSeconds);
-
-        return true;
-    }
-
-    private void SetNextTime(ActiveHeartbeatComponent component)
-    {
-        component.NextHeartbeatTime = _timing.CurTime + component.NextHeartbeatCooldown;
-    }
-
-    private bool IsDisabledByClient(EntityUid player)
-    {
-        if (!_player.TryGetSessionByEntity(player, out var session))
-            return true;
-
-        return DisabledSessions.Contains(session);
-    }
-
-    private static void OnOptionsChanged(HeartbeatOptionsChangedEvent ev, EntitySessionEventArgs args)
-    {
-        if (ev.Enabled)
-            DisabledSessions.Remove(args.SenderSession);
-        else
-            DisabledSessions.Add(args.SenderSession);
+        var overkill = MathF.Max(0f, total - 100f);
+        var seconds = FastestInterval + overkill / 100f * (SlowestInterval - FastestInterval);
+        ent.Comp.Interval = TimeSpan.FromSeconds(seconds);
     }
 }
