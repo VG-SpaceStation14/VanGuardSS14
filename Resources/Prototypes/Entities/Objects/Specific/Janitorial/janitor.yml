@@ -39,6 +39,9 @@
     sprite: Objects/Specific/Janitorial/mop.rsi
   - type: Absorbent
     useAbsorberSolution: true
+    # VG-Tweak Start
+    cleanRadius: 0.5
+    # VG-Tweak End
   - type: UseDelay
     delay: 1
   - type: PhysicalComposition
@@ -88,6 +91,9 @@
       sprite: Objects/Specific/Janitorial/advmop.rsi
     - type: Absorbent
       pickupAmount: 100
+      # VG-Tweak Start
+      cleanRadius: 0.8
+      # VG-Tweak End
     - type: SolutionRegeneration
       generated:
         reagents:
@@ -331,6 +337,9 @@
     - type: Absorbent
       pickupAmount: 15
       useAbsorberSolution: true
+      # VG-Tweak Start
+      cleanRadius: 0.35
+      # VG-Tweak End
     - type: Construction
       graph: Rag
       node: rag
