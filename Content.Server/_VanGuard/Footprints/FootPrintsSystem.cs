@@ -53,7 +53,7 @@ public sealed partial class FootprintSystem : EntitySystem
         _pressure = GetEntityQuery<PressureProtectionComponent>();
 
         SubscribeLocalEvent<FootprintEmitterComponent, ComponentStartup>(OnEmitterStarted);
-        SubscribeLocalEvent<FootprintEmitterComponent, ComponentInit>(OnEmitterInit);
+        SubscribeLocalEvent<FootprintEmitterComponent, MapInitEvent>(OnEmitterMapInit);
         SubscribeLocalEvent<FootprintEmitterComponent, MoveEvent>(OnEmitterMoved);
         SubscribeLocalEvent<FootprintComponent, SolutionChangedEvent>(OnFootprintSolutionChanged);
     }
@@ -74,7 +74,7 @@ public sealed partial class FootprintSystem : EntitySystem
             appearance);
     }
 
-    private void OnEmitterInit(Entity<FootprintEmitterComponent> ent, ref ComponentInit args)
+    private void OnEmitterMapInit(Entity<FootprintEmitterComponent> ent, ref MapInitEvent args)
     {
         // EnsureSolution returns false when it creates a new default solution, but still fills
         // the out parameter. Both solutions need their capacity even in that case.
