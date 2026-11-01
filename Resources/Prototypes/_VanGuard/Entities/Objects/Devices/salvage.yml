@@ -31,6 +31,11 @@
     color: "#c94242"
   - type: Computer
     board: SalvageShuttleConsoleCircuitboard
+  # VG-Tweak: the computer board container is created on init; declare it so prototype saving round-trips cleanly.
+  - type: ContainerContainer
+    containers:
+      board: !type:Container
+        ents: []
   - type: GuideHelp
     guides:
     - ShuttleCraft

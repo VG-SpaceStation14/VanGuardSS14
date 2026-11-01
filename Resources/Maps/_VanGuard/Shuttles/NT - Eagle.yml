@@ -817,8 +817,7 @@ entities:
       color: '#0335FCFF'
     - type: LinkedDeviceNetwork
       deviceLists: []
-      configurators:
-      - invalid
+      configurators: []
 - proto: GasVentScrubber
   entities:
   - uid: 64
@@ -830,8 +829,7 @@ entities:
       color: '#FF1212FF'
     - type: LinkedDeviceNetwork
       deviceLists: []
-      configurators:
-      - invalid
+      configurators: []
 - proto: GeneratorWallmountAPU
   entities:
   - uid: 65
