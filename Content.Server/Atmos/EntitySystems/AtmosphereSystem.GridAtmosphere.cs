@@ -270,6 +270,15 @@ public sealed partial class AtmosphereSystem
     /// <param name="tile">Tile we are shunting the air from.</param>
     private void ShuntTileVolume(TileAtmosphere tile)
     {
+        // VG-Tweak Start: map-atmosphere mixtures can be immutable when a tile is revalidated
+        // after a map atmosphere change. Clone before shunting instead of asserting in release tests.
+        if (tile.Air == null)
+            return;
+
+        if (tile.Air.Immutable)
+            tile.Air = tile.Air.Clone();
+        // VG-Tweak End
+
         DebugTools.AssertNotNull(tile.Air);
         DebugTools.Assert(tile.Air?.Immutable == false);
 
