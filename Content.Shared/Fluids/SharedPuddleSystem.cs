@@ -207,6 +207,7 @@ public abstract partial class SharedPuddleSystem : EntitySystem
         }
     }
 
+    // VG-Tweak Start
     /// <summary>
     /// Returns the display colour for a puddle solution, including standout reagent tinting.
     /// </summary>
@@ -229,6 +230,7 @@ public abstract partial class SharedPuddleSystem : EntitySystem
 
         return color;
     }
+    // VG-Tweak End
 
     private void UpdateAppearance(Entity<PuddleComponent?, AppearanceComponent?> ent)
     {
@@ -250,7 +252,9 @@ public abstract partial class SharedPuddleSystem : EntitySystem
             // Kinda EH
             // Could potentially do alpha per-solution but future problem.
 
+            // VG-Tweak Start
             color = GetSolutionColor(solution);
+            // VG-Tweak End
         }
 
         _appearance.SetData(ent, PuddleVisuals.CurrentVolume, volume.Float(), appearance);
