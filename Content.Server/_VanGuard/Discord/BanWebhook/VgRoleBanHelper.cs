@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Content.Server.Database;
 using Content.Shared.Roles;
+using Robust.Server.Player;
 using Robust.Shared.IoC;
 using Robust.Shared.Log;
 using Robust.Shared.Network;
-using Robust.Server.Player;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server._VanGuard.Discord;
 
+/// <summary>
+/// Bridges role/department ban commands to the Discord webhook without making the command depend on
+/// the webhook transport. All failures are contained here.
+/// </summary>
 public static class VgRoleBanHelper
 {
     public static async Task SendRoleBanToDiscord<T>(
@@ -25,43 +29,35 @@ public static class VgRoleBanHelper
     {
         try
         {
-            var vgSender = IoCManager.Resolve<VgBanWebhookSender>();
-            if (vgSender == null)
-                return;
+            var sender = IoCManager.Resolve<VgBanWebhookSender>();
+            var database = IoCManager.Resolve<IServerDbManager>();
+            var players = IoCManager.Resolve<IPlayerManager>();
 
-            var dbManager = IoCManager.Resolve<IServerDbManager>();
-            var lastBan = await dbManager.GetLastBanAsync();
-            var newBanId = lastBan is not null ? lastBan.Id + 1 : 1;
+            var lastBan = await database.GetLastBanAsync();
+            var nextId = (lastBan?.Id ?? 0) + 1;
 
-            string adminName = "System";
-            if (banningAdmin.HasValue)
+            var admin = "System";
+            if (banningAdmin is { } adminId && players.TryGetSessionById(adminId, out var session))
+                admin = session.Name;
+
+            await sender.SendBanAsync(new VgBanInfo
             {
-                var playerManager = IoCManager.Resolve<IPlayerManager>();
-                if (playerManager.TryGetSessionById(banningAdmin.Value, out var adminSession))
-                    adminName = adminSession.Name;
-            }
-
-            var vgBanInfo = new VgBanInfo
-            {
-                BanId = newBanId.ToString() ?? "0",
+                BanId = nextId.ToString(),
                 Target = targetUsername ?? "Unknown",
-                AdminName = adminName,
+                AdminName = admin,
                 Reason = reason ?? string.Empty,
                 Minutes = minutes ?? 0,
                 Expires = expires,
                 BanType = banType,
                 AdditionalInfo = new Dictionary<string, string>
                 {
-                    ["role"] = role.ToString()
-                }
-            };
-
-            await vgSender.SendBanAsync(vgBanInfo);
+                    ["role"] = role.ToString(),
+                },
+            });
         }
         catch (Exception ex)
         {
-            var sawmill = Logger.GetSawmill("vg_role_ban");
-            sawmill.Error($"Failed to send role ban to Discord: {ex.Message}");
+            Logger.GetSawmill("vg_role_ban").Error($"Role ban webhook failed: {ex.Message}");
         }
     }
 }

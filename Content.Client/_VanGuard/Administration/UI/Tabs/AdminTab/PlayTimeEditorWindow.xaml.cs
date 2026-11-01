@@ -11,229 +11,213 @@ using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
-namespace Content.Client.Administration.UI.Tabs.AdminTab
+namespace Content.Client.Administration.UI.Tabs.AdminTab;
+
+[GenerateTypedNameReferences]
+[UsedImplicitly]
+public sealed partial class PlayTimeEditorWindow : DefaultWindow
 {
-    [GenerateTypedNameReferences]
-    [UsedImplicitly]
-    public sealed partial class PlayTimeEditorWindow : DefaultWindow
+    private readonly record struct PlaytimeTarget(string Label, string Value);
+
+    [Dependency] private IPrototypeManager _prototypes = default!;
+
+    private readonly IClientConsoleHost _console;
+    private readonly List<PlaytimeTarget> _jobs = new();
+    private readonly List<PlaytimeTarget> _departments = new();
+
+    private bool _roleMode = true;
+
+    public PlayTimeEditorWindow()
     {
-        [Dependency] private IPrototypeManager _prototypes = default!;
-        private readonly IClientConsoleHost _consoleHost;
+        RobustXamlLoader.Load(this);
+        IoCManager.InjectDependencies(this);
+        _console = IoCManager.Resolve<IClientConsoleHost>();
 
-        private readonly List<(string Display, string Tracker)> _roles = new();
-        private readonly List<(string Display, string Id)> _departments = new();
+        Tabs.SetTabTitle(0, Loc.GetString("admin-time-panel-tab-edit"));
+        Tabs.SetTabTitle(1, Loc.GetString("admin-time-panel-tab-reset"));
 
-        private bool _roleMode = true;
+        CollectTargets();
+        WireEvents();
+        SetMode(true);
+        RefreshPickers(string.Empty);
+        UpdateGrantAvailability();
+        UpdateClearAvailability();
+    }
 
-        public PlayTimeEditorWindow()
+    public void PrefillPlayer(string username)
+    {
+        UserLine.Text = username;
+        ClearUserLine.Text = username;
+        UpdateGrantAvailability();
+        UpdateClearAvailability();
+    }
+
+    private void CollectTargets()
+    {
+        foreach (var job in _prototypes.EnumeratePrototypes<JobPrototype>())
         {
-            RobustXamlLoader.Load(this);
-            IoCManager.InjectDependencies(this);
-            _consoleHost = IoCManager.Resolve<IClientConsoleHost>();
-
-            Tabs.SetTabTitle(0, Loc.GetString("admin-time-panel-tab-edit"));
-            Tabs.SetTabTitle(1, Loc.GetString("admin-time-panel-tab-reset"));
-
-            BuildRoleList();
-            BuildDepartmentList();
-            WireEvents();
-            RefreshRoleList("");
-            RefreshDepartmentList("");
-            SyncButtons();
-            SyncClearButtons();
+            if (!string.IsNullOrWhiteSpace(job.PlayTimeTracker))
+                _jobs.Add(new PlaytimeTarget(job.LocalizedName, job.PlayTimeTracker));
         }
 
-        /// <summary>
-        ///     Fills the player fields with the given username (used when opening from the admin player panel).
-        /// </summary>
-        public void PrefillPlayer(string username)
+        foreach (var department in _prototypes.EnumeratePrototypes<DepartmentPrototype>())
         {
-            UserLine.Text = username;
-            ClearUserLine.Text = username;
-            SyncButtons();
-            SyncClearButtons();
-        }
-
-        private void BuildRoleList()
-        {
-            _roles.Clear();
-            foreach (var job in _prototypes.EnumeratePrototypes<JobPrototype>())
-            {
-                if (!string.IsNullOrEmpty(job.PlayTimeTracker))
-                    _roles.Add((job.LocalizedName, job.PlayTimeTracker));
-            }
-        }
-
-        private void BuildDepartmentList()
-        {
-            _departments.Clear();
-            foreach (var department in _prototypes.EnumeratePrototypes<DepartmentPrototype>())
-            {
-                var display = Loc.TryGetString($"department-{department.ID}", out var localized)
-                    ? localized
-                    : department.ID;
-                _departments.Add((display, department.ID));
-            }
-        }
-
-        private void RefreshRoleList(string filter)
-        {
-            RolePick.Clear();
-            var index = 0;
-            foreach (var (display, tracker) in _roles
-                         .Where(r => r.Display.Contains(filter, StringComparison.OrdinalIgnoreCase))
-                         .OrderBy(r => r.Display))
-            {
-                RolePick.AddItem(display);
-                RolePick.SetItemMetadata(index++, tracker);
-            }
-
-            if (RolePick.ItemCount > 0)
-                RolePick.SelectId(0);
-        }
-
-        private void RefreshDepartmentList(string filter)
-        {
-            DepartmentPick.Clear();
-            var index = 0;
-            foreach (var (display, id) in _departments
-                         .Where(d => d.Display.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
-                                     d.Id.Contains(filter, StringComparison.OrdinalIgnoreCase))
-                         .OrderBy(d => d.Display))
-            {
-                DepartmentPick.AddItem(display);
-                DepartmentPick.SetItemMetadata(index++, id);
-            }
-
-            if (DepartmentPick.ItemCount > 0)
-                DepartmentPick.SelectId(0);
-        }
-
-        private void SetRoleMode(bool roleMode)
-        {
-            _roleMode = roleMode;
-            RoleModeButton.Pressed = roleMode;
-            DepartmentModeButton.Pressed = !roleMode;
-            RolePick.Visible = roleMode;
-            DepartmentPick.Visible = !roleMode;
-            RoleSearchLine.PlaceHolder = Loc.GetString(roleMode
-                ? "admin-time-panel-window-role-filtre"
-                : "admin-time-panel-window-department-filtre");
-            RefreshRoleList(RoleSearchLine.Text);
-            RefreshDepartmentList(RoleSearchLine.Text);
-        }
-
-        private void BumpMinutes(int delta)
-        {
-            if (!uint.TryParse(AmountLine.Text, out var current))
-                current = 0;
-            AmountLine.Text = (current + delta).ToString();
-            SyncButtons();
-        }
-
-        private void WireEvents()
-        {
-            UserLine.OnTextChanged += _ => SyncButtons();
-            AmountLine.OnTextChanged += _ => SyncButtons();
-            RoleSearchLine.OnTextChanged += _ =>
-            {
-                if (_roleMode)
-                    RefreshRoleList(RoleSearchLine.Text);
-                else
-                    RefreshDepartmentList(RoleSearchLine.Text);
-            };
-
-            RoleModeButton.OnToggled += args =>
-            {
-                if (args.Pressed)
-                    SetRoleMode(true);
-            };
-            DepartmentModeButton.OnToggled += args =>
-            {
-                if (args.Pressed)
-                    SetRoleMode(false);
-            };
-
-            RolePick.OnItemSelected += args => RolePick.SelectId(args.Id);
-            DepartmentPick.OnItemSelected += args => DepartmentPick.SelectId(args.Id);
-
-            HourBonus.OnPressed += _ => BumpMinutes(60);
-            DayBonus.OnPressed += _ => BumpMinutes(1440);
-            WeekBonus.OnPressed += _ => BumpMinutes(10080);
-            MonthBonus.OnPressed += _ => BumpMinutes(43200);
-
-            GrantPlayerList.OnSelectionChanged += player =>
-            {
-                UserLine.Text = player?.Username ?? string.Empty;
-                SyncButtons();
-            };
-            ClearPlayerList.OnSelectionChanged += player =>
-            {
-                ClearUserLine.Text = player?.Username ?? string.Empty;
-                SyncClearButtons();
-            };
-
-            GrantRoleButton.OnPressed += _ => CommitRoleGrant();
-            GrantOverallButton.OnPressed += _ => CommitOverallGrant();
-            ClearEverythingButton.OnPressed += _ => RunClear("playtime_resetall_as");
-            ClearRolesButton.OnPressed += _ => RunClear("playtime_resetroles_as");
-            ClearOverallButton.OnPressed += _ => RunClear("playtime_resetoverall_as");
-        }
-
-        private void CommitRoleGrant()
-        {
-            if (string.IsNullOrWhiteSpace(UserLine.Text) || string.IsNullOrWhiteSpace(AmountLine.Text))
-                return;
-
-            if (_roleMode)
-            {
-                if (RolePick.SelectedMetadata is not string tracker || string.IsNullOrWhiteSpace(tracker))
-                    return;
-
-                _consoleHost.ExecuteCommand(
-                    $"playtime_addrole_as \"{UserLine.Text}\" \"{CommandParsing.Escape(tracker)}\" {AmountLine.Text}");
-            }
-            else
-            {
-                if (DepartmentPick.SelectedMetadata is not string department || string.IsNullOrWhiteSpace(department))
-                    return;
-
-                _consoleHost.ExecuteCommand(
-                    $"playtime_adddepartment_as \"{UserLine.Text}\" \"{CommandParsing.Escape(department)}\" {AmountLine.Text}");
-            }
-        }
-
-        private void CommitOverallGrant()
-        {
-            if (string.IsNullOrWhiteSpace(UserLine.Text) || string.IsNullOrWhiteSpace(AmountLine.Text))
-                return;
-
-            _consoleHost.ExecuteCommand($"playtime_addoverall_as \"{UserLine.Text}\" {AmountLine.Text}");
-        }
-
-        private void RunClear(string command)
-        {
-            if (string.IsNullOrWhiteSpace(ClearUserLine.Text))
-                return;
-
-            _consoleHost.ExecuteCommand($"{command} \"{ClearUserLine.Text}\"");
-        }
-
-        private void SyncButtons()
-        {
-            var valid = !string.IsNullOrWhiteSpace(UserLine.Text) &&
-                        uint.TryParse(AmountLine.Text, out _);
-            GrantRoleButton.Disabled = !valid;
-            GrantOverallButton.Disabled = !valid;
-        }
-
-        private void SyncClearButtons()
-        {
-            var valid = !string.IsNullOrWhiteSpace(ClearUserLine.Text);
-            ClearEverythingButton.Disabled = !valid;
-            ClearRolesButton.Disabled = !valid;
-            ClearOverallButton.Disabled = !valid;
+            var label = Loc.TryGetString($"department-{department.ID}", out var localized)
+                ? localized
+                : department.ID;
+            _departments.Add(new PlaytimeTarget(label, department.ID));
         }
     }
-}
 
+    private void WireEvents()
+    {
+        UserLine.OnTextChanged += _ => UpdateGrantAvailability();
+        AmountLine.OnTextChanged += _ => UpdateGrantAvailability();
+        RoleSearchLine.OnTextChanged += _ => RefreshPickers(RoleSearchLine.Text);
+
+        RoleModeButton.OnToggled += args =>
+        {
+            if (args.Pressed)
+                SetMode(true);
+        };
+        DepartmentModeButton.OnToggled += args =>
+        {
+            if (args.Pressed)
+                SetMode(false);
+        };
+
+        RolePick.OnItemSelected += args => RolePick.SelectId(args.Id);
+        DepartmentPick.OnItemSelected += args => DepartmentPick.SelectId(args.Id);
+
+        HourBonus.OnPressed += _ => AddMinutes(60);
+        DayBonus.OnPressed += _ => AddMinutes(1440);
+        WeekBonus.OnPressed += _ => AddMinutes(10080);
+        MonthBonus.OnPressed += _ => AddMinutes(43200);
+
+        GrantPlayerList.OnSelectionChanged += player =>
+        {
+            UserLine.Text = player?.Username ?? string.Empty;
+            UpdateGrantAvailability();
+        };
+        ClearPlayerList.OnSelectionChanged += player =>
+        {
+            ClearUserLine.Text = player?.Username ?? string.Empty;
+            UpdateClearAvailability();
+        };
+
+        GrantRoleButton.OnPressed += _ => GrantTarget();
+        GrantOverallButton.OnPressed += _ => GrantOverall();
+
+        ClearEverythingButton.OnPressed += _ => Reset("playtime_resetall_as");
+        ClearRolesButton.OnPressed += _ => Reset("playtime_resetroles_as");
+        ClearOverallButton.OnPressed += _ => Reset("playtime_resetoverall_as");
+    }
+
+    private void SetMode(bool roleMode)
+    {
+        _roleMode = roleMode;
+        RoleModeButton.Pressed = roleMode;
+        DepartmentModeButton.Pressed = !roleMode;
+        RolePick.Visible = roleMode;
+        DepartmentPick.Visible = !roleMode;
+
+        RoleSearchLine.PlaceHolder = Loc.GetString(roleMode
+            ? "admin-time-panel-window-role-filtre"
+            : "admin-time-panel-window-department-filtre");
+
+        RefreshPickers(RoleSearchLine.Text);
+    }
+
+    private void RefreshPickers(string query)
+    {
+        if (_roleMode)
+            FillPicker(RolePick, _jobs, query);
+        else
+            FillPicker(DepartmentPick, _departments, query);
+    }
+
+    private static void FillPicker(OptionButton picker, List<PlaytimeTarget> source, string query)
+    {
+        picker.Clear();
+
+        var index = 0;
+        foreach (var entry in source
+                     .Where(target => target.Label.Contains(query, StringComparison.OrdinalIgnoreCase)
+                                      || target.Value.Contains(query, StringComparison.OrdinalIgnoreCase))
+                     .OrderBy(target => target.Label))
+        {
+            picker.AddItem(entry.Label);
+            picker.SetItemMetadata(index++, entry.Value);
+        }
+
+        if (picker.ItemCount > 0)
+            picker.SelectId(0);
+    }
+
+    private void AddMinutes(int minutes)
+    {
+        if (!uint.TryParse(AmountLine.Text, out var current))
+            current = 0;
+
+        AmountLine.Text = (current + (uint) minutes).ToString();
+        UpdateGrantAvailability();
+    }
+
+    private void GrantTarget()
+    {
+        if (!TryGetMinutes(out var minutes) || string.IsNullOrWhiteSpace(UserLine.Text))
+            return;
+
+        var picker = _roleMode ? RolePick : DepartmentPick;
+        if (picker.SelectedMetadata is not string target || string.IsNullOrWhiteSpace(target))
+            return;
+
+        var command = _roleMode ? "playtime_addrole_as" : "playtime_adddepartment_as";
+        Execute(command, UserLine.Text, target, minutes.ToString());
+    }
+
+    private void GrantOverall()
+    {
+        if (!TryGetMinutes(out var minutes) || string.IsNullOrWhiteSpace(UserLine.Text))
+            return;
+
+        Execute("playtime_addoverall_as", UserLine.Text, minutes.ToString());
+    }
+
+    private bool TryGetMinutes(out uint minutes)
+    {
+        return uint.TryParse(AmountLine.Text, out minutes);
+    }
+
+    private void Reset(string command)
+    {
+        if (string.IsNullOrWhiteSpace(ClearUserLine.Text))
+            return;
+
+        Execute(command, ClearUserLine.Text);
+    }
+
+    private void Execute(string command, params string[] arguments)
+    {
+        var line = command;
+        foreach (var argument in arguments)
+            line += $" \"{CommandParsing.Escape(argument)}\"";
+
+        _console.ExecuteCommand(line);
+    }
+
+    private void UpdateGrantAvailability()
+    {
+        var valid = !string.IsNullOrWhiteSpace(UserLine.Text) && uint.TryParse(AmountLine.Text, out _);
+        GrantRoleButton.Disabled = !valid;
+        GrantOverallButton.Disabled = !valid;
+    }
+
+    private void UpdateClearAvailability()
+    {
+        var valid = !string.IsNullOrWhiteSpace(ClearUserLine.Text);
+        ClearEverythingButton.Disabled = !valid;
+        ClearRolesButton.Disabled = !valid;
+        ClearOverallButton.Disabled = !valid;
+    }
+}

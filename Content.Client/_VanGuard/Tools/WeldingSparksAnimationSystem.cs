@@ -6,59 +6,59 @@ using Robust.Shared.Animations;
 
 namespace Content.Client._VanGuard.Tools;
 
+/// <summary>
+/// Animates a welding spark sprite along the configured seam while the server-side do-after runs.
+/// </summary>
 public sealed partial class WeldingSparksAnimationSystem : EntitySystem
 {
     [Dependency] private AnimationPlayerSystem _animation = default!;
 
-    private const string AnimationKey = "WeldingSparksAnim";
+    private const string Track = "VGWeldingSparks";
 
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeNetworkEvent<SpawnedWeldingSparksEvent>(OnSpawnedEffect);
+        SubscribeNetworkEvent<SpawnedWeldingSparksEvent>(OnSparkStarted);
     }
 
-    private void OnSpawnedEffect(SpawnedWeldingSparksEvent ev)
+    private void OnSparkStarted(SpawnedWeldingSparksEvent args)
     {
-        if (!TryGetEntity(ev.Target, out var target) || !TryGetEntity(ev.Sparks, out var sparks))
+        if (!TryGetEntity(args.ToolTarget, out var target)
+            || !TryGetEntity(args.SparkEffect, out var spark)
+            || !TryComp<WeldingSparksAnimationComponent>(target, out var offsets)
+            || !TryComp<SpriteComponent>(spark, out _))
             return;
 
-        if (!TryComp<WeldingSparksAnimationComponent>(target, out var animComp))
+        if (_animation.HasRunningAnimation(spark.Value, Track))
             return;
 
-        if (!TryComp<SpriteComponent>(sparks, out var sprite))
-            return;
-
-        if (_animation.HasRunningAnimation(sparks.Value, AnimationKey))
-            return;
-
-        bool isWelded = false;
-
-        var start = animComp.StartingOffset;
-        var end = animComp.EndingOffset ?? -start;
-
-        if (isWelded)
-            (start, end) = (end, start);
+        var from = offsets.StartingOffset;
+        var to = offsets.EndingOffset ?? -from;
 
         var animation = new Robust.Client.Animations.Animation
         {
-            Length = ev.Duration,
+            Length = args.Lifetime,
             AnimationTracks =
             {
-                new AnimationTrackComponentProperty
-                {
-                    ComponentType = typeof(SpriteComponent),
-                    Property = nameof(SpriteComponent.Offset),
-                    InterpolationMode = AnimationInterpolationMode.Linear,
-                    KeyFrames =
-                    {
-                        new AnimationTrackProperty.KeyFrame(start, 0f),
-                        new AnimationTrackProperty.KeyFrame(end, (float) ev.Duration.TotalSeconds),
-                    }
-                }
-            }
+                StartOffsetTrack(from, to, (float) args.Lifetime.TotalSeconds),
+            },
         };
 
-        _animation.Play(sparks.Value, animation, AnimationKey);
+        _animation.Play(spark.Value, animation, Track);
+    }
+
+    private static AnimationTrackComponentProperty StartOffsetTrack(Vector2 from, Vector2 to, float duration)
+    {
+        return new AnimationTrackComponentProperty
+        {
+            ComponentType = typeof(SpriteComponent),
+            Property = nameof(SpriteComponent.Offset),
+            InterpolationMode = AnimationInterpolationMode.Linear,
+            KeyFrames =
+            {
+                new AnimationTrackProperty.KeyFrame(from, 0f),
+                new AnimationTrackProperty.KeyFrame(to, duration),
+            },
+        };
     }
 }

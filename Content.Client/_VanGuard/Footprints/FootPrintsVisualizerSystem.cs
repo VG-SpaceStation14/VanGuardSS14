@@ -1,4 +1,4 @@
-﻿using Content.Client.Fluids;
+using Content.Client.Fluids;
 using Content.Shared._VanGuard.Footprints;
 using Robust.Client.GameObjects;
 using Robust.Shared.Utility;
@@ -6,94 +6,47 @@ using Robust.Shared.Utility;
 namespace Content.Client._VanGuard.Footprints;
 
 /// <summary>
-/// Handles the visual appearance and updates of footprint entities on the client
+/// Applies the server-provided footprint state and colour to the footprint sprite.
 /// </summary>
 public sealed partial class FootprintVisualizerSystem : EntitySystem
 {
     [Dependency] private AppearanceSystem _appearance = default!;
     [Dependency] private SpriteSystem _sprite = default!;
 
-    /// <inheritdoc/>
     public override void Initialize()
     {
         base.Initialize();
 
-        SubscribeLocalEvent<FootprintComponent, ComponentInit>(OnFootprintInitialized);
-        SubscribeLocalEvent<FootprintComponent, ComponentShutdown>(OnFootprintShutdown);
-
-        // Причина по которой нельзя использовать VisualizerSystem<T>
-        SubscribeLocalEvent<FootprintComponent, AppearanceChangeEvent>(OnAppearanceChange, after:[typeof(PuddleSystem)]);
+        SubscribeLocalEvent<FootprintComponent, ComponentInit>(OnInit);
+        SubscribeLocalEvent<FootprintComponent, ComponentShutdown>(OnShutdown);
+        SubscribeLocalEvent<FootprintComponent, AppearanceChangeEvent>(OnAppearanceChanged, after: [typeof(PuddleSystem)]);
     }
 
-    private void OnAppearanceChange(EntityUid uid, FootprintComponent component, ref AppearanceChangeEvent args)
+    private void OnInit(Entity<FootprintComponent> ent, ref ComponentInit args)
     {
-        UpdateFootprintVisuals((uid, component));
+        _sprite.LayerMapReserve(ent.Owner, FootprintSpriteLayer.MainLayer);
+        Refresh(ent);
     }
 
-    /// <summary>
-    /// Initializes the visual appearance of a new footprint
-    /// </summary>
-    private void OnFootprintInitialized(Entity<FootprintComponent> ent, ref ComponentInit args)
+    private void OnShutdown(Entity<FootprintComponent> ent, ref ComponentShutdown args)
     {
-        InitializeSpriteLayers(ent);
-        UpdateFootprintVisuals(ent);
+        _sprite.LayerMapRemove(ent.Owner, FootprintSpriteLayer.MainLayer);
     }
 
-    /// <summary>
-    /// Cleans up the visual elements when a footprint is removed
-    /// </summary>
-    private void OnFootprintShutdown(Entity<FootprintComponent> ent, ref ComponentShutdown args)
+    private void OnAppearanceChanged(EntityUid uid, FootprintComponent component, ref AppearanceChangeEvent args)
     {
-        RemoveSpriteLayers(ent);
+        Refresh((uid, component));
     }
 
-    /// <summary>
-    /// Sets up the initial sprite layers for the footprint
-    /// </summary>
-    private void InitializeSpriteLayers(EntityUid uid)
-    {
-        _sprite.LayerMapReserve(uid, FootprintSpriteLayer.MainLayer);
-    }
-
-    /// <summary>
-    /// Removes sprite layers when cleaning up footprint
-    /// </summary>
-    private void RemoveSpriteLayers(EntityUid uid)
-    {
-        _sprite.LayerMapRemove(uid, FootprintSpriteLayer.MainLayer);
-    }
-
-    /// <summary>
-    /// Updates the visual appearance of a footprint based on its current state
-    /// </summary>
-    private void UpdateFootprintVisuals(Entity<FootprintComponent> ent)
+    private void Refresh(Entity<FootprintComponent> ent)
     {
         if (!_sprite.LayerMapTryGet(ent.Owner, FootprintSpriteLayer.MainLayer, out var layer, true))
             return;
 
-        if (!_appearance.TryGetData<string>(ent, FootprintVisualParameter.VisualState, out var visualState))
-            return;
+        if (_appearance.TryGetData<string>(ent, FootprintVisualParameter.VisualState, out var state))
+            _sprite.LayerSetRsi(ent.Owner, layer, ent.Comp.SpritePath, state);
 
-        UpdateSpriteState(ent, layer, visualState, ent.Comp.SpritePath);
-        UpdateSpriteColor(ent);
-    }
-
-    /// <summary>
-    /// Updates the sprite state based on the footprint type
-    /// </summary>
-    private void UpdateSpriteState(EntityUid uid, int layer, string state, ResPath spritePath)
-    {
-        _sprite.LayerSetRsi(uid, layer, spritePath, state);
-    }
-
-    /// <summary>
-    /// Updates the sprite color based on appearance data
-    /// </summary>
-    private void UpdateSpriteColor(EntityUid uid)
-    {
-        if (!_appearance.TryGetData<Color>(uid, FootprintVisualParameter.TrackColor, out var color))
-            return;
-
-        _sprite.SetColor(uid, color);
+        if (_appearance.TryGetData<Color>(ent, FootprintVisualParameter.TrackColor, out var color))
+            _sprite.SetColor(ent.Owner, color);
     }
 }

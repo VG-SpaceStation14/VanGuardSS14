@@ -17,34 +17,32 @@ public sealed partial class DeltaTab : Control
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
 
-        DisableBloomCheckBox.OnToggled += OnCheckBoxToggled;
-        DisableBloomCheckBox.Pressed = _cfg.GetCVar(VGCCVars.BloomEnabled);
-        PointingChatSpritesCheckBox.OnToggled += OnCheckBoxToggled;
-        PointingChatSpritesCheckBox.Pressed = _cfg.GetCVar(VGCCVars.PointingChatSprites);
+        LoadFromConfig();
 
-        ApplyButton.OnPressed += OnApplyButtonPressed;
-        UpdateApplyButton();
+        DisableBloomCheckBox.OnToggled += _ => UpdateApplyState();
+        PointingChatSpritesCheckBox.OnToggled += _ => UpdateApplyState();
+        ApplyButton.OnPressed += _ => SaveToConfig();
     }
 
-    private void OnCheckBoxToggled(BaseButton.ButtonToggledEventArgs args)
+    private void LoadFromConfig()
     {
-        UpdateApplyButton();
+        DisableBloomCheckBox.Pressed = _cfg.GetCVar(VGCCVars.BloomEnabled);
+        PointingChatSpritesCheckBox.Pressed = _cfg.GetCVar(VGCCVars.PointingChatSprites);
+        UpdateApplyState();
     }
 
-    private void OnApplyButtonPressed(BaseButton.ButtonEventArgs args)
+    private void SaveToConfig()
     {
         _cfg.SetCVar(VGCCVars.BloomEnabled, DisableBloomCheckBox.Pressed);
         _cfg.SetCVar(VGCCVars.PointingChatSprites, PointingChatSpritesCheckBox.Pressed);
-
         _cfg.SaveToFile();
-        UpdateApplyButton();
+        UpdateApplyState();
     }
 
-    private void UpdateApplyButton()
+    private void UpdateApplyState()
     {
-        var isBloomSame = DisableBloomCheckBox.Pressed == _cfg.GetCVar(VGCCVars.BloomEnabled);
-
-        var isPointingChatSpritesSame = PointingChatSpritesCheckBox.Pressed == _cfg.GetCVar(VGCCVars.PointingChatSprites);
-        ApplyButton.Disabled = isBloomSame && isPointingChatSpritesSame;
+        ApplyButton.Disabled =
+            DisableBloomCheckBox.Pressed == _cfg.GetCVar(VGCCVars.BloomEnabled)
+            && PointingChatSpritesCheckBox.Pressed == _cfg.GetCVar(VGCCVars.PointingChatSprites);
     }
 }

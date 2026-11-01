@@ -3,21 +3,27 @@
                xmlns:tabs="clr-namespace:Content.Client._VanGuard.Options.UI.Tabs"
                xmlns:xNamespace="http://schemas.microsoft.com/winfx/2006/xaml"
                xmlns:s="clr-namespace:Content.Client.Stylesheets">
-    <BoxContainer Orientation="Vertical">
-        <BoxContainer Orientation="Vertical" Margin="8 8 8 8" VerticalExpand="True">
+    <BoxContainer Orientation="Vertical" SeparationOverride="4">
+        <BoxContainer Orientation="Vertical" Margin="8" VerticalExpand="True" SeparationOverride="6">
             <Label Text="{Loc 'ui-options-general-forknotice'}"
                    FontColorOverride="{xNamespace:Static s:StyleNano.ConcerningOrangeFore}"
-                   StyleClasses="LabelKeyText"/>
+                   StyleClasses="LabelKeyText" />
 
-            <Label Text="{Loc 'ui-options-quality-label'}"
-                   FontColorOverride="{xNamespace:Static s:StyleNano.NanoGold}"
-                   StyleClasses="LabelKeyText"/>
-            <CheckBox Name="DisableBloomCheckBox" Text="{Loc 'ui-options-bloom'}" />
-            <Label Text="{Loc 'ui-options-header-ui'}"
-                   FontColorOverride="{xNamespace:Static s:StyleNano.NanoGold}"
-                   StyleClasses="LabelKeyText"/>
-            <CheckBox Name="PointingChatSpritesCheckBox" Text="{Loc 'ui-options-pointing-chat-sprites'}" />
+            <BoxContainer Orientation="Vertical" SeparationOverride="2">
+                <Label Text="{Loc 'ui-options-quality-label'}"
+                       FontColorOverride="{xNamespace:Static s:StyleNano.NanoGold}"
+                       StyleClasses="LabelKeyText" />
+                <CheckBox Name="DisableBloomCheckBox" Text="{Loc 'ui-options-bloom'}" />
+            </BoxContainer>
+
+            <BoxContainer Orientation="Vertical" SeparationOverride="2">
+                <Label Text="{Loc 'ui-options-header-ui'}"
+                       FontColorOverride="{xNamespace:Static s:StyleNano.NanoGold}"
+                       StyleClasses="LabelKeyText" />
+                <CheckBox Name="PointingChatSpritesCheckBox" Text="{Loc 'ui-options-pointing-chat-sprites'}" />
+            </BoxContainer>
         </BoxContainer>
+
         <controls:StripeBack HasBottomEdge="False" HasMargins="False">
             <Button Name="ApplyButton"
                     Text="{Loc 'ui-options-apply'}"

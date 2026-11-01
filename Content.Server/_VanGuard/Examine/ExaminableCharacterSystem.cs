@@ -8,152 +8,124 @@ using Robust.Shared.Player;
 
 namespace Content.Server._VanGuard.Examine;
 
+/// <summary>
+/// Adds a compact equipment breakdown to a character's examine text when the examiner has the detailed
+/// examine option enabled. Items hidden by outer clothing are only listed when no outer clothing is worn.
+/// </summary>
 public sealed partial class ExaminableCharacterSystem : EntitySystem
 {
+    private const string HeadSlot = "head";
+    private const string OuterSlot = "outerClothing";
+    private const string EarsSlot = "ears";
+
+    private static readonly string[] AlwaysVisibleSlots = { "eyes", "mask", "neck", "back", "suitstorage" };
+    private static readonly string[] UnderOuterSlots = { "jumpsuit", "gloves", "belt", "id", "shoes" };
+
     [Dependency] private InventorySystem _inventory = default!;
-    [Dependency] private INetConfigurationManager _netConfig = default!;
-    [Dependency] private IEntityManager _entityManager = default!;
+    [Dependency] private INetConfigurationManager _config = default!;
+    [Dependency] private IEntityManager _entities = default!;
 
     public override void Initialize()
     {
-        SubscribeLocalEvent<ExaminableCharacterComponent, ExaminedEvent>(OnExamineCharacter);
+        base.Initialize();
+        SubscribeLocalEvent<ExaminableCharacterComponent, ExaminedEvent>(OnExamined);
     }
 
-    private void OnExamineCharacter(EntityUid uid, ExaminableCharacterComponent comp, ExaminedEvent args)
+    private void OnExamined(EntityUid uid, ExaminableCharacterComponent component, ExaminedEvent args)
     {
-        if (!args.IsInDetailsRange)
+        if (!args.IsInDetailsRange
+            || !TryComp<ActorComponent>(args.Examiner, out var actor)
+            || !_config.GetClientCVar(actor.PlayerSession.Channel, VGCCVars.DetailedExamine))
             return;
 
-        if (!TryComp<ActorComponent>(args.Examiner, out var actor))
-            return;
+        var self = args.Examiner == args.Examined;
+        AddHeader(uid, args, self);
 
-        var detailed = _netConfig.GetClientCVar(actor.PlayerSession.Channel, VGCCVars.DetailedExamine);
-        if (!detailed)
-            return;
+        var priority = 13;
+        var shownAny = false;
 
-        var selfAware = args.Examiner == args.Examined;
-
-        string nameLine;
-        if (selfAware)
+        if (TryGetWornItem(uid, OuterSlot, out var outerName))
         {
-            nameLine = Loc.GetString("examine-name-selfaware");
-        }
-        else
-        {
-            var identity = Identity.Entity(uid, _entityManager);
-            nameLine = Loc.GetString("examine-name", ("name", identity));
-        }
-        args.PushMarkup($"[font size=11]{nameLine}[/font]", 15);
-
-        var canSee = selfAware
-            ? Loc.GetString("examine-can-see-selfaware", ("ent", uid))
-            : Loc.GetString("examine-can-see", ("ent", uid));
-        args.PushMarkup($"[font size=10]{canSee}[/font]", 14);
-
-        bool hasOuter = _inventory.TryGetSlotEntity(uid, "outerClothing", out _);
-        bool hasHelmet = _inventory.TryGetSlotEntity(uid, "head", out _);
-
-        var alwaysShowSlots = new Dictionary<string, string>
-        {
-            { "head", "head" },
-            { "eyes", "eyes" },
-            { "mask", "mask" },
-            { "neck", "neck" },
-            { "back", "back" },
-            { "suitstorage", "suitstorage" }
-        };
-
-        var hiddenIfOuterSlots = new Dictionary<string, string>
-        {
-            { "jumpsuit", "jumpsuit" },
-            { "gloves", "gloves" },
-            { "belt", "belt" },
-            { "id", "id" },
-            { "shoes", "shoes" }
-        };
-
-        int priority = 13;
-        bool hasAnyItem = false;
-
-        if (hasOuter && _inventory.TryGetSlotEntity(uid, "outerClothing", out var outerItem) &&
-            TryComp<MetaDataComponent>(outerItem, out var outerMeta))
-        {
-            hasAnyItem = true;
-            var locKey = selfAware ? "outer-examine-selfaware" : "outer-examine";
-            var line = Loc.GetString(locKey, ("item", outerMeta.EntityName));
-            args.PushMarkup($"[font size=10]{line}[/font]", priority);
-            priority--;
+            shownAny = true;
+            PushItemLine(args, self ? "outer-examine-selfaware" : "outer-examine", outerName, priority--);
         }
 
-        if (hasHelmet && _inventory.TryGetSlotEntity(uid, "head", out var helmetItem) &&
-            TryComp<MetaDataComponent>(helmetItem, out var helmetMeta))
+        if (TryGetWornItem(uid, HeadSlot, out var headName))
         {
-            hasAnyItem = true;
-            var locKey = selfAware ? "head-examine-selfaware" : "head-examine";
-            var line = Loc.GetString(locKey, ("item", helmetMeta.EntityName));
-            args.PushMarkup($"[font size=10]{line}[/font]", priority);
-            priority--;
+            shownAny = true;
+            PushItemLine(args, self ? "head-examine-selfaware" : "head-examine", headName, priority--);
         }
 
-        foreach (var slot in alwaysShowSlots)
+        foreach (var slot in AlwaysVisibleSlots)
         {
-            if (slot.Key == "head")
-                continue;
-
-            if (!_inventory.TryGetSlotEntity(uid, slot.Key, out var item))
-                continue;
-            if (!TryComp<MetaDataComponent>(item, out var meta))
-                continue;
-
-            hasAnyItem = true;
-            var locKey = slot.Value + "-examine";
-            if (selfAware)
-                locKey += "-selfaware";
-
-            var line = Loc.GetString(locKey, ("item", meta.EntityName));
-            args.PushMarkup($"[font size=10]{line}[/font]", priority);
-            priority--;
-        }
-
-        if (!hasHelmet)
-        {
-            if (_inventory.TryGetSlotEntity(uid, "ears", out var earsItem) &&
-                TryComp<MetaDataComponent>(earsItem, out var earsMeta))
+            if (TryGetWornItem(uid, slot, out var itemName))
             {
-                hasAnyItem = true;
-                var locKey = selfAware ? "ears-examine-selfaware" : "ears-examine";
-                var line = Loc.GetString(locKey, ("item", earsMeta.EntityName));
-                args.PushMarkup($"[font size=10]{line}[/font]", priority);
-                priority--;
+                shownAny = true;
+                PushItemLine(args, SlotLocKey(slot, self), itemName, priority--);
             }
         }
 
+        var hasHead = _inventory.TryGetSlotEntity(uid, HeadSlot, out _);
+        if (!hasHead && TryGetWornItem(uid, EarsSlot, out var earsName))
+        {
+            shownAny = true;
+            PushItemLine(args, self ? "ears-examine-selfaware" : "ears-examine", earsName, priority--);
+        }
+
+        var hasOuter = _inventory.TryGetSlotEntity(uid, OuterSlot, out _);
         if (!hasOuter)
         {
-            foreach (var slot in hiddenIfOuterSlots)
+            foreach (var slot in UnderOuterSlots)
             {
-                if (!_inventory.TryGetSlotEntity(uid, slot.Key, out var item))
-                    continue;
-                if (!TryComp<MetaDataComponent>(item, out var meta))
+                if (!TryGetWornItem(uid, slot, out var itemName))
                     continue;
 
-                hasAnyItem = true;
-                var locKey = slot.Value + "-examine";
-                if (selfAware)
-                    locKey += "-selfaware";
-
-                var line = Loc.GetString(locKey, ("item", meta.EntityName));
-                args.PushMarkup($"[font size=10]{line}[/font]", priority);
-                priority--;
+                shownAny = true;
+                PushItemLine(args, SlotLocKey(slot, self), itemName, priority--);
             }
         }
 
-        if (!hasAnyItem)
-        {
-            var nothing = selfAware
-                ? Loc.GetString("examine-can-see-nothing-selfaware", ("ent", uid))
-                : Loc.GetString("examine-can-see-nothing", ("ent", uid));
-            args.PushMarkup($"[font size=10]{nothing}[/font]", 13);
-        }
+        if (shownAny)
+            return;
+
+        var emptyKey = self ? "examine-can-see-nothing-selfaware" : "examine-can-see-nothing";
+        args.PushMarkup($"[font size=10]{Loc.GetString(emptyKey, ("ent", uid))}[/font]", 13);
+    }
+
+    private void AddHeader(EntityUid examined, ExaminedEvent args, bool self)
+    {
+        var name = self
+            ? Loc.GetString("examine-name-selfaware")
+            : Loc.GetString("examine-name", ("name", Identity.Entity(examined, _entities)));
+
+        args.PushMarkup($"[font size=11]{name}[/font]", 15);
+
+        var canSee = self
+            ? Loc.GetString("examine-can-see-selfaware", ("ent", examined))
+            : Loc.GetString("examine-can-see", ("ent", examined));
+
+        args.PushMarkup($"[font size=10]{canSee}[/font]", 14);
+    }
+
+    private bool TryGetWornItem(EntityUid wearer, string slot, out string itemName)
+    {
+        itemName = string.Empty;
+
+        if (!_inventory.TryGetSlotEntity(wearer, slot, out var item)
+            || !TryComp<MetaDataComponent>(item, out var meta))
+            return false;
+
+        itemName = meta.EntityName;
+        return true;
+    }
+
+    private static string SlotLocKey(string slot, bool self)
+    {
+        return self ? $"{slot}-examine-selfaware" : $"{slot}-examine";
+    }
+
+    private void PushItemLine(ExaminedEvent args, string locKey, string itemName, int priority)
+    {
+        args.PushMarkup($"[font size=10]{Loc.GetString(locKey, ("item", itemName))}[/font]", priority);
     }
 }

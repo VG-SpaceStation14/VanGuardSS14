@@ -207,6 +207,31 @@ public abstract partial class SharedPuddleSystem : EntitySystem
         }
     }
 
+    // VG-Tweak Start
+    /// <summary>
+    /// Returns the display colour for a puddle solution, including standout reagent tinting.
+    /// </summary>
+    public Color GetSolutionColor(Solution solution)
+    {
+        var color = solution.GetColorWithout(ProtoMan, _standoutReagents);
+        color = color.WithAlpha(0.7f);
+
+        foreach (var standout in _standoutReagents)
+        {
+            var quantity = solution.GetTotalPrototypeQuantity(standout);
+            if (quantity <= FixedPoint2.Zero)
+                continue;
+
+            var interpolateValue = quantity.Float() / solution.Volume.Float();
+            color = Color.InterpolateBetween(color,
+                ProtoMan.Index<ReagentPrototype>(standout).SubstanceColor,
+                interpolateValue);
+        }
+
+        return color;
+    }
+    // VG-Tweak End
+
     private void UpdateAppearance(Entity<PuddleComponent?, AppearanceComponent?> ent)
     {
         var (uid, puddle, appearance) = ent;
@@ -227,20 +252,9 @@ public abstract partial class SharedPuddleSystem : EntitySystem
             // Kinda EH
             // Could potentially do alpha per-solution but future problem.
 
-            color = solution.GetColorWithout(ProtoMan, _standoutReagents);
-            color = color.WithAlpha(0.7f);
-
-            foreach (var standout in _standoutReagents)
-            {
-                var quantity = solution.GetTotalPrototypeQuantity(standout);
-                if (quantity <= FixedPoint2.Zero)
-                    continue;
-
-                var interpolateValue = quantity.Float() / solution.Volume.Float();
-                color = Color.InterpolateBetween(color,
-                    ProtoMan.Index<ReagentPrototype>(standout).SubstanceColor,
-                    interpolateValue);
-            }
+            // VG-Tweak Start
+            color = GetSolutionColor(solution);
+            // VG-Tweak End
         }
 
         _appearance.SetData(ent, PuddleVisuals.CurrentVolume, volume.Float(), appearance);

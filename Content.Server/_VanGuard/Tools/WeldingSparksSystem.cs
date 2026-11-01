@@ -1,135 +1,144 @@
-using System.Collections.Generic;
 using Content.Shared._VanGuard.Tools;
 using Content.Shared.DoAfter;
-using Content.Shared.Tools.Components;
-using Robust.Shared.Audio.Systems;
-using Robust.Shared.Timing;
 using Robust.Shared.Audio;
+using Robust.Shared.Audio.Systems;
 
 namespace Content.Server._VanGuard.Tools;
 
+/// <summary>
+/// Runs the looping welding sound and spark entity for each active welding do-after.
+/// </summary>
 public sealed partial class WeldingSparksSystem : EntitySystem
 {
-    [Dependency] private IGameTiming _timing = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
 
-    private readonly Dictionary<(EntityUid user, ushort index), WeldingSparksData> _activeWelding = new();
-
-    private struct WeldingSparksData
+    private sealed class ActiveWeld
     {
-        public EntityUid EffectEntity;
-        public EntityUid ToolEntity;
+        public EntityUid Tool;
+        public EntityUid Spark;
     }
+
+    private readonly Dictionary<DoAfterId, ActiveWeld> _running = new();
 
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
 
         var query = EntityQueryEnumerator<DoAfterComponent>();
-        while (query.MoveNext(out var uid, out var doAfterComp))
+        while (query.MoveNext(out var uid, out var doAfters))
         {
-            foreach (var (idx, doAfter) in doAfterComp.DoAfters)
+            foreach (var (index, doAfter) in doAfters.DoAfters)
             {
-                var key = (uid, idx);
+                var id = new DoAfterId(uid, index);
 
                 if (doAfter.Completed || doAfter.Cancelled)
                 {
-                    if (_activeWelding.TryGetValue(key, out var data))
-                    {
-                        StopWeldingSound(data.ToolEntity);
-                        
-                        if (Exists(data.EffectEntity))
-                            QueueDel(data.EffectEntity);
-                        
-                        _activeWelding.Remove(key);
-                    }
+                    Finish(id);
                     continue;
                 }
 
-                if (!_activeWelding.ContainsKey(key))
-                {
-                    if (doAfter.Args.Used != null && 
-                        TryComp<WeldingSparksComponent>(doAfter.Args.Used, out var sparks) &&
-                        doAfter.Args.Target is { } target)
-                    {
-                        var effect = Spawn(sparks.EffectPrototype, Transform(target).Coordinates);
-                        
-                        StartWeldingSound(doAfter.Args.Used.Value);
-                        
-                        _activeWelding[key] = new WeldingSparksData
-                        {
-                            EffectEntity = effect,
-                            ToolEntity = doAfter.Args.Used.Value
-                        };
-
-                        RaiseNetworkEvent(new SpawnedWeldingSparksEvent(
-                            GetNetEntity(target),
-                            GetNetEntity(effect),
-                            doAfter.Args.Delay
-                        ));
-                    }
-                    else
-                    {
-                        _activeWelding[key] = new WeldingSparksData
-                        {
-                            EffectEntity = EntityUid.Invalid,
-                            ToolEntity = EntityUid.Invalid
-                        };
-                    }
-                }
+                if (!_running.ContainsKey(id) && TryStart(id, doAfter))
+                    continue;
             }
         }
 
-        CleanupInvalidEntries();
+        RemoveStaleWelds();
     }
 
-    private void StartWeldingSound(EntityUid tool)
+    private bool TryStart(DoAfterId id, Content.Shared.DoAfter.DoAfter doAfter)
     {
-        if (!TryComp<WeldingSoundComponent>(tool, out var soundComp))
-            return;
+        if (doAfter.Args.Used is not { } tool || doAfter.Args.Target is not { } target)
+            return false;
 
-        if (soundComp.StreamHandle != null && Exists(soundComp.StreamHandle))
-            return;
+        if (!TryComp<WeldingSparksComponent>(tool, out var sparks))
+            return false;
 
-        var audioParams = AudioParams.Default.WithVolume(soundComp.Volume).WithLoop(true);
-        var stream = _audio.PlayPvs(soundComp.Sound, tool, audioParams);
-        
-        if (stream != null)
+        var effect = Spawn(sparks.EffectPrototype, Transform(target).Coordinates);
+        BeginSound(tool);
+
+        _running[id] = new ActiveWeld
         {
-            soundComp.StreamHandle = stream.Value.Entity;
-            Dirty(tool, soundComp);
+            Tool = tool,
+            Spark = effect,
+        };
+
+        RaiseNetworkEvent(new SpawnedWeldingSparksEvent(
+            GetNetEntity(target),
+            GetNetEntity(effect),
+            doAfter.Args.Delay));
+
+        return true;
+    }
+
+    private void Finish(DoAfterId id)
+    {
+        if (!_running.Remove(id, out var weld))
+            return;
+
+        EndSound(weld.Tool);
+
+        if (Exists(weld.Spark))
+            QueueDel(weld.Spark);
+    }
+
+    private void RemoveStaleWelds()
+    {
+        if (_running.Count == 0)
+            return;
+
+        List<DoAfterId>? stale = null;
+        foreach (var (id, weld) in _running)
+        {
+            if (Exists(weld.Tool) && Exists(weld.Spark))
+                continue;
+
+            stale ??= new List<DoAfterId>();
+            stale.Add(id);
         }
-    }
 
-    private void StopWeldingSound(EntityUid tool)
-    {
-        if (!TryComp<WeldingSoundComponent>(tool, out var soundComp))
+        if (stale == null)
             return;
 
-        if (soundComp.StreamHandle != null)
+        foreach (var id in stale)
         {
-            _audio.Stop(soundComp.StreamHandle.Value);
-            soundComp.StreamHandle = null;
-            Dirty(tool, soundComp);
-        }
-    }
-
-    private void CleanupInvalidEntries()
-    {
-        var toRemove = new List<(EntityUid, ushort)>();
-        
-        foreach (var kvp in _activeWelding)
-        {
-            if (kvp.Value.EffectEntity == EntityUid.Invalid && 
-                kvp.Value.ToolEntity == EntityUid.Invalid)
+            if (_running.Remove(id, out var weld))
             {
-                toRemove.Add(kvp.Key);
+                EndSound(weld.Tool);
+                if (Exists(weld.Spark))
+                    QueueDel(weld.Spark);
             }
         }
-        
-        foreach (var key in toRemove)
-        {
-            _activeWelding.Remove(key);
-        }
+    }
+
+    private void BeginSound(EntityUid tool)
+    {
+        if (!TryComp<WeldingSoundComponent>(tool, out var sound))
+            return;
+
+        if (sound.ActiveStream is { } existing && Exists(existing))
+            return;
+
+        var played = _audio.PlayPvs(
+            sound.Sound,
+            tool,
+            AudioParams.Default.WithVolume(sound.Volume).WithLoop(true));
+
+        if (played == null)
+            return;
+
+        sound.ActiveStream = played.Value.Entity;
+        Dirty(tool, sound);
+    }
+
+    private void EndSound(EntityUid tool)
+    {
+        if (!TryComp<WeldingSoundComponent>(tool, out var sound))
+            return;
+
+        if (sound.ActiveStream is { } stream)
+            _audio.Stop(stream);
+
+        sound.ActiveStream = null;
+        Dirty(tool, sound);
     }
 }

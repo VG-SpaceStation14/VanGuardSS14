@@ -38,6 +38,14 @@ public sealed partial class AbsorbentComponent : Component
     [DataField]
     public EntProtoId MoppedEffect = "PuddleSparkle";
 
+    // VG-Tweak Start
+    /// <summary>
+    /// Radius around the interaction point in which footprints and puddles are cleaned.
+    /// </summary>
+    [DataField]
+    public float CleanRadius = 0.5f;
+    // VG-Tweak End
+
     [DataField]
     public SoundSpecifier PickupSound = new SoundPathSpecifier("/Audio/Effects/Fluids/watersplash.ogg",
         AudioParams.Default.WithVariation(SharedContentAudioSystem.DefaultVariation));

@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Content.Shared._VanGuard.Footprints;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Components.SolutionManager;
@@ -10,78 +10,104 @@ using Robust.Shared.Physics.Events;
 namespace Content.Server._VanGuard.Footprints;
 
 /// <summary>
-/// Handles footprint creation when entities interact with puddles
+/// Picks up a small amount of puddle reagent when a footstep emitter leaves the puddle.
 /// </summary>
 public sealed partial class PuddleFootprintSystem : EntitySystem
 {
-    [Dependency] private SharedSolutionContainerSystem _solutionSystem = default!;
-    [Dependency] private StandingStateSystem _standingStateSystem = default!;
+    [Dependency] private SharedSolutionContainerSystem _solutions = default!;
+    [Dependency] private StandingStateSystem _standing = default!;
 
-    /// <inheritdoc/>
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<PuddleFootprintComponent, EndCollideEvent>(OnPuddleInteraction);
+        SubscribeLocalEvent<PuddleFootprintComponent, EndCollideEvent>(OnPuddleLeft);
     }
 
-    /// <summary>
-    /// Handles puddle interaction and footprint creation when entity exits the puddle
-    /// </summary>
-    private void OnPuddleInteraction(Entity<PuddleFootprintComponent> ent, ref EndCollideEvent args)
+    private void OnPuddleLeft(Entity<PuddleFootprintComponent> puddleEnt, ref EndCollideEvent args)
     {
-
-        if (TerminatingOrDeleted(ent) || TerminatingOrDeleted(args.OtherEntity))
+        var walker = args.OtherEntity;
+        if (TerminatingOrDeleted(puddleEnt) || TerminatingOrDeleted(walker))
             return;
 
-        if (!TryComp<PuddleComponent>(ent, out var puddle)
-            || !TryComp<FootprintEmitterComponent>(args.OtherEntity, out var emitter)
-            || !_solutionSystem.ResolveSolution(ent.Owner, puddle.SolutionName, ref puddle.Solution, out var puddleSolutions)
-            || !TryComp<SolutionManagerComponent>(args.OtherEntity, out var emitterSolutionManager))
+        if (!TryComp<PuddleComponent>(puddleEnt, out var puddle)
+            || !TryComp<FootprintEmitterComponent>(walker, out var emitter)
+            || !TryComp<SolutionManagerComponent>(walker, out var manager)
+            || !_solutions.ResolveSolution(puddleEnt.Owner, puddle.SolutionName, ref puddle.Solution, out var puddleSolution))
             return;
 
-        var stand = !_standingStateSystem.IsDown(args.OtherEntity);
+        if (puddleSolution.Contents.Count == 0)
+            return;
 
-        var solCont = (args.OtherEntity, emitterSolutionManager);
-        Solution solution;
-        Entity<SolutionComponent> solComp;
-        if (stand)
+        var total = puddleSolution.Contents.Sum(reagent => reagent.Quantity.Float());
+        var water = puddleSolution.Contents
+            .Where(reagent => reagent.Reagent.Prototype == "Water")
+            .Sum(reagent => reagent.Quantity.Float());
+
+        if (total <= 0f || water / total * 100f > puddleEnt.Comp.WaterThresholdPercent)
+            return;
+
+        var standing = !_standing.IsDown(walker);
+        if (!TryResolveCarrierSolution(walker, emitter, manager, standing, out var carrier, out var carrierEnt))
+            return;
+
+        var free = carrier.MaxVolume.Float() - carrier.Volume.Float();
+        if (free <= 0f)
+            return;
+
+        var transfer = MathF.Min(puddleEnt.Comp.TransferVolume, free);
+        transfer = MathF.Min(transfer, puddleSolution.Volume.Float());
+        if (transfer <= 0f)
+            return;
+
+        var split = _solutions.SplitSolution(puddle.Solution!.Value, transfer);
+        _solutions.AddSolution(carrierEnt, split);
+    }
+
+    private bool TryResolveCarrierSolution(
+        EntityUid walker,
+        FootprintEmitterComponent emitter,
+        SolutionManagerComponent manager,
+        bool standing,
+        out Solution solution,
+        out Entity<SolutionComponent> solutionEnt)
+    {
+        var source = (walker, manager);
+
+        if (standing)
         {
-            if (!_solutionSystem.ResolveSolution(solCont, emitter.FootsSolutionName, ref emitter.FootsSolution, out var footsSolution))
-                return;
+            var resolved = _solutions.ResolveSolution(
+                source,
+                emitter.FootsSolutionName,
+                ref emitter.FootsSolution,
+                out var foots);
 
-            solution = footsSolution;
-            solComp = emitter.FootsSolution!.Value;
+            if (!resolved || foots == null)
+            {
+                solution = default!;
+                solutionEnt = default;
+                return false;
+            }
+
+            solution = foots;
+            solutionEnt = emitter.FootsSolution!.Value;
+            return true;
         }
-        else
+
+        var resolvedBody = _solutions.ResolveSolution(
+            source,
+            emitter.BodySurfaceSolutionName,
+            ref emitter.BodySurfaceSolution,
+            out var body);
+
+        if (!resolvedBody || body == null)
         {
-            if (!_solutionSystem.ResolveSolution(solCont, emitter.BodySurfaceSolutionName, ref emitter.BodySurfaceSolution, out var bodySurfaceSolution))
-                return;
-
-            solution = bodySurfaceSolution;
-            solComp = emitter.BodySurfaceSolution!.Value;
+            solution = default!;
+            solutionEnt = default;
+            return false;
         }
 
-        var totalSolutionQuantity = puddleSolutions.Contents.Sum(sol => (float)sol.Quantity);
-        var waterQuantity = (from sol in puddleSolutions.Contents where sol.Reagent.Prototype == "Water" select (float)sol.Quantity).FirstOrDefault();
-
-        if (waterQuantity / (totalSolutionQuantity / 100f) > ent.Comp.WaterThresholdPercent || puddleSolutions.Contents.Count <= 0)
-            return;
-
-        var availableSpace = solution.MaxVolume.Float() - solution.Volume.Float();
-
-        if (availableSpace <= 0)
-            return;
-
-        var transferVolume = Math.Min(ent.Comp.TransferVolume, availableSpace);
-
-        if (puddleSolutions.Volume < transferVolume)
-            transferVolume = puddleSolutions.Volume.Float();
-
-        if (transferVolume <= 0)
-            return;
-
-        var splitSolution = _solutionSystem.SplitSolution(puddle.Solution!.Value, transferVolume);
-
-        _solutionSystem.AddSolution(solComp, splitSolution);
+        solution = body;
+        solutionEnt = emitter.BodySurfaceSolution!.Value;
+        return true;
     }
 }
