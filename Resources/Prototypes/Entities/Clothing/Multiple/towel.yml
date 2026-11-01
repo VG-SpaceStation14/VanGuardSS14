@@ -13,7 +13,6 @@
     - BELT
     - INNERCLOTHING
     - HEAD
-    femaleMask: UniformTop
     equipSound:
     unequipSound:
   - type: Spillable
