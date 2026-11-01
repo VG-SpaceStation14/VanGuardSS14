@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.IntegrationTests;
 using Content.IntegrationTests.Fixtures;
 using Content.Shared.Damage.Systems;
 using Content.Shared.FixedPoint;
@@ -17,6 +18,11 @@ namespace Content.IntegrationTests.Tests._VanGuard.Weapons;
 [TestFixture]
 public sealed class RailgunPiercingTest : GameTest
 {
+    // These tests spawn living mobs on the shared test map. A fast-recycled pair can still carry
+    // deferred work from a previous test, which then surfaces during our teardown. Force the pool to
+    // fully clean the pair before handing it to this fixture.
+    public override PoolSettings PoolSettings => new() { Connected = true, Dirty = true };
+
     [Test]
     [TestCase("AsteroidRock")]
     [TestCase("IronRock")]
@@ -31,8 +37,8 @@ public sealed class RailgunPiercingTest : GameTest
 
         await Server.WaitPost(() =>
         {
-            first = SEntMan.SpawnAtPosition(rockProto, coords);
-            second = SEntMan.SpawnAtPosition(rockProto, coords.Offset(new Vector2(1f, 0f)));
+            first = SSpawnAtPosition(rockProto, coords);
+            second = SSpawnAtPosition(rockProto, coords.Offset(new Vector2(1f, 0f)));
 
             SpawnBolt(coords.Offset(new Vector2(-2f, 0f)));
         });
@@ -62,9 +68,9 @@ public sealed class RailgunPiercingTest : GameTest
         await Server.WaitPost(() =>
         {
             // Two creatures on the bolt's path, plus an off-path control to account for environmental damage.
-            first = SEntMan.SpawnAtPosition("MobHuman", coords);
-            second = SEntMan.SpawnAtPosition("MobHuman", coords.Offset(new Vector2(1f, 0f)));
-            control = SEntMan.SpawnAtPosition("MobHuman", coords.Offset(new Vector2(0f, 5f)));
+            first = SSpawnAtPosition("MobHuman", coords);
+            second = SSpawnAtPosition("MobHuman", coords.Offset(new Vector2(1f, 0f)));
+            control = SSpawnAtPosition("MobHuman", coords.Offset(new Vector2(0f, 5f)));
 
             bolt = SpawnBolt(coords.Offset(new Vector2(-2f, 0f)));
         });
@@ -122,7 +128,7 @@ public sealed class RailgunPiercingTest : GameTest
 
     private EntityUid SpawnBolt(EntityCoordinates coords)
     {
-        var bolt = SEntMan.SpawnAtPosition("BulletKineticRailgun", coords);
+        var bolt = SSpawnAtPosition("BulletKineticRailgun", coords);
         var body = SEntMan.GetComponent<PhysicsComponent>(bolt);
         SEntMan.System<SharedPhysicsSystem>().SetLinearVelocity(bolt, new Vector2(30f, 0f), body: body);
         return bolt;
