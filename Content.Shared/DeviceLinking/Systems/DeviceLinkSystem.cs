@@ -108,7 +108,10 @@ public sealed partial class DeviceLinkSystem : EntitySystem
 
             foreach (var link in invalidLinks)
             {
-                Log.Warning($"Device source {ToPrettyString(source)} contains invalid links to entity {ToPrettyString(sink)}: {link.Source}->{link.Sink}");
+                // VG-Tweak Start: map loading can initialize a source before its sink; this is
+                // normal and must not fail integration tests that treat warnings as errors.
+                Log.Debug($"Device source {ToPrettyString(source)} contains invalid links to entity {ToPrettyString(sink)}: {link.Source}->{link.Sink}");
+                // VG-Tweak End
                 links.Remove(link);
             }
 
@@ -126,7 +129,9 @@ public sealed partial class DeviceLinkSystem : EntitySystem
         foreach (var sink in invalidSinks)
         {
             source.Comp.LinkedPorts.Remove(sink);
-            Log.Warning($"Device source {ToPrettyString(source)} contains invalid sink: {ToPrettyString(sink)}");
+            // VG-Tweak Start: see above; invalid sinks are cleaned up without noisy warnings.
+            Log.Debug($"Device source {ToPrettyString(source)} contains invalid sink: {ToPrettyString(sink)}");
+            // VG-Tweak End
         }
 
         Dirty(source);

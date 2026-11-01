@@ -25,7 +25,6 @@
         layer:
         - MidImpassable
   - type: Damageable
-    damageContainer: StructuralInorganic
     damageModifierSet: Metallic
   - type: Injurable
     damageContainer: StructuralInorganic
@@ -74,7 +73,6 @@
       mask: [ anomaly_floor_flesh ]
       base: meat_
   - type: Damageable
-    damageContainer: Biological
     damageModifierSet: Wood
   - type: Injurable
     damageContainer: Biological
@@ -101,7 +99,6 @@
       mask: [ anomaly_floor_grass ]
       base: grass_
   - type: Damageable
-    damageContainer: Biological
     damageModifierSet: Wood
   - type: Injurable
     damageContainer: Biological
