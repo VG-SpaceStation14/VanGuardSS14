@@ -1,4 +1,6 @@
-﻿using Content.Server.Atmos.Components;
+using System.Linq;
+using System.Numerics;
+using Content.Server.Atmos.Components;
 using Content.Server.Gravity;
 using Content.Shared._VanGuard.Footprints;
 using Content.Shared.Chemistry.Components;
@@ -6,356 +8,265 @@ using Content.Shared.Chemistry.Components.SolutionManager;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.FixedPoint;
 using Content.Shared.Inventory;
-using Robust.Shared.Map;
-using Robust.Shared.Random;
 using Content.Shared.Standing;
 using Robust.Server.GameObjects;
+using Robust.Shared.Map;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
 
 namespace Content.Server._VanGuard.Footprints;
 
 /// <summary>
-/// Handles creation and management of footprints left by entities as they move.
+/// Emits foot and drag marks when a footprint emitter moves far enough across a grid.
 /// </summary>
 public sealed partial class FootprintSystem : EntitySystem
 {
-    #region Dependencies
+    private const int MaxFootprintsOnTile = 6;
+    private const int MaxDragMarksOnTile = 3;
 
     [Dependency] private InventorySystem _inventory = default!;
-    [Dependency] private SharedSolutionContainerSystem _solution = default!;
+    [Dependency] private SharedSolutionContainerSystem _solutions = default!;
     [Dependency] private AppearanceSystem _appearance = default!;
-    [Dependency] private TransformSystem _transform = default!;
+    [Dependency] private SharedTransformSystem _transforms = default!;
     [Dependency] private EntityLookupSystem _lookup = default!;
-    [Dependency] private MapSystem _mapSystem = default!;
+    [Dependency] private MapSystem _maps = default!;
     [Dependency] private GravitySystem _gravity = default!;
     [Dependency] private IRobustRandom _random = default!;
-    [Dependency] private IPrototypeManager _prototype = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
 
-    #endregion
+    private EntityQuery<SolutionManagerComponent> _solutionManagers;
+    private EntityQuery<PhysicsComponent> _bodies;
+    private EntityQuery<StandingStateComponent> _standing;
+    private EntityQuery<FootprintComponent> _prints;
+    private EntityQuery<PressureProtectionComponent> _pressure;
+    private readonly HashSet<Entity<FootprintComponent>> _nearbyPrints = new();
 
-    #region Entity Queries
-
-    private EntityQuery<TransformComponent> _transformQuery;
-    private EntityQuery<AppearanceComponent> _appearanceQuery;
-    private EntityQuery<PhysicsComponent> _physicsQuery;
-    private EntityQuery<SolutionManagerComponent> _solutionQuery;
-    private EntityQuery<StandingStateComponent> _standingQuery;
-    private EntityQuery<FootprintComponent> _footprintQuery;
-    private EntityQuery<PressureProtectionComponent> _pressureQuery;
-
-    #endregion
-
-    public static readonly float FootsVolume = 5;
-    public static readonly float BodySurfaceVolume = 15;
-
-    // Dictionary to track footprints per tile to prevent overcrowding
-    private const int MaxFootprintsPerTile = 6;
-    private const int MaxMarksPerTile = 3;
-
-    private readonly HashSet<Entity<FootprintComponent>> _entities = [];
-
-    #region Initialization
-    /// <summary>
-    /// Initializes the footprint system and sets up required queries and subscriptions.
-    /// </summary>
     public override void Initialize()
     {
         base.Initialize();
 
-        _transformQuery = GetEntityQuery<TransformComponent>();
-        _appearanceQuery = GetEntityQuery<AppearanceComponent>();
-        _physicsQuery = GetEntityQuery<PhysicsComponent>();
-        _solutionQuery = GetEntityQuery<SolutionManagerComponent>();
-        _standingQuery = GetEntityQuery<StandingStateComponent>();
-        _footprintQuery = GetEntityQuery<FootprintComponent>();
-        _pressureQuery = GetEntityQuery<PressureProtectionComponent>();
+        _solutionManagers = GetEntityQuery<SolutionManagerComponent>();
+        _bodies = GetEntityQuery<PhysicsComponent>();
+        _standing = GetEntityQuery<StandingStateComponent>();
+        _prints = GetEntityQuery<FootprintComponent>();
+        _pressure = GetEntityQuery<PressureProtectionComponent>();
 
-        SubscribeLocalEvent<FootprintEmitterComponent, ComponentStartup>(OnEmitterStartup);
-        SubscribeLocalEvent<FootprintEmitterComponent, MoveEvent>(OnEntityMove);
-        SubscribeLocalEvent<FootprintEmitterComponent, MapInitEvent>(OnFootprintEmitterInit);
+        SubscribeLocalEvent<FootprintEmitterComponent, ComponentStartup>(OnEmitterStarted);
+        SubscribeLocalEvent<FootprintEmitterComponent, ComponentInit>(OnEmitterInit);
+        SubscribeLocalEvent<FootprintEmitterComponent, MoveEvent>(OnEmitterMoved);
     }
 
-    private void OnFootprintEmitterInit(Entity<FootprintEmitterComponent> entity, ref MapInitEvent args)
+    private void OnEmitterInit(Entity<FootprintEmitterComponent> ent, ref ComponentInit args)
     {
-        _solution.EnsureSolution(entity.Owner, entity.Comp.FootsSolutionName, out var footsSolution);
-        footsSolution.Comp.Solution.MaxVolume = FixedPoint2.New(FootsVolume);
+        // EnsureSolution returns false when it creates a new default solution, but still fills
+        // the out parameter. Both solutions need their capacity even in that case.
+        _solutions.EnsureSolution(ent.Owner, ent.Comp.FootsSolutionName, out var foots);
+        foots.Comp.Solution.MaxVolume = FixedPoint2.New(5);
 
-        _solution.EnsureSolution(entity.Owner, entity.Comp.BodySurfaceSolutionName, out var bodySurfaceSolution);
-        bodySurfaceSolution.Comp.Solution.MaxVolume = FixedPoint2.New(BodySurfaceVolume);
+        _solutions.EnsureSolution(ent.Owner, ent.Comp.BodySurfaceSolutionName, out var body);
+        body.Comp.Solution.MaxVolume = FixedPoint2.New(15);
     }
 
-    /// <summary>
-    /// Handles initialization of footprint emitter components.
-    /// </summary>
-    private void OnEmitterStartup(Entity<FootprintEmitterComponent> ent, ref ComponentStartup args)
+    private void OnEmitterStarted(Entity<FootprintEmitterComponent> ent, ref ComponentStartup args)
     {
-        // Add small random variation to step interval
-        ent.Comp.WalkStepInterval = Math.Max(0f, ent.Comp.WalkStepInterval + _random.NextFloat(-0.05f, 0.05f));
+        ent.Comp.WalkStepInterval = MathF.Max(0f, ent.Comp.WalkStepInterval + _random.NextFloat(-0.05f, 0.05f));
     }
 
-    #endregion
-
-    #region Event Handlers
-
-    /// <summary>
-    /// Handles entity movement and creates footprints when appropriate.
-    /// </summary>
-    private void OnEntityMove(Entity<FootprintEmitterComponent> ent, ref MoveEvent args)
+    private void OnEmitterMoved(Entity<FootprintEmitterComponent> ent, ref MoveEvent args)
     {
-        // VG-Tweak: Skip entities that are being deleted. Recursive deletion detaches
-        // children (raising a MoveEvent) after marking them as terminating, and querying
-        // components on such an entity asserts in debug builds.
-        if (TerminatingOrDeleted(ent.Owner))
+        if (TerminatingOrDeleted(ent.Owner) || !_solutionManagers.TryComp(ent, out var manager))
             return;
 
-        if (!_solutionQuery.TryComp(ent, out var container))
+        var standing = !_standing.TryComp(ent, out var pose) || pose.Standing;
+        if (!TryResolveEmitterSolution(ent, manager, standing, out var solution, out var solutionEnt))
             return;
 
-        // Eсли нет компонента StandingState, считаем, что мы стоим. Следы приоритетнее, чем мазня.
-        var stand = !_standingQuery.TryComp(ent, out var standing) || standing.Standing;
-
-        var solCont = (ent, container);
-        Solution solution;
-        Entity<SolutionComponent> solComp;
-
-        if (stand)
-        {
-            if (!_solution.ResolveSolution(solCont, ent.Comp.FootsSolutionName, ref ent.Comp.FootsSolution, out var footsSolution))
-                return;
-
-            solution = footsSolution;
-            solComp = ent.Comp.FootsSolution!.Value;
-        }
-        else
-        {
-            if (!_solution.ResolveSolution(solCont, ent.Comp.BodySurfaceSolutionName, ref ent.Comp.BodySurfaceSolution, out var bodySurfaceSolution))
-                return;
-
-            solution = bodySurfaceSolution;
-            solComp = ent.Comp.BodySurfaceSolution!.Value;
-        }
-
-        if (solution.Volume <= 0)
+        if (solution.Volume <= 0
+            || !_bodies.TryComp(ent, out var body)
+            || body.BodyStatus == BodyStatus.InAir
+            || _gravity.IsWeightless(ent.Owner))
             return;
 
-        // Check if footprints should be created
-        if (!_physicsQuery.TryComp(ent, out var body))
+        var xform = Transform(ent);
+        var map = _transforms.GetMapCoordinates((ent, xform));
+        if (!_maps.TryFindGridAt(map, out var gridUid, out var grid))
             return;
 
-        if (body.BodyStatus == BodyStatus.InAir || _gravity.IsWeightless(ent.Owner))
+        var interval = standing ? ent.Comp.WalkStepInterval : ent.Comp.DragMarkInterval;
+        if ((xform.LocalPosition - ent.Comp.LastStepPosition).Length() <= interval)
             return;
 
-        var transform = Transform(ent);
-        var mapCoords = _transform.GetMapCoordinates((ent, transform));
-        if (!_mapSystem.TryFindGridAt(mapCoords, out var gridUid, out var grid))
+        var tile = _maps.GetTileRef((gridUid, grid), xform.Coordinates);
+        if (!HasRoomForAnotherPrint(gridUid, tile.GridIndices, standing))
             return;
-
-        var distanceMoved = (transform.LocalPosition - ent.Comp.LastStepPosition).Length();
-        var requiredDistance = stand ? ent.Comp.WalkStepInterval : ent.Comp.DragMarkInterval;
-
-        if (!(distanceMoved > requiredDistance))
-            return;
-
-        var tileRef = _mapSystem.GetTileRef((gridUid, grid), transform.Coordinates);
-
-        _entities.Clear();
-        _lookup.GetLocalEntitiesIntersecting(gridUid, tileRef.GridIndices, _entities);
-        var dragMarkCount = 0;
-        var footPrintCount = 0;
-
-        foreach (var footPrint in _entities)
-        {
-            switch (footPrint.Comp.PrintType)
-            {
-                case PrintType.Foot:
-                    footPrintCount += 1;
-                    break;
-                case PrintType.DragMark:
-                    dragMarkCount += 1;
-                    break;
-            }
-        }
-
-        if (stand)
-        {
-            if (footPrintCount >= MaxFootprintsPerTile)
-                return;
-        }
-        else
-        {
-            if (dragMarkCount >= MaxMarksPerTile)
-                return;
-        }
 
         ent.Comp.IsRightStep = !ent.Comp.IsRightStep;
-
-        // Create new footprint entity
-        var footprintEntity = SpawnFootprint(gridUid, ent.Comp, solution, ent, transform, stand);
-
-        // Update footprint and emitter state
-        UpdateFootprint(footprintEntity, (ent, ent.Comp), solComp, transform, stand);
-
-        // Update emitter state.
-        UpdateEmitterState(ent.Comp, transform);
+        var print = CreatePrint(gridUid, ent, solution, xform, standing);
+        ConfigurePrint(print, ent, solution, solutionEnt, xform, standing);
+        ent.Comp.LastStepPosition = xform.LocalPosition;
     }
 
-    #endregion
-
-    #region Footprint Creation and Management
-
-    /// <summary>
-    /// Creates a new footprint entity at the calculated position.
-    /// </summary>
-    private EntityUid SpawnFootprint(
-        EntityUid gridUid,
-        FootprintEmitterComponent emitter,
-        Solution emitterSolution,
-        EntityUid emitterOwner,
-        TransformComponent transform,
-        bool stand)
+    private bool TryResolveEmitterSolution(
+        Entity<FootprintEmitterComponent> ent,
+        SolutionManagerComponent manager,
+        bool standing,
+        out Solution solution,
+        out Entity<SolutionComponent> solutionEnt)
     {
-        var coords = CalculateFootprintPosition(gridUid, emitter, transform, stand);
-        var entity = Spawn(stand ? emitter.FootprintPrototype : emitter.DragMarkPrototype, coords);
-
-        var appearance = UpdateAppearance(entity, emitterSolution);
-
-        if (appearance == null)
-            return entity;
-
-        var visualType = DetermineVisualState(emitterOwner, stand);
-        _appearance.SetData(entity,
-            FootprintVisualParameter.VisualState,
-            GetStateId(visualType, emitter),
-            appearance);
-
-        return entity;
-    }
-
-    private AppearanceComponent? UpdateAppearance(EntityUid entity, Solution emitterSolution)
-    {
-        if (!_appearanceQuery.TryComp(entity, out var appearance))
-            return null;
-
-        var t = emitterSolution.Volume.Float() / emitterSolution.MaxVolume.Float();
-        t = Easings.OutQuad(t);
-        t = MathF.Pow(t, 0.7f);
-        var alpha = Math.Clamp(0.05f + t * 0.7f, 0f, 1f);
-
-        _appearance.SetData(entity,
-            FootprintVisualParameter.TrackColor,
-            emitterSolution.GetColor(_prototype).WithAlpha(alpha),
-            appearance);
-
-        return appearance;
-    }
-
-    private string GetStateId(FootprintVisualType visualType, FootprintEmitterComponent emitter)
-    {
-        return visualType switch
+        solution = default!;
+        solutionEnt = default;
+        var managerEnt = (ent.Owner, manager);
+        if (standing)
         {
-            FootprintVisualType.BareFootprint => emitter.IsRightStep
-                ? _random.Pick(emitter.RightBareFootState)
-                : _random.Pick(emitter.LeftBareFootState),
+            var resolved = _solutions.ResolveSolution(
+                managerEnt,
+                ent.Comp.FootsSolutionName,
+                ref ent.Comp.FootsSolution,
+                out var foots);
 
-            FootprintVisualType.ShoeFootprint => _random.Pick(emitter.ShoeFootState),
-            FootprintVisualType.SuitFootprint => _random.Pick(emitter.PressureSuitFootState),
-            FootprintVisualType.DragMark => _random.Pick(emitter.DraggingStates),
+            if (!resolved || foots == null)
+                return false;
 
-            _ => throw new InvalidOperationException($"Unknown footprint visual type: {visualType}")
-        };
+            if (foots.MaxVolume.Float() <= 0)
+                foots.MaxVolume = FixedPoint2.New(5);
+
+            solution = foots;
+            solutionEnt = ent.Comp.FootsSolution!.Value;
+            return true;
+        }
+
+        var resolvedDrag = _solutions.ResolveSolution(
+            managerEnt,
+            ent.Comp.BodySurfaceSolutionName,
+            ref ent.Comp.BodySurfaceSolution,
+            out var body);
+
+        if (!resolvedDrag || body == null)
+            return false;
+
+        if (body.MaxVolume.Float() <= 0)
+            body.MaxVolume = FixedPoint2.New(15);
+
+        solution = body;
+        solutionEnt = ent.Comp.BodySurfaceSolution!.Value;
+        return true;
     }
 
-    /// <summary>
-    /// Updates footprint rotation and reagent transfer.
-    /// </summary>
-    private void UpdateFootprint(
-        EntityUid footprintEntity,
+    private bool HasRoomForAnotherPrint(EntityUid grid, Vector2i tile, bool standing)
+    {
+        _nearbyPrints.Clear();
+        _lookup.GetLocalEntitiesIntersecting(grid, tile, _nearbyPrints);
+
+        var feet = 0;
+        var drags = 0;
+        foreach (var print in _nearbyPrints)
+        {
+            if (print.Comp.PrintType == PrintType.Foot)
+                feet++;
+            else
+                drags++;
+        }
+
+        return standing ? feet < MaxFootprintsOnTile : drags < MaxDragMarksOnTile;
+    }
+
+    private EntityUid CreatePrint(
+        EntityUid grid,
         Entity<FootprintEmitterComponent> emitter,
-        Entity<SolutionComponent> emitterEntSolution,
-        TransformComponent transform,
-        bool stand)
+        Solution solution,
+        TransformComponent xform,
+        bool standing)
     {
-        if (!_transformQuery.TryComp(footprintEntity, out var footprintTransform))
-            return;
+        var coordinates = PrintCoordinates(grid, emitter.Comp, xform, standing);
+        var print = Spawn(standing ? emitter.Comp.FootprintPrototype : emitter.Comp.DragMarkPrototype, coordinates);
 
-        footprintTransform.LocalRotation = stand
-            ? transform.LocalRotation + Angle.FromDegrees(180f)
-            : (transform.LocalPosition - emitter.Comp.LastStepPosition).ToAngle() + Angle.FromDegrees(-90f);
+        if (!TryComp<AppearanceComponent>(print, out var appearance))
+            return print;
 
-        TransferReagents(footprintEntity, emitter, emitterEntSolution, stand);
-    }
-    #endregion
+        var type = standing ? ClassifyPrint(emitter.Owner) : FootprintVisualType.DragMark;
+        var state = RandomState(type, emitter.Comp);
+        _appearance.SetData(print, FootprintVisualParameter.VisualState, state, appearance);
 
-    #region State Management
+        _appearance.SetData(print, FootprintVisualParameter.TrackColor, SolutionColor(solution), appearance);
 
-    /// <summary>
-    /// Updates emitter state after creating a footprint.
-    /// </summary>
-    private void UpdateEmitterState(FootprintEmitterComponent emitter, TransformComponent transform)
-    {
-        emitter.LastStepPosition = transform.LocalPosition;
+        return print;
     }
 
-    /// <summary>
-    /// Transfers reagents from emitter to footprint if applicable.
-    /// </summary>
-    private void TransferReagents(EntityUid footprintEntity, Entity<FootprintEmitterComponent> emitter, Entity<SolutionComponent> emitterSolution, bool stand)
-    {
-        if (!_footprintQuery.TryComp(footprintEntity, out var footprint)
-            || !_solution.ResolveSolution(footprintEntity,
-                footprint.ContainerName,
-                ref footprint.SolutionContainer,
-                out _))
-            return;
-
-        var splitSolution = _solution.SplitSolution(emitterSolution, stand ? emitter.Comp.TransferVolumeFoot : emitter.Comp.TransferVolumeDragMark);
-
-        _solution.AddSolution(footprint.SolutionContainer!.Value, splitSolution);
-    }
-    #endregion
-
-    #region Utility Methods
-
-    /// <summary>
-    /// Calculates the position where a footprint should be placed.
-    /// </summary>
-    private EntityCoordinates CalculateFootprintPosition(
-        EntityUid uid,
+    private EntityCoordinates PrintCoordinates(
+        EntityUid grid,
         FootprintEmitterComponent emitter,
-        TransformComponent transform,
-        bool stand)
+        TransformComponent xform,
+        bool standing)
     {
-        if (!stand)
-            return new EntityCoordinates(uid, transform.LocalPosition);
+        if (!standing)
+            return new EntityCoordinates(grid, xform.LocalPosition);
 
-        var offset = emitter.IsRightStep
-            ? new Angle(Angle.FromDegrees(180f) + transform.LocalRotation)
-                .RotateVec(emitter.PlacementOffset)
-            : new Angle(transform.LocalRotation).RotateVec(emitter.PlacementOffset);
-
-        return new EntityCoordinates(uid, transform.LocalPosition + offset);
-
+        var turn = emitter.IsRightStep
+            ? Angle.FromDegrees(180f) + xform.LocalRotation
+            : xform.LocalRotation;
+        var offset = new Angle(turn).RotateVec(emitter.PlacementOffset);
+        return new EntityCoordinates(grid, xform.LocalPosition + offset);
     }
 
-    /// <summary>
-    /// Determines the visual state for a footprint based on entity equipment.
-    /// </summary>
-    private FootprintVisualType DetermineVisualState(EntityUid uid, bool stand)
+    private Color SolutionColor(Solution solution)
     {
-        if (!stand)
-            return FootprintVisualType.DragMark;
+        var fraction = solution.MaxVolume.Float() <= 0f
+            ? 0f
+            : solution.Volume.Float() / solution.MaxVolume.Float();
 
-        var state = FootprintVisualType.BareFootprint;
-
-        if (_inventory.TryGetSlotEntity(uid, "shoes", out _))
-            state = FootprintVisualType.ShoeFootprint;
-
-        if (_inventory.TryGetSlotEntity(uid, "outerClothing", out var suit)
-            && _pressureQuery.TryComp(suit, out _))
-            state = FootprintVisualType.SuitFootprint;
-
-        return state;
+        var eased = Easings.OutQuad(fraction);
+        var alpha = Math.Clamp(0.05f + MathF.Pow(eased, 0.7f) * 0.7f, 0f, 1f);
+        return solution.GetColor(_prototypes).WithAlpha(alpha);
     }
-    #endregion
+
+    private FootprintVisualType ClassifyPrint(EntityUid wearer)
+    {
+        if (_inventory.TryGetSlotEntity(wearer, "outerClothing", out var outer)
+            && _pressure.TryComp(outer, out _))
+            return FootprintVisualType.SuitFootprint;
+
+        return _inventory.TryGetSlotEntity(wearer, "shoes", out _)
+            ? FootprintVisualType.ShoeFootprint
+            : FootprintVisualType.BareFootprint;
+    }
+
+    private string RandomState(FootprintVisualType type, FootprintEmitterComponent emitter)
+    {
+        var states = type switch
+        {
+            FootprintVisualType.BareFootprint => emitter.IsRightStep ? emitter.RightBareFootState : emitter.LeftBareFootState,
+            FootprintVisualType.ShoeFootprint => emitter.ShoeFootState,
+            FootprintVisualType.SuitFootprint => emitter.PressureSuitFootState,
+            FootprintVisualType.DragMark => emitter.DraggingStates,
+            _ => emitter.LeftBareFootState,
+        };
+
+        return _random.Pick(states);
+    }
+
+    private void ConfigurePrint(
+        EntityUid print,
+        Entity<FootprintEmitterComponent> emitter,
+        Solution solution,
+        Entity<SolutionComponent> emitterSolution,
+        TransformComponent xform,
+        bool standing)
+    {
+        if (Transform(print) is { } printXform)
+        {
+            printXform.LocalRotation = standing
+                ? xform.LocalRotation + Angle.FromDegrees(180f)
+                : (xform.LocalPosition - emitter.Comp.LastStepPosition).ToAngle() + Angle.FromDegrees(-90f);
+        }
+
+        if (solution.Volume <= 0
+            || !_prints.TryComp(print, out var printComp)
+            || !_solutions.ResolveSolution(print, printComp.ContainerName, ref printComp.SolutionContainer, out _))
+            return;
+
+        var volume = standing ? emitter.Comp.TransferVolumeFoot : emitter.Comp.TransferVolumeDragMark;
+        var split = _solutions.SplitSolution(emitterSolution, volume);
+        _solutions.AddSolution(printComp.SolutionContainer!.Value, split);
+    }
 }
