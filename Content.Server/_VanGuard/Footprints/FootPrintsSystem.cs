@@ -6,13 +6,13 @@ using Content.Shared._VanGuard.Footprints;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Components.SolutionManager;
 using Content.Shared.Chemistry.EntitySystems;
+using Content.Shared.Fluids;
 using Content.Shared.FixedPoint;
 using Content.Shared.Inventory;
 using Content.Shared.Standing;
 using Robust.Server.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Physics.Components;
-using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 
 namespace Content.Server._VanGuard.Footprints;
@@ -33,7 +33,7 @@ public sealed partial class FootprintSystem : EntitySystem
     [Dependency] private MapSystem _maps = default!;
     [Dependency] private GravitySystem _gravity = default!;
     [Dependency] private IRobustRandom _random = default!;
-    [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private SharedPuddleSystem _puddles = default!;
 
     private EntityQuery<SolutionManagerComponent> _solutionManagers;
     private EntityQuery<PhysicsComponent> _bodies;
@@ -55,6 +55,23 @@ public sealed partial class FootprintSystem : EntitySystem
         SubscribeLocalEvent<FootprintEmitterComponent, ComponentStartup>(OnEmitterStarted);
         SubscribeLocalEvent<FootprintEmitterComponent, ComponentInit>(OnEmitterInit);
         SubscribeLocalEvent<FootprintEmitterComponent, MoveEvent>(OnEmitterMoved);
+        SubscribeLocalEvent<FootprintComponent, SolutionChangedEvent>(OnFootprintSolutionChanged);
+    }
+
+    private void OnFootprintSolutionChanged(Entity<FootprintComponent> ent, ref SolutionChangedEvent args)
+    {
+        if (args.Solution.Comp.Id != ent.Comp.ContainerName
+            || !TryComp<AppearanceComponent>(ent, out var appearance)
+            || !_solutions.ResolveSolution(ent.Owner,
+                ent.Comp.ContainerName,
+                ref ent.Comp.SolutionContainer,
+                out var solution))
+            return;
+
+        _appearance.SetData(ent.Owner,
+            FootprintVisualParameter.TrackColor,
+            _puddles.GetSolutionColor(solution),
+            appearance);
     }
 
     private void OnEmitterInit(Entity<FootprintEmitterComponent> ent, ref ComponentInit args)
@@ -188,7 +205,7 @@ public sealed partial class FootprintSystem : EntitySystem
         var state = RandomState(type, emitter.Comp);
         _appearance.SetData(print, FootprintVisualParameter.VisualState, state, appearance);
 
-        _appearance.SetData(print, FootprintVisualParameter.TrackColor, SolutionColor(solution), appearance);
+        _appearance.SetData(print, FootprintVisualParameter.TrackColor, _puddles.GetSolutionColor(solution), appearance);
 
         return print;
     }
@@ -207,17 +224,6 @@ public sealed partial class FootprintSystem : EntitySystem
             : xform.LocalRotation;
         var offset = new Angle(turn).RotateVec(emitter.PlacementOffset);
         return new EntityCoordinates(grid, xform.LocalPosition + offset);
-    }
-
-    private Color SolutionColor(Solution solution)
-    {
-        var fraction = solution.MaxVolume.Float() <= 0f
-            ? 0f
-            : solution.Volume.Float() / solution.MaxVolume.Float();
-
-        var eased = Easings.OutQuad(fraction);
-        var alpha = Math.Clamp(0.05f + MathF.Pow(eased, 0.7f) * 0.7f, 0f, 1f);
-        return solution.GetColor(_prototypes).WithAlpha(alpha);
     }
 
     private FootprintVisualType ClassifyPrint(EntityUid wearer)

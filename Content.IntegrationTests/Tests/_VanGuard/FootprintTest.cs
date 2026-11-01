@@ -5,6 +5,10 @@ using Content.IntegrationTests.Fixtures;
 using Content.Shared._VanGuard.Footprints;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
+using Content.Shared.FixedPoint;
+using Content.Shared.Fluids;
+using Robust.Server.GameObjects;
+using Robust.Shared.Maths;
 using Content.Shared.Gravity;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Systems;
@@ -109,6 +113,77 @@ public sealed class FootprintTest : GameTest
 
         Assert.That(await GetVolume(solutions, foots), Is.GreaterThan(0f),
             "Leaving a reagent puddle should transfer liquid to the walker");
+    }
+
+
+    [Test]
+    public async Task CleaningFootprintRecomputesTrackColor()
+    {
+        var (solutions, mob) = await PrepareWalker();
+        var foots = GetFoots(solutions, mob);
+        await Server.WaitPost(() => solutions.ForceAddSolution(foots, new Solution("Blood", 2)));
+
+        await Move(mob);
+
+        EntityUid print = default;
+        Color initialColor = default;
+        await Server.WaitAssertion(() =>
+        {
+            var prints = SEntMan.EntityQueryEnumerator<FootprintComponent>();
+            while (prints.MoveNext(out var uid, out var component))
+            {
+                if (!solutions.TryGetSolution(uid, component.ContainerName, out _, out var printSolution))
+                    continue;
+
+                if (!printSolution.Contents.Any(reagent => reagent.Reagent.Prototype == "Blood"))
+                    continue;
+
+                print = uid;
+                SentManAppearance().TryGetData(uid, FootprintVisualParameter.TrackColor, out initialColor);
+            }
+        });
+
+        Assert.That(print, Is.Not.EqualTo(default(EntityUid)), "Expected a blood footprint");
+
+        await Server.WaitPost(() =>
+        {
+            var component = SEntMan.GetComponent<FootprintComponent>(print);
+            Assert.That(solutions.ResolveSolution(print, component.ContainerName, ref component.SolutionContainer, out _), Is.True);
+            solutions.RemoveReagent(component.SolutionContainer!.Value, "Blood", FixedPoint2.New(0.25));
+        });
+        await Server.WaitIdleAsync();
+
+        await Server.WaitAssertion(() =>
+        {
+            var component = SEntMan.GetComponent<FootprintComponent>(print);
+            Assert.That(solutions.ResolveSolution(print, component.ContainerName, ref component.SolutionContainer, out var solution), Is.True);
+            Assert.That(SentManAppearance().TryGetData(print, FootprintVisualParameter.TrackColor, out Color partial), Is.True);
+            Assert.That(partial, Is.EqualTo(SEntMan.System<SharedPuddleSystem>().GetSolutionColor(solution)));
+        });
+
+        await Server.WaitPost(() =>
+        {
+            var component = SEntMan.GetComponent<FootprintComponent>(print);
+            Assert.That(solutions.ResolveSolution(print, component.ContainerName, ref component.SolutionContainer, out _), Is.True);
+            solutions.RemoveAllSolution(component.SolutionContainer!.Value);
+            solutions.AddSolution(component.SolutionContainer!.Value, new Solution("Water", 0.5));
+        });
+        await Server.WaitIdleAsync();
+
+        await Server.WaitAssertion(() =>
+        {
+            var component = SEntMan.GetComponent<FootprintComponent>(print);
+            Assert.That(solutions.ResolveSolution(print, component.ContainerName, ref component.SolutionContainer, out var solution), Is.True);
+
+            Assert.That(SentManAppearance().TryGetData(print, FootprintVisualParameter.TrackColor, out Color updated), Is.True);
+            Assert.That(updated, Is.Not.EqualTo(initialColor));
+            Assert.That(updated, Is.EqualTo(SEntMan.System<SharedPuddleSystem>().GetSolutionColor(solution)));
+        });
+    }
+
+    private AppearanceSystem SentManAppearance()
+    {
+        return SEntMan.System<AppearanceSystem>();
     }
 
     private async Task<(SharedSolutionContainerSystem Solutions, EntityUid Mob)> PrepareWalker()
