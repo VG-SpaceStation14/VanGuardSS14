@@ -1,0 +1,5 @@
+- type: entity
+  parent: BaseSilentGameRule
+  id: MiningShuttleLoader
+  components:
+  - type: MiningShuttleSpawnRule

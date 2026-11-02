@@ -468,4 +468,5 @@
       orGroup: monospaceDecals
     # VG-Tweak Start: Lavaland planet bootstrap
     - id: LavalandLoader
+    - id: MiningShuttleLoader
     # VG-Tweak End

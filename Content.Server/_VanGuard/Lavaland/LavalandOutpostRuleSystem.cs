@@ -1,5 +1,6 @@
 using System.Numerics;
 using Content.Server.Atmos.EntitySystems;
+using Content.Server._VanGuard.Shuttles.Components;
 using Content.Server.Parallax;
 using Content.Shared.GameTicking;
 using Content.Shared.Gravity;
@@ -79,6 +80,12 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
         }
 
         ent.Comp.OutpostGrid = outpost.Owner;
+
+        // Give the outpost dock a stable, localized name for the shuttle console.
+        // This is code-side because the map itself is only allowed a prototype id
+        // replacement in this iteration.
+        var dockLabel = EnsureComp<DockLabelComponent>(outpost.Owner);
+        dockLabel.Label = "lavaland-outpost-dock-label";
 
         // Put the outpost in the middle of the planet. The source grid is not
         // necessarily centred around its own origin, so translate by the negation

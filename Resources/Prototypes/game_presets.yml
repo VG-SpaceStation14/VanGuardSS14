@@ -145,6 +145,7 @@
     - Sandbox
     # VG-Tweak Start: Lavaland planet bootstrap
     - LavalandLoader
+    - MiningShuttleLoader
     # VG-Tweak End
 
 - type: gamePreset
@@ -182,6 +183,7 @@
     - DeathMatch31
     # VG-Tweak Start: Lavaland planet bootstrap
     - LavalandLoader
+    - MiningShuttleLoader
     # VG-Tweak End
 
 - type: gamePreset

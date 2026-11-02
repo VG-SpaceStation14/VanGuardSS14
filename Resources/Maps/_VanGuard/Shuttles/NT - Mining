@@ -97,7 +97,7 @@ entities:
     - type: GasTileOverlay
     - type: RadiationGridResistance
     - type: ExplosionAirtightGrid
-- proto: AirlockExternalShuttleLocked
+- proto: AirlockShuttleMiningLocked
   entities:
   - uid: 24
     components:
@@ -233,7 +233,7 @@ entities:
       parent: 1
       rot: 3.141592653589793 rad
       pos: 1.5,-0.5
-- proto: ComputerShuttle
+- proto: MiningShuttleConsole
   entities:
   - uid: 25
     components:
