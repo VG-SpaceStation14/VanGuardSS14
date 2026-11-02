@@ -1,0 +1,24 @@
+- type: entity
+  parent: SalvagePDA
+  id: MinerPDA
+  components:
+  - type: Pda
+    id: MinerIDCard
+
+- type: entity
+  parent: SalvageIDCard
+  id: MinerIDCard
+  components:
+  - type: PresetIdCard
+    job: Miner
+
+- type: loadout
+  id: MinerPDA
+  equipment:
+    id: MinerPDA
+
+- type: loadoutGroup
+  id: MinerID
+  name: loadout-group-miner-id
+  loadouts:
+  - MinerPDA

@@ -81,6 +81,21 @@ public sealed partial class MiningShuttleConsoleSystem : EntitySystem
         UpdateConsolesUsing(args.GridBUid);
     }
 
+    private TimeSpan _refreshTimer;
+
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+        _refreshTimer += TimeSpan.FromSeconds(frameTime);
+        if (_refreshTimer < TimeSpan.FromSeconds(1))
+            return;
+
+        _refreshTimer = TimeSpan.Zero;
+        var consoles = AllEntityQuery<MiningShuttleConsoleComponent>();
+        while (consoles.MoveNext(out var uid, out var component))
+            UpdateUi((uid, component));
+    }
+
     private void OnFtlStarted(ref FTLStartedEvent args)
     {
         UpdateConsolesUsing(args.Entity);
@@ -434,6 +449,7 @@ public sealed partial class MiningShuttleConsoleSystem : EntitySystem
                 console.Owner,
                 MiningShuttleConsoleUiKey.MiningShuttleConsole,
                 new MiningShuttleConsoleState(
+                    Loc.GetString("mining-console-title"),
                     FTLState.Available,
                     default,
                     false,
@@ -455,6 +471,7 @@ public sealed partial class MiningShuttleConsoleSystem : EntitySystem
             console.Owner,
             MiningShuttleConsoleUiKey.MiningShuttleConsole,
             new MiningShuttleConsoleState(
+                Loc.GetString("mining-console-title"),
                 ftlState,
                 ftlTime,
                 true,

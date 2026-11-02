@@ -50,6 +50,7 @@ public sealed partial class MiningConsoleWindow : FancyWindow
         _state = state.FTLState;
         _ftlTime = state.FTLTime;
         _hasShuttle = state.HasShuttle;
+        Title = state.Title;
 
         MapFTLState.Text = state.Error ??
                             Loc.GetString($"shuttle-console-ftl-state-{_state}");

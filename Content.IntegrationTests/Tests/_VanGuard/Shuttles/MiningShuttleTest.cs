@@ -7,6 +7,7 @@ using Content.Client.Shuttles.BUI;
 using Content.Client._VanGuard.Shuttles.UI;
 using Content.Server._VanGuard.Lavaland;
 using Content.Server._VanGuard.Shuttles.Components;
+using Content.Server._VanGuard.Shuttles.Guest;
 using Content.Server._VanGuard.Shuttles.Systems;
 using Content.Server.GameTicking;
 using Content.Server.Power.Components;
@@ -14,13 +15,17 @@ using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Systems;
 using Content.Server.Station.Systems;
 using Content.Shared._VanGuard.Shuttles;
+using Content.Shared.Preferences.Loadouts;
+using Content.Shared.Roles;
 using Content.Shared.Access.Components;
 using Content.Shared.CCVar;
+using Content.Shared.Doors.Components;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.GameTicking.Prototypes;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Power.Components;
 using Content.Shared.Shuttles.Components;
+using Content.Shared.Shuttles.Systems;
 using Content.Shared.Station.Components;
 using Content.IntegrationTests.Fixtures;
 using Robust.Client.GameObjects;
@@ -40,7 +45,7 @@ namespace Content.IntegrationTests.Tests._VanGuard.Shuttles;
 [NonParallelizable]
 public sealed class MiningShuttleTest : GameTest
 {
-    private const string ShuttlePath = "/Maps/_VanGuard/Shuttles/NT - Mining";
+    private const string ShuttlePath = "/Maps/_VanGuard/Shuttles/NT - Mining.yml";
     private const string OutpostPath = "/Maps/_VanGuard/Lavaland/mining_outpost.yml";
 
     public override PoolSettings PoolSettings => new()
@@ -332,6 +337,95 @@ public sealed class MiningShuttleTest : GameTest
     }
 
     [Test]
+    public void MinerJobAndLockerPrototypesExist()
+    {
+        var jobId = new ProtoId<JobPrototype>("Miner");
+        var job = SProtoMan.Index(jobId);
+        Assert.That(job.StartingGear, Is.Not.Null);
+        Assert.That(SProtoMan.HasIndex(new ProtoId<RoleLoadoutPrototype>("JobMiner")), Is.True);
+
+        var cargo = SProtoMan.Index(new ProtoId<DepartmentPrototype>("Cargo"));
+        Assert.That(cargo.Roles, Contains.Item("Miner"));
+
+        Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("LockerMinerFilled")), Is.True);
+        Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("SuitStorageMiner")), Is.True);
+        Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("MinerPDA")), Is.True);
+        Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("MinerIDCard")), Is.True);
+    }
+
+    [Test]
+    public async Task OpenConsoleRefreshesAfterCooldown()
+    {
+        var stationGrid = GetStationGrid();
+        var station = GetStation(stationGrid);
+        var shuttle = await LoadGrid(Xform(stationGrid).MapID, ShuttlePath);
+        var dock = await SpawnDock(stationGrid, "AirlockShuttleMiningLocked", new Vector2(55, 0));
+        EntityUid? card = null;
+
+        try
+        {
+            await FastFtl();
+            await Server.WaitPost(() =>
+            {
+                var marker = SEntMan.EnsureComponent<MiningShuttleComponent>(shuttle);
+                marker.Station = station;
+                SEntMan.GetComponent<ShuttleComponent>(shuttle).FTLCooldownOverride = TimeSpan.FromSeconds(2);
+            });
+            card = await UseConsoleAccess();
+            var console = await FindConsole(shuttle);
+            var system = SEntMan.System<MiningShuttleConsoleSystem>();
+            var player = Pair.Player!.AttachedEntity!.Value;
+
+            var travelled = false;
+            string? error = null;
+            await Server.WaitPost(() => travelled = system.TryTravel(console, 0, player, out error));
+            Assert.That(travelled, Is.True, error);
+            await WaitForDock(shuttle, Xform(dock).GridUid!.Value);
+
+            // Open while the arrival cooldown is still running.
+            var bui = await OpenUi(console.Owner, MiningShuttleConsoleUiKey.MiningShuttleConsole);
+            Assert.That(bui, Is.InstanceOf<MiningConsoleBoundUserInterface>());
+
+            var cooldownState = false;
+            await Server.WaitPost(() =>
+            {
+                cooldownState = Server.System<SharedUserInterfaceSystem>()
+                    .TryGetUiState<MiningShuttleConsoleState>(
+                        (console.Owner, null),
+                        MiningShuttleConsoleUiKey.MiningShuttleConsole,
+                        out var state) &&
+                    state!.FTLState == FTLState.Cooldown;
+            });
+            Assert.That(cooldownState, Is.True, "The open console did not observe the cooldown state.");
+
+            await WaitForFtlReady(shuttle);
+            await Pair.RunTicksSync(35);
+
+            var available = false;
+            await Server.WaitPost(() =>
+            {
+                available = Server.System<SharedUserInterfaceSystem>()
+                    .TryGetUiState<MiningShuttleConsoleState>(
+                        (console.Owner, null),
+                        MiningShuttleConsoleUiKey.MiningShuttleConsole,
+                        out var state) &&
+                    state!.FTLState == FTLState.Available;
+            });
+            Assert.That(available, Is.True,
+                "The already-open console did not refresh to Available after cooldown.");
+        }
+        finally
+        {
+            if (card is { } cardUid && SEntMan.EntityExists(cardUid))
+                await DeleteEntity(cardUid);
+            if (SEntMan.EntityExists(dock))
+                await DeleteEntity(dock);
+            if (SEntMan.EntityExists(shuttle))
+                await DeleteEntity(shuttle);
+        }
+    }
+
+    [Test]
     public async Task RoundstartStationGridSpawnLoadsShuttle()
     {
         var ticker = Server.System<ServerGameTicker>();
@@ -368,6 +462,16 @@ public sealed class MiningShuttleTest : GameTest
             var ids = await EntityPrototypeIds(shuttle.Value);
             Assert.That(ids, Contains.Item("MiningShuttleConsole"));
             Assert.That(ids, Contains.Item("AirlockShuttleMiningLocked"));
+
+            var guestCount = 0;
+            await Server.WaitPost(() =>
+            {
+                var query = SEntMan.EntityQueryEnumerator<GuestShuttleComponent>();
+                while (query.MoveNext(out _, out _))
+                    guestCount++;
+            });
+            Assert.That(guestCount, Is.EqualTo(1), "Roundstart should spawn exactly one guest shuttle.");
+
         }
         finally
         {
@@ -376,6 +480,74 @@ public sealed class MiningShuttleTest : GameTest
             await Pair.WaitClientCommand("toggleready True");
             await Pair.WaitCommand("startround");
             await Pair.RunUntilSynced();
+        }
+    }
+
+    [Test]
+    public async Task GuestShuttleConsoleTogglesLocalShutter()
+    {
+        var stationGrid = GetStationGrid();
+        var station = GetStation(stationGrid);
+        var shuttle = await LoadGrid(Xform(stationGrid).MapID, "/Maps/_VanGuard/Shuttles/NT - Guest.yml");
+        EntityUid? card = null;
+        EntityUid shutter = default;
+
+        try
+        {
+            await Server.WaitPost(() =>
+            {
+                var marker = SEntMan.EnsureComponent<GuestShuttleComponent>(shuttle);
+                marker.Station = station;
+            });
+
+            var console = await FindGuestConsoleOnGrid(shuttle);
+            var player = Pair.Player!.AttachedEntity!.Value;
+            card = await UseConsoleAccess();
+
+            await Server.WaitPost(() =>
+            {
+                var grid = SEntMan.GetComponent<MapGridComponent>(shuttle);
+                var coords = new EntityCoordinates(shuttle, new Vector2(0, 0));
+                SEntMan.System<SharedMapSystem>().SetTile(shuttle, grid, new Vector2i(0, 0), new Tile(1));
+                shutter = SEntMan.SpawnEntity("ShuttersNormal", coords);
+                SEntMan.EnsureComponent<GuestShuttleShutterComponent>(shutter);
+                SEntMan.System<SharedTransformSystem>().SetParent(shutter, shuttle);
+                SEntMan.System<SharedTransformSystem>().AnchorEntity(
+                    shutter,
+                    SEntMan.GetComponent<TransformComponent>(shutter),
+                    grid);
+            });
+
+            var consoleEntity = (console, SEntMan.GetComponent<GuestShuttleConsoleComponent>(console));
+            var system = SEntMan.System<GuestShuttleConsoleSystem>();
+
+            var bui = await OpenUi(console, GuestShutterConsoleUiKey.GuestShutterConsole);
+            Assert.That(bui, Is.InstanceOf<GuestShutterConsoleBoundUserInterface>());
+
+            bool toggled = false;
+            string? error = null;
+            await Server.WaitPost(() => toggled = system.TryToggle(consoleEntity, shutter, player, out error));
+            Assert.That(toggled, Is.True, error);
+            await Pair.RunTicksSync(20);
+
+            var state = SEntMan.GetComponent<DoorComponent>(shutter).State;
+            Assert.That(state, Is.EqualTo(DoorState.Open).Or.EqualTo(DoorState.Opening));
+
+            await Server.WaitPost(() =>
+            {
+                Assert.That(Server.System<SharedUserInterfaceSystem>().TryGetUiState<GuestShutterConsoleState>(
+                    (console, null), GuestShutterConsoleUiKey.GuestShutterConsole, out var uiState), Is.True);
+                Assert.That(uiState!.Shutters.Any(entry => entry.Door == SEntMan.GetNetEntity(shutter)), Is.True);
+            });
+        }
+        finally
+        {
+            if (card is { } cardUid && SEntMan.EntityExists(cardUid))
+                await DeleteEntity(cardUid);
+            if (shutter != EntityUid.Invalid && SEntMan.EntityExists(shutter))
+                await DeleteEntity(shutter);
+            if (SEntMan.EntityExists(shuttle))
+                await DeleteEntity(shuttle);
         }
     }
 
@@ -612,6 +784,25 @@ public sealed class MiningShuttleTest : GameTest
             }
         });
         Assert.That(console, Is.Not.Null, "The shuttle map has no mining console.");
+        return console!.Value;
+    }
+
+    private async Task<EntityUid> FindGuestConsoleOnGrid(EntityUid grid)
+    {
+        EntityUid? console = null;
+        await Server.WaitPost(() =>
+        {
+            var query = SEntMan.EntityQueryEnumerator<GuestShuttleConsoleComponent, TransformComponent>();
+            while (query.MoveNext(out var uid, out _, out var xform))
+            {
+                if (xform.GridUid == grid)
+                {
+                    console = uid;
+                    return;
+                }
+            }
+        });
+        Assert.That(console, Is.Not.Null, "The guest shuttle has no shutter console.");
         return console!.Value;
     }
 

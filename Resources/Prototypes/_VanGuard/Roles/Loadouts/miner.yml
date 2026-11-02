@@ -1,0 +1,16 @@
+- type: roleLoadout
+  id: JobMiner
+  groups:
+  - Inventory
+  - GroupTankHarness
+  - MinerID
+  - PdaPen
+  - SalvageSpecialistBackpack
+  - SalvageSpecialistOuterClothing
+  - SalvageSpecialistShoes
+  - Glasses
+  - AssistiveItems
+  - Survival
+  - Trinkets
+  - GroupSpeciesBreathTool
+  - VGStickers

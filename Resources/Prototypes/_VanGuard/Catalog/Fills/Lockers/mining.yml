@@ -1,0 +1,37 @@
+- type: entityTable
+  id: LockerFillMiner
+  table: !type:AllSelector
+    children:
+    - id: SurvivalKnife
+    - id: HandheldGPSBasic
+    - id: RadioHandheld
+    - id: WeaponProtoKineticAccelerator
+    - id: FireExtinguisher
+    - id: OreBag
+    - id: MineralScanner
+    - id: ClothingEyesGlassesMeson
+
+- type: entity
+  id: LockerMinerFilled
+  suffix: Filled
+  parent: LockerSalvageSpecialist
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:NestedSelector
+        tableId: LockerFillMiner
+
+- type: entity
+  id: SuitStorageMiner
+  parent: SuitStorageBase
+  suffix: Miner
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: ClothingOuterHardsuitMining
+        - id: OxygenTankFilled
+        - id: ClothingMaskGasExplorer
+  - type: AccessReader
+    access: [["Salvage"]]

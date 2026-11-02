@@ -11,6 +11,12 @@ public enum MiningShuttleConsoleUiKey : byte
 }
 
 [Serializable, NetSerializable]
+public enum GuestShuttleConsoleUiKey : byte
+{
+    GuestShuttleConsole = 1,
+}
+
+[Serializable, NetSerializable]
 public sealed class MiningShuttleDestination
 {
     public string Name;
@@ -28,6 +34,7 @@ public sealed class MiningShuttleDestination
 [Serializable, NetSerializable]
 public sealed class MiningShuttleConsoleState : BoundUserInterfaceState
 {
+    public string Title;
     public FTLState FTLState;
     public StartEndTime FTLTime;
     public bool HasShuttle;
@@ -35,12 +42,14 @@ public sealed class MiningShuttleConsoleState : BoundUserInterfaceState
     public string? Error;
 
     public MiningShuttleConsoleState(
+        string title,
         FTLState ftlState,
         StartEndTime ftlTime,
         bool hasShuttle,
         List<MiningShuttleDestination> destinations,
         string? error)
     {
+        Title = title;
         FTLState = ftlState;
         FTLTime = ftlTime;
         HasShuttle = hasShuttle;

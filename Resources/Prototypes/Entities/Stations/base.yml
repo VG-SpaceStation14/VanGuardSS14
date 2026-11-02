@@ -124,6 +124,13 @@
           addComponents:
           - type: MiningShuttle
         # VG-Tweak End
+        # VG-Tweak Start: roundstart guest shuttle
+        miningGuest: !type:GridSpawnGroup
+          paths:
+          - /Maps/_VanGuard/Shuttles/NT - Guest.yml
+          addComponents:
+          - type: GuestShuttle
+        # VG-Tweak End
 
 - type: entity
   id: BaseStationCentcomm

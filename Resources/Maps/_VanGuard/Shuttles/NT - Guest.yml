@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 11/01/2026 23:45:43
-  entityCount: 64
+  entityCount: 65
 maps: []
 grids:
 - 1
@@ -97,7 +97,7 @@ entities:
     - type: GasTileOverlay
     - type: RadiationGridResistance
     - type: ExplosionAirtightGrid
-- proto: AirlockExternalShuttleLocked
+- proto: AirlockShuttleMiningGuestLocked
   entities:
   - uid: 24
     components:
@@ -233,13 +233,20 @@ entities:
       parent: 1
       rot: 3.141592653589793 rad
       pos: 1.5,-0.5
-- proto: ComputerShuttle
+- proto: GuestShuttleConsole
   entities:
   - uid: 25
     components:
     - type: Transform
       parent: 1
       pos: 0.5,2.5
+- proto: ComputerShuttle
+  entities:
+  - uid: 1000
+    components:
+    - type: Transform
+      parent: 1
+      pos: 1.5,2.5
 - proto: CrateGenericSteel
   entities:
   - uid: 58

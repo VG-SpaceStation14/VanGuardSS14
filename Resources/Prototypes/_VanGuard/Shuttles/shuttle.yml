@@ -44,3 +44,51 @@
     state: cpu_supply
   - type: ComputerBoard
     prototype: MiningShuttleConsole
+
+- type: entity
+  parent: AirlockExternalShuttleLocked
+  id: AirlockShuttleMiningGuestLocked
+  suffix: Mining Guest, Locked
+  components:
+  - type: PriorityDock
+    tag: DockMiningGuest
+  - type: GuestShuttleShutter
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsCargoSalvage ]
+  - type: Wires
+    layoutId: AirlockCargo
+
+- type: entity
+  parent: BaseComputer
+  id: GuestShuttleConsole
+  components:
+  - type: GuestShuttleConsole
+  - type: ActivatableUI
+    key: enum.GuestShutterConsoleUiKey.GuestShutterConsole
+  - type: ActivatableUIRequiresAccess
+  - type: UserInterface
+    interfaces:
+      enum.GuestShutterConsoleUiKey.GuestShutterConsole:
+        type: GuestShutterConsoleBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: AccessReader
+    access: [["Cargo"], ["Salvage"]]
+  - type: Computer
+    board: GuestShuttleConsoleCircuitboard
+  - type: ComputerVisuals
+    stateScreen: shuttle
+  - type: PointLight
+    radius: 1.5
+    energy: 4.0
+    color: "#b89f25"
+
+- type: entity
+  parent: BaseComputerCircuitboard
+  id: GuestShuttleConsoleCircuitboard
+  components:
+  - type: Sprite
+    state: cpu_supply
+  - type: ComputerBoard
+    prototype: GuestShuttleConsole

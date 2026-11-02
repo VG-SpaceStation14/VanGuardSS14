@@ -4348,7 +4348,7 @@ entities:
     - type: Transform
       parent: 1
       pos: -10.5,-3.5
-- proto: LockerSalvageSpecialistFilled
+- proto: LockerMinerFilled
   entities:
   - uid: 576
     components:
@@ -5060,7 +5060,7 @@ entities:
     - type: Transform
       parent: 1
       pos: -16.5,5.5
-- proto: SuitStorageSalv
+- proto: SuitStorageMiner
   entities:
   - uid: 699
     components:

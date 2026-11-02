@@ -22,3 +22,28 @@ mining-console-no-shuttle = This console is not linked to a shuttle.
 mining-console-ftl-failed = The shuttle could not enter FTL.
 
 lavaland-outpost-dock-label = Lavaland Outpost
+
+ent-AirlockShuttleMiningGuestLocked = guest shuttle docking airlock
+    .desc = A docking airlock reserved for the guest shuttle.
+
+ent-GuestShuttleConsole = guest shuttle console
+    .desc = Moves the guest shuttle to an available FTL destination.
+
+ent-GuestShuttleConsoleCircuitboard = guest shuttle console board
+    .desc = A computer printed circuit board for a guest shuttle console.
+
+guest-console-title = Guest Shuttle
+guest-console-destination-unavailable = This destination is not available for FTL.
+guest-console-invalid-destination = Invalid destination.
+guest-console-unknown-destination = Unknown destination
+guest-shutter-title = Guest Shuttle Shutters
+guest-shutter-toggle = Toggle
+guest-shutter-invalid = This shutter is not part of the guest shuttle.
+guest-shutter-failed = The shutter could not be toggled.
+guest-shutter-unnamed = Shutter
+guest-shutter-state-Closed = Closed
+guest-shutter-state-Closing = Closing
+guest-shutter-state-Open = Open
+guest-shutter-state-Opening = Opening
+guest-shutter-state-Denying = Denying
+guest-shutter-state-Emagging = Emagged
