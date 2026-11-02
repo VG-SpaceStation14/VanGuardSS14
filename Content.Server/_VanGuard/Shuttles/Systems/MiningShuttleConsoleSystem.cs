@@ -231,18 +231,16 @@ public sealed partial class MiningShuttleConsoleSystem : EntitySystem
             return Loc.GetString(gridLabelId);
         }
 
-        if (TryComp<MetaDataComponent>(grid, out var gridMeta) &&
-            !string.IsNullOrWhiteSpace(gridMeta.EntityName) &&
+        var gridMeta = MetaData(grid);
+        if (!string.IsNullOrWhiteSpace(gridMeta.EntityName) &&
             gridMeta.EntityName != "grid")
         {
             return gridMeta.EntityName;
         }
 
-        if (TryComp<MetaDataComponent>(dock, out var dockMeta) &&
-            !string.IsNullOrWhiteSpace(dockMeta.EntityName))
-        {
+        var dockMeta = MetaData(dock);
+        if (!string.IsNullOrWhiteSpace(dockMeta.EntityName))
             return dockMeta.EntityName;
-        }
 
         return Loc.GetString("mining-shuttle-console-unknown-dock");
     }

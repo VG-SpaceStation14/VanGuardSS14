@@ -73,14 +73,13 @@ public sealed partial class MiningShuttleSpawnRuleSystem : GameRuleSystem<Mining
     {
         var component = rule.Comp1;
 
-        if (!TryFindStationGrid(out var stationGrid) ||
-            !TryComp<TransformComponent>(stationGrid, out var stationXform))
+        if (!TryFindStationGrid(out var stationGrid))
         {
             Log.Error("Mining shuttle could not be spawned: no station grid was found.");
             return;
         }
 
-        var stationMap = stationXform.MapID;
+        var stationMap = Transform(stationGrid).MapID;
         if (!_loader.TryLoadGrid(
                 stationMap,
                 component.ShuttlePath,

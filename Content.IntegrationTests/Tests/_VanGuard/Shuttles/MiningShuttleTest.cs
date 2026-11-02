@@ -1,3 +1,4 @@
+#nullable enable
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -106,7 +107,7 @@ public sealed class MiningShuttleTest : GameTest
             await Server.WaitPost(() => targets = consoleSystem.GetDockTargets(console));
             Assert.That(targets!.Any(target => target.Dock == targetDock), Is.True,
                 "The tagged station dock was not offered by the console.");
-            var target = targets.Single(target => target.Dock == targetDock);
+            var target = targets!.Single(target => target.Dock == targetDock);
             Assert.That(target.Enabled, Is.True,
                 $"The free station dock should be selectable. reason={target.Reason ?? "<none>"}");
 
@@ -196,7 +197,7 @@ public sealed class MiningShuttleTest : GameTest
                     var spawnRule = SEntMan.GetComponent<MiningShuttleSpawnRuleComponent>(r.Owner);
                     if (spawnRule.ShuttleGrid is { } shuttle && SEntMan.EntityExists(shuttle))
                         SEntMan.DeleteEntity(shuttle);
-                    Server.System<ServerGameTicker>().EndGameRule(r);
+                    Server.System<ServerGameTicker>().EndGameRule((r.Owner, (GameRuleComponent?) r.Comp));
                 }
 
                 if (SEntMan.EntityExists(targetDock))
@@ -293,7 +294,7 @@ public sealed class MiningShuttleTest : GameTest
                     var spawnRule = SEntMan.GetComponent<MiningShuttleSpawnRuleComponent>(sr.Owner);
                     if (spawnRule.ShuttleGrid is { } shuttle && SEntMan.EntityExists(shuttle))
                         SEntMan.DeleteEntity(shuttle);
-                    ticker.EndGameRule(sr);
+                    ticker.EndGameRule((sr.Owner, (GameRuleComponent?) sr.Comp));
                 }
 
                 if (lavalandRule is { } lr && SEntMan.EntityExists(lr.Owner))
@@ -301,7 +302,7 @@ public sealed class MiningShuttleTest : GameTest
                     var lavaland = SEntMan.GetComponent<LavalandOutpostRuleComponent>(lr.Owner);
                     if (lavaland.Map is { } map && SEntMan.EntityExists(map))
                         SEntMan.DeleteEntity(map);
-                    ticker.EndGameRule(lr);
+                    ticker.EndGameRule((lr.Owner, (GameRuleComponent?) lr.Comp));
                 }
             });
         }

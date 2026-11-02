@@ -1,3 +1,4 @@
+#nullable enable
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -203,7 +204,7 @@ public sealed class LavalandMapTest : GameTest
                     Server.PlayerMan.SetAttachedEntity(ServerSession, null);
 
                 if (rule is { } r && SEntMan.EntityExists(r.Owner))
-                    ticker.EndGameRule(r);
+                    ticker.EndGameRule((r.Owner, (GameRuleComponent?) r.Comp));
 
                 if (rule != null &&
                     SEntMan.TryGetComponent<LavalandOutpostRuleComponent>(rule.Value.Owner, out var component) &&
