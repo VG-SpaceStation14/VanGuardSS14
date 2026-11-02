@@ -6,11 +6,91 @@
   - MinerID
   - PdaPen
   - SalvageSpecialistBackpack
+  - MinerJumpsuit
+  - MinerEars
+  - MinerHead
+  - MinerNeck
   - SalvageSpecialistOuterClothing
-  - SalvageSpecialistShoes
+  - MinerShoes
   - Glasses
   - AssistiveItems
   - Survival
   - Trinkets
   - GroupSpeciesBreathTool
   - VGStickers
+
+- type: loadoutGroup
+  id: MinerShoes
+  name: loadout-group-miner-shoes
+  loadouts:
+  - SalvageBoots
+
+- type: loadoutGroup
+  id: MinerJumpsuit
+  name: loadout-group-miner-jumpsuit
+  loadouts:
+  - MinerSalvageJumpsuit
+
+- type: loadout
+  id: MinerSalvageJumpsuit
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitSalvageSpecialist
+
+- type: loadoutGroup
+  id: MinerEars
+  name: loadout-group-miner-ears
+  loadouts:
+  - MinerHeadset
+
+- type: loadout
+  id: MinerHeadset
+  equipment:
+    ears: ClothingHeadsetMining
+
+- type: loadoutGroup
+  id: MinerHead
+  name: loadout-group-miner-head
+  minLimit: 0
+  loadouts:
+  - MinerCargoCap
+  - MinerWinterHood
+
+- type: loadout
+  id: MinerCargoCap
+  equipment:
+    head: ClothingHeadHatCargosoft
+
+- type: loadout
+  id: MinerWinterHood
+  equipment:
+    head: ClothingHeadHatHoodWinterMiner
+
+- type: loadoutEffectGroup
+  id: MinerSalvagerSupremeTime
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobMiner
+      time: 18000
+
+- type: loadoutGroup
+  id: MinerNeck
+  name: loadout-group-miner-neck
+  minLimit: 0
+  loadouts:
+  - MinerGoliathCloak
+  - MinerSupremeCloak
+
+- type: loadout
+  id: MinerGoliathCloak
+  equipment:
+    neck: ClothingNeckCloakGoliathCloak
+
+- type: loadout
+  id: MinerSupremeCloak
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MinerSalvagerSupremeTime
+  equipment:
+    neck: ClothingNeckCloakSalvagerSupreme
