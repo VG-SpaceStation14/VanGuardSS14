@@ -79,6 +79,13 @@
   name: loadout-group-miner-neck
   minLimit: 0
   loadouts:
+  - MinerCopperCape
+  - MinerSilverCape
+  - MinerGoldenCape
+  - MinerPlatinumCape
+  - MinerEmeraldCape
+  - MinerDiamondCape
+  - MinerRubieCape
   - MinerGoliathCloak
   - MinerSupremeCloak
 
@@ -94,3 +101,95 @@
     proto: MinerSalvagerSupremeTime
   equipment:
     neck: ClothingNeckCloakSalvagerSupreme
+
+- type: loadoutEffectGroup
+  id: MinerCape15
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobMiner
+      time: 54000
+
+- type: loadoutEffectGroup
+  id: MinerCape30
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobMiner
+      time: 108000
+
+- type: loadoutEffectGroup
+  id: MinerCape60
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobMiner
+      time: 216000
+
+- type: loadoutEffectGroup
+  id: MinerCape100
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobMiner
+      time: 360000
+
+- type: loadoutEffectGroup
+  id: MinerCape300
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobMiner
+      time: 1080000
+
+- type: loadout
+  id: MinerCopperCape
+  equipment:
+    neck: ClothingNeckMinerCopperCape
+- type: loadout
+  id: MinerSilverCape
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MinerSalvagerSupremeTime
+  equipment:
+    neck: ClothingNeckMinerSilverCape
+- type: loadout
+  id: MinerGoldenCape
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MinerCape15
+  equipment:
+    neck: ClothingNeckMinerGoldenCape
+- type: loadout
+  id: MinerPlatinumCape
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MinerCape30
+  equipment:
+    neck: ClothingNeckMinerPlatinumCape
+- type: loadout
+  id: MinerEmeraldCape
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MinerCape60
+  equipment:
+    neck: ClothingNeckMinerEmeraldCape
+- type: loadout
+  id: MinerDiamondCape
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MinerCape100
+  equipment:
+    neck: ClothingNeckMinerDiamondCape
+- type: loadout
+  id: MinerRubieCape
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MinerCape300
+  equipment:
+    neck: ClothingNeckMinerRubieCape

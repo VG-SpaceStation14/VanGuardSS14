@@ -57,7 +57,11 @@ public sealed class LavalandContentTest : GameTest
             await Server.WaitPost(() =>
             {
                 spike = SEntMan.SpawnEntity("LavalandTendril", new EntityCoordinates(grid, 1000, 1000));
-                var spikeComp = SEntMan.GetComponent<LavalandTendrilComponent>(spike.Value);
+            });
+            await Pair.RunTicksSync(2);
+            await Server.WaitPost(() =>
+            {
+                var spikeComp = SEntMan.GetComponent<LavalandTendrilComponent>(spike!.Value);
                 Assert.That(Server.System<LavalandTendrilSystem>().TryDestroy((spike.Value, spikeComp)), Is.True);
             });
             await Pair.RunTicksSync(2);

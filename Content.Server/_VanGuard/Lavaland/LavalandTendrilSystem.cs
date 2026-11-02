@@ -32,6 +32,15 @@ public sealed partial class LavalandTendrilSystem : EntitySystem
         var query = AllEntityQuery<LavalandTendrilComponent>();
         while (query.MoveNext(out var uid, out var comp))
         {
+            if (!comp.Destroyed && TryComp<Content.Shared.Damage.Components.DamageableComponent>(uid, out var damageable) &&
+                _damageable.GetTotalDamage((uid, damageable)) >= 250)
+            {
+                comp.Destroyed = true;
+                DestroyCore((uid, comp));
+                QueueDel(uid);
+                continue;
+            }
+
             comp.Mobs.RemoveAll(mob => !Exists(mob));
             if (comp.Mobs.Count >= comp.MaxSpawns)
                 continue;
