@@ -220,10 +220,10 @@ public sealed class LavalandContentTest : GameTest
             var card = points.TryFindIdCard(player);
             if (card is null)
                 Assert.Fail("Test player has no ID card with mining points.");
-            Assert.That(points.AddPoints(card.Value, 20000), Is.True);
+            Assert.That(points.AddPoints(card!.Value, 20000), Is.True);
 
             shop = SEntMan.SpawnEntity("MiningShop", new EntityCoordinates(grid, 5, 0));
-            var motion = SProtoMan.Index<MiningShopSectionPrototype>("Motion");
+            var motion = SProtoMan.Index<MiningShopSectionPrototype>(new ProtoId<MiningShopSectionPrototype>("Motion"));
             var entries = motion.Entries.Where(entry =>
                 entry.Id == "Jaunter" || entry.Id == "ShelterCapsule" ||
                 entry.Id == "ShelterCapsuleLuxury" || entry.Id == "ShelterCapsuleBar").ToList();
@@ -244,7 +244,7 @@ public sealed class LavalandContentTest : GameTest
 
             var after = points.TryFindIdCard(player);
             Assert.That(after, Is.Not.Null);
-            Assert.That(after!.Value.Comp.Points, Is.EqualTo(20000 - total));
+            Assert.That(after!.Value.Comp!.Points, Is.EqualTo(20000 - total));
             Assert.That(SEntMan.GetComponent<MiningShopComponent>(shop).OrderList.Count, Is.EqualTo(4));
 
             var express = new MiningShopExpressDeliveryBuiMsg

@@ -30,7 +30,7 @@ using Robust.Shared.GameObjects;
 using Robust.Shared.Localization;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
-using Robust.Shared.Maths;
+
 using Robust.Shared.Prototypes;
 
 namespace Content.IntegrationTests.Tests._VanGuard.Lavaland;
