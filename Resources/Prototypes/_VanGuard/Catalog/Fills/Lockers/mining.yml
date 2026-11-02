@@ -31,6 +31,7 @@
       entity_storage: !type:AllSelector
         children:
         - id: ClothingOuterHardsuitMining
+        - id: ClothingOuterArmorMiner
         - id: OxygenTankFilled
         - id: ClothingMaskGasExplorer
   - type: AccessReader

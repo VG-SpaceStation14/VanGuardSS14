@@ -119,3 +119,30 @@
           prob: 0.3
         - id: SurvivalKnife
           prob: 0.4
+
+- type: entity
+  parent: LavalandTendril
+  id: LavalandTendrilIcewing
+  name: lavaland-tendril-icewing-name
+  components:
+  - type: LavalandTendril
+    spawns: [ MobWatcherIcewing ]
+    loot: LavalandNecropolisCrateWatcher
+
+- type: entity
+  parent: LavalandTendril
+  id: LavalandTendrilMagmawing
+  name: lavaland-tendril-magmawing-name
+  components:
+  - type: LavalandTendril
+    spawns: [ MobWatcherMagmawing ]
+    loot: LavalandNecropolisCrateWatcher
+
+- type: entity
+  parent: LavalandTendril
+  id: LavalandTendrilPride
+  name: lavaland-tendril-pride-name
+  components:
+  - type: LavalandTendril
+    spawns: [ MobWatcherPride ]
+    loot: LavalandNecropolisCrateWatcher

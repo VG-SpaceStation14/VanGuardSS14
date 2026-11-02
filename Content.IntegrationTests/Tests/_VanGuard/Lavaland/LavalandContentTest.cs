@@ -51,6 +51,9 @@ public sealed class LavalandContentTest : GameTest
             Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("LavalandNecropolisCrate")), Is.True);
             Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("Jaunter")), Is.True);
             Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("JaunterPortal")), Is.True);
+            Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("ClothingOuterArmorMiner")), Is.True);
+            Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("ClothingOuterArmorMinerReinforcedFull")), Is.True);
+            Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("LavalandTendrilIcewing")), Is.True);
         });
     }
 

@@ -17,3 +17,6 @@ lavaland-dungeon-lava-lake = Lava Lake Village
 lavaland-necropolis-crate-name = necropolis cache
 lavaland-necropolis-goliath-crate = goliath trophy cache
 lavaland-necropolis-watcher-crate = watcher relic cache
+lavaland-tendril-icewing-name = icewing tendril
+lavaland-tendril-magmawing-name = magmawing tendril
+lavaland-tendril-pride-name = pride tendril

@@ -17,3 +17,6 @@ lavaland-dungeon-lava-lake = Деревня на лавовом озере
 lavaland-necropolis-crate-name = тайник Некрополиса
 lavaland-necropolis-goliath-crate = тайник трофеев голиафа
 lavaland-necropolis-watcher-crate = тайник реликвий наблюдателя
+lavaland-tendril-icewing-name = шип ледяного наблюдателя
+lavaland-tendril-magmawing-name = шип магмового наблюдателя
+lavaland-tendril-pride-name = шип гордого наблюдателя

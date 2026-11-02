@@ -1,0 +1,81 @@
+- type: Tag
+  id: MinerArmor
+- type: Tag
+  id: MinerArmorOne
+- type: Tag
+  id: MinerArmorTwo
+
+- type: constructionGraph
+  id: MinerArmorReinforcedOne
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: MinerArmorReinforcedOne
+      steps:
+      - tag: MinerArmor
+        name: miner-armor
+        doAfter: 2
+      - material: GoliathHide
+        amount: 2
+        doAfter: 2
+  - node: MinerArmorReinforcedOne
+    entity: ClothingOuterArmorMinerReinforcedOne
+
+- type: constructionGraph
+  id: MinerArmorReinforcedTwo
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: MinerArmorReinforcedTwo
+      steps:
+      - tag: MinerArmorOne
+        name: miner-armor-reinforced-one
+        doAfter: 2
+      - material: GoliathHide
+        amount: 2
+        doAfter: 2
+  - node: MinerArmorReinforcedTwo
+    entity: ClothingOuterArmorMinerReinforcedTwo
+
+- type: constructionGraph
+  id: MinerArmorReinforcedFull
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: MinerArmorReinforcedFull
+      steps:
+      - tag: MinerArmorTwo
+        name: miner-armor-reinforced-two
+        doAfter: 2
+      - material: GoliathHide
+        amount: 2
+        doAfter: 2
+  - node: MinerArmorReinforcedFull
+    entity: ClothingOuterArmorMinerReinforcedFull
+
+- type: construction
+  id: ClothingOuterArmorMinerReinforcedOne
+  graph: MinerArmorReinforcedOne
+  startNode: start
+  targetNode: MinerArmorReinforcedOne
+  category: construction-category-clothing
+  objectType: Item
+
+- type: construction
+  id: ClothingOuterArmorMinerReinforcedTwo
+  graph: MinerArmorReinforcedTwo
+  startNode: start
+  targetNode: MinerArmorReinforcedTwo
+  category: construction-category-clothing
+  objectType: Item
+
+- type: construction
+  id: ClothingOuterArmorMinerReinforcedFull
+  graph: MinerArmorReinforcedFull
+  startNode: start
+  targetNode: MinerArmorReinforcedFull
+  category: construction-category-clothing
+  objectType: Item

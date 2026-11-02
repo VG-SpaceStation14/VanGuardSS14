@@ -56,8 +56,17 @@
     - LavalandTendrilGoliath
     - LavalandTendrilGoliath
     - LavalandTendrilWatcher
+    - LavalandTendrilIcewing
+    - LavalandTendrilMagmawing
+    - LavalandTendrilPride
     - LavalandTendrilWatcher
+    - LavalandTendrilIcewing
+    - LavalandTendrilMagmawing
+    - LavalandTendrilPride
     - LavalandTendrilWatcher
+    - LavalandTendrilIcewing
+    - LavalandTendrilMagmawing
+    - LavalandTendrilPride
     minDistance: 100
     maxDistance: 220
     clearRadius: 18
