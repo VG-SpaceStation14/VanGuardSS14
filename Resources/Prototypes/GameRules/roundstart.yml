@@ -466,3 +466,6 @@
     - id: BasicDecalDirtMonospaceVariationPass
       prob: 0.50
       orGroup: monospaceDecals
+    # VG-Tweak Start: Lavaland planet bootstrap
+    - id: LavalandLoader
+    # VG-Tweak End

@@ -143,6 +143,9 @@
   maxPlayers: 5
   rules:
     - Sandbox
+    # VG-Tweak Start: Lavaland planet bootstrap
+    - LavalandLoader
+    # VG-Tweak End
 
 - type: gamePreset
   id: Traitor
@@ -177,6 +180,9 @@
   supportedMaps: DeathMatchMapPool
   rules:
     - DeathMatch31
+    # VG-Tweak Start: Lavaland planet bootstrap
+    - LavalandLoader
+    # VG-Tweak End
 
 - type: gamePreset
   id: Nukeops

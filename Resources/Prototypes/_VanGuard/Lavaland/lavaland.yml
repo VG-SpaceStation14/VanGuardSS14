@@ -1,0 +1,38 @@
+# Lavaland iteration 1: planet map, outpost bootstrap and FTL target.
+
+- type: entity
+  id: LavalandLoader
+  parent: BaseSilentGameRule
+  name: lavaland-loader
+  components:
+  - type: LoadMapRule
+    mapPath: /Maps/_VanGuard/Lavaland/lavaland.yml
+  - type: LavalandOutpostRule
+    biome: Lava
+    gridPath: /Maps/_VanGuard/Lavaland/mining_outpost.yml
+    clearRadius: 10
+    mapLight: "#6e2c2c"
+    # Ideal gas: n = pV / RT.
+    # p = 101.325 kPa, V = 2500 L, T = 313.15 K, R = 8.314462618.
+    # n = 101.325 * 2500 / (8.314462618 * 313.15) = 97.30 mol.
+    # 14% oxygen -> 13.62 mol O2; the rest is 83.68 mol N2.
+    # Pressure check: 97.30 * 8.314462618 * 313.15 / 2500 = 101.3 kPa.
+    atmosphere:
+      temperature: 313.15
+      volume: 2500
+      moles:
+        Oxygen: 13.62
+        Nitrogen: 83.68
+    disableLightCycle: true
+    removeRoof: true
+    sunShadowDirection: "-1,-1"
+    sunShadowAlpha: 0.75
+    gravityEnabled: true
+    gravityInherent: true
+    ftlPointProto: LavalandFTLPoint
+
+# FTL target marker. The localized name comes from the prototype name key.
+- type: entity
+  parent: FTLPoint
+  id: LavalandFTLPoint
+  name: lavaland-ftl-point
