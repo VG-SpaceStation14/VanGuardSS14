@@ -3,6 +3,12 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server._VanGuard.Shuttles.Components;
 
+public enum MiningShuttleConsoleMode : byte
+{
+    Mining,
+    Guest,
+}
+
 /// <summary>
 /// A console for a docking-only mining shuttle. It offers exactly two
 /// destinations: the owning station and the Lavaland outpost.
@@ -14,6 +20,9 @@ public sealed partial class MiningShuttleConsoleComponent : Component
     /// Priority dock tag. If no dock with this tag is free, the stock docking
     /// system may use another compatible free dock on the destination grid.
     /// </summary>
+    [DataField]
+    public MiningShuttleConsoleMode Mode = MiningShuttleConsoleMode.Mining;
+
     [DataField]
     public ProtoId<TagPrototype> DockTag = "DockMining";
 

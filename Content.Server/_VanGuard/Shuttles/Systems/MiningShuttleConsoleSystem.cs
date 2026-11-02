@@ -1,5 +1,6 @@
 using System.Linq;
 using Content.Server._VanGuard.Lavaland;
+using Content.Server._VanGuard.Shuttles.Guest;
 using Content.Server._VanGuard.Shuttles.Components;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Events;
@@ -36,6 +37,7 @@ public sealed partial class MiningShuttleConsoleSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<MiningShuttleComponent, ComponentStartup>(OnShuttleStartup);
+        SubscribeLocalEvent<GuestShuttleComponent, ComponentStartup>(OnGuestShuttleStartup);
         SubscribeLocalEvent<MiningShuttleConsoleComponent, BoundUIOpenedEvent>(OnOpened);
         SubscribeLocalEvent<DockEvent>(OnDock);
         SubscribeLocalEvent<UndockEvent>(OnUndock);
@@ -51,6 +53,11 @@ public sealed partial class MiningShuttleConsoleSystem : EntitySystem
     }
 
     private void OnShuttleStartup(Entity<MiningShuttleComponent> ent, ref ComponentStartup args)
+    {
+        ent.Comp.Station ??= _station.GetOwningStation(ent.Owner);
+    }
+
+    private void OnGuestShuttleStartup(Entity<GuestShuttleComponent> ent, ref ComponentStartup args)
     {
         ent.Comp.Station ??= _station.GetOwningStation(ent.Owner);
     }
@@ -127,30 +134,50 @@ public sealed partial class MiningShuttleConsoleSystem : EntitySystem
         }
 
         var currentGrid = Transform(console.Owner).GridUid;
-        if (currentGrid is { } current &&
-            HasComp<ShuttleComponent>(current) &&
-            HasComp<MiningShuttleComponent>(current))
+        if (currentGrid is { } current && HasComp<ShuttleComponent>(current))
         {
-            shuttle = current;
-            return true;
+            if (console.Comp.Mode == MiningShuttleConsoleMode.Guest
+                    ? HasComp<GuestShuttleComponent>(current)
+                    : HasComp<MiningShuttleComponent>(current))
+            {
+                shuttle = current;
+                return true;
+            }
         }
 
         EntityUid? found = null;
-        var query = AllEntityQuery<MiningShuttleComponent>();
-        while (query.MoveNext(out var candidate, out var marker))
+        if (console.Comp.Mode == MiningShuttleConsoleMode.Guest)
         {
-            if (!HasComp<ShuttleComponent>(candidate) || marker.DockTag != console.Comp.DockTag)
-                continue;
-
-            if (found != null)
+            var guestQuery = AllEntityQuery<GuestShuttleComponent>();
+            while (guestQuery.MoveNext(out var candidate, out _))
             {
-                Log.Warning(
-                    $"Mining console {ToPrettyString(console.Owner)} found multiple marked shuttles; " +
-                    "set LinkedShuttle explicitly.");
-                return false;
-            }
+                if (!HasComp<ShuttleComponent>(candidate))
+                    continue;
 
-            found = candidate;
+                if (found != null)
+                    return false;
+
+                found = candidate;
+            }
+        }
+        else
+        {
+            var query = AllEntityQuery<MiningShuttleComponent>();
+            while (query.MoveNext(out var candidate, out var marker))
+            {
+                if (!HasComp<ShuttleComponent>(candidate) || marker.DockTag != console.Comp.DockTag)
+                    continue;
+
+                if (found != null)
+                {
+                    Log.Warning(
+                        $"Shuttle console {ToPrettyString(console.Owner)} found multiple marked shuttles; " +
+                        "set LinkedShuttle explicitly.");
+                    return false;
+                }
+
+                found = candidate;
+            }
         }
 
         if (found is { } result)
@@ -170,6 +197,9 @@ public sealed partial class MiningShuttleConsoleSystem : EntitySystem
         Entity<MiningShuttleConsoleComponent> console,
         EntityUid shuttle)
     {
+        if (console.Comp.Mode == MiningShuttleConsoleMode.Guest)
+            return GetGuestDestinations(console, shuttle);
+
         var result = new List<MiningShuttleDestination>
         {
             new(Loc.GetString("mining-console-station"), false, Loc.GetString("mining-console-no-station")),
@@ -283,6 +313,17 @@ public sealed partial class MiningShuttleConsoleSystem : EntitySystem
         map = default;
         grid = default;
 
+        if (console.Comp.Mode == MiningShuttleConsoleMode.Guest)
+        {
+            var destinations = BuildGuestDestinations(console, shuttle);
+            if (index < 0 || index >= destinations.Count)
+                return false;
+
+            map = destinations[index].Map;
+            grid = destinations[index].Grid;
+            return true;
+        }
+
         if (index == 0)
         {
             if (GetStationMap(shuttle) is not { } stationMap)
@@ -306,16 +347,25 @@ public sealed partial class MiningShuttleConsoleSystem : EntitySystem
 
     private MapId? GetStationMap(EntityUid shuttle)
     {
-        if (!TryComp<MiningShuttleComponent>(shuttle, out var marker))
-            return null;
-
-        if (marker.Station == null || !Exists(marker.Station.Value))
+        EntityUid? station = null;
+        if (TryComp<GuestShuttleComponent>(shuttle, out var guest))
         {
-            marker.Station = _station.GetOwningStation(shuttle);
+            if (guest.Station == null || !Exists(guest.Station.Value))
+                guest.Station = _station.GetOwningStation(shuttle);
+            station = guest.Station;
+        }
+        else if (TryComp<MiningShuttleComponent>(shuttle, out var marker))
+        {
+            if (marker.Station == null || !Exists(marker.Station.Value))
+                marker.Station = _station.GetOwningStation(shuttle);
+            station = marker.Station;
         }
 
-        if (marker.Station is not { } station || !TryComp<StationDataComponent>(station, out var data))
+        if (station is not { } stationUid ||
+            !TryComp<StationDataComponent>(stationUid, out var data))
+        {
             return null;
+        }
 
         MapId? map = null;
         var largest = 0f;
@@ -352,6 +402,67 @@ public sealed partial class MiningShuttleConsoleSystem : EntitySystem
         map = default;
         outpostGrid = EntityUid.Invalid;
         return false;
+    }
+
+    private string GetTitle(Entity<MiningShuttleConsoleComponent> console)
+    {
+        return Loc.GetString(console.Comp.Mode == MiningShuttleConsoleMode.Guest
+            ? "guest-console-title"
+            : "mining-console-title");
+    }
+
+    private List<MiningShuttleDestination> GetGuestDestinations(
+        Entity<MiningShuttleConsoleComponent> console,
+        EntityUid shuttle)
+    {
+        var destinations = BuildGuestDestinations(console, shuttle);
+        var canFtl = _shuttle.CanFTL(shuttle, out var ftlReason);
+        return destinations.Select(destination =>
+        {
+            var canTravel = canFtl && _shuttle.CanFTLTo(shuttle, destination.Map, console.Owner);
+            return new MiningShuttleDestination(
+                destination.Name,
+                canTravel,
+                canTravel
+                    ? null
+                    : canFtl
+                        ? Loc.GetString("mining-console-destination-unavailable")
+                        : ftlReason);
+        }).ToList();
+    }
+
+    private List<(MapId Map, EntityUid Grid, string Name)> BuildGuestDestinations(
+        Entity<MiningShuttleConsoleComponent> console,
+        EntityUid shuttle)
+    {
+        var result = new List<(MapId, EntityUid, string)>();
+        var stationMap = GetStationMap(shuttle);
+
+        if (stationMap is { } stationMapId &&
+            FindDockTarget(stationMapId, console.Comp.DockTag, shuttle) is { } stationGrid)
+        {
+            result.Add((stationMapId, stationGrid, Loc.GetString("mining-console-station")));
+        }
+
+        var maps = AllEntityQuery<FTLDestinationComponent, MapComponent>();
+        while (maps.MoveNext(out var mapUid, out var destination, out var map))
+        {
+            if (!destination.Enabled ||
+                destination.BeaconsOnly ||
+                map.MapId == stationMap ||
+                FindDockTarget(map.MapId, console.Comp.DockTag, shuttle) is not { } grid)
+            {
+                continue;
+            }
+
+            var name = MetaData(mapUid).EntityName;
+            result.Add((map.MapId, grid,
+                string.IsNullOrWhiteSpace(name)
+                    ? Loc.GetString("guest-console-unknown-destination")
+                    : name));
+        }
+
+        return result.OrderBy(d => d.Item1.GetHashCode()).ToList();
     }
 
     /// <summary>
@@ -449,7 +560,7 @@ public sealed partial class MiningShuttleConsoleSystem : EntitySystem
                 console.Owner,
                 MiningShuttleConsoleUiKey.MiningShuttleConsole,
                 new MiningShuttleConsoleState(
-                    Loc.GetString("mining-console-title"),
+                    GetTitle(console),
                     FTLState.Available,
                     default,
                     false,
@@ -471,7 +582,7 @@ public sealed partial class MiningShuttleConsoleSystem : EntitySystem
             console.Owner,
             MiningShuttleConsoleUiKey.MiningShuttleConsole,
             new MiningShuttleConsoleState(
-                Loc.GetString("mining-console-title"),
+                GetTitle(console),
                 ftlState,
                 ftlTime,
                 true,

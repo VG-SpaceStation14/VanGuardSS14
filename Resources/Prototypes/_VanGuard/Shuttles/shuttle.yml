@@ -52,7 +52,6 @@
   components:
   - type: PriorityDock
     tag: DockMiningGuest
-  - type: GuestShuttleShutter
   - type: ContainerFill
     containers:
       board: [ DoorElectronicsCargoSalvage ]
@@ -60,29 +59,14 @@
     layoutId: AirlockCargo
 
 - type: entity
-  parent: BaseComputer
+  parent: MiningShuttleConsole
   id: GuestShuttleConsole
   components:
-  - type: GuestShuttleConsole
-  - type: ActivatableUI
-    key: enum.GuestShutterConsoleUiKey.GuestShutterConsole
-  - type: ActivatableUIRequiresAccess
-  - type: UserInterface
-    interfaces:
-      enum.GuestShutterConsoleUiKey.GuestShutterConsole:
-        type: GuestShutterConsoleBoundUserInterface
-      enum.WiresUiKey.Key:
-        type: WiresBoundUserInterface
-  - type: AccessReader
-    access: [["Cargo"], ["Salvage"]]
+  - type: MiningShuttleConsole
+    mode: Guest
+    dockTag: DockMiningGuest
   - type: Computer
     board: GuestShuttleConsoleCircuitboard
-  - type: ComputerVisuals
-    stateScreen: shuttle
-  - type: PointLight
-    radius: 1.5
-    energy: 4.0
-    color: "#b89f25"
 
 - type: entity
   parent: BaseComputerCircuitboard

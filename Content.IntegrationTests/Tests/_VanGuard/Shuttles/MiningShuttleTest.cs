@@ -484,70 +484,62 @@ public sealed class MiningShuttleTest : GameTest
     }
 
     [Test]
-    public async Task GuestShuttleConsoleTogglesLocalShutter()
+    public async Task GuestConsoleUsesGuestDockOnly()
     {
         var stationGrid = GetStationGrid();
         var station = GetStation(stationGrid);
-        var shuttle = await LoadGrid(Xform(stationGrid).MapID, "/Maps/_VanGuard/Shuttles/NT - Guest.yml");
+        var guest = await LoadGrid(Xform(stationGrid).MapID, "/Maps/_VanGuard/Shuttles/NT - Guest.yml");
+        var guestDock = await SpawnDock(stationGrid, "AirlockShuttleMiningGuestLocked", new Vector2(55, 0));
         EntityUid? card = null;
-        EntityUid shutter = default;
 
         try
         {
+            await FastFtl();
             await Server.WaitPost(() =>
             {
-                var marker = SEntMan.EnsureComponent<GuestShuttleComponent>(shuttle);
+                var marker = SEntMan.EnsureComponent<GuestShuttleComponent>(guest);
                 marker.Station = station;
+                SEntMan.GetComponent<ShuttleComponent>(guest).FTLCooldownOverride = TimeSpan.Zero;
             });
-
-            var console = await FindGuestConsoleOnGrid(shuttle);
-            var player = Pair.Player!.AttachedEntity!.Value;
             card = await UseConsoleAccess();
 
+            var console = await FindGuestConsoleOnGrid(guest);
+            var consoleEntity = (console, SEntMan.GetComponent<MiningShuttleConsoleComponent>(console));
+            var system = SEntMan.System<MiningShuttleConsoleSystem>();
+            var player = Pair.Player!.AttachedEntity!.Value;
+
+            List<MiningShuttleDestination>? destinations = null;
+            await Server.WaitPost(() => destinations = system.GetDestinations(consoleEntity, guest));
+            Assert.That(destinations, Is.Not.Null);
+            string? stationName = null;
+            string? lavalandName = null;
             await Server.WaitPost(() =>
             {
-                var grid = SEntMan.GetComponent<MapGridComponent>(shuttle);
-                var coords = new EntityCoordinates(shuttle, new Vector2(0, 0));
-                SEntMan.System<SharedMapSystem>().SetTile(shuttle, grid, new Vector2i(0, 0), new Tile(1));
-                shutter = SEntMan.SpawnEntity("ShuttersNormal", coords);
-                SEntMan.EnsureComponent<GuestShuttleShutterComponent>(shutter);
-                SEntMan.System<SharedTransformSystem>().SetParent(shutter, shuttle);
-                SEntMan.System<SharedTransformSystem>().AnchorEntity(
-                    shutter,
-                    SEntMan.GetComponent<TransformComponent>(shutter),
-                    grid);
+                stationName = Loc.GetString("mining-console-station");
+                lavalandName = Loc.GetString("mining-console-lavaland");
             });
+            Assert.That(destinations!.Any(d => d.Name == stationName), Is.True);
+            Assert.That(destinations!.Any(d => d.Name == lavalandName), Is.False,
+                "Guest console must not use the Lavaland/mining dock list.");
 
-            var consoleEntity = (console, SEntMan.GetComponent<GuestShuttleConsoleComponent>(console));
-            var system = SEntMan.System<GuestShuttleConsoleSystem>();
+            var bui = await OpenUi(console, MiningShuttleConsoleUiKey.MiningShuttleConsole);
+            Assert.That(bui, Is.InstanceOf<MiningConsoleBoundUserInterface>());
 
-            var bui = await OpenUi(console, GuestShutterConsoleUiKey.GuestShutterConsole);
-            Assert.That(bui, Is.InstanceOf<GuestShutterConsoleBoundUserInterface>());
-
-            bool toggled = false;
+            var travelled = false;
             string? error = null;
-            await Server.WaitPost(() => toggled = system.TryToggle(consoleEntity, shutter, player, out error));
-            Assert.That(toggled, Is.True, error);
-            await Pair.RunTicksSync(20);
-
-            var state = SEntMan.GetComponent<DoorComponent>(shutter).State;
-            Assert.That(state, Is.EqualTo(DoorState.Open).Or.EqualTo(DoorState.Opening));
-
-            await Server.WaitPost(() =>
-            {
-                Assert.That(Server.System<SharedUserInterfaceSystem>().TryGetUiState<GuestShutterConsoleState>(
-                    (console, null), GuestShutterConsoleUiKey.GuestShutterConsole, out var uiState), Is.True);
-                Assert.That(uiState!.Shutters.Any(entry => entry.Door == SEntMan.GetNetEntity(shutter)), Is.True);
-            });
+            await Server.WaitPost(() => travelled = system.TryTravel(consoleEntity, 0, player, out error));
+            Assert.That(travelled, Is.True, error);
+            await WaitForDock(guest, Xform(guestDock).GridUid!.Value);
+            Assert.That(SEntMan.GetComponent<DockingComponent>(guestDock).Docked, Is.True);
         }
         finally
         {
             if (card is { } cardUid && SEntMan.EntityExists(cardUid))
                 await DeleteEntity(cardUid);
-            if (shutter != EntityUid.Invalid && SEntMan.EntityExists(shutter))
-                await DeleteEntity(shutter);
-            if (SEntMan.EntityExists(shuttle))
-                await DeleteEntity(shuttle);
+            if (SEntMan.EntityExists(guestDock))
+                await DeleteEntity(guestDock);
+            if (SEntMan.EntityExists(guest))
+                await DeleteEntity(guest);
         }
     }
 
@@ -792,17 +784,17 @@ public sealed class MiningShuttleTest : GameTest
         EntityUid? console = null;
         await Server.WaitPost(() =>
         {
-            var query = SEntMan.EntityQueryEnumerator<GuestShuttleConsoleComponent, TransformComponent>();
-            while (query.MoveNext(out var uid, out _, out var xform))
+            var query = SEntMan.EntityQueryEnumerator<MiningShuttleConsoleComponent, TransformComponent>();
+            while (query.MoveNext(out var uid, out var component, out var xform))
             {
-                if (xform.GridUid == grid)
+                if (xform.GridUid == grid && component.Mode == MiningShuttleConsoleMode.Guest)
                 {
                     console = uid;
                     return;
                 }
             }
         });
-        Assert.That(console, Is.Not.Null, "The guest shuttle has no shutter console.");
+        Assert.That(console, Is.Not.Null, "The guest shuttle has no console.");
         return console!.Value;
     }
 
