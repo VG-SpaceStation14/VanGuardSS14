@@ -1,4 +1,5 @@
-using Robust.Shared.Network;
+using Content.Shared.Shuttles.Systems;
+using Content.Shared.Timing;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._VanGuard.Shuttles;
@@ -6,56 +7,55 @@ namespace Content.Shared._VanGuard.Shuttles;
 [Serializable, NetSerializable]
 public enum MiningShuttleConsoleUiKey : byte
 {
-    Key,
+    MiningShuttleConsole = 1,
 }
 
-/// <summary>
-/// One dock the mining shuttle console can travel to.
-/// </summary>
 [Serializable, NetSerializable]
-public sealed class MiningShuttleDockEntry
+public sealed class MiningShuttleDestination
 {
-    public NetEntity Dock;
     public string Name;
-    public bool Enabled;
+    public bool Available;
     public string? Reason;
 
-    public MiningShuttleDockEntry(NetEntity dock, string name, bool enabled, string? reason)
+    public MiningShuttleDestination(string name, bool available, string? reason)
     {
-        Dock = dock;
         Name = name;
-        Enabled = enabled;
+        Available = available;
         Reason = reason;
     }
 }
 
-/// <summary>
-/// State of the mining shuttle console. The list is rebuilt whenever the UI opens
-/// or a trip is requested.
-/// </summary>
 [Serializable, NetSerializable]
 public sealed class MiningShuttleConsoleState : BoundUserInterfaceState
 {
-    public List<MiningShuttleDockEntry> Docks;
+    public FTLState FTLState;
+    public StartEndTime FTLTime;
+    public bool HasShuttle;
+    public List<MiningShuttleDestination> Destinations;
     public string? Error;
 
-    public MiningShuttleConsoleState(List<MiningShuttleDockEntry> docks, string? error)
+    public MiningShuttleConsoleState(
+        FTLState ftlState,
+        StartEndTime ftlTime,
+        bool hasShuttle,
+        List<MiningShuttleDestination> destinations,
+        string? error)
     {
-        Docks = docks;
+        FTLState = ftlState;
+        FTLTime = ftlTime;
+        HasShuttle = hasShuttle;
+        Destinations = destinations;
         Error = error;
     }
 }
 
-/// <summary>
-/// Requests travel to a specific tagged dock.
-/// </summary>
 [Serializable, NetSerializable]
 public sealed class MiningShuttleConsoleTravelMessage : BoundUserInterfaceMessage
 {
-    public NetEntity Dock;
+    public int Index;
 
-    public MiningShuttleConsoleTravelMessage(NetEntity dock)
+    public MiningShuttleConsoleTravelMessage(int index)
     {
-        Dock = dock;
+        Index = index;
     }
 }

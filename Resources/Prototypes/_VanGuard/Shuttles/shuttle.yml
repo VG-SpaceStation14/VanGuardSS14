@@ -17,12 +17,12 @@
   components:
   - type: MiningShuttleConsole
   - type: ActivatableUI
-    key: enum.MiningShuttleConsoleUiKey.Key
+    key: enum.MiningShuttleConsoleUiKey.MiningShuttleConsole
   - type: ActivatableUIRequiresAccess
   - type: UserInterface
     interfaces:
-      enum.MiningShuttleConsoleUiKey.Key:
-        type: MiningShuttleConsoleBoundUserInterface
+      enum.MiningShuttleConsoleUiKey.MiningShuttleConsole:
+        type: MiningConsoleBoundUserInterface
       enum.WiresUiKey.Key:
         type: WiresBoundUserInterface
   - type: AccessReader

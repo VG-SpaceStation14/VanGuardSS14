@@ -387,10 +387,15 @@ public sealed partial class DockingSystem : SharedDockingSystem
         _dockingSet.Clear();
         _lookup.GetChildEntities(gridUid, _dockingSet);
 
-        foreach (var dock in _dockingSet)
+        // VG-Tweak Start: Undock may refresh consoles and re-enter dock lookup;
+        // iterate over a snapshot so trying to FTL away from a docked port does
+        // not invalidate the shared lookup set.
+        var docks = new System.Collections.Generic.List<Entity<DockingComponent>>(_dockingSet);
+        foreach (var dock in docks)
         {
             Undock(dock);
         }
+        // VG-Tweak End
     }
 
     public void SetDockBolts(EntityUid gridUid, bool enabled)
