@@ -31,6 +31,10 @@
     gravityInherent: true
     ftlPointProto: LavalandFTLPoint
     markerLayers:
+    - LavalandChasm
+    - LavalandChasmOpen
+    - LavalandArmokPit
+    - LavalandFeatures
     - OreIron
     - OreCoal
     - OreGold
@@ -39,10 +43,6 @@
     - OreUranium
     - OreQuartz
     - OreDiamond
-    - LavalandFeatures
-    - LavalandChasm
-    - LavalandChasmOpen
-    - LavalandArmokPit
     mapBorderRadius: 250
   - type: LavalandPoiSpawner
     prototypes:
