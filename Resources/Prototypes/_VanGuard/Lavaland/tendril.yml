@@ -1,0 +1,119 @@
+- type: entity
+  parent: BaseStructure
+  id: LavalandTendril
+  name: lavaland-tendril-name
+  description: A pulsing growth rooted in the planet's crust.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Structures/Specific/tendril.rsi
+    state: tendril
+    drawdepth: Mobs
+  - type: LavalandTendril
+  - type: LavalandAshStormImmune
+  - type: Damageable
+    damageModifierSet: Skeleton
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 250
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+      - !type:PlaySoundBehavior
+        sound:
+          path: /Audio/Effects/explosion1.ogg
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.25,-0.45,0.25,0.45"
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+        density: 200
+
+- type: entity
+  parent: CrateGenericSteel
+  id: LavalandNecropolisCrate
+  name: lavaland-necropolis-crate-name
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: SteelOre
+        - id: GoldOre
+          prob: 0.5
+        - id: SilverOre
+          prob: 0.4
+        - id: PlasmaOre
+          prob: 0.25
+        - id: WeaponProtoKineticAccelerator
+          prob: 0.15
+        - id: SurvivalKnife
+          prob: 0.3
+
+- type: entity
+  parent: LavalandTendril
+  id: LavalandTendrilGoliath
+  name: lavaland-tendril-goliath-name
+  components:
+  - type: LavalandTendril
+    spawns:
+    - MobGoliath
+    maxSpawns: 2
+    loot: LavalandNecropolisCrateGoliath
+
+- type: entity
+  parent: LavalandTendril
+  id: LavalandTendrilWatcher
+  name: lavaland-tendril-watcher-name
+  components:
+  - type: LavalandTendril
+    spawns:
+    - MobWatcherLavaland
+    maxSpawns: 2
+    loot: LavalandNecropolisCrateWatcher
+
+- type: entity
+  parent: CrateGenericSteel
+  id: LavalandNecropolisCrateGoliath
+  name: lavaland-necropolis-goliath-crate
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: MaterialGoliathHide1
+          amount: 2
+        - id: FoodMeatGoliath
+          amount: 2
+        - id: SteelOre
+          amount: 3
+          prob: 0.7
+        - id: WeaponProtoKineticAccelerator
+          prob: 0.2
+
+- type: entity
+  parent: CrateGenericSteel
+  id: LavalandNecropolisCrateWatcher
+  name: lavaland-necropolis-watcher-crate
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: PlasmaOre
+          amount: 3
+          prob: 0.6
+        - id: DiamondOre
+          prob: 0.2
+        - id: SpaceCash1000
+          prob: 0.3
+        - id: SurvivalKnife
+          prob: 0.4

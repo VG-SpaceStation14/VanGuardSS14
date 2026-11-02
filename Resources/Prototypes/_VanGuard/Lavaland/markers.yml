@@ -1,0 +1,145 @@
+# Lavaland marker layers. Generation is performed by the existing BiomeSystem;
+# these layers only configure what may appear in a generated chunk.
+
+- type: biomeMarkerLayer
+  id: LavalandOreCoal
+  prototype: AsteroidRockCoal
+  radius: 24
+  size: 128
+  minGroupSize: 1
+  maxGroupSize: 3
+  maxCount: 8
+
+- type: biomeMarkerLayer
+  id: LavalandOreGold
+  prototype: AsteroidRockGold
+  radius: 48
+  size: 128
+  minGroupSize: 1
+  maxGroupSize: 1
+  maxCount: 1
+
+- type: biomeMarkerLayer
+  id: LavalandOreSilver
+  prototype: AsteroidRockSilver
+  radius: 48
+  size: 128
+  minGroupSize: 1
+  maxGroupSize: 1
+  maxCount: 1
+
+- type: biomeMarkerLayer
+  id: LavalandOrePlasma
+  prototype: AsteroidRockPlasma
+  radius: 48
+  size: 128
+  minGroupSize: 1
+  maxGroupSize: 2
+  maxCount: 4
+
+- type: biomeMarkerLayer
+  id: LavalandOreUranium
+  prototype: AsteroidRockUranium
+  radius: 80
+  size: 128
+  minGroupSize: 1
+  maxGroupSize: 1
+  maxCount: 1
+
+- type: biomeMarkerLayer
+  id: LavalandOreQuartz
+  prototype: AsteroidRockQuartz
+  radius: 40
+  size: 128
+  minGroupSize: 1
+  maxGroupSize: 1
+  maxCount: 1
+
+- type: biomeMarkerLayer
+  id: LavalandOreDiamond
+  prototype: AsteroidRockDiamond
+  radius: 96
+  size: 128
+  minGroupSize: 1
+  maxGroupSize: 1
+  maxCount: 1
+
+- type: biomeMarkerLayer
+  id: LavalandChasm
+  entityMask:
+    BasaltOne: FloorChasmEntity
+    BasaltTwo: FloorChasmEntity
+    BasaltThree: FloorChasmEntity
+    BasaltFour: FloorChasmEntity
+    BasaltFive: FloorChasmEntity
+  radius: 32
+  size: 128
+  minGroupSize: 1
+  maxGroupSize: 3
+  maxCount: 10
+
+- type: biomeMarkerLayer
+  id: LavalandWatcher
+  prototype: MobWatcherLavaland
+  radius: 48
+  size: 128
+  minGroupSize: 1
+  maxGroupSize: 2
+  maxCount: 4
+
+- type: biomeMarkerLayer
+  id: LavalandDebris
+  prototype: FloraRockSolid
+  radius: 48
+  size: 128
+  minGroupSize: 1
+  maxGroupSize: 1
+  maxCount: 1
+
+
+- type: biomeMarkerLayer
+  id: LavalandOreDeposits
+  prototype: LavalandOreDeposit
+  radius: 24
+  size: 128
+  minGroupSize: 1
+  maxGroupSize: 3
+  maxCount: 8
+
+- type: biomeMarkerLayer
+  id: LavalandFeatures
+  entityMask:
+    BasaltOne: LavalandBiomeFeature
+    BasaltTwo: LavalandBiomeFeature
+    BasaltThree: LavalandBiomeFeature
+    BasaltFour: LavalandBiomeFeature
+    BasaltFive: LavalandBiomeFeature
+  radius: 48
+  size: 128
+  minGroupSize: 1
+  maxGroupSize: 2
+  maxCount: 4
+
+
+- type: biomeMarkerLayer
+  id: LavalandArmokPit
+  entityMask:
+    BasaltOne: FloorChasmEntity
+    BasaltTwo: FloorChasmEntity
+    BasaltThree: FloorChasmEntity
+    BasaltFour: FloorChasmEntity
+    BasaltFive: FloorChasmEntity
+  radius: 16
+  size: 128
+  minGroupSize: 5
+  maxGroupSize: 9
+  maxCount: 2
+
+- type: biomeMarkerLayer
+  id: LavalandChasmOpen
+  prototype: FloorChasmEntity
+  radius: 20
+  size: 128
+  minGroupSize: 1
+  maxGroupSize: 4
+  maxCount: 20

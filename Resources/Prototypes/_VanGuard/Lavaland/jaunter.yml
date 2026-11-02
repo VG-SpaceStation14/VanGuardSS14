@@ -1,0 +1,34 @@
+- type: entity
+  parent: BaseItem
+  id: Jaunter
+  name: jaunter
+  description: A single-use emergency device that opens a wormhole away from danger.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Objects/Specific/Salvage/jaunter.rsi
+    state: icon
+  - type: Item
+    size: Small
+  - type: Jaunter
+  - type: StaticPrice
+    price: 250
+
+- type: entity
+  parent: BasePortal
+  id: JaunterPortal
+  name: jaunter wormhole
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Structures/Specific/wormhole.rsi
+    layers:
+    - state: wormhole
+  - type: Portal
+    randomTeleport: false
+    canTeleportToOtherMaps: true
+  - type: TimedDespawn
+    lifetime: 10
+  - type: PointLight
+    enabled: true
+    radius: 5
+    energy: 2
+    color: "#2233ff"

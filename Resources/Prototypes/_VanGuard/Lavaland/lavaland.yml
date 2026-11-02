@@ -30,6 +30,48 @@
     gravityEnabled: true
     gravityInherent: true
     ftlPointProto: LavalandFTLPoint
+    markerLayers:
+    - OreIron
+    - OreCoal
+    - OreGold
+    - OreSilver
+    - OrePlasma
+    - OreUranium
+    - OreQuartz
+    - OreDiamond
+    - LavalandFeatures
+    - LavalandChasm
+    - LavalandChasmOpen
+    - LavalandArmokPit
+    mapBorderRadius: 250
+  - type: LavalandPoiSpawner
+    prototypes:
+    - LavalandTendril
+    - LavalandTendril
+    - LavalandTendril
+    - LavalandTendril
+    - LavalandTendril
+    - LavalandTendril
+    - LavalandTendrilGoliath
+    - LavalandTendrilGoliath
+    - LavalandTendrilGoliath
+    - LavalandTendrilWatcher
+    - LavalandTendrilWatcher
+    - LavalandTendrilWatcher
+    minDistance: 100
+    maxDistance: 220
+    clearRadius: 18
+    sendFax: true
+    dungeons:
+    - /Maps/_VanGuard/Lavaland/Dungeons/temple.yml
+    - /Maps/_VanGuard/Lavaland/Dungeons/lava_lake_village.yml
+    - /Maps/_VanGuard/Lavaland/Dungeons/cave_murder.yml
+    - /Maps/_VanGuard/Lavaland/Dungeons/clown_room.yml
+    - /Maps/_VanGuard/Lavaland/Dungeons/grasslanddome.yml
+    - /Maps/_VanGuard/Lavaland/Dungeons/lava_river.yml
+    - /Maps/_VanGuard/Lavaland/Dungeons/mineshaft.yml
+    - /Maps/_VanGuard/Lavaland/Dungeons/snowydome.yml
+
 
 # FTL target marker. The localized name comes from the prototype name key.
 - type: entity

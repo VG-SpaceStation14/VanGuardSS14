@@ -6,6 +6,9 @@ using Content.Shared.GameTicking;
 using Content.Shared.Gravity;
 using Content.Shared.Light.Components;
 using Content.Shared.Parallax.Biomes;
+using Content.Shared.Salvage;
+using Content.Server._VanGuard.Weather;
+using Content.Server.Salvage;
 using Content.Shared.Shuttles.Components;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.EntitySerialization.Systems;
@@ -27,6 +30,8 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private AtmosphereSystem _atmos = default!;
     [Dependency] private MetaDataSystem _meta = default!;
+    [Dependency] private LavalandPoiSpawnerSystem _poi = default!;
+    [Dependency] private RestrictedRangeSystem _restricted = default!;
 
     public override void Initialize()
     {
@@ -59,6 +64,8 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
             mapLight: ent.Comp.MapLight);
 
         ApplyPlanetOverrides(mapUid, ent.Comp);
+        EnsureComp<LavalandWeatherSchedulerComponent>(mapUid);
+        ApplyMarkerLayers(mapUid, ent.Comp);
 
         // Load the outpost after EnsurePlanet. EnsurePlanet disables shuttle physics
         // on every grid that already exists; loading afterwards keeps the outpost
@@ -80,6 +87,7 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
         }
 
         ent.Comp.OutpostGrid = outpost.Owner;
+        _meta.SetEntityName(outpost.Owner, Loc.GetString("lavaland-outpost-name"));
 
         // Give the outpost dock a stable, localized name for the shuttle console.
         // This is code-side because the map itself is only allowed a prototype id
@@ -107,6 +115,22 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
         // the outpost is ever moved during an admin event.
         var ftlPoint = Spawn(ent.Comp.FtlPointProto, new EntityCoordinates(outpost.Owner, Vector2.Zero));
         _meta.SetEntityName(ftlPoint, Loc.GetString("lavaland-ftl-point"));
+
+        if (TryComp<LavalandPoiSpawnerComponent>(ent.Owner, out var poi))
+            _poi.SpawnPois((ent.Owner, poi), mapUid, outpost.Owner);
+
+        var restriction = EnsureComp<RestrictedRangeComponent>(mapUid);
+        restriction.Range = ent.Comp.MapBorderRadius;
+        restriction.BoundaryEntity = _restricted.CreateBoundary(new EntityCoordinates(mapUid, 0, 0), ent.Comp.MapBorderRadius);
+    }
+
+    private void ApplyMarkerLayers(EntityUid mapUid, LavalandOutpostRuleComponent component)
+    {
+        if (!TryComp<BiomeComponent>(mapUid, out var biome))
+            return;
+
+        foreach (var marker in component.MarkerLayers)
+            _biome.AddMarkerLayer(mapUid, biome, marker);
     }
 
     private void ApplyPlanetOverrides(EntityUid mapUid, LavalandOutpostRuleComponent component)

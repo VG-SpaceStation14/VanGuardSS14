@@ -3,13 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Content.Server._VanGuard.Lavaland;
+using Content.Server._VanGuard.Weather;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.GameTicking;
 using Content.Server.Shuttles.Components;
+using Content.Server.Power.Components;
 using Content.Shared.Atmos;
+using Content.Shared.Chasm;
 using Content.Shared.Atmos.Components;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Gravity;
+using Content.Shared.Weather;
+using Content.Server.Parallax;
+using Content.Shared.Mining.Components;
+using Robust.Shared.Maths;
+using Content.Shared.Hands.EntitySystems;
+using Content.Shared.Fax.Components;
+using Content.Shared.Paper;
+using Content.Shared.Salvage;
 using Content.Shared.Light.Components;
 using Content.Shared.Parallax.Biomes;
 using Content.Shared.Shuttles.Components;
@@ -70,10 +81,19 @@ public sealed class LavalandMapTest : GameTest
                 Assert.That(SEntMan.HasComponent<MapLightComponent>(mapUid));
                 Assert.That(SEntMan.HasComponent<MapAtmosphereComponent>(mapUid));
                 Assert.That(SEntMan.HasComponent<FTLDestinationComponent>(mapUid));
+            Assert.That(SEntMan.HasComponent<RestrictedRangeComponent>(mapUid), Is.True);
+            Assert.That(SEntMan.GetComponent<RestrictedRangeComponent>(mapUid).BoundaryEntity, Is.Not.EqualTo(EntityUid.Invalid));
                 Assert.That(SEntMan.HasComponent<MapGridComponent>(outpostUid));
                 Assert.That(SEntMan.GetComponent<TransformComponent>(outpostUid).MapID, Is.EqualTo(mapId));
                 Assert.That(SEntMan.GetComponent<BiomeComponent>(mapUid).Template?.Id, Is.EqualTo("Lava"));
                 Assert.That(SEntMan.GetComponent<BiomeComponent>(mapUid).Seed, Is.Not.EqualTo(-1));
+            });
+
+            var biomeMarkers = SEntMan.GetComponent<BiomeComponent>(mapUid).MarkerLayers;
+            Assert.Multiple(() =>
+            {
+                Assert.That(biomeMarkers, Does.Contain("OreCoal"));
+                Assert.That(biomeMarkers, Does.Contain("LavalandFeatures"));
             });
 
             var atmosphereSystem = SEntMan.System<AtmosphereSystem>();
@@ -133,7 +153,7 @@ public sealed class LavalandMapTest : GameTest
                 SEntMan.GetComponent<MetaDataComponent>(ftlPoint!.Value).EntityName,
                 Is.EqualTo(localization.GetString("lavaland-ftl-point")));
 
-            var biome = SEntMan.GetComponent<BiomeComponent>(mapUid);
+            var statsBiome = SEntMan.GetComponent<BiomeComponent>(mapUid);
             var outpostGrid = SEntMan.GetComponent<MapGridComponent>(outpostUid);
             var outpostXform = SEntMan.GetComponent<TransformComponent>(outpostUid);
 
@@ -147,7 +167,7 @@ public sealed class LavalandMapTest : GameTest
             var clearBounds = matrix.TransformBox(outpostGrid.LocalAABB.Enlarged(ruleComp.ClearRadius));
 
             var modified = new HashSet<Vector2i>();
-            foreach (var set in biome.ModifiedTiles.Values)
+            foreach (var set in statsBiome.ModifiedTiles.Values)
                 modified.UnionWith(set);
 
             for (var x = (int) clearBounds.Left; x < (int) clearBounds.Right; x++)
@@ -175,7 +195,7 @@ public sealed class LavalandMapTest : GameTest
             });
             await Pair.RunTicksSync(15);
 
-            foreach (var (_, entities) in biome.LoadedEntities)
+            foreach (var (_, entities) in statsBiome.LoadedEntities)
             {
                 foreach (var (entity, tile) in entities)
                 {
@@ -192,6 +212,80 @@ public sealed class LavalandMapTest : GameTest
             Assert.That(mapSystem.TryGetTile(mapGrid, centerTile, out var afterTile));
             Assert.That(afterTile, Is.EqualTo(beforeTile),
                 "A reserved tile was regenerated after biome chunks loaded.");
+
+            var poiCount = 0;
+            var faxCount = 0;
+            var poiQuery = SEntMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+            while (poiQuery.MoveNext(out _, out var poiMeta, out var poiXform))
+            {
+                if (poiXform.MapID == mapId && poiMeta.EntityPrototype?.ID.StartsWith("LavalandTendril") == true)
+                    poiCount++;
+            }
+            var faxQuery = SEntMan.EntityQueryEnumerator<FaxMachineComponent, TransformComponent>();
+            while (faxQuery.MoveNext(out var faxUid, out _, out var faxXform))
+            {
+                if (faxXform.MapID != mapId)
+                    continue;
+
+                faxCount++;
+                if (SEntMan.TryGetComponent<ApcPowerReceiverComponent>(faxUid, out var faxPower))
+                {
+                    faxPower.NeedsPower = false;
+                    faxPower.Powered = true;
+                }
+            }
+            Assert.That(poiCount, Is.GreaterThanOrEqualTo(1), "No POIs were spawned.");
+            Server.System<BiomeSystem>().Preload(mapUid, statsBiome, new Box2(-160, -160, 160, 160));
+            await Pair.RunTicksSync(60);
+
+            var oreCount = 0;
+            var chasmCount = 0;
+            var rockCount = 0;
+            var oreQuery = SEntMan.EntityQueryEnumerator<OreVeinComponent, TransformComponent>();
+            while (oreQuery.MoveNext(out _, out _, out var oreXform))
+            {
+                if (oreXform.MapID == mapId)
+                    oreCount++;
+            }
+
+            var chasmQuery = SEntMan.EntityQueryEnumerator<Content.Shared.Chasm.ChasmComponent, TransformComponent>();
+            while (chasmQuery.MoveNext(out _, out _, out var chasmXform))
+            {
+                if (chasmXform.MapID == mapId)
+                    chasmCount++;
+            }
+
+            var rockQuery = SEntMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+            while (rockQuery.MoveNext(out _, out var rockMeta, out var rockXform))
+            {
+                if (rockXform.MapID == mapId &&
+                    (rockMeta.EntityPrototype?.ID.StartsWith("AsteroidRock") == true ||
+                     rockMeta.EntityPrototype?.ID.StartsWith("WallRock") == true))
+                {
+                    rockCount++;
+                }
+            }
+
+            TestContext.Progress.WriteLine($"Lavaland generation stats: ore={oreCount}, chasms={chasmCount}, rocks={rockCount}");
+            Assert.That(oreCount, Is.GreaterThan(0), "No ore was generated in the sampled area.");
+            Assert.That(chasmCount, Is.GreaterThan(0), "No chasms were generated in the sampled area.");
+            var dungeonCount = 0;
+            var gridQuery = SEntMan.EntityQueryEnumerator<MapGridComponent, TransformComponent>();
+            while (gridQuery.MoveNext(out var gridUid, out _, out var gridXform))
+            {
+                if (gridXform.MapID == mapId && gridUid != mapUid && gridUid != outpostUid)
+                    dungeonCount++;
+            }
+            Assert.That(dungeonCount, Is.GreaterThanOrEqualTo(2), "No Lavaland dungeon grids were loaded.");
+            Assert.That(faxCount, Is.GreaterThanOrEqualTo(1), "No fax was found on Lavaland.");
+
+            var weatherScheduler = SEntMan.GetComponent<LavalandWeatherSchedulerComponent>(mapUid);
+            weatherScheduler.Stage = 2;
+            weatherScheduler.NextUpdate = TimeSpan.Zero;
+            await Pair.RunTicksSync(3);
+            Assert.That(Server.System<SharedWeatherSystem>().HasWeather(mapId, "WeatherAshfall"), Is.True,
+                "The Lavaland ash storm did not start.");
+
         }
         finally
         {

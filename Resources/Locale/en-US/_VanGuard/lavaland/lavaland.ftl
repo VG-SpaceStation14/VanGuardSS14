@@ -1,3 +1,19 @@
+lavaland-poi-fax-header = LAVALAND SURVEY REPORT
+lavaland-poi-fax-name = Lavaland POI coordinates
+lavaland-poi-fax-stamp = Lavaland Survey
+lavaland-poi-fax-line = POI at X={$x}, Y={$y}
 lavaland-map-name = Lavaland
-lavaland-loader = Lavaland
-lavaland-ftl-point = Lavaland Outpost
+lavaland-outpost-name = Lavaland Outpost
+lavaland-tendril-name = lavaland tendril
+lavaland-tendril-goliath-name = goliath tendril
+lavaland-tendril-watcher-name = watcher tendril
+lavaland-ash-warning = Ash begins to fall. Seek shelter.
+lavaland-ash-storm = The ash storm is raging! Seek cover!
+lavaland-ash-clearing = The ash storm is clearing.
+lavaland-ash-finished = The ash storm has passed.
+lavaland-ftl-point = Lavaland Outpost Beacon
+lavaland-dungeon-temple = Temple of the Sun
+lavaland-dungeon-lava-lake = Lava Lake Village
+lavaland-necropolis-crate-name = necropolis cache
+lavaland-necropolis-goliath-crate = goliath trophy cache
+lavaland-necropolis-watcher-crate = watcher relic cache

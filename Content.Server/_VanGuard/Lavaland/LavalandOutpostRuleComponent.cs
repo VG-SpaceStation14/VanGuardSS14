@@ -102,6 +102,16 @@ public sealed partial class LavalandOutpostRuleComponent : Component
     public EntProtoId FtlPointProto = "LavalandFTLPoint";
 
     /// <summary>
+    /// Marker layers added to the generated biome. Density and grouping live in
+    /// the marker layer prototypes so they can be tuned without code changes.
+    /// </summary>
+    [DataField]
+    public List<string> MarkerLayers = new();
+
+    [DataField]
+    public float MapBorderRadius = 250f;
+
+    /// <summary>
     /// Runtime reference to the created map, used by tests and diagnostics.
     /// </summary>
     [ViewVariables]

@@ -1,3 +1,19 @@
+lavaland-poi-fax-header = ОТЧЁТ О РАЗВЕДКЕ ЛАВАЛЕНДА
+lavaland-poi-fax-name = Координаты POI Лаваленда
+lavaland-poi-fax-stamp = Разведка Лаваленда
+lavaland-poi-fax-line = POI: X={$x}, Y={$y}
 lavaland-map-name = Лаваленд
-lavaland-loader = Лаваленд
-lavaland-ftl-point = Аванпост Лаваленда
+lavaland-outpost-name = Аванпост Лаваленда
+lavaland-tendril-name = шип Лаваленда
+lavaland-tendril-goliath-name = шип голиафов
+lavaland-tendril-watcher-name = шип наблюдателей
+lavaland-ash-warning = Начинает падать пепел. Найдите укрытие.
+lavaland-ash-storm = Пепельная буря! Ищите укрытие!
+lavaland-ash-clearing = Буря стихает.
+lavaland-ash-finished = Пепельная буря закончилась.
+lavaland-ftl-point = Маяк аванпоста Лаваленда
+lavaland-dungeon-temple = Храм Солнца
+lavaland-dungeon-lava-lake = Деревня на лавовом озере
+lavaland-necropolis-crate-name = тайник Некрополиса
+lavaland-necropolis-goliath-crate = тайник трофеев голиафа
+lavaland-necropolis-watcher-crate = тайник реликвий наблюдателя

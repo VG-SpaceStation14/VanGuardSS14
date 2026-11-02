@@ -1,0 +1,14 @@
+- type: entity
+  parent: BaseRock
+  id: LavalandOreDeposit
+  name: ore deposit
+  components:
+  - type: LavalandOreDeposit
+
+- type: entity
+  parent: BaseRock
+  id: LavalandBiomeFeature
+  name: lavaland feature
+  components:
+  - type: LavalandBiomeFeature
+  - type: InteractionOutline
