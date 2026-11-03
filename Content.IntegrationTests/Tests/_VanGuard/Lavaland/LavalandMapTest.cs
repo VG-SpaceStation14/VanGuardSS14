@@ -267,6 +267,12 @@ public sealed class LavalandMapTest : GameTest
             }
 
             TestContext.Progress.WriteLine($"Lavaland generation stats: ore={oreCount}, chasms={chasmCount}, rocks={rockCount}");
+            var chasmSizes = ChasmComponentSizes(SEntMan, mapId);
+            var largestChasm = chasmSizes.Count == 0 ? 0 : chasmSizes[^1];
+            var singles = chasmSizes.Count(size => size == 1);
+            TestContext.Progress.WriteLine($"Lavaland chasm components: total={chasmCount}, areas={chasmSizes.Count}, largest={largestChasm}, singles={singles}, sizes={string.Join(',', chasmSizes.TakeLast(10))}");
+            Assert.That(chasmSizes.Count, Is.GreaterThan(0));
+            Assert.That(largestChasm, Is.GreaterThanOrEqualTo(8), "No large connected chasm field was generated.");
             Assert.That(oreCount, Is.GreaterThan(0), "No ore was generated in the sampled area.");
             Assert.That(chasmCount, Is.GreaterThan(0), "No chasms were generated in the sampled area.");
             var dungeonCount = 0;
@@ -332,5 +338,43 @@ public sealed class LavalandMapTest : GameTest
             });
             await Pair.RunUntilSynced();
         }
+    }
+
+    private static List<int> ChasmComponentSizes(Robust.Shared.GameObjects.IEntityManager entMan, MapId mapId)
+    {
+        var positions = new List<Vector2>();
+        var query = entMan.EntityQueryEnumerator<Content.Shared.Chasm.ChasmComponent, TransformComponent>();
+        while (query.MoveNext(out _, out _, out var xform))
+        {
+            if (xform.MapID == mapId)
+                positions.Add(xform.LocalPosition);
+        }
+
+        var seen = new HashSet<Vector2>();
+        var sizes = new List<int>();
+        foreach (var start in positions)
+        {
+            if (!seen.Add(start))
+                continue;
+            var queue = new Queue<Vector2>();
+            queue.Enqueue(start);
+            var size = 0;
+            while (queue.Count > 0)
+            {
+                var current = queue.Dequeue();
+                size++;
+                foreach (var other in positions)
+                {
+                    if (seen.Contains(other) || (other - current).LengthSquared() > 1.5f * 1.5f)
+                        continue;
+                    seen.Add(other);
+                    queue.Enqueue(other);
+                }
+            }
+            sizes.Add(size);
+        }
+
+        sizes.Sort();
+        return sizes;
     }
 }

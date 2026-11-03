@@ -75,8 +75,8 @@
   radius: 32
   size: 128
   minGroupSize: 1
-  maxGroupSize: 3
-  maxCount: 10
+  maxGroupSize: 2
+  maxCount: 3
 
 - type: biomeMarkerLayer
   id: LavalandWatcher
