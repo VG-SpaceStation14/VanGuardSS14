@@ -1,8 +1,17 @@
 - type: entity
+  abstract: true
   parent: [ ClothingOuterBase, AllowSuitStorageClothingGasTanks ]
+  id: ClothingOuterArmorMinerBase
+  components:
+  - type: ContainerContainer
+    containers:
+      toggleable-clothing: !type:ContainerSlot {}
+  - type: ExplosionResistance
+    damageCoefficient: 0.9
+
+- type: entity
+  parent: ClothingOuterArmorMinerBase
   id: ClothingOuterArmorMiner
-  name: miner-armor
-  description: miner-armor-desc
   components:
   - type: Sprite
     sprite: _VanGuard/Clothing/OuterClothing/Armor/mining.rsi
@@ -17,8 +26,6 @@
         Piercing: 0.95
         Heat: 0.8
         Caustic: 0.7
-  - type: ExplosionResistance
-    damageCoefficient: 0.9
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetMiner
     slot: head
@@ -28,10 +35,8 @@
     tags: [ MinerArmor ]
 
 - type: entity
-  parent: ClothingOuterArmorMiner
+  parent: ClothingOuterArmorMinerBase
   id: ClothingOuterArmorMinerReinforcedOne
-  description: miner-armor-reinforced-desc
-  name: miner-armor-reinforced-one
   components:
   - type: Sprite
     sprite: _VanGuard/Clothing/OuterClothing/Armor/mining_reinforced_one.rsi
@@ -53,10 +58,8 @@
     tags: [ MinerArmorOne ]
 
 - type: entity
-  parent: ClothingOuterArmorMiner
+  parent: ClothingOuterArmorMinerBase
   id: ClothingOuterArmorMinerReinforcedTwo
-  description: miner-armor-reinforced-desc
-  name: miner-armor-reinforced-two
   components:
   - type: Sprite
     sprite: _VanGuard/Clothing/OuterClothing/Armor/mining_reinforced_two.rsi
@@ -78,10 +81,8 @@
     tags: [ MinerArmorTwo ]
 
 - type: entity
-  parent: ClothingOuterArmorMiner
+  parent: ClothingOuterArmorMinerBase
   id: ClothingOuterArmorMinerReinforcedFull
-  description: miner-armor-reinforced-desc
-  name: miner-armor-reinforced-full
   components:
   - type: Sprite
     sprite: _VanGuard/Clothing/OuterClothing/Armor/mining_reinforced_full.rsi
@@ -106,8 +107,6 @@
 - type: entity
   parent: ClothingHeadHelmetBase
   id: ClothingHeadHelmetMiner
-  description: miner-helmet-desc
-  name: miner hood
   components:
   - type: Sprite
     sprite: _VanGuard/Clothing/Head/Helmets/mining.rsi
@@ -116,40 +115,43 @@
     slots: [ head ]
   - type: Armor
     modifiers:
-      coefficients: { Blunt: 0.9, Slash: 0.9, Piercing: 0.9, Heat: 0.9 }
+      coefficients: { Blunt: 0.9, Slash: 0.9, Piercing: 0.9, Heat: 0.9, Caustic: 0.9 }
 
 - type: entity
   parent: ClothingHeadHelmetBase
   id: ClothingHeadHelmetMinerReinforcedOne
-  description: miner-helmet-desc
-  name: miner-helmet-reinforced-one
   components:
   - type: Sprite
     sprite: _VanGuard/Clothing/Head/Helmets/mining_reinforced_one.rsi
   - type: Clothing
     sprite: _VanGuard/Clothing/Head/Helmets/mining_reinforced_one.rsi
     slots: [ head ]
+  - type: Armor
+    modifiers:
+      coefficients: { Blunt: 0.85, Slash: 0.85, Piercing: 0.85, Heat: 0.85, Caustic: 0.85 }
 
 - type: entity
   parent: ClothingHeadHelmetMinerReinforcedOne
   id: ClothingHeadHelmetMinerReinforcedTwo
-  description: miner-helmet-desc
-  name: miner-helmet-reinforced-two
   components:
   - type: Sprite
     sprite: _VanGuard/Clothing/Head/Helmets/mining_reinforced_two.rsi
   - type: Clothing
     sprite: _VanGuard/Clothing/Head/Helmets/mining_reinforced_two.rsi
     slots: [ head ]
+  - type: Armor
+    modifiers:
+      coefficients: { Blunt: 0.8, Slash: 0.8, Piercing: 0.8, Heat: 0.8, Caustic: 0.8 }
 
 - type: entity
   parent: ClothingHeadHelmetMinerReinforcedOne
   id: ClothingHeadHelmetMinerReinforcedFull
-  description: miner-helmet-desc
-  name: miner-helmet-reinforced-full
   components:
   - type: Sprite
     sprite: _VanGuard/Clothing/Head/Helmets/mining_reinforced_full.rsi
   - type: Clothing
     sprite: _VanGuard/Clothing/Head/Helmets/mining_reinforced_full.rsi
     slots: [ head ]
+  - type: Armor
+    modifiers:
+      coefficients: { Blunt: 0.7, Slash: 0.7, Piercing: 0.7, Heat: 0.7, Caustic: 0.7 }

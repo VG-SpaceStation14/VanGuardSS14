@@ -6,5 +6,3 @@ ent-ShelterCapsuleLuxury = luxury bluespace shelter capsule
     .desc = An exorbitantly expensive luxury suite stored within a pocket of bluespace.
 ent-ShelterCapsuleBar = luxury elite bar capsule
     .desc = A luxury bar in a capsule. Bartender required and not included.
-ent-ShelterCapsuleLivingRoom = luxury living room capsule
-    .desc = A luxury living room in a capsule. Cozy!

@@ -16,6 +16,7 @@ using Content.Shared.Gravity;
 using Content.Shared.Weather;
 using Content.Server.Parallax;
 using Content.Shared.Mining.Components;
+using Content.Shared.Damage.Systems;
 using Robust.Shared.Maths;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Fax.Components;
@@ -54,7 +55,12 @@ public sealed class LavalandMapTest : GameTest
         try
         {
             var loader = new EntProtoId("LavalandLoader");
-            await Server.WaitPost(() => rule = ticker.AddGameRule(loader));
+            await Server.WaitPost(() =>
+            {
+                rule = ticker.AddGameRule(loader);
+                if (rule is { } added)
+                    SEntMan.GetComponent<LavalandOutpostRuleComponent>(added.Owner).Seed = 424242;
+            });
             await Pair.RunUntilSynced();
 
             Assert.That(rule, Is.Not.Null, "LavalandLoader rule was not added.");
@@ -103,9 +109,9 @@ public sealed class LavalandMapTest : GameTest
             {
                 Assert.That(atmosphere, Is.Not.Null);
                 Assert.That(atmosphere!.Temperature, Is.EqualTo(313.15f).Within(0.1f));
-                Assert.That(atmosphere.Pressure, Is.EqualTo(101.3f).Within(0.5f));
-                Assert.That(atmosphere.GetMoles(Gas.Oxygen) / atmosphere.TotalMoles,
-                    Is.EqualTo(0.14f).Within(0.01f));
+                Assert.That(atmosphere.Pressure, Is.EqualTo(38.4f).Within(0.5f));
+                Assert.That(atmosphere.GetMoles(Gas.Oxygen), Is.EqualTo(13.65346f).Within(0.05f));
+                Assert.That(atmosphere.GetMoles(Gas.Nitrogen), Is.EqualTo(23.24754f).Within(0.05f));
             });
 
             var lightCycle = SEntMan.GetComponent<LightCycleComponent>(mapUid);
@@ -238,6 +244,48 @@ public sealed class LavalandMapTest : GameTest
             Server.System<BiomeSystem>().Preload(mapUid, statsBiome, new Box2(-160, -160, 160, 160));
             await Pair.RunTicksSync(60);
 
+            // Every tendril, from the POI spawner and from the biome feature
+            // layer, must stand on a real floor tile that is neither lava nor a
+            // chasm. This is checked after the biome has actually generated the
+            // terrain underneath the POIs.
+            var lookup = SEntMan.System<EntityLookupSystem>();
+            var tendrilMapSystem = SEntMan.System<SharedMapSystem>();
+            var mapGridComp = SEntMan.GetComponent<MapGridComponent>(mapUid);
+            var tendrilQuery = SEntMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+            while (tendrilQuery.MoveNext(out var tendril, out var tendrilMeta, out var tendrilXform))
+            {
+                if (tendrilXform.MapID != mapId ||
+                    tendrilMeta.EntityPrototype?.ID.StartsWith("LavalandTendril") != true)
+                {
+                    continue;
+                }
+
+                var indices = tendrilMapSystem.TileIndicesFor(mapUid, mapGridComp, tendrilXform.Coordinates);
+                Assert.That(tendrilMapSystem.TryGetTile(mapGridComp, indices, out var tendrilTile) && !tendrilTile.IsEmpty,
+                    Is.True, $"Tendril {tendrilMeta.EntityPrototype.ID} at {indices} is not on a floor tile.");
+                Assert.That(tendrilXform.Anchored, Is.True,
+                    $"Tendril {tendrilMeta.EntityPrototype.ID} at {indices} is not anchored to its grid.");
+                Assert.That(tendrilXform.GridUid, Is.EqualTo(mapGridComp.Owner),
+                    $"Tendril {tendrilMeta.EntityPrototype.ID} at {indices} is not on the planet grid.");
+
+                foreach (var nearby in lookup.GetEntitiesInRange(tendrilXform.Coordinates, 0.5f))
+                {
+                    if (nearby == tendril)
+                        continue;
+
+                    // A dungeon grid may overlap the surface in world space;
+                    // only terrain on the tendril's own grid matters.
+                    if (SEntMan.GetComponent<TransformComponent>(nearby).GridUid != tendrilXform.GridUid)
+                        continue;
+
+                    Assert.That(SEntMan.HasComponent<Content.Shared.Chasm.ChasmComponent>(nearby), Is.False,
+                        $"Tendril {tendrilMeta.EntityPrototype.ID} at {indices} was placed on a chasm.");
+                    Assert.That(SEntMan.GetComponent<MetaDataComponent>(nearby).EntityPrototype?.ID,
+                        Is.Not.EqualTo("FloorLavaEntity"),
+                        $"Tendril {tendrilMeta.EntityPrototype.ID} at {indices} was placed on lava.");
+                }
+            }
+
             var oreCount = 0;
             var chasmCount = 0;
             var rockCount = 0;
@@ -272,7 +320,11 @@ public sealed class LavalandMapTest : GameTest
             var singles = chasmSizes.Count(size => size == 1);
             TestContext.Progress.WriteLine($"Lavaland chasm components: total={chasmCount}, areas={chasmSizes.Count}, largest={largestChasm}, singles={singles}, sizes={string.Join(',', chasmSizes.TakeLast(10))}");
             Assert.That(chasmSizes.Count, Is.GreaterThan(0));
-            Assert.That(largestChasm, Is.GreaterThanOrEqualTo(8), "No large connected chasm field was generated.");
+            // The planet must still have a connected chasm field, but chasms
+            // must not overwhelm the surface: the user explicitly asked for
+            // fewer, navigable chasm fields.
+            Assert.That(largestChasm, Is.GreaterThanOrEqualTo(4), "No connected chasm field was generated.");
+            Assert.That(chasmCount, Is.LessThan(512), "Too many chasm tiles were generated; Lavaland is not traversable.");
             Assert.That(oreCount, Is.GreaterThan(0), "No ore was generated in the sampled area.");
             Assert.That(chasmCount, Is.GreaterThan(0), "No chasms were generated in the sampled area.");
             var dungeonCount = 0;
@@ -313,6 +365,27 @@ public sealed class LavalandMapTest : GameTest
             await Pair.RunTicksSync(3);
             Assert.That(Server.System<SharedWeatherSystem>().HasWeather(mapId, "WeatherAshfall"), Is.True,
                 "The Lavaland ash storm did not start.");
+
+            // The map atmosphere must actually affect a player standing on the
+            // bare surface, not merely exist as data on the map component.
+            EntityUid sufferer = default;
+            await Server.WaitPost(() =>
+            {
+                var surface = new Vector2i(60, 60);
+                var tileMan = Server.ResolveDependency<ITileDefinitionManager>();
+                var basalt = new Tile(tileMan["FloorBasalt"].TileId);
+                Server.System<LavalandFeatureSystem>().PrepareSpawnTile(mapUid, mapGrid, surface, basalt);
+                var coords = Server.System<SharedMapSystem>().GridTileToLocal(mapUid, mapGrid, surface);
+                sufferer = SEntMan.SpawnEntity("MobHuman", coords);
+            });
+            await Pair.RunSeconds(10f);
+            await Server.WaitPost(() =>
+            {
+                var damage = Server.System<DamageableSystem>().GetTotalDamage(sufferer).Float();
+                Assert.That(damage, Is.GreaterThan(0f),
+                    "A player on the oxygen-free Lavaland surface took no asphyxiation damage.");
+                SEntMan.DeleteEntity(sufferer);
+            });
 
         }
         finally

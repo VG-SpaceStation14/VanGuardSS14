@@ -17,6 +17,7 @@
   parent: BasePortal
   id: JaunterPortal
   name: jaunter wormhole
+  description: A stable wormhole leading to a station beacon. It collapses shortly after use.
   components:
   - type: Sprite
     sprite: _VanGuard/Structures/Specific/wormhole.rsi
@@ -25,10 +26,34 @@
   - type: Portal
     randomTeleport: false
     canTeleportToOtherMaps: true
+  - type: JaunterPortal
+    afterEnterLifetime: 3
   - type: TimedDespawn
-    lifetime: 10
+    lifetime: 15
   - type: PointLight
     enabled: true
     radius: 5
     energy: 2
     color: "#2233ff"
+
+- type: entity
+  parent: BasePortal
+  id: JaunterKillPortal
+  name: unstable wormhole
+  description: The jaunter failed to find a destination. This wormhole leads nowhere.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Structures/Specific/wormhole.rsi
+    layers:
+    - state: wormhole
+  - type: Portal
+    randomTeleport: false
+    canTeleportToOtherMaps: false
+  - type: JaunterKillPortal
+  - type: TimedDespawn
+    lifetime: 10
+  - type: PointLight
+    enabled: true
+    radius: 5
+    energy: 3
+    color: "#5511aa"

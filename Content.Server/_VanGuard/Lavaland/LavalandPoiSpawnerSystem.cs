@@ -34,6 +34,7 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
     [Dependency] private SharedShuttleSystem _shuttle = default!;
     [Dependency] private MetaDataSystem _meta = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
+    [Dependency] private LavalandFeatureSystem _features = default!;
 
     public void SpawnPois(Entity<LavalandPoiSpawnerComponent> spawner, EntityUid mapUid, EntityUid outpost)
     {
@@ -42,19 +43,37 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
 
         var origin = Transform(outpost).WorldPosition;
         var positions = new List<Vector2>();
-        var attempts = 0;
-        while (positions.Count < spawner.Comp.Prototypes.Count && attempts++ < 500)
+
+        // A tendril is only created on a tile that the biome will actually
+        // generate as safe basalt and that currently has no lava, chasm or
+        // solid obstruction. If no such tile can be found the POI is skipped
+        // entirely (and no fax entry is created for it).
+        foreach (var prototype in spawner.Comp.Prototypes)
         {
-            var angle = _random.NextFloat(0f, MathF.PI * 2f);
-            var distance = _random.NextFloat(spawner.Comp.MinDistance, spawner.Comp.MaxDistance);
-            var offset = new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * distance;
-            var coordinates = new EntityCoordinates(mapUid, origin + offset);
+            for (var attempt = 0; attempt < 120; attempt++)
+            {
+                var angle = _random.NextFloat(0f, MathF.PI * 2f);
+                var distance = _random.NextFloat(spawner.Comp.MinDistance, spawner.Comp.MaxDistance);
+                var offset = new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * distance;
+                var candidate = new EntityCoordinates(mapUid, origin + offset);
+                var indices = _map.TileIndicesFor(mapUid, mapGrid, candidate);
 
-            if (positions.Any(existing => (existing - offset).LengthSquared() < spawner.Comp.ClearRadius * spawner.Comp.ClearRadius))
-                continue;
+                if (!_features.TryGetValidSpawn(mapUid, mapGrid, indices, out var coordinates, out var tile))
+                    continue;
 
-            positions.Add(offset);
-            Spawn(spawner.Comp.Prototypes[positions.Count - 1], coordinates);
+                var chosenOffset = _transform.ToWorldPosition(coordinates) - origin;
+                if (positions.Any(existing =>
+                        (existing - chosenOffset).LengthSquared() <
+                        spawner.Comp.ClearRadius * spawner.Comp.ClearRadius))
+                {
+                    continue;
+                }
+
+                _features.PrepareSpawnTile(mapUid, mapGrid, indices, tile);
+                Spawn(prototype, coordinates);
+                positions.Add(chosenOffset);
+                break;
+            }
         }
 
         foreach (var dungeon in spawner.Comp.Dungeons)

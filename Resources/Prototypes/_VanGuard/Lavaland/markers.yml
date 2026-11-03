@@ -76,7 +76,7 @@
   size: 128
   minGroupSize: 1
   maxGroupSize: 2
-  maxCount: 3
+  maxCount: 2
 
 - type: biomeMarkerLayer
   id: LavalandWatcher
@@ -133,7 +133,7 @@
   size: 128
   minGroupSize: 5
   maxGroupSize: 9
-  maxCount: 2
+  maxCount: 1
 
 - type: biomeMarkerLayer
   id: LavalandChasmOpen
@@ -142,4 +142,4 @@
   size: 128
   minGroupSize: 1
   maxGroupSize: 4
-  maxCount: 20
+  maxCount: 6

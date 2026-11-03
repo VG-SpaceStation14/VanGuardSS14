@@ -4,9 +4,6 @@ lavaland-poi-fax-stamp = Разведка Лаваленда
 lavaland-poi-fax-line = POI: X={$x}, Y={$y}
 lavaland-map-name = Лаваленд
 lavaland-outpost-name = Аванпост Лаваленда
-lavaland-tendril-name = шип Лаваленда
-lavaland-tendril-goliath-name = шип голиафов
-lavaland-tendril-watcher-name = шип наблюдателей
 lavaland-ash-warning = Начинает падать пепел. Найдите укрытие.
 lavaland-ash-storm = Пепельная буря! Ищите укрытие!
 lavaland-ash-clearing = Буря стихает.
@@ -14,9 +11,42 @@ lavaland-ash-finished = Пепельная буря закончилась.
 lavaland-ftl-point = Маяк аванпоста Лаваленда
 lavaland-dungeon-temple = Храм Солнца
 lavaland-dungeon-lava-lake = Деревня на лавовом озере
-lavaland-necropolis-crate-name = тайник Некрополиса
-lavaland-necropolis-goliath-crate = тайник трофеев голиафа
-lavaland-necropolis-watcher-crate = тайник реликвий наблюдателя
-lavaland-tendril-icewing-name = шип ледяного наблюдателя
-lavaland-tendril-magmawing-name = шип магмового наблюдателя
-lavaland-tendril-pride-name = шип гордого наблюдателя
+
+ent-LavalandLoader = загрузчик Лаваленда
+ent-LavalandFTLPoint = маяк аванпоста Лаваленда
+
+ent-LavalandOreDeposit = рудное месторождение
+    .desc = Залежь руды, ожидающая разработки.
+ent-LavalandBiomeFeature = особенность Лаваленда
+    .desc = Небольшая природная достопримечательность Лаваленда.
+ent-LavalandTendrilFeature = молодой шип
+    .desc = Нарост, из которого вот-вот пробьётся шип.
+
+ent-LavalandTendril = шип Лаваленда
+    .desc = Пульсирующий нарост, уходящий корнями в кору планеты.
+ent-LavalandTendrilGoliath = шип голиафов
+    .desc = Пульсирующий нарост, из которого выбираются голиафы.
+ent-LavalandTendrilWatcher = шип наблюдателей
+    .desc = Пульсирующий нарост, из которого выбираются наблюдатели.
+ent-LavalandTendrilIcewing = шип ледяного наблюдателя
+    .desc = Пульсирующий нарост, из которого выбираются ледяные наблюдатели.
+ent-LavalandTendrilMagmawing = шип магмового наблюдателя
+    .desc = Пульсирующий нарост, из которого выбираются магмовые наблюдатели.
+ent-LavalandTendrilPride = шип гордого наблюдателя
+    .desc = Пульсирующий нарост, из которого выбирается гордый наблюдатель.
+
+ent-LavalandNecropolisCrate = тайник Некрополиса
+    .desc = Тайник, оставленный Некрополисом.
+ent-LavalandNecropolisCrateGoliath = тайник трофеев голиафа
+    .desc = Тайник с трофеями, добытыми у голиафов.
+ent-LavalandNecropolisCrateWatcher = тайник реликвий наблюдателя
+    .desc = Тайник с реликвиями, собранными у наблюдателей.
+
+ent-Jaunter = генератор червоточин
+    .desc = Одноразовое аварийное устройство, открывающее червоточину к станционному маяку.
+
+ent-JaunterPortal = червоточина джаунтера
+    .desc = Стабильная червоточина, ведущая к станционному маяку. Вскоре после использования схлопывается.
+
+ent-JaunterKillPortal = нестабильная червоточина
+    .desc = Джаунтер не смог найти пункт назначения. Эта червоточина ведёт в никуда.

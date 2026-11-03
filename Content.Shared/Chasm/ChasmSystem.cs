@@ -8,6 +8,9 @@ using JetBrains.Annotations;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
+// VG-Tweak Start
+using Robust.Shared.Network;
+// VG-Tweak End
 
 namespace Content.Shared.Chasm;
 
@@ -26,10 +29,22 @@ public sealed partial class ChasmSystem : EntitySystem
     [Dependency] private EntityQuery<ChasmComponent> _chasmQuery;
     [Dependency] private EntityQuery<ChasmFallingComponent> _chasmFallingQuery;
 
+    // VG-Tweak Start
+    [Dependency] private INetManager _net = default!;
+    // VG-Tweak End
+
     /// <inheritdoc />
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+
+        // VG-Tweak Start
+        // Завершение падения должно быть серверным: спасение джаунтером требует
+        // выбора маяка за пределами PVS клиента, поэтому клиент не должен
+        // предсказывать удаление падающего.
+        if (_net.IsClient)
+            return;
+        // VG-Tweak End
 
         var query = EntityQueryEnumerator<ChasmFallingComponent>();
         while (query.MoveNext(out var uid, out var chasm))
@@ -39,6 +54,15 @@ public sealed partial class ChasmSystem : EntitySystem
 
             var chasmEvent = new EntityCompletedFallingIntoChasmEvent((uid, chasm));
             RaiseLocalEvent(chasm.FallingInto, ref chasmEvent);
+            // VG-Tweak Start
+            // Спасение (джаунтер) отменяет удаление и снимает состояние падения.
+            if (chasmEvent.Cancelled)
+            {
+                RemComp<ChasmFallingComponent>(uid);
+                _blocker.UpdateCanMove(uid);
+                continue;
+            }
+            // VG-Tweak End
             if (_chasmQuery.TryComp(chasm.FallingInto, out var chasmComp))
             {
                 var tripperEvent = new CompletedFallingIntoChasmEvent((chasm.FallingInto, chasmComp));

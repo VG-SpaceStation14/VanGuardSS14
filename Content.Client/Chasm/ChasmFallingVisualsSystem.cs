@@ -1,3 +1,6 @@
+// VG-Tweak Start
+using System.Numerics;
+// VG-Tweak End
 using Content.Shared.Chasm;
 using Robust.Client.Animations;
 using Robust.Client.GameObjects;
@@ -35,6 +38,12 @@ public sealed partial class ChasmFallingVisualsSystem : EntitySystem
         }
 
         entity.Comp.OriginalScale = sprite.Scale;
+        // VG-Tweak Start
+        // The falling component is networked from the server, where
+        // OriginalScale has never been set; avoid starting the animation from
+        // a zero scale when that state arrives after ComponentInit.
+        entity.Comp.OriginalScale = SanitizeScale(entity.Comp.OriginalScale);
+        // VG-Tweak End
 
         if (!_animationPlayerQuery.TryComp(entity, out var player) ||
             _anim.HasRunningAnimation(player, ChasmFallAnimationKey))
@@ -52,7 +61,9 @@ public sealed partial class ChasmFallingVisualsSystem : EntitySystem
             return;
         }
 
-        _sprite.SetScale((entity, sprite), entity.Comp.OriginalScale);
+        // VG-Tweak Start
+        _sprite.SetScale((entity, sprite), SanitizeScale(entity.Comp.OriginalScale));
+        // VG-Tweak End
 
         if (!_animationPlayerQuery.TryComp(entity, out var player) ||
             !_anim.HasRunningAnimation(player, ChasmFallAnimationKey))
@@ -65,6 +76,9 @@ public sealed partial class ChasmFallingVisualsSystem : EntitySystem
 
     private static Animation GetFallingAnimation(ChasmFallingComponent component)
     {
+        // VG-Tweak Start
+        var originalScale = SanitizeScale(component.OriginalScale);
+        // VG-Tweak End
         return new Animation
         {
             Length = component.AnimationTime,
@@ -76,7 +90,7 @@ public sealed partial class ChasmFallingVisualsSystem : EntitySystem
                     Property = nameof(SpriteComponent.Scale),
                     KeyFrames =
                     {
-                        new AnimationTrackProperty.KeyFrame(component.OriginalScale, 0.0f),
+                        new AnimationTrackProperty.KeyFrame(originalScale, 0.0f),
                         new AnimationTrackProperty.KeyFrame(component.AnimationScale, component.AnimationTime.Seconds),
                     },
                     InterpolationMode = AnimationInterpolationMode.Cubic,
@@ -84,4 +98,14 @@ public sealed partial class ChasmFallingVisualsSystem : EntitySystem
             },
         };
     }
+
+    // VG-Tweak Start
+    private static Vector2 SanitizeScale(Vector2 scale)
+    {
+        if (MathF.Abs(scale.X) < 0.005f || MathF.Abs(scale.Y) < 0.005f)
+            return Vector2.One;
+
+        return scale;
+    }
+    // VG-Tweak End
 }

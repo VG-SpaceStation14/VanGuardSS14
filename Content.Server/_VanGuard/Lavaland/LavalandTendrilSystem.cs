@@ -4,6 +4,7 @@ using Content.Shared.Mobs;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;
+using Robust.Shared.Map.Components;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
@@ -15,6 +16,11 @@ public sealed partial class LavalandTendrilSystem : EntitySystem
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private DamageableSystem _damageable = default!;
+    [Dependency] private SharedMapSystem _map = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private LavalandFeatureSystem _features = default!;
+
+    private TimeSpan _nextPlacementCheck;
 
     private static readonly SoundSpecifier CrackSound = new SoundPathSpecifier("/Audio/Effects/glass_crack1.ogg");
     private static readonly SoundSpecifier WarningSound = new SoundPathSpecifier("/Audio/Effects/explosion_small1.ogg");
@@ -31,6 +37,13 @@ public sealed partial class LavalandTendrilSystem : EntitySystem
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+
+        if (_timing.CurTime >= _nextPlacementCheck)
+        {
+            _nextPlacementCheck = _timing.CurTime + TimeSpan.FromSeconds(1);
+            ValidatePlacements();
+        }
+
         var query = AllEntityQuery<LavalandTendrilComponent>();
         while (query.MoveNext(out var uid, out var comp))
         {
@@ -62,6 +75,42 @@ public sealed partial class LavalandTendrilSystem : EntitySystem
             var mob = Spawn(_random.Pick(comp.Spawns), coords);
             EnsureComp<LavalandTendrilMobComponent>(mob).Tendril = uid;
             comp.Mobs.Add(mob);
+        }
+    }
+
+    /// <summary>
+    /// A late safety net for lazily generated terrain: if a tendril ends up on
+    /// lava, a chasm or another invalid tile, move it to a nearby valid tile or
+    /// remove it when no valid tile exists.
+    /// </summary>
+    private void ValidatePlacements()
+    {
+        var query = AllEntityQuery<LavalandTendrilComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out _, out var xform))
+        {
+            if (xform.MapUid is not { } mapUid || !TryComp<MapGridComponent>(mapUid, out var grid))
+                continue;
+
+            var indices = _map.TileIndicesFor(mapUid, grid, xform.Coordinates);
+            if (_features.TryGetValidSpawn(mapUid, grid, indices, out _, out _, uid))
+                continue;
+
+            var relocated = false;
+            for (var attempt = 0; attempt < 12; attempt++)
+            {
+                var offset = new Vector2i(_random.Next(-2, 3), _random.Next(-2, 3));
+                if (!_features.TryGetValidSpawn(mapUid, grid, indices + offset, out var coords, out var tile))
+                    continue;
+
+                _features.PrepareSpawnTile(mapUid, grid, indices + offset, tile);
+                _transform.SetCoordinates(uid, coords);
+                _transform.AnchorEntity(uid);
+                relocated = true;
+                break;
+            }
+
+            if (!relocated)
+                QueueDel(uid);
         }
     }
 

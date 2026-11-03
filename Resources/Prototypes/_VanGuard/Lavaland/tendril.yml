@@ -1,7 +1,6 @@
 - type: entity
   parent: BaseStructure
   id: LavalandTendril
-  name: lavaland-tendril-name
   description: A pulsing growth rooted in the planet's crust.
   components:
   - type: Sprite
@@ -42,7 +41,6 @@
 - type: entity
   parent: CrateGenericSteel
   id: LavalandNecropolisCrate
-  name: lavaland-necropolis-crate-name
   components:
   - type: Sprite
     sprite: _VanGuard/Structures/Storage/Crates/necropolis.rsi
@@ -87,7 +85,6 @@
 - type: entity
   parent: LavalandTendril
   id: LavalandTendrilGoliath
-  name: lavaland-tendril-goliath-name
   components:
   - type: LavalandTendril
     spawns:
@@ -98,7 +95,6 @@
 - type: entity
   parent: LavalandTendril
   id: LavalandTendrilWatcher
-  name: lavaland-tendril-watcher-name
   components:
   - type: LavalandTendril
     spawns:
@@ -109,7 +105,6 @@
 - type: entity
   parent: CrateGenericSteel
   id: LavalandNecropolisCrateGoliath
-  name: lavaland-necropolis-goliath-crate
   components:
   - type: Sprite
     sprite: _VanGuard/Structures/Storage/Crates/necropolis.rsi
@@ -156,7 +151,6 @@
 - type: entity
   parent: CrateGenericSteel
   id: LavalandNecropolisCrateWatcher
-  name: lavaland-necropolis-watcher-crate
   components:
   - type: Sprite
     sprite: _VanGuard/Structures/Storage/Crates/necropolis.rsi
@@ -201,7 +195,6 @@
 - type: entity
   parent: LavalandTendril
   id: LavalandTendrilIcewing
-  name: lavaland-tendril-icewing-name
   components:
   - type: LavalandTendril
     spawns: [ MobWatcherIcewing ]
@@ -210,7 +203,6 @@
 - type: entity
   parent: LavalandTendril
   id: LavalandTendrilMagmawing
-  name: lavaland-tendril-magmawing-name
   components:
   - type: LavalandTendril
     spawns: [ MobWatcherMagmawing ]
@@ -219,7 +211,6 @@
 - type: entity
   parent: LavalandTendril
   id: LavalandTendrilPride
-  name: lavaland-tendril-pride-name
   components:
   - type: LavalandTendril
     spawns: [ MobWatcherPride ]

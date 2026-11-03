@@ -6,5 +6,3 @@ ent-ShelterCapsuleLuxury = роскошная БСС-капсула
     .desc = Непомерно дорогие апартаменты в кармане БСС.
 ent-ShelterCapsuleBar = элитная барная капсула
     .desc = Роскошный бар в капсуле. Бармен не входит.
-ent-ShelterCapsuleLivingRoom = капсула гостиной
-    .desc = Уютная гостиная в капсуле.

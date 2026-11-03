@@ -65,3 +65,19 @@ stack-bluespace-ore = блюспейс-руда
 stack-bluespace-crystal = блюспейс-кристалл
 
 research-technology-bluespace-crystal = Искусственное воссоздание кристаллов
+
+# Рудные жилы в астероидах и породе
+ent-AsteroidRockCopper = медная рудная жила
+    .desc = Рудная жила, богатая медью.
+ent-AsteroidRockZinc = цинковая рудная жила
+    .desc = Рудная жила, богатая цинком.
+ent-AsteroidRockLead = свинцовая рудная жила
+    .desc = Рудная жила, богатая свинцом.
+ent-AsteroidRockBluespace = блюспейс-рудная жила
+    .desc = Рудная жила, богатая блюспейс-кристаллами.
+ent-IronRockCopper = железная порода с медью
+    .desc = Железная порода с прожилками меди.
+ent-IronRockZinc = железная порода с цинком
+    .desc = Железная порода с прожилками цинка.
+ent-IronRockLead = железная порода со свинцом
+    .desc = Железная порода с прожилками свинца.
