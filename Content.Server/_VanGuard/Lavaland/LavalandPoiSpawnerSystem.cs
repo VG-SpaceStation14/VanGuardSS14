@@ -15,6 +15,8 @@ using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
+using Robust.Shared.Utility;
+using Robust.Shared.Localization;
 
 namespace Content.Server._VanGuard.Lavaland;
 
@@ -35,6 +37,7 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
     [Dependency] private MetaDataSystem _meta = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private LavalandFeatureSystem _features = default!;
+    [Dependency] private LavalandUniqueStructureSystem _unique = default!;
 
     public void SpawnPois(Entity<LavalandPoiSpawnerComponent> spawner, EntityUid mapUid, EntityUid outpost)
     {
@@ -42,7 +45,7 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
             return;
 
         var origin = Transform(outpost).WorldPosition;
-        var positions = new List<Vector2>();
+        var positions = new List<LavalandPoi>();
 
         // A tendril is only created on a tile that the biome will actually
         // generate as safe basalt and that currently has no lava, chasm or
@@ -63,7 +66,7 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
 
                 var chosenOffset = _transform.ToWorldPosition(coordinates) - origin;
                 if (positions.Any(existing =>
-                        (existing - chosenOffset).LengthSquared() <
+                        (existing.Offset - chosenOffset).LengthSquared() <
                         spawner.Comp.ClearRadius * spawner.Comp.ClearRadius))
                 {
                     continue;
@@ -71,16 +74,13 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
 
                 _features.PrepareSpawnTile(mapUid, mapGrid, indices, tile);
                 Spawn(prototype, coordinates);
-                positions.Add(chosenOffset);
+                positions.Add(new LavalandPoi(chosenOffset, "lavaland-poi-tendril", false));
                 break;
             }
         }
 
         foreach (var dungeon in spawner.Comp.Dungeons)
         {
-            if (positions.Count >= spawner.Comp.Prototypes.Count + spawner.Comp.Dungeons.Count)
-                break;
-
             var angle = _random.NextFloat(0f, MathF.PI * 2f);
             var distance = _random.NextFloat(spawner.Comp.MinDistance, spawner.Comp.MaxDistance);
             var offset = new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * distance;
@@ -110,20 +110,24 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
                 _physics.SetBodyType(grid.Value.Owner, BodyType.Static, body: physics);
                 _physics.SetAngularVelocity(grid.Value.Owner, 0f, body: physics);
             }
-            var gridName = dungeon.ToString().Contains("temple")
-                ? "lavaland-dungeon-temple"
-                : "lavaland-dungeon-lava-lake";
+            var gridName = GetDungeonName(dungeon);
             _meta.SetEntityName(grid.Value.Owner, Loc.GetString(gridName));
             _shuttle.AddIFFFlag(grid.Value.Owner, IFFFlags.Hide);
-            positions.Add(offset);
+            positions.Add(new LavalandPoi(offset, gridName, true));
         }
 
-        if (!spawner.Comp.SendFax || positions.Count == 0)
+        if (TryComp<LavalandUniqueStructureSpawnerComponent>(spawner.Owner, out var unique))
+            _unique.SpawnStructures((spawner.Owner, unique), mapUid, outpost, positions);
+
+        var faxEntries = positions.Where(poi => poi.InFax).ToList();
+        if (!spawner.Comp.SendFax || faxEntries.Count == 0)
             return;
 
         var content = Loc.GetString("lavaland-poi-fax-header") + "\n\n" +
-                      string.Join("\n", positions.Select(position =>
-                          Loc.GetString("lavaland-poi-fax-line", ("x", position.X), ("y", position.Y))));
+                      string.Join("\n", faxEntries.Select(poi =>
+                          Loc.GetString("lavaland-poi-fax-line",
+                              ("x", (int) MathF.Round(poi.Offset.X)),
+                              ("y", (int) MathF.Round(poi.Offset.Y)))));
         var printout = new FaxPrintout(
             content,
             Loc.GetString("lavaland-poi-fax-name"),
@@ -144,5 +148,27 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
                     _fax.Receive(faxUid, printout, null, fax);
             }
         });
+    }
+
+    private static LocId GetDungeonName(ResPath dungeon)
+    {
+        var path = dungeon.ToString();
+        if (path.Contains("temple"))
+            return "lavaland-dungeon-temple";
+        if (path.Contains("lava_lake_village"))
+            return "lavaland-dungeon-lava-lake";
+        if (path.Contains("cave_murder"))
+            return "lavaland-dungeon-cave-murder";
+        if (path.Contains("clown_room"))
+            return "lavaland-dungeon-clown-room";
+        if (path.Contains("grasslanddome"))
+            return "lavaland-dungeon-grassland-dome";
+        if (path.Contains("lava_river"))
+            return "lavaland-dungeon-lava-river";
+        if (path.Contains("mineshaft"))
+            return "lavaland-dungeon-mineshaft";
+        if (path.Contains("snowydome"))
+            return "lavaland-dungeon-snowy-dome";
+        return "lavaland-poi-dungeon";
     }
 }

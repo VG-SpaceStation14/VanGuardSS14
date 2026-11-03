@@ -21,9 +21,6 @@
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
-      - !type:PlaySoundBehavior
-        sound:
-          path: /Audio/Effects/explosion1.ogg
   - type: Physics
     bodyType: Static
   - type: Fixtures

@@ -93,6 +93,11 @@ public sealed class LavalandContentTest : GameTest
             Assert.That(SProtoMan.HasIndex(new ProtoId<AmbientMusicPrototype>("Lavaland")), Is.True);
 
             Assert.That(SProtoMan.HasIndex(new ProtoId<SoundCollectionPrototype>("LavalandAmbience")), Is.True);
+            Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("LavalandMobBloodMiner")), Is.True);
+            Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("LavalandMobBloodMinerBuffed")), Is.True);
+            Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("LavalandSpawnMobBloodMiner")), Is.True);
+            Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("LavalandCleavingSaw")), Is.True);
+            Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("ActionBloodMinerShoot")), Is.True);
         });
     }
 

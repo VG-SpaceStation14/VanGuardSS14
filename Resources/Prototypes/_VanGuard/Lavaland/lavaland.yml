@@ -77,6 +77,16 @@
     - /Maps/_VanGuard/Lavaland/Dungeons/lava_river.yml
     - /Maps/_VanGuard/Lavaland/Dungeons/mineshaft.yml
     - /Maps/_VanGuard/Lavaland/Dungeons/snowydome.yml
+  - type: LavalandUniqueStructureSpawner
+    structures:
+    - id: BloodMinerArena
+      name: lavaland-poi-blood-miner-arena
+      variants:
+      - /Maps/_VanGuard/Lavaland/Dungeons/bloodminerarena.yml
+      - /Maps/_VanGuard/Lavaland/Dungeons/bloodminerarena2.yml
+      minDistance: 100
+      maxDistance: 220
+      clearRadius: 18
 
 
 # FTL target marker. The localized name comes from the prototype name key.

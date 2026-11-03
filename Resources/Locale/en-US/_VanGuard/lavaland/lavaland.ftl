@@ -1,7 +1,10 @@
 lavaland-poi-fax-header = LAVALAND SURVEY REPORT
 lavaland-poi-fax-name = Lavaland POI coordinates
 lavaland-poi-fax-stamp = Lavaland Survey
-lavaland-poi-fax-line = POI at X={$x}, Y={$y}
+lavaland-poi-fax-line = X={$x}, Y={$y}
+lavaland-poi-tendril = tendril
+lavaland-poi-blood-miner-arena = Blood Miner arena
+lavaland-poi-dungeon = unknown dungeon
 lavaland-map-name = Lavaland
 lavaland-outpost-name = Lavaland Outpost
 lavaland-ash-warning = Ash begins to fall. Seek shelter.
@@ -11,6 +14,12 @@ lavaland-ash-finished = The ash storm has passed.
 lavaland-ftl-point = Lavaland Outpost Beacon
 lavaland-dungeon-temple = Temple of the Sun
 lavaland-dungeon-lava-lake = Lava Lake Village
+lavaland-dungeon-cave-murder = Murder Cave
+lavaland-dungeon-clown-room = Clown Room
+lavaland-dungeon-grassland-dome = Grassland Dome
+lavaland-dungeon-lava-river = Lava River
+lavaland-dungeon-mineshaft = Abandoned Mineshaft
+lavaland-dungeon-snowy-dome = Snowy Dome
 
 ent-LavalandLoader = Lavaland loader
 ent-LavalandFTLPoint = Lavaland Outpost Beacon

@@ -334,7 +334,45 @@ public sealed class LavalandMapTest : GameTest
                 if (gridXform.MapID == mapId && gridUid != mapUid && gridUid != outpostUid)
                     dungeonCount++;
             }
-            Assert.That(dungeonCount, Is.GreaterThanOrEqualTo(2), "No Lavaland dungeon grids were loaded.");
+            Assert.That(dungeonCount, Is.EqualTo(9), "Expected eight dungeons and one Blood Miner arena.");
+
+            // Exactly one Blood Miner arena must be generated on the planet.
+            var arenaName = localization.GetString("lavaland-poi-blood-miner-arena");
+            EntityUid? arenaGrid = null;
+            var arenaCount = 0;
+            var arenaQuery = SEntMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+            while (arenaQuery.MoveNext(out var arenaUid, out var arenaMeta, out var arenaXform))
+            {
+                if (arenaXform.MapID != mapId || arenaMeta.EntityName != arenaName)
+                    continue;
+
+                arenaCount++;
+                arenaGrid = arenaUid;
+            }
+            Assert.That(arenaCount, Is.EqualTo(1), "Exactly one Blood Miner arena must be generated.");
+
+            var bossCount = 0;
+            var bossQuery = SEntMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+            while (bossQuery.MoveNext(out _, out var bossMeta, out var bossXform))
+            {
+                if (bossXform.MapID == mapId && bossMeta.EntityPrototype?.ID == "LavalandMobBloodMiner")
+                    bossCount++;
+            }
+            Assert.That(bossCount, Is.EqualTo(1), "The Blood Miner arena did not spawn exactly one phase-one boss.");
+
+            var bossSpawnerCount = 0;
+            var spawnerQuery = SEntMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+            while (spawnerQuery.MoveNext(out _, out var spawnerMeta, out var spawnerXform))
+            {
+                if (spawnerXform.MapID == mapId && spawnerMeta.EntityPrototype?.ID == "LavalandSpawnMobBloodMiner")
+                    bossSpawnerCount++;
+            }
+            Assert.That(bossSpawnerCount, Is.Zero, "The arena boss spawner was not consumed.");
+
+            Assert.That(arenaGrid, Is.Not.Null);
+            var xformSystem = SEntMan.System<SharedTransformSystem>();
+            var arenaDistance = (xformSystem.GetWorldPosition(arenaGrid!.Value) - xformSystem.GetWorldPosition(outpostUid)).Length();
+            Assert.That(arenaDistance, Is.InRange(90f, 230f), "The arena was not placed within the configured player-reach ring.");
 
             var dungeonGrids = new List<(EntityUid Uid, Angle Rotation)>();
             var stableQuery = SEntMan.EntityQueryEnumerator<MapGridComponent, TransformComponent>();
@@ -358,6 +396,42 @@ public sealed class LavalandMapTest : GameTest
                 }
             });
             Assert.That(faxCount, Is.GreaterThanOrEqualTo(1), "No fax was found on Lavaland.");
+
+            var faxText = string.Empty;
+            var paperQuery = SEntMan.EntityQueryEnumerator<PaperComponent, TransformComponent>();
+            while (paperQuery.MoveNext(out _, out var paper, out var paperXform))
+            {
+                if (paperXform.MapID == mapId)
+                    faxText += paper.Content;
+            }
+
+            var faxLines = faxText
+                .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Where(line => line.StartsWith("X=", StringComparison.Ordinal))
+                .ToList();
+            Assert.That(faxLines, Has.Count.EqualTo(dungeonCount),
+                "The POI fax must contain exactly one coordinate per dungeon and arena.");
+            foreach (var line in faxLines)
+                Assert.That(line, Does.Match(@"^X=-?\d+, Y=-?\d+$"),
+                    $"POI fax coordinate is not rounded to integers: {line}");
+
+            Assert.That(faxText, Does.Not.Contain(arenaName),
+                "The POI fax must not contain dungeon names.");
+            foreach (var dungeonKey in new[]
+                     {
+                         "lavaland-dungeon-temple",
+                         "lavaland-dungeon-lava-lake",
+                         "lavaland-dungeon-cave-murder",
+                         "lavaland-dungeon-clown-room",
+                         "lavaland-dungeon-grassland-dome",
+                         "lavaland-dungeon-lava-river",
+                         "lavaland-dungeon-mineshaft",
+                         "lavaland-dungeon-snowy-dome",
+                     })
+            {
+                Assert.That(faxText, Does.Not.Contain(localization.GetString(dungeonKey)),
+                    $"The POI fax must not contain dungeon name {dungeonKey}.");
+            }
 
             var weatherScheduler = SEntMan.GetComponent<LavalandWeatherSchedulerComponent>(mapUid);
             weatherScheduler.Stage = 2;

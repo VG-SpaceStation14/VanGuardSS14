@@ -1,0 +1,33 @@
+- type: entity
+  parent: BaseItem
+  id: LavalandCleavingSaw
+  name: cleaving saw
+  description: A brutal telescopic saw carried by the Blood Miner. Heavy, but it cuts through hide and bone alike.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Objects/Weapons/Melee/cleaving_saw.rsi
+    state: icon_on
+  - type: Item
+    size: Large
+    sprite: _VanGuard/Objects/Weapons/Melee/cleaving_saw-inhands.rsi
+    heldPrefix: on
+  - type: MeleeWeapon
+    damage:
+      types:
+        Slash: 30
+    attackRate: 1
+    soundHit:
+      path: /Audio/Weapons/bladeslice.ogg
+  - type: UseDelay
+    delay: 1
+  - type: DisarmMalus
+    malus: 0
+  - type: Reflect
+    reflectProb: 0.15
+  - type: Clothing
+    sprite: _VanGuard/Objects/Weapons/Melee/cleaving_saw.rsi
+    quickEquip: false
+    slots:
+    - Belt
+  - type: StaticPrice
+    price: 1000

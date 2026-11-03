@@ -1,7 +1,10 @@
 lavaland-poi-fax-header = ОТЧЁТ О РАЗВЕДКЕ ЛАВАЛЕНДА
 lavaland-poi-fax-name = Координаты POI Лаваленда
 lavaland-poi-fax-stamp = Разведка Лаваленда
-lavaland-poi-fax-line = POI: X={$x}, Y={$y}
+lavaland-poi-fax-line = X={$x}, Y={$y}
+lavaland-poi-tendril = шип
+lavaland-poi-blood-miner-arena = арена Кровожадного шахтёра
+lavaland-poi-dungeon = неизвестный данж
 lavaland-map-name = Лаваленд
 lavaland-outpost-name = Аванпост Лаваленда
 lavaland-ash-warning = Начинает падать пепел. Найдите укрытие.
@@ -11,6 +14,12 @@ lavaland-ash-finished = Пепельная буря закончилась.
 lavaland-ftl-point = Маяк аванпоста Лаваленда
 lavaland-dungeon-temple = Храм Солнца
 lavaland-dungeon-lava-lake = Деревня на лавовом озере
+lavaland-dungeon-cave-murder = Пещера убийцы
+lavaland-dungeon-clown-room = Комната клоуна
+lavaland-dungeon-grassland-dome = Луг под куполом
+lavaland-dungeon-lava-river = Лавовая река
+lavaland-dungeon-mineshaft = Заброшенная шахта
+lavaland-dungeon-snowy-dome = Снежный купол
 
 ent-LavalandLoader = загрузчик Лаваленда
 ent-LavalandFTLPoint = маяк аванпоста Лаваленда

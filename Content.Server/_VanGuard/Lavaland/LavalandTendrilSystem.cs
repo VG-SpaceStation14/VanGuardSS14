@@ -22,8 +22,7 @@ public sealed partial class LavalandTendrilSystem : EntitySystem
 
     private TimeSpan _nextPlacementCheck;
 
-    private static readonly SoundSpecifier CrackSound = new SoundPathSpecifier("/Audio/Effects/glass_crack1.ogg");
-    private static readonly SoundSpecifier WarningSound = new SoundPathSpecifier("/Audio/Effects/explosion_small1.ogg");
+    private static readonly SoundSpecifier CrackSound = new SoundPathSpecifier("/Audio/_VanGuard/ADT/SoundGen/destruction_1.ogg");
     private static readonly SoundSpecifier CollapseSound = new SoundPathSpecifier("/Audio/Effects/explosion1.ogg");
 
     public override void Initialize()
@@ -149,8 +148,8 @@ public sealed partial class LavalandTendrilSystem : EntitySystem
 
         // A deliberate three-stage warning: cracking shell, growing rumble,
         // then the actual collapse when the chasm opens.
+        // ADT uses one long destruction cue that covers the chasm opening.
         _audio.PlayPvs(CrackSound, coords);
-        Timer.Spawn(TimeSpan.FromSeconds(1.5), () => _audio.PlayPvs(WarningSound, coords));
         Timer.Spawn(TimeSpan.FromSeconds(ent.Comp.ChasmDelay), () =>
         {
             _audio.PlayPvs(CollapseSound, coords);
