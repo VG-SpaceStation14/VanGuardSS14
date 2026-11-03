@@ -1,5 +1,5 @@
 - type: entity
-  parent: ClothingOuterBase
+  parent: [ ClothingOuterBase, AllowSuitStorageClothingGasTanks ]
   id: ClothingOuterArmorMiner
   name: miner-armor
   description: miner-armor-desc
@@ -21,6 +21,9 @@
     damageCoefficient: 0.9
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetMiner
+    slot: head
+    action: ActionToggleSuitPiece
+    verbText: toggle-clothing-verb-helmet
   - type: Tag
     tags: [ MinerArmor ]
 
@@ -40,6 +43,9 @@
       coefficients: { Blunt: 0.65, Slash: 0.65, Piercing: 0.9, Heat: 0.75, Caustic: 0.65 }
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetMinerReinforcedOne
+    slot: head
+    action: ActionToggleSuitPiece
+    verbText: toggle-clothing-verb-helmet
   - type: Construction
     graph: MinerArmorReinforcedOne
     node: MinerArmorReinforcedOne
@@ -62,6 +68,9 @@
       coefficients: { Blunt: 0.6, Slash: 0.6, Piercing: 0.8, Heat: 0.7, Caustic: 0.6 }
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetMinerReinforcedTwo
+    slot: head
+    action: ActionToggleSuitPiece
+    verbText: toggle-clothing-verb-helmet
   - type: Construction
     graph: MinerArmorReinforcedTwo
     node: MinerArmorReinforcedTwo
@@ -84,6 +93,9 @@
       coefficients: { Blunt: 0.5, Slash: 0.5, Piercing: 0.7, Heat: 0.6, Caustic: 0.5 }
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetMinerReinforcedFull
+    slot: head
+    action: ActionToggleSuitPiece
+    verbText: toggle-clothing-verb-helmet
   - type: Construction
     graph: MinerArmorReinforcedFull
     node: MinerArmorReinforcedFull

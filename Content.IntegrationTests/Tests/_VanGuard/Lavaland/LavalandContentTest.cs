@@ -1,3 +1,4 @@
+using System.Numerics;
 #nullable enable
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Teleportation.Components;
 using Content.Shared.Teleportation.Systems;
 using Content.Shared.Chasm;
+using Robust.Shared.Prototypes;
 using Content.Shared.Pinpointer;
 using Content.Shared._VanGuard.Mining.Shop;
 using Content.Shared._VanGuard.Mining.Shop.Components;
@@ -43,7 +45,7 @@ using Content.IntegrationTests.Fixtures;
 using Robust.Shared.GameObjects;
 
 using Robust.Shared.Map.Components;
-using Robust.Shared.Prototypes;
+
 
 namespace Content.IntegrationTests.Tests._VanGuard.Lavaland;
 
@@ -214,6 +216,10 @@ public sealed class LavalandContentTest : GameTest
                         found = true;
                 }
                 Assert.That(found, Is.True, "Jaunter portal was not linked to the station beacon.");
+                var playerXform = SEntMan.GetComponent<TransformComponent>(player);
+                var beaconXform = SEntMan.GetComponent<TransformComponent>(beacon);
+                Assert.That((playerXform.WorldPosition - beaconXform.WorldPosition).Length(), Is.LessThan(2f),
+                    "Jaunter portal did not teleport the user on collision.");
             });
 
             await Server.WaitPost(() =>
@@ -408,10 +414,16 @@ public sealed class LavalandContentTest : GameTest
                 {
                     var toggle = SEntMan.GetComponent<ToggleableClothingComponent>(armor);
                     Assert.That(toggle.ClothingUid, Is.Not.Null);
+                    Assert.That(toggle.ActionEntity, Is.Not.Null, "Armor did not create a toggle action.");
+                    Assert.That(toggle.Action?.Id, Is.EqualTo("ActionToggleSuitPiece"));
                     Assert.That(SEntMan.GetComponent<MetaDataComponent>(toggle.ClothingUid!.Value).EntityPrototype?.ID,
                         Is.EqualTo(helmetId));
                     Assert.That(inventory.TryGetSlotContainer(player, "outerClothing", out var slot, out _), Is.True);
                     Assert.That(Server.System<SharedContainerSystem>().Insert(armor, slot!), Is.True);
+                    var tank = SEntMan.SpawnEntity("OxygenTankFilled", new EntityCoordinates(grid, 0, 0));
+                    Assert.That(inventory.TryEquip(player, tank, "suitstorage", force: true), Is.True,
+                        "Armor cannot accept a gas tank in suit storage.");
+                    SEntMan.DeleteEntity(tank);
                     SEntMan.EventBus.RaiseLocalEvent(armor, new ToggleClothingEvent { Performer = player });
                 });
                 await Pair.RunTicksSync(2);
@@ -559,6 +571,45 @@ public sealed class LavalandContentTest : GameTest
             Server.System<SharedWeatherSystem>().TrySetWeather(mapId, null, out _);
             foreach (var entity in entities)
                 SEntMan.DeleteEntity(entity);
+        });
+    }
+
+    [Test]
+    public async Task TendrilMarkersRejectLavaAndChasmTiles()
+    {
+        var grid = GetStationGrid();
+        var markers = new List<EntityUid>();
+        await Server.WaitPost(() =>
+        {
+            var lava = SEntMan.SpawnEntity("FloorLavaEntity", new EntityCoordinates(grid, 100, 100));
+            var chasm = SEntMan.SpawnEntity("FloorChasmEntity", new EntityCoordinates(grid, 110, 110));
+            foreach (var coords in new[]
+            {
+                new EntityCoordinates(grid, 100, 100),
+                new EntityCoordinates(grid, 110, 110),
+                new EntityCoordinates(grid, 0, 0),
+            })
+            {
+                var marker = SEntMan.SpawnEntity("LavalandTendrilFeature", coords);
+                markers.Add(marker);
+            }
+        });
+        await Pair.RunTicksSync(4);
+
+        await Server.WaitPost(() =>
+        {
+            var tendrils = new List<Vector2>();
+            var query = SEntMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+            while (query.MoveNext(out var uid, out var meta, out var xform))
+            {
+                if (meta.EntityPrototype?.ID == "LavalandTendril")
+                    tendrils.Add(xform.LocalPosition);
+            }
+
+            Assert.That(tendrils.Count, Is.EqualTo(1), "Tendril was spawned on lava/chasm or not spawned in a valid spot.");
+            foreach (var marker in markers)
+                if (SEntMan.EntityExists(marker))
+                    SEntMan.DeleteEntity(marker);
         });
     }
 

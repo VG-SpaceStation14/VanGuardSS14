@@ -12,3 +12,11 @@
   components:
   - type: LavalandBiomeFeature
   - type: InteractionOutline
+
+- type: entity
+  parent: LavalandBiomeFeature
+  id: LavalandTendrilFeature
+  components:
+  - type: LavalandBiomeFeature
+    options:
+    - LavalandTendril
