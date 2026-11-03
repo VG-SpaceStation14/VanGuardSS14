@@ -21,7 +21,7 @@
 - type: startingGear
   id: MinerGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitSalvageSpecialist
+    jumpsuit: ClothingUniformJumpsuitMinerExplorer
     ears: ClothingHeadsetCargo
     eyes: ClothingEyesGlassesMeson
     pocket1: AppraisalTool

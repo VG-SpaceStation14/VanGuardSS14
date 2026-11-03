@@ -19,6 +19,12 @@ using Content.Shared._VanGuard.Mining.Shop.Components;
 using Content.Shared._VanGuard.Mining.Points;
 using Content.Shared._VanGuard.Mining.Points.Components;
 using Content.Shared.Preferences.Loadouts;
+using Content.Shared.Preferences;
+using Content.Shared.Humanoid;
+using Content.Shared.Inventory;
+using Content.Shared.Clothing.EntitySystems;
+using Content.Shared.Station.Components;
+using Content.Shared.Station.Systems;
 using Content.Shared.Construction.Prototypes;
 using Content.Server.Construction.Components;
 using Content.Shared.Clothing.Components;
@@ -28,7 +34,8 @@ using Robust.Shared.Map;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Utility;
-using Content.Shared.Station.Components;
+
+
 using Content.IntegrationTests.Fixtures;
 using Robust.Shared.GameObjects;
 
@@ -333,6 +340,99 @@ public sealed class LavalandContentTest : GameTest
             Assert.That(suitIds, Does.Contain("ClothingOuterArmorMiner"));
             Assert.That(suitIds, Does.Not.Contain("ClothingOuterHardsuitMining"));
         });
+    }
+
+    [Test]
+    public async Task MinerLoadoutEquipsJumpsuitAndShoes()
+    {
+        var map = await Pair.CreateTestMap();
+        await Server.WaitAssertion(() =>
+        {
+            var profile = HumanoidCharacterProfile.DefaultWithSpecies("Human", Sex.Male);
+            var loadout = new RoleLoadout(new ProtoId<RoleLoadoutPrototype>("JobMiner"));
+            loadout.SetDefault(profile, ServerSession, SProtoMan, force: true);
+            profile.SetLoadout(loadout);
+
+            var mob = Server.System<StationSpawningSystem>().SpawnPlayerMob(
+                new EntityCoordinates(map.Grid, 0, 0),
+                "Miner",
+                profile,
+                null);
+            var inventory = Server.System<InventorySystem>();
+            Assert.That(inventory.TryGetSlotEntity(mob, "jumpsuit", out var jumpsuit), Is.True);
+            Assert.That(SEntMan.GetComponent<MetaDataComponent>(jumpsuit!.Value).EntityPrototype?.ID,
+                Is.EqualTo("ClothingUniformJumpsuitMinerExplorer"));
+            Assert.That(inventory.TryGetSlotEntity(mob, "shoes", out var shoes), Is.True);
+            Assert.That(SEntMan.GetComponent<MetaDataComponent>(shoes!.Value).EntityPrototype?.ID,
+                Does.StartWith("ClothingShoes"));
+        });
+    }
+
+    [Test]
+    public async Task MinerArmorTogglesItsHelmet()
+    {
+        var grid = GetStationGrid();
+        EntityUid player = default;
+        await Server.WaitPost(() =>
+        {
+            var profile = HumanoidCharacterProfile.DefaultWithSpecies("Human", Sex.Male);
+            player = Server.System<StationSpawningSystem>().SpawnPlayerMob(
+                new EntityCoordinates(grid, 0, 0), "Miner", profile, null);
+        });
+        await Pair.RunTicksSync(2);
+        var inventory = Server.System<InventorySystem>();
+        var armors = new[]
+        {
+            ("ClothingOuterArmorMinerReinforcedOne", "ClothingHeadHelmetMinerReinforcedOne"),
+            ("ClothingOuterArmorMinerReinforcedTwo", "ClothingHeadHelmetMinerReinforcedTwo"),
+            ("ClothingOuterArmorMinerReinforcedFull", "ClothingHeadHelmetMinerReinforcedFull"),
+        };
+
+        try
+        {
+            foreach (var (armorId, helmetId) in armors)
+            {
+                EntityUid armor = default;
+                await Server.WaitPost(() =>
+                {
+                    armor = SEntMan.SpawnEntity(armorId, new EntityCoordinates(grid, 0, 0));
+                });
+                await Pair.RunTicksSync(2);
+                await Server.WaitPost(() =>
+                {
+                    var toggle = SEntMan.GetComponent<ToggleableClothingComponent>(armor);
+                    Assert.That(toggle.ClothingUid, Is.Not.Null);
+                    Assert.That(SEntMan.GetComponent<MetaDataComponent>(toggle.ClothingUid!.Value).EntityPrototype?.ID,
+                        Is.EqualTo(helmetId));
+                    Assert.That(inventory.TryGetSlotContainer(player, "outerClothing", out var slot, out _), Is.True);
+                    Assert.That(Server.System<SharedContainerSystem>().Insert(armor, slot!), Is.True);
+                    SEntMan.EventBus.RaiseLocalEvent(armor, new ToggleClothingEvent { Performer = player });
+                });
+                await Pair.RunTicksSync(2);
+                await Server.WaitPost(() =>
+                {
+                    Assert.That(inventory.TryGetSlotEntity(player, "head", out var head), Is.True);
+                    Assert.That(SEntMan.GetComponent<MetaDataComponent>(head!.Value).EntityPrototype?.ID, Is.EqualTo(helmetId));
+                    SEntMan.EventBus.RaiseLocalEvent(armor, new ToggleClothingEvent { Performer = player });
+                });
+                await Pair.RunTicksSync(2);
+                await Server.WaitPost(() =>
+                {
+                    Assert.That(inventory.TryGetSlotEntity(player, "head", out _), Is.False);
+                    SEntMan.DeleteEntity(armor);
+                });
+            }
+        }
+        finally
+        {
+            await Server.WaitPost(() =>
+            {
+                if (inventory.TryGetSlotEntity(player, "outerClothing", out var worn))
+                    SEntMan.DeleteEntity(worn.Value);
+                if (inventory.TryGetSlotEntity(player, "head", out var head))
+                    SEntMan.DeleteEntity(head.Value);
+            });
+        }
     }
 
     private EntityUid GetStationGrid()

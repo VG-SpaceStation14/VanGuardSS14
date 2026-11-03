@@ -8,3 +8,4 @@
     sprite: _VanGuard/Clothing/Uniforms/Jumpsuit/explorer.rsi
   - type: Clothing
     sprite: _VanGuard/Clothing/Uniforms/Jumpsuit/explorer.rsi
+    slots: [ innerclothing ]

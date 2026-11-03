@@ -36,7 +36,6 @@
   id: MinerJumpsuit
   name: loadout-group-miner-jumpsuit
   loadouts:
-  - MinerSalvageJumpsuit
   - MinerExplorerJumpsuit
 
 - type: loadout

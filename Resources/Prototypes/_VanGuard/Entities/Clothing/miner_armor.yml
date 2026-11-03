@@ -8,6 +8,7 @@
     sprite: _VanGuard/Clothing/OuterClothing/Armor/mining.rsi
   - type: Clothing
     sprite: _VanGuard/Clothing/OuterClothing/Armor/mining.rsi
+    slots: [ outerClothing ]
   - type: Armor
     modifiers:
       coefficients:
@@ -33,6 +34,7 @@
     sprite: _VanGuard/Clothing/OuterClothing/Armor/mining_reinforced_one.rsi
   - type: Clothing
     sprite: _VanGuard/Clothing/OuterClothing/Armor/mining_reinforced_one.rsi
+    slots: [ outerClothing ]
   - type: Armor
     modifiers:
       coefficients: { Blunt: 0.65, Slash: 0.65, Piercing: 0.9, Heat: 0.75, Caustic: 0.65 }
@@ -54,6 +56,7 @@
     sprite: _VanGuard/Clothing/OuterClothing/Armor/mining_reinforced_two.rsi
   - type: Clothing
     sprite: _VanGuard/Clothing/OuterClothing/Armor/mining_reinforced_two.rsi
+    slots: [ outerClothing ]
   - type: Armor
     modifiers:
       coefficients: { Blunt: 0.6, Slash: 0.6, Piercing: 0.8, Heat: 0.7, Caustic: 0.6 }
@@ -75,6 +78,7 @@
     sprite: _VanGuard/Clothing/OuterClothing/Armor/mining_reinforced_full.rsi
   - type: Clothing
     sprite: _VanGuard/Clothing/OuterClothing/Armor/mining_reinforced_full.rsi
+    slots: [ outerClothing ]
   - type: Armor
     modifiers:
       coefficients: { Blunt: 0.5, Slash: 0.5, Piercing: 0.7, Heat: 0.6, Caustic: 0.5 }
@@ -97,6 +101,7 @@
     sprite: _VanGuard/Clothing/Head/Helmets/mining.rsi
   - type: Clothing
     sprite: _VanGuard/Clothing/Head/Helmets/mining.rsi
+    slots: [ head ]
   - type: Armor
     modifiers:
       coefficients: { Blunt: 0.9, Slash: 0.9, Piercing: 0.9, Heat: 0.9 }
@@ -111,6 +116,7 @@
     sprite: _VanGuard/Clothing/Head/Helmets/mining_reinforced_one.rsi
   - type: Clothing
     sprite: _VanGuard/Clothing/Head/Helmets/mining_reinforced_one.rsi
+    slots: [ head ]
 
 - type: entity
   parent: ClothingHeadHelmetMinerReinforcedOne
@@ -122,6 +128,7 @@
     sprite: _VanGuard/Clothing/Head/Helmets/mining_reinforced_two.rsi
   - type: Clothing
     sprite: _VanGuard/Clothing/Head/Helmets/mining_reinforced_two.rsi
+    slots: [ head ]
 
 - type: entity
   parent: ClothingHeadHelmetMinerReinforcedOne
@@ -133,3 +140,4 @@
     sprite: _VanGuard/Clothing/Head/Helmets/mining_reinforced_full.rsi
   - type: Clothing
     sprite: _VanGuard/Clothing/Head/Helmets/mining_reinforced_full.rsi
+    slots: [ head ]
