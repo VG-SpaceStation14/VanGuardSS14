@@ -64,6 +64,9 @@
       types:
         Slash: 10
         Piercing: 10
+  # VG-Tweak Start: Lavaland fauna is adapted to ash storms
+  - type: LavalandAshStormImmune
+  # VG-Tweak End
   - type: NpcFactionMember
     factions:
     - SimpleHostile
@@ -235,6 +238,9 @@
     proto: MobHivelordBrood
     capacity: 1
     count: 1
+  # VG-Tweak Start: Lavaland fauna is adapted to ash storms
+  - type: LavalandAshStormImmune
+  # VG-Tweak End
   - type: NpcFactionMember
     factions:
     - SimpleHostile
@@ -289,6 +295,9 @@
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
+  # VG-Tweak Start: Lavaland fauna is adapted to ash storms
+  - type: LavalandAshStormImmune
+  # VG-Tweak End
   - type: NpcFactionMember
     factions:
     - SimpleHostile
@@ -410,6 +419,9 @@
       reagents:
       - ReagentId: Blood
         Quantity: 200
+  # VG-Tweak Start: Lavaland fauna is adapted to ash storms
+  - type: LavalandAshStormImmune
+  # VG-Tweak End
   - type: NpcFactionMember
     factions:
     - SimpleHostile
