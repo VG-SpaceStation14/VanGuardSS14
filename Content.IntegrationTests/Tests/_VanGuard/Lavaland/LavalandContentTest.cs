@@ -84,6 +84,7 @@ public sealed class LavalandContentTest : GameTest
             Assert.That(SProtoMan.HasIndex(new ProtoId<ConstructionPrototype>("ClothingOuterArmorMinerReinforcedFull")), Is.True);
             Assert.That(SProtoMan.HasIndex(new ProtoId<ConstructionGraphPrototype>("MinerArmorReinforcedFull")), Is.True);
             Assert.That(SProtoMan.HasIndex(new ProtoId<AmbientMusicPrototype>("Lavaland")), Is.True);
+
             Assert.That(SProtoMan.HasIndex(new ProtoId<SoundCollectionPrototype>("LavalandAmbience")), Is.True);
         });
     }
@@ -437,6 +438,81 @@ public sealed class LavalandContentTest : GameTest
                     SEntMan.DeleteEntity(head.Value);
             });
         }
+    }
+
+    [Test]
+    public async Task NecropolisCratesGenerateDistinctLootOnce()
+    {
+        var grid = GetStationGrid();
+        var containers = Server.System<SharedContainerSystem>();
+        var crates = new[]
+        {
+            ("LavalandNecropolisCrate", "SteelOre"),
+            ("LavalandNecropolisCrateGoliath", "MaterialGoliathHide1"),
+            ("LavalandNecropolisCrateWatcher", "PlasmaOre"),
+        };
+        var spawned = new List<(EntityUid Uid, int Count)>();
+
+        await Server.WaitPost(() =>
+        {
+            foreach (var (prototype, _) in crates)
+                spawned.Add((SEntMan.SpawnEntity(prototype, new EntityCoordinates(grid, 0, 0)), 0));
+        });
+        await Pair.RunTicksSync(4);
+
+        await Server.WaitPost(() =>
+        {
+            for (var i = 0; i < crates.Length; i++)
+            {
+                var (crate, required) = crates[i];
+                Assert.That(containers.TryGetContainer(spawned[i].Uid, "entity_storage", out var container), Is.True);
+                var ids = container!.ContainedEntities
+                    .Select(uid => SEntMan.GetComponent<MetaDataComponent>(uid).EntityPrototype?.ID)
+                    .Where(id => id != null)
+                    .ToList();
+                Assert.That(ids, Is.Not.Empty, $"{crate} generated no loot.");
+                Assert.That(ids, Does.Contain(required), $"{crate} is missing its guaranteed category item.");
+                Assert.That(ids.All(id => SProtoMan.HasIndex<EntityPrototype>(id!)), Is.True);
+                spawned[i] = (spawned[i].Uid, ids.Count);
+            }
+        });
+
+        await Pair.RunTicksSync(20);
+        await Server.WaitPost(() =>
+        {
+            foreach (var (uid, before) in spawned)
+            {
+                Assert.That(containers.TryGetContainer(uid, "entity_storage", out var container), Is.True);
+                Assert.That(container!.ContainedEntities.Count, Is.EqualTo(before),
+                    "A Necropolis crate generated loot more than once.");
+            }
+        });
+    }
+
+    [Test]
+    public async Task TendrilVariantsUseMatchingNecropolisCrate()
+    {
+        var grid = GetStationGrid();
+        await Server.WaitPost(() =>
+        {
+            foreach (var (tendrilProto, crateProto) in new[]
+            {
+                ("LavalandTendril", "LavalandNecropolisCrate"),
+                ("LavalandTendrilGoliath", "LavalandNecropolisCrateGoliath"),
+                ("LavalandTendrilWatcher", "LavalandNecropolisCrateWatcher"),
+            })
+            {
+                var tendril = SEntMan.SpawnEntity(tendrilProto, new EntityCoordinates(grid, 0, 0));
+                try
+                {
+                    Assert.That(SEntMan.GetComponent<LavalandTendrilComponent>(tendril).Loot, Is.EqualTo(crateProto));
+                }
+                finally
+                {
+                    SEntMan.DeleteEntity(tendril);
+                }
+            }
+        });
     }
 
     private EntityUid GetStationGrid()

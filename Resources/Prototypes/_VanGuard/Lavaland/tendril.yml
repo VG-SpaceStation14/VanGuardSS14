@@ -44,21 +44,45 @@
   id: LavalandNecropolisCrate
   name: lavaland-necropolis-crate-name
   components:
+  - type: Sprite
+    sprite: _VanGuard/Structures/Storage/Crates/necropolis.rsi
+    layers:
+    - state: base
+    - state: closed
+      map: [ "enum.StorageVisualLayers.Door" ]
+  - type: Icon
+    sprite: _VanGuard/Structures/Storage/Crates/necropolis.rsi
+    state: icon
   - type: EntityTableContainerFill
     containers:
       entity_storage: !type:AllSelector
         children:
         - id: SteelOre
-        - id: GoldOre
-          prob: 0.5
-        - id: SilverOre
-          prob: 0.4
-        - id: PlasmaOre
-          prob: 0.25
-        - id: WeaponProtoKineticAccelerator
-          prob: 0.15
-        - id: SurvivalKnife
-          prob: 0.3
+          amount: 3
+        - !type:GroupSelector
+          children:
+          - id: GoldOre
+            weight: 0.35
+          - id: SilverOre
+            weight: 0.30
+          - id: PlasmaOre
+            weight: 0.20
+          - id: UraniumOre
+            weight: 0.10
+          - id: DiamondOre
+            weight: 0.05
+        - !type:GroupSelector
+          children:
+          - id: SurvivalKnife
+            weight: 0.35
+          - id: MineralScanner
+            weight: 0.25
+          - id: OreBag
+            weight: 0.20
+          - id: FlashlightSeclite
+            weight: 0.15
+          - id: WeaponProtoKineticAccelerator
+            weight: 0.05
 
 - type: entity
   parent: LavalandTendril
@@ -87,6 +111,15 @@
   id: LavalandNecropolisCrateGoliath
   name: lavaland-necropolis-goliath-crate
   components:
+  - type: Sprite
+    sprite: _VanGuard/Structures/Storage/Crates/necropolis.rsi
+    layers:
+    - state: base
+    - state: closed
+      map: [ "enum.StorageVisualLayers.Door" ]
+  - type: Icon
+    sprite: _VanGuard/Structures/Storage/Crates/necropolis.rsi
+    state: icon
   - type: EntityTableContainerFill
     containers:
       entity_storage: !type:AllSelector
@@ -95,29 +128,74 @@
           amount: 2
         - id: FoodMeatGoliath
           amount: 2
-        - id: SteelOre
-          amount: 3
-          prob: 0.7
-        - id: WeaponProtoKineticAccelerator
-          prob: 0.2
+        - !type:GroupSelector
+          children:
+          - id: SteelOre
+            weight: 0.45
+          - id: GoldOre
+            weight: 0.25
+          - id: PlasmaOre
+            weight: 0.20
+          - id: DiamondOre
+            weight: 0.10
+        - !type:GroupSelector
+          children:
+          - id: SurvivalKnife
+            weight: 0.35
+          - id: WeaponProtoKineticAccelerator
+            weight: 0.20
+          - id: ClothingOuterArmorMiner
+            weight: 0.10
+          - id: MedkitBruteFilled
+            weight: 0.20
+          - id: SpaceCash1000
+            weight: 0.15
+        - id: MaterialGoliathHide1
+          prob: 0.35
 
 - type: entity
   parent: CrateGenericSteel
   id: LavalandNecropolisCrateWatcher
   name: lavaland-necropolis-watcher-crate
   components:
+  - type: Sprite
+    sprite: _VanGuard/Structures/Storage/Crates/necropolis.rsi
+    layers:
+    - state: base
+    - state: closed
+      map: [ "enum.StorageVisualLayers.Door" ]
+  - type: Icon
+    sprite: _VanGuard/Structures/Storage/Crates/necropolis.rsi
+    state: icon
   - type: EntityTableContainerFill
     containers:
       entity_storage: !type:AllSelector
         children:
         - id: PlasmaOre
           amount: 3
-          prob: 0.6
-        - id: DiamondOre
-          prob: 0.2
-        - id: SpaceCash1000
-          prob: 0.3
-        - id: SurvivalKnife
+        - !type:GroupSelector
+          children:
+          - id: DiamondOre
+            weight: 0.25
+          - id: UraniumOre
+            weight: 0.25
+          - id: GoldOre
+            weight: 0.30
+          - id: SilverOre
+            weight: 0.20
+        - !type:GroupSelector
+          children:
+          - id: AdvancedMineralScanner
+            weight: 0.25
+          - id: PKAUpgradeDamage
+            weight: 0.25
+          - id: PKAUpgradeRange
+            weight: 0.20
+          - id: MedkitBurnFilled
+            weight: 0.20
+          - id: SpaceCash1000
+            weight: 0.10
+        - id: SpaceCash100
           prob: 0.4
 
 - type: entity
