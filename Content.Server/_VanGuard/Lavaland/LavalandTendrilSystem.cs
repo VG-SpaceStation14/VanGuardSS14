@@ -16,6 +16,8 @@ public sealed partial class LavalandTendrilSystem : EntitySystem
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private DamageableSystem _damageable = default!;
 
+    private static readonly SoundSpecifier CrackSound = new SoundPathSpecifier("/Audio/Effects/glass_crack1.ogg");
+    private static readonly SoundSpecifier WarningSound = new SoundPathSpecifier("/Audio/Effects/explosion_small1.ogg");
     private static readonly SoundSpecifier CollapseSound = new SoundPathSpecifier("/Audio/Effects/explosion1.ogg");
 
     public override void Initialize()
@@ -65,8 +67,9 @@ public sealed partial class LavalandTendrilSystem : EntitySystem
 
     public bool TryDestroy(Entity<LavalandTendrilComponent> ent)
     {
-        if (!Exists(ent.Owner))
+        if (!Exists(ent.Owner) || ent.Comp.Destroyed)
             return false;
+        ent.Comp.Destroyed = true;
         DestroyCore(ent);
         QueueDel(ent.Owner);
         return true;
@@ -94,8 +97,16 @@ public sealed partial class LavalandTendrilSystem : EntitySystem
     {
         var coords = Transform(ent.Owner).Coordinates;
         Spawn(ent.Comp.Loot, coords);
-        _audio.PlayPvs(CollapseSound, coords);
-        Timer.Spawn(TimeSpan.FromSeconds(ent.Comp.ChasmDelay), () => SpawnChasm(coords, ent.Comp.ChasmRadius));
+
+        // A deliberate three-stage warning: cracking shell, growing rumble,
+        // then the actual collapse when the chasm opens.
+        _audio.PlayPvs(CrackSound, coords);
+        Timer.Spawn(TimeSpan.FromSeconds(1.5), () => _audio.PlayPvs(WarningSound, coords));
+        Timer.Spawn(TimeSpan.FromSeconds(ent.Comp.ChasmDelay), () =>
+        {
+            _audio.PlayPvs(CollapseSound, coords);
+            SpawnChasm(coords, ent.Comp.ChasmRadius);
+        });
     }
 
     private void SpawnChasm(EntityCoordinates origin, int radius)

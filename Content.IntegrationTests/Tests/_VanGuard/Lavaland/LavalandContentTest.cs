@@ -18,6 +18,8 @@ using Content.Shared._VanGuard.Mining.Shop;
 using Content.Shared._VanGuard.Mining.Shop.Components;
 using Content.Shared._VanGuard.Mining.Points;
 using Content.Shared._VanGuard.Mining.Points.Components;
+using Content.Shared.Audio;
+using Robust.Shared.Audio;
 using Content.Shared.Preferences.Loadouts;
 using Content.Shared.Preferences;
 using Content.Shared.Humanoid;
@@ -81,6 +83,8 @@ public sealed class LavalandContentTest : GameTest
             Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("ClothingHeadHelmetMinerReinforcedFull")), Is.True);
             Assert.That(SProtoMan.HasIndex(new ProtoId<ConstructionPrototype>("ClothingOuterArmorMinerReinforcedFull")), Is.True);
             Assert.That(SProtoMan.HasIndex(new ProtoId<ConstructionGraphPrototype>("MinerArmorReinforcedFull")), Is.True);
+            Assert.That(SProtoMan.HasIndex(new ProtoId<AmbientMusicPrototype>("Lavaland")), Is.True);
+            Assert.That(SProtoMan.HasIndex(new ProtoId<SoundCollectionPrototype>("LavalandAmbience")), Is.True);
         });
     }
 
