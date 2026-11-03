@@ -18,6 +18,7 @@ using Content.Shared._VanGuard.Mining.Shop;
 using Content.Shared._VanGuard.Mining.Shop.Components;
 using Content.Shared._VanGuard.Mining.Points;
 using Content.Shared._VanGuard.Mining.Points.Components;
+using Content.Shared.Preferences.Loadouts;
 using Robust.Shared.Map;
 
 using Robust.Shared.EntitySerialization;
@@ -54,6 +55,11 @@ public sealed class LavalandContentTest : GameTest
             Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("ClothingOuterArmorMiner")), Is.True);
             Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("ClothingOuterArmorMinerReinforcedFull")), Is.True);
             Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("LavalandTendrilIcewing")), Is.True);
+            Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("ClothingUniformJumpsuitMinerExplorer")), Is.True);
+            Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("ClothingShoesFootWrapsWhite")), Is.True);
+            Assert.That(SProtoMan.HasIndex(new ProtoId<RoleLoadoutPrototype>("JobMiner")), Is.True);
+            Assert.That(SProtoMan.HasIndex(new ProtoId<LoadoutGroupPrototype>("MinerBelt")), Is.True);
+            Assert.That(SProtoMan.HasIndex(new ProtoId<LoadoutGroupPrototype>("MinerOuter")), Is.True);
         });
     }
 

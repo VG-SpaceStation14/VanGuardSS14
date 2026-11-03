@@ -1,0 +1,59 @@
+- type: entity
+  parent: ClothingShoesBaseButcherable
+  id: ClothingShoesFootWrapsWhite
+  name: miner-footwraps-white
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Shoes/Specific/white_footwraps.rsi
+  - type: Clothing
+    sprite: _VanGuard/Clothing/Shoes/Specific/white_footwraps.rsi
+    slots: [FEET, gloves]
+  - type: FootstepModifier
+    footstepSoundCollection: { collection: BarestepHard }
+  - type: Item
+    size: Small
+- type: entity
+  parent: ClothingShoesFootWrapsWhite
+  id: ClothingShoesFootWrapsHighWhite
+  name: miner-footwraps-high-white
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Shoes/Specific/whitehigh_footwraps.rsi
+  - type: Clothing
+    sprite: _VanGuard/Clothing/Shoes/Specific/whitehigh_footwraps.rsi
+- type: entity
+  parent: ClothingShoesFootWrapsWhite
+  id: ClothingShoesFootWrapsBrown
+  name: miner-footwraps-brown
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Shoes/Specific/brown_footwraps.rsi
+  - type: Clothing
+    sprite: _VanGuard/Clothing/Shoes/Specific/brown_footwraps.rsi
+- type: entity
+  parent: ClothingShoesFootWrapsBrown
+  id: ClothingShoesFootWrapsHighBrown
+  name: miner-footwraps-high-brown
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Shoes/Specific/brownhigh_footwraps.rsi
+  - type: Clothing
+    sprite: _VanGuard/Clothing/Shoes/Specific/brownhigh_footwraps.rsi
+- type: entity
+  parent: ClothingShoesFootWrapsWhite
+  id: ClothingShoesFootWrapsBlack
+  name: miner-footwraps-black
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Shoes/Specific/black_footwraps.rsi
+  - type: Clothing
+    sprite: _VanGuard/Clothing/Shoes/Specific/black_footwraps.rsi
+- type: entity
+  parent: ClothingShoesFootWrapsBlack
+  id: ClothingShoesFootWrapsHighBlack
+  name: miner-footwraps-high-black
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Shoes/Specific/blackhigh_footwraps.rsi
+  - type: Clothing
+    sprite: _VanGuard/Clothing/Shoes/Specific/blackhigh_footwraps.rsi

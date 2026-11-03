@@ -1,0 +1,10 @@
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitMinerExplorer
+  name: miner-explorer-jumpsuit
+  description: miner-explorer-jumpsuit-desc
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Uniforms/Jumpsuit/explorer.rsi
+  - type: Clothing
+    sprite: _VanGuard/Clothing/Uniforms/Jumpsuit/explorer.rsi

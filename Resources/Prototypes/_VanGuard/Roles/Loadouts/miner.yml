@@ -10,8 +10,9 @@
   - MinerEars
   - MinerHead
   - MinerNeck
-  - SalvageSpecialistOuterClothing
+  - MinerOuter
   - MinerShoes
+  - MinerBelt
   - Glasses
   - AssistiveItems
   - Survival
@@ -24,17 +25,29 @@
   name: loadout-group-miner-shoes
   loadouts:
   - SalvageBoots
+  - MinerFootWrapsWhite
+  - MinerFootWrapsHighWhite
+  - MinerFootWrapsBrown
+  - MinerFootWrapsHighBrown
+  - MinerFootWrapsBlack
+  - MinerFootWrapsHighBlack
 
 - type: loadoutGroup
   id: MinerJumpsuit
   name: loadout-group-miner-jumpsuit
   loadouts:
   - MinerSalvageJumpsuit
+  - MinerExplorerJumpsuit
 
 - type: loadout
   id: MinerSalvageJumpsuit
   equipment:
     jumpsuit: ClothingUniformJumpsuitSalvageSpecialist
+
+- type: loadout
+  id: MinerExplorerJumpsuit
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitMinerExplorer
 
 - type: loadoutGroup
   id: MinerEars
@@ -193,3 +206,52 @@
     proto: MinerCape300
   equipment:
     neck: ClothingNeckMinerRubieCape
+
+- type: loadout
+  id: MinerFootWrapsWhite
+  equipment: { shoes: ClothingShoesFootWrapsWhite }
+- type: loadout
+  id: MinerFootWrapsHighWhite
+  equipment: { shoes: ClothingShoesFootWrapsHighWhite }
+- type: loadout
+  id: MinerFootWrapsBrown
+  equipment: { shoes: ClothingShoesFootWrapsBrown }
+- type: loadout
+  id: MinerFootWrapsHighBrown
+  equipment: { shoes: ClothingShoesFootWrapsHighBrown }
+- type: loadout
+  id: MinerFootWrapsBlack
+  equipment: { shoes: ClothingShoesFootWrapsBlack }
+- type: loadout
+  id: MinerFootWrapsHighBlack
+  equipment: { shoes: ClothingShoesFootWrapsHighBlack }
+
+- type: loadoutGroup
+  id: MinerBelt
+  name: loadout-group-miner-belt
+  minLimit: 0
+  loadouts:
+  - MinerSalvageWebbing
+  - MinerToolbelt
+
+- type: loadout
+  id: MinerSalvageWebbing
+  equipment: { belt: ClothingBeltSalvageWebbing }
+- type: loadout
+  id: MinerToolbelt
+  equipment: { belt: ClothingBeltUtilityFilled }
+
+- type: loadoutGroup
+  id: MinerOuter
+  name: loadout-group-miner-outer
+  minLimit: 0
+  loadouts:
+  - MinerWintercoat
+  - MinerArmor
+
+- type: loadout
+  id: MinerWintercoat
+  equipment: { outerClothing: ClothingOuterWinterMiner }
+- type: loadout
+  id: MinerArmor
+  equipment: { outerClothing: ClothingOuterArmorMiner }
