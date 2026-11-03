@@ -66,17 +66,11 @@
   minLimit: 0
   loadouts:
   - MinerCargoCap
-  - MinerWinterHood
 
 - type: loadout
   id: MinerCargoCap
   equipment:
     head: ClothingHeadHatCargosoft
-
-- type: loadout
-  id: MinerWinterHood
-  equipment:
-    head: ClothingHeadHatHoodWinterMiner
 
 - type: loadoutEffectGroup
   id: MinerSalvagerSupremeTime
@@ -99,21 +93,6 @@
   - MinerEmeraldCape
   - MinerDiamondCape
   - MinerRubieCape
-  - MinerGoliathCloak
-  - MinerSupremeCloak
-
-- type: loadout
-  id: MinerGoliathCloak
-  equipment:
-    neck: ClothingNeckCloakGoliathCloak
-
-- type: loadout
-  id: MinerSupremeCloak
-  effects:
-  - !type:GroupLoadoutEffect
-    proto: MinerSalvagerSupremeTime
-  equipment:
-    neck: ClothingNeckCloakSalvagerSupreme
 
 - type: loadoutEffectGroup
   id: MinerCape15
@@ -247,11 +226,7 @@
   minLimit: 0
   loadouts:
   - MinerWintercoat
-  - MinerArmor
 
 - type: loadout
   id: MinerWintercoat
   equipment: { outerClothing: ClothingOuterWinterMiner }
-- type: loadout
-  id: MinerArmor
-  equipment: { outerClothing: ClothingOuterArmorMiner }

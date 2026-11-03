@@ -9,7 +9,7 @@
     - id: FireExtinguisher
     - id: OreBag
     - id: MineralScanner
-    - id: ClothingEyesGlassesMeson
+    - id: ClothingEyesGlassesMesonScanner
 
 - type: entity
   id: LockerMinerFilled
@@ -30,7 +30,6 @@
     containers:
       entity_storage: !type:AllSelector
         children:
-        - id: ClothingOuterHardsuitMining
         - id: ClothingOuterArmorMiner
         - id: OxygenTankFilled
         - id: ClothingMaskGasExplorer

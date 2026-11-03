@@ -19,6 +19,10 @@ using Content.Shared._VanGuard.Mining.Shop.Components;
 using Content.Shared._VanGuard.Mining.Points;
 using Content.Shared._VanGuard.Mining.Points.Components;
 using Content.Shared.Preferences.Loadouts;
+using Content.Shared.Construction.Prototypes;
+using Content.Server.Construction.Components;
+using Content.Shared.Clothing.Components;
+using Robust.Shared.Containers;
 using Robust.Shared.Map;
 
 using Robust.Shared.EntitySerialization;
@@ -60,6 +64,16 @@ public sealed class LavalandContentTest : GameTest
             Assert.That(SProtoMan.HasIndex(new ProtoId<RoleLoadoutPrototype>("JobMiner")), Is.True);
             Assert.That(SProtoMan.HasIndex(new ProtoId<LoadoutGroupPrototype>("MinerBelt")), Is.True);
             Assert.That(SProtoMan.HasIndex(new ProtoId<LoadoutGroupPrototype>("MinerOuter")), Is.True);
+
+            var head = SProtoMan.Index<LoadoutGroupPrototype>(new ProtoId<LoadoutGroupPrototype>("MinerHead"));
+            var neck = SProtoMan.Index<LoadoutGroupPrototype>(new ProtoId<LoadoutGroupPrototype>("MinerNeck"));
+            var outer = SProtoMan.Index<LoadoutGroupPrototype>(new ProtoId<LoadoutGroupPrototype>("MinerOuter"));
+            Assert.That(head.Loadouts.Any(id => id.Id == "MinerWinterHood"), Is.False);
+            Assert.That(neck.Loadouts.Any(id => id.Id is "MinerGoliathCloak" or "MinerSupremeCloak"), Is.False);
+            Assert.That(outer.Loadouts.Any(id => id.Id == "MinerArmor"), Is.False);
+            Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("ClothingHeadHelmetMinerReinforcedFull")), Is.True);
+            Assert.That(SProtoMan.HasIndex(new ProtoId<ConstructionPrototype>("ClothingOuterArmorMinerReinforcedFull")), Is.True);
+            Assert.That(SProtoMan.HasIndex(new ProtoId<ConstructionGraphPrototype>("MinerArmorReinforcedFull")), Is.True);
         });
     }
 
@@ -264,6 +278,60 @@ public sealed class LavalandContentTest : GameTest
             SEntMan.EventBus.RaiseLocalEvent(shop, express);
             var bagQuery = SEntMan.EntityQueryEnumerator<MiningShopDeliveryBagComponent>();
             Assert.That(bagQuery.MoveNext(out _, out _), Is.True, "Express delivery did not produce a delivery bag.");
+        });
+    }
+
+    [Test]
+    public async Task MinerArmorHasConstructionAndHelmetKit()
+    {
+        var grid = GetStationGrid();
+        await Server.WaitPost(() =>
+        {
+            var armor = SEntMan.SpawnEntity("ClothingOuterArmorMinerReinforcedFull", new EntityCoordinates(grid, 0, 0));
+            var helmet = SEntMan.SpawnEntity("ClothingHeadHelmetMinerReinforcedFull", new EntityCoordinates(grid, 0, 0));
+            try
+            {
+                Assert.That(SEntMan.HasComponent<ConstructionComponent>(armor), Is.True);
+                Assert.That(SEntMan.HasComponent<ToggleableClothingComponent>(armor), Is.True);
+                Assert.That(SEntMan.GetComponent<ToggleableClothingComponent>(armor).ClothingPrototype,
+                    Is.EqualTo("ClothingHeadHelmetMinerReinforcedFull"));
+                Assert.That(SEntMan.HasComponent<ClothingComponent>(helmet), Is.True);
+            }
+            finally
+            {
+                SEntMan.DeleteEntity(armor);
+                SEntMan.DeleteEntity(helmet);
+            }
+        });
+    }
+
+    [Test]
+    public async Task MinerContainersHaveExpectedEquipment()
+    {
+        var grid = GetStationGrid();
+        var containers = Server.System<SharedContainerSystem>();
+        EntityUid locker = default;
+        EntityUid suit = default;
+
+        await Server.WaitPost(() =>
+        {
+            locker = SEntMan.SpawnEntity("LockerMinerFilled", new EntityCoordinates(grid, 0, 0));
+            suit = SEntMan.SpawnEntity("SuitStorageMiner", new EntityCoordinates(grid, 0, 0));
+        });
+        await Pair.RunTicksSync(4);
+
+        await Server.WaitPost(() =>
+        {
+            Assert.That(containers.TryGetContainer(locker, "entity_storage", out var lockerContainer), Is.True);
+            Assert.That(containers.TryGetContainer(suit, "entity_storage", out var suitContainer), Is.True);
+
+            var lockerIds = lockerContainer!.ContainedEntities
+                .Select(uid => SEntMan.GetComponent<MetaDataComponent>(uid).EntityPrototype?.ID).ToList();
+            var suitIds = suitContainer!.ContainedEntities
+                .Select(uid => SEntMan.GetComponent<MetaDataComponent>(uid).EntityPrototype?.ID).ToList();
+            Assert.That(lockerIds, Does.Contain("ClothingEyesGlassesMesonScanner"));
+            Assert.That(suitIds, Does.Contain("ClothingOuterArmorMiner"));
+            Assert.That(suitIds, Does.Not.Contain("ClothingOuterHardsuitMining"));
         });
     }
 

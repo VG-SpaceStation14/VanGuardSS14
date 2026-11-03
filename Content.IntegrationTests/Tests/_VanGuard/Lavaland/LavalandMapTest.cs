@@ -277,6 +277,28 @@ public sealed class LavalandMapTest : GameTest
                     dungeonCount++;
             }
             Assert.That(dungeonCount, Is.GreaterThanOrEqualTo(2), "No Lavaland dungeon grids were loaded.");
+
+            var dungeonGrids = new List<(EntityUid Uid, Angle Rotation)>();
+            var stableQuery = SEntMan.EntityQueryEnumerator<MapGridComponent, TransformComponent>();
+            while (stableQuery.MoveNext(out var stableUid, out _, out var stableXform))
+            {
+                if (stableXform.MapID != mapId || stableUid == mapUid || stableUid == outpostUid)
+                    continue;
+                dungeonGrids.Add((stableUid, stableXform.LocalRotation));
+                Assert.That(SEntMan.HasComponent<Content.Shared.Shuttles.Components.ShuttleComponent>(stableUid), Is.False,
+                    $"Dungeon grid {stableUid} still has Shuttle physics.");
+            }
+
+            await Pair.RunTicksSync(120);
+            await Server.WaitPost(() =>
+            {
+                foreach (var (uid, rotation) in dungeonGrids)
+                {
+                    var xform = SEntMan.GetComponent<TransformComponent>(uid);
+                    Assert.That(xform.LocalRotation, Is.EqualTo(rotation),
+                        $"Dungeon grid {uid} rotated after initialization.");
+                }
+            });
             Assert.That(faxCount, Is.GreaterThanOrEqualTo(1), "No fax was found on Lavaland.");
 
             var weatherScheduler = SEntMan.GetComponent<LavalandWeatherSchedulerComponent>(mapUid);

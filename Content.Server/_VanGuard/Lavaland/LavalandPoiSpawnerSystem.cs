@@ -10,6 +10,9 @@ using Robust.Shared.Map.Components;
 using Content.Server.Parallax;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Shuttles.Systems;
+using Robust.Shared.Physics;
+using Robust.Shared.Physics.Components;
+using Robust.Shared.Physics.Systems;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
@@ -30,6 +33,7 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
     [Dependency] private BiomeSystem _biome = default!;
     [Dependency] private SharedShuttleSystem _shuttle = default!;
     [Dependency] private MetaDataSystem _meta = default!;
+    [Dependency] private SharedPhysicsSystem _physics = default!;
 
     public void SpawnPois(Entity<LavalandPoiSpawnerComponent> spawner, EntityUid mapUid, EntityUid outpost)
     {
@@ -78,6 +82,15 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
 
             _transform.SetLocalPosition(grid.Value.Owner, origin + offset, Transform(grid.Value.Owner));
             _transform.SetLocalRotation(grid.Value.Owner, Angle.Zero, Transform(grid.Value.Owner));
+
+            // Dungeon maps are authored as shuttles. Turn them into static map
+            // geometry so shuttle physics cannot apply angular velocity to them.
+            RemComp<ShuttleComponent>(grid.Value.Owner);
+            if (TryComp<PhysicsComponent>(grid.Value.Owner, out var physics))
+            {
+                _physics.SetBodyType(grid.Value.Owner, BodyType.Static, body: physics);
+                _physics.SetAngularVelocity(grid.Value.Owner, 0f, body: physics);
+            }
             var gridName = dungeon.ToString().Contains("temple")
                 ? "lavaland-dungeon-temple"
                 : "lavaland-dungeon-lava-lake";
