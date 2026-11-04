@@ -62,6 +62,7 @@ public sealed class SuicideCommandTests : GameTest
     {
         Connected = true,
         Dirty = true,
+        Fresh = true,
         DummyTicker = false
     };
 
