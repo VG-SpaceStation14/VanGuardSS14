@@ -1,5 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+// VG-Tweak Start
+using Content.Shared._VanGuard.Storage;
+// VG-Tweak End
 using Content.Shared.ActionBlocker;
 using Content.Shared.Administration.Logs;
 using Content.Shared.CCVar;
@@ -286,7 +289,12 @@ public abstract partial class SharedStorageSystem : EntitySystem
         {
             UpdateAppearance((uid, storageComp, null));
             if (!_tag.HasTag(args.Actor, storageComp.SilentStorageUserTag))
-                Audio.PlayPredicted(storageComp.StorageCloseSound, uid, args.Actor);
+            {
+                // VG-Tweak Start
+                Audio.PlayPredicted(storageComp.StorageCloseSound,
+                    StorageSoundSource.Resolve(EntityManager, ContainerSystem, uid, args.Actor), args.Actor);
+                // VG-Tweak End
+            }
         }
     }
 
@@ -392,7 +400,9 @@ public abstract partial class SharedStorageSystem : EntitySystem
         {
             _nestedCheck = true;
             HideStorageWindow(parentStorage.Value.Owner, actor);
-            OpenStorageUIInternal(uid, actor, storageComp, silent: true);
+            // VG-Tweak Start
+            OpenStorageUIInternal(uid, actor, storageComp, silent: false);
+            // VG-Tweak End
             _nestedCheck = false;
         }
         else
@@ -425,7 +435,10 @@ public abstract partial class SharedStorageSystem : EntitySystem
 
         if (!silent && !_tag.HasTag(entity, storageComp.SilentStorageUserTag))
         {
-            Audio.PlayPredicted(storageComp.StorageOpenSound, uid, entity);
+            // VG-Tweak Start
+            Audio.PlayPredicted(storageComp.StorageOpenSound,
+                StorageSoundSource.Resolve(EntityManager, ContainerSystem, uid, entity), entity);
+            // VG-Tweak End
 
             if (useDelay != null)
                 UseDelay.TryResetDelay((uid, useDelay), id: OpenUiUseDelayID);
@@ -776,7 +789,9 @@ public abstract partial class SharedStorageSystem : EntitySystem
         }
 
         HideStorageWindow(storage.Owner, player.Owner);
-        OpenStorageUI(item.Owner, player.Owner, silent: true);
+        // VG-Tweak Start
+        OpenStorageUI(item.Owner, player.Owner, silent: false);
+        // VG-Tweak End
         _nestedCheck = false;
     }
 
