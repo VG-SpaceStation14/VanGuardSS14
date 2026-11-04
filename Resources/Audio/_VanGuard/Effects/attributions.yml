@@ -1,0 +1,9 @@
+- files: ["destruction_1.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "Taken from ADT; original author unknown"
+  source: "https://github.com/AdventureTimeSS14/space_station_ADT"
+
+- files: ["far_noise.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "Taken from tgstation; provided via ADT"
+  source: "https://github.com/tgstation/tgstation/tree/master/sound/hallucinations"

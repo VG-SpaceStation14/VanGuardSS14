@@ -74,7 +74,7 @@
         acts: [ "Destruction" ]
       - !type:PlaySoundBehavior
         sound:
-          path: /Audio/_VanGuard/ADT/Effects/Magic/Clockwork/fellowship_armory.ogg
+          path: /Audio/_VanGuard/Effects/Magic/Clockwork/fellowship_armory.ogg
   - type: MovementSpeedModifier
     baseWalkSpeed: 4.4
     baseSprintSpeed: 4.4
@@ -125,7 +125,7 @@
         acts: [ "Destruction" ]
       - !type:PlaySoundBehavior
         sound:
-          path: /Audio/_VanGuard/ADT/hallucinations/far_noise.ogg
+          path: /Audio/_VanGuard/Effects/far_noise.ogg
   - type: MeleeWeapon
     soundHit:
       path: /Audio/Weapons/bladeslice.ogg

@@ -22,7 +22,7 @@ public sealed partial class LavalandTendrilSystem : EntitySystem
 
     private TimeSpan _nextPlacementCheck;
 
-    private static readonly SoundSpecifier CrackSound = new SoundPathSpecifier("/Audio/_VanGuard/ADT/SoundGen/destruction_1.ogg");
+    private static readonly SoundSpecifier CrackSound = new SoundPathSpecifier("/Audio/_VanGuard/Effects/destruction_1.ogg");
     private static readonly SoundSpecifier CollapseSound = new SoundPathSpecifier("/Audio/Effects/explosion1.ogg");
 
     public override void Initialize()
