@@ -333,8 +333,16 @@ public sealed class LavalandMapTest : GameTest
             var gridQuery = SEntMan.EntityQueryEnumerator<MapGridComponent, TransformComponent>();
             while (gridQuery.MoveNext(out var gridUid, out _, out var gridXform))
             {
-                if (gridXform.MapID == mapId && gridUid != mapUid && gridUid != outpostUid)
-                    dungeonCount++;
+                if (gridXform.MapID != mapId || gridUid == mapUid || gridUid == outpostUid)
+                    continue;
+
+                // Some authored POIs (the Blood Miner arena) contain child
+                // grids. Count only named root POIs, not their internal grids.
+                var gridMeta = SEntMan.GetComponent<MetaDataComponent>(gridUid);
+                if (gridMeta.EntityName == "grid")
+                    continue;
+
+                dungeonCount++;
             }
             Assert.That(dungeonCount, Is.EqualTo(10), "Expected eight dungeons, the Blood Miner arena and the Legion base.");
 

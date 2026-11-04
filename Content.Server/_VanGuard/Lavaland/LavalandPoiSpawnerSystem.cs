@@ -103,7 +103,7 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
 
                 if (!TryComp<MapGridComponent>(grid.Value.Owner, out var dungeonGrid))
                 {
-                    QueueDel(grid.Value.Owner);
+                    DeleteGridTree(grid.Value.Owner);
                     continue;
                 }
 
@@ -111,7 +111,7 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
                 var placementBounds = bounds.Enlarged(4f);
                 if (occupied.Any(existing => existing.Intersects(placementBounds)))
                 {
-                    QueueDel(grid.Value.Owner);
+                    DeleteGridTree(grid.Value.Owner);
                     continue;
                 }
 
@@ -235,6 +235,28 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
         if (path.Contains("snowydome"))
             return "lavaland-fax-object-cold-dome";
         return "lavaland-fax-object-unknown";
+    }
+
+    private void DeleteGridTree(EntityUid grid)
+    {
+        var children = new List<EntityUid>();
+        var query = EntityQueryEnumerator<TransformComponent>();
+        while (query.MoveNext(out var uid, out var xform))
+        {
+            if (uid == grid)
+                continue;
+
+            if (xform.GridUid == grid || xform.ParentUid == grid)
+                children.Add(uid);
+        }
+
+        foreach (var child in children)
+        {
+            if (Exists(child))
+                QueueDel(child);
+        }
+
+        QueueDel(grid);
     }
 
     private static LocId GetDungeonName(ResPath dungeon)
