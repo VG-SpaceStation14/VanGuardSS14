@@ -43,6 +43,10 @@
     powerLoad: 2500 # TODO change this to a HV power draw that really hits the grid hard WHEN active
   - type: Machine
     board: SalvageMagnetMachineCircuitboard
+  # VG-Tweak Start
+  - type: RadioIconOverride
+    icon: JobIconSalvageMagnet
+  # VG-Tweak End
 
 # For Knightship
 - type: entity

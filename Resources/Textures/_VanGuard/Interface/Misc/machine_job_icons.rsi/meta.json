@@ -1,0 +1,26 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "Taken from ADT (https://github.com/AdventureTimeSS14/space_station_ADT/pull/2710).",
+    "size": {
+        "x": 8,
+        "y": 8
+    },
+    "states": [
+        {
+            "name": "Machine"
+        },
+        {
+            "name": "SalvageMagnet"
+        },
+        {
+            "name": "AnomalyGenerator"
+        },
+        {
+            "name": "CargoConsole"
+        },
+        {
+            "name": "CriminalRecords"
+        }
+    ]
+}

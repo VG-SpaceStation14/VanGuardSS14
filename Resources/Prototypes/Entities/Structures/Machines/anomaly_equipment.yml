@@ -161,6 +161,10 @@
     rotateWhileAnchored: true
   - type: Machine
     board: APECircuitboard
+  # VG-Tweak Start
+  - type: RadioIconOverride
+    icon: JobIconMachine
+  # VG-Tweak End
   - type: Lock
     locked: false
   - type: LockedWiresPanel
@@ -275,6 +279,10 @@
       path: /Audio/Machines/anomaly_generate.ogg
     generatingFinishedSound:
       path: /Audio/Machines/beep.ogg
+  # VG-Tweak Start
+  - type: RadioIconOverride
+    icon: JobIconAnomalyGenerator
+  # VG-Tweak End
   - type: MaterialStorage
     whitelist:
       tags:

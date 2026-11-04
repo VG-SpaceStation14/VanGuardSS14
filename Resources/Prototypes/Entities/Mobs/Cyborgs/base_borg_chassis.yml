@@ -238,6 +238,10 @@
   id: BaseBorgChassis
   components:
   - type: IonStormTarget
+  # VG-Tweak Start
+  - type: RadioIconOverride
+    icon: JobIconBorg
+  # VG-Tweak End
   - type: Destructible
     generateOverkillThreshold: false
     thresholds:

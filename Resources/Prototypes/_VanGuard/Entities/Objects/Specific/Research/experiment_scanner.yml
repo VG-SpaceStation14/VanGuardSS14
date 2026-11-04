@@ -11,6 +11,8 @@
   - type: Item
     sprite: _VanGuard/Objects/Specific/Research/experimentscanner.rsi
   - type: ResearchClient
+  - type: RadioIconOverride
+    icon: JobIconMachine
   - type: ExperimentScanner
     experimentGroup: Experiments
     visibleOrders: 7
@@ -66,6 +68,8 @@
     experimentGroup: Experiments
     visibleOrders: 7
   - type: ExperimentScannerDatabase
+  - type: RadioIconOverride
+    icon: JobIconMachine
   - type: ActivatableUI
     key: enum.ExperimentFloorScannerUiKey.Key
   - type: ActivatableUIRequiresPower

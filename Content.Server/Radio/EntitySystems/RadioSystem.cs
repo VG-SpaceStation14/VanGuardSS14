@@ -14,9 +14,7 @@ using Robust.Shared.Random;
 using Robust.Shared.Replays;
 using Robust.Shared.Utility;
 // VG-Tweak Start
-using Content.Shared.Inventory;
-using Content.Shared.PDA;
-using Content.Shared.Access.Components;
+using Content.Server._VanGuard.Radio;
 // VG-Tweak End
 
 namespace Content.Server.Radio.EntitySystems;
@@ -30,7 +28,7 @@ public sealed partial class RadioSystem : SharedRadioSystem
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private ChatSystem _chat = default!;
     // VG-Tweak Start
-    [Dependency] private InventorySystem _inventory = default!;
+    [Dependency] private RadioJobIconSystem _radioJobIcon = default!;
     // VG-Tweak End
     [Dependency] private EntityQuery<TelecomExemptComponent> _exemptQuery = default!;
 
@@ -58,7 +56,6 @@ public sealed partial class RadioSystem : SharedRadioSystem
         if (TryComp(uid, out ActorComponent? actor))
             _netMan.ServerSendMessage(args.ChatMsg, actor.PlayerSession.Channel);
     }
-    // VG-Tweak End
 
     /// <inheritdoc/>
     public override void SendRadioMessage(EntityUid messageSource, string message, RadioChannelPrototype channel, EntityUid radioSource, bool escapeMarkup = true)
@@ -84,10 +81,7 @@ public sealed partial class RadioSystem : SharedRadioSystem
             : message;
 
         // VG-Tweak Start
-        var jobTitle = GetJobTitle(messageSource);
-        var jobDisplay = string.IsNullOrEmpty(jobTitle) 
-            ? string.Empty 
-            : $"\\[{jobTitle}\\] ";
+        var jobIcon = _radioJobIcon.GetIconMarkup(messageSource);
         // VG-Tweak End
 
         var wrappedMessage = Loc.GetString(speech.Bold ? "chat-radio-message-wrap-bold" : "chat-radio-message-wrap",
@@ -98,7 +92,7 @@ public sealed partial class RadioSystem : SharedRadioSystem
             ("channel", $"\\[{channel.LocalizedName}\\]"),
             ("name", name),
             // VG-Tweak Start
-            ("job", jobDisplay),
+            ("jobIcon", jobIcon),
             // VG-Tweak End
             ("message", content));
 
@@ -158,28 +152,6 @@ public sealed partial class RadioSystem : SharedRadioSystem
         _replay.RecordServerMessage(chat);
         _messages.Remove(message);
     }
-
-    // VG-Tweak Start
-    private string GetJobTitle(EntityUid entity)
-    {
-        if (!_inventory.HasSlot(entity, "id"))
-            return string.Empty;
-
-        if (!_inventory.TryGetSlotEntity(entity, "id", out var idSlotEntity))
-            return string.Empty;
-
-        if (TryComp<PdaComponent>(idSlotEntity, out var pda))
-            idSlotEntity = pda.ContainedId;
-
-        if (TryComp<IdCardComponent>(idSlotEntity, out var idCard) && 
-            !string.IsNullOrEmpty(idCard.LocalizedJobTitle))
-        {
-            return idCard.LocalizedJobTitle;
-        }
-
-        return string.Empty;
-    }
-    // VG-Tweak End
 
     /// <inheritdoc cref="TelecomServerComponent"/>
     private bool HasActiveServer(MapId mapId, string channelId)
