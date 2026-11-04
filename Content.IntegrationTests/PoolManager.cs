@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Reflection;
 using Content.IntegrationTests.Pair;
-using NUnit.Framework;
 using Content.Shared.CCVar;
 using Robust.UnitTesting;
 
@@ -77,40 +76,7 @@ public static partial class PoolManager
         PoolSettings? settings = null,
         ITestContextLike? testContext = null)
     {
-        try
-        {
-            return await Instance.GetPair(settings, testContext);
-        }
-        catch (AssertionException) when (settings is { Connected: true, InLobby: false })
-        {
-            // A pooled pair can be returned while its test session is detached
-            // (for example after a command test that ghosts the player). Do not
-            // fail the next test on that stale pair: create a fresh one.
-            return await Instance.GetPair(CreateFresh(settings), testContext);
-        }
-        catch (InvalidOperationException) when (settings is { Connected: true, InLobby: false })
-        {
-            return await Instance.GetPair(CreateFresh(settings), testContext);
-        }
-    }
-
-    private static PoolSettings CreateFresh(PoolSettings settings)
-    {
-        return new PoolSettings
-        {
-            Connected = settings.Connected,
-            Destructive = settings.Destructive,
-            DisableInterpolate = settings.DisableInterpolate,
-            Dirty = settings.Dirty,
-            Fresh = true,
-            InLobby = settings.InLobby,
-            AdminLogsEnabled = settings.AdminLogsEnabled,
-            NoLoadContent = settings.NoLoadContent,
-            Map = settings.Map,
-            DummyTicker = settings.DummyTicker,
-            ServerSeed = settings.ServerSeed,
-            ClientSeed = settings.ClientSeed,
-        };
+        return await Instance.GetPair(settings, testContext);
     }
 
     public static void Startup(params Assembly[] extra)

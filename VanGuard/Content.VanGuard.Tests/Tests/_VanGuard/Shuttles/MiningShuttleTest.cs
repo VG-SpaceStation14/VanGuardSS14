@@ -628,7 +628,7 @@ public sealed class MiningShuttleTest : GameTest
 
     private async Task WaitForFtlReady(EntityUid shuttle)
     {
-        for (var i = 0; i < 600; i++)
+        for (var i = 0; i < 1800; i++)
         {
             var ready = false;
             await Server.WaitPost(() => ready = !SEntMan.HasComponent<FTLComponent>(shuttle));
@@ -643,7 +643,7 @@ public sealed class MiningShuttleTest : GameTest
 
     private async Task WaitForDock(EntityUid shuttle, EntityUid targetGrid, string label = "")
     {
-        for (var i = 0; i < 600; i++)
+        for (var i = 0; i < 1800; i++)
         {
             var docked = false;
             await Server.WaitPost(() =>

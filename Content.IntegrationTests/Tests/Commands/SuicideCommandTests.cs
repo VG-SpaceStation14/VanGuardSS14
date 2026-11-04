@@ -61,9 +61,7 @@ public sealed class SuicideCommandTests : GameTest
     public override PoolSettings PoolSettings => new PoolSettings
     {
         Connected = true,
-        Destructive = true,
         Dirty = true,
-        Fresh = true,
         DummyTicker = false
     };
 

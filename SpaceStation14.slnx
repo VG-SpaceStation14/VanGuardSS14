@@ -31,6 +31,12 @@
       <BuildType Solution="Tools|*" Project="Debug" />
     </Project>
   </Folder>
+  <Folder Name="/VanGuard/">
+    <Project Path="VanGuard/Content.VanGuard.Tests/Content.VanGuard.Tests.csproj">
+      <BuildType Solution="DebugOpt|*" Project="Debug" />
+      <BuildType Solution="Tools|*" Project="Debug" />
+    </Project>
+  </Folder>
   <Folder Name="/MSBuild/">
     <File Path="MSBuild/Content.props" />
   </Folder>

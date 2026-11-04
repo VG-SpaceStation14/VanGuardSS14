@@ -19,7 +19,6 @@ namespace Content.IntegrationTests.Tests
 {
     [TestFixture]
     [TestOf(typeof(EntityUid))]
-    [NonParallelizable]
     public sealed class EntityTest : GameTest
     {
         private static readonly HashSet<ProtoId<EntityCategoryPrototype>> IgnoredCategories = ["Spawner", "Debug", "GameRules"];
@@ -59,26 +58,14 @@ namespace Content.IntegrationTests.Tests
                     .Select(p => p.ID)
                     .ToList();
 
-                // Spreading every prototype over thousands of maps was enough to
-                // OOM the CI runner. A handful of maps still exercises multi-map
-                // behaviour while keeping memory bounded.
-                const int mapCount = 8;
-                var coords = new List<EntityCoordinates>(mapCount);
-                for (var i = 0; i < mapCount; i++)
+                foreach (var protoId in protoIds)
                 {
                     mapSystem.CreateMap(out var mapId);
                     var grid = mapSystem.CreateGridEntity(mapId);
                     // TODO: Fix this better in engine.
                     mapSystem.SetTile(grid.Owner, grid.Comp, Vector2i.Zero, new Tile(1));
-                    coords.Add(new EntityCoordinates(grid.Owner, 0, 0));
-                }
-
-                var spawnIndex = 0;
-                foreach (var protoId in protoIds)
-                {
-                    var coord = coords[spawnIndex % mapCount].Offset(new Vector2(spawnIndex / mapCount * 2, 0));
+                    var coord = new EntityCoordinates(grid.Owner, 0, 0);
                     entityMan.SpawnEntity(protoId, coord);
-                    spawnIndex++;
                 }
             });
 
@@ -187,25 +174,15 @@ namespace Content.IntegrationTests.Tests
 
             await server.WaitPost(() =>
             {
-                const int mapCount = 8;
-                var coords = new List<EntityCoordinates>(mapCount);
-                for (var i = 0; i < mapCount; i++)
+                foreach (var protoId in protoIds)
                 {
                     mapSys.CreateMap(out var mapId);
                     var grid = mapSys.CreateGridEntity(mapId);
-                    coords.Add(new EntityCoordinates(grid.Owner, 0.5f, 0.5f));
-                }
-
-                var spawnIndex = 0;
-                foreach (var protoId in protoIds)
-                {
-                    var coord = coords[spawnIndex % mapCount].Offset(new Vector2(spawnIndex / mapCount * 2, 0));
-                    var ent = sEntMan.SpawnEntity(protoId, coord);
+                    var ent = sEntMan.SpawnEntity(protoId, new EntityCoordinates(grid.Owner, 0.5f, 0.5f));
                     foreach (var (_, component) in sEntMan.GetNetComponents(ent))
                     {
                         sEntMan.Dirty(ent, component);
                     }
-                    spawnIndex++;
                 }
             });
 
