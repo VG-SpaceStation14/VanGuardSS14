@@ -53,6 +53,7 @@ public sealed class MiningShuttleTest : GameTest
         Connected = true,
         DummyTicker = false,
         Fresh = true,
+        Dirty = true,
     };
 
     [Test]
@@ -247,6 +248,7 @@ public sealed class MiningShuttleTest : GameTest
         var station = GetStation(stationGrid);
         var stationMap = Xform(stationGrid).MapID;
         var stationDock = await SpawnDock(stationGrid, "AirlockShuttleMiningLocked", new Vector2(50, 0));
+        EntityUid? outpostDock = null;
         EntityUid? shuttle = null;
         EntityUid? card = null;
         Entity<GameRuleComponent>? lavalandRule = null;
@@ -261,6 +263,10 @@ public sealed class MiningShuttleTest : GameTest
             Assert.That(lavaland.OutpostGrid, Is.Not.Null);
             var lavalandMap = lavaland.MapId!.Value;
             var outpostGrid = lavaland.OutpostGrid!.Value;
+            // The outpost map has two airlocks (mining + guest). Give the test
+            // an unambiguous open mining dock so it does not depend on which
+            // authored dock the FTL config picks.
+            outpostDock = await SpawnDock(outpostGrid, "AirlockShuttleMiningLocked", new Vector2(0, -30));
 
             shuttle = await LoadGrid(stationMap, ShuttlePath);
             await PrepareShuttle(shuttle.Value, station);
@@ -324,6 +330,8 @@ public sealed class MiningShuttleTest : GameTest
                 await DeleteEntity(cardUid);
             if (SEntMan.EntityExists(stationDock))
                 await DeleteEntity(stationDock);
+            if (outpostDock is { } outpostDockUid && SEntMan.EntityExists(outpostDockUid))
+                await DeleteEntity(outpostDockUid);
             if (shuttle is { } shuttleUid && SEntMan.EntityExists(shuttleUid))
                 await DeleteEntity(shuttleUid);
             if (lavalandRule is { } rule && SEntMan.EntityExists(rule.Owner))
@@ -664,7 +672,27 @@ public sealed class MiningShuttleTest : GameTest
             await Pair.RunTicksSync(1);
         }
 
-        Assert.Fail($"Timed out waiting for the shuttle to dock ({label}).");
+        var dockCount = 0;
+        var dockedCount = 0;
+        var debug = new List<string>();
+        await Server.WaitPost(() =>
+        {
+            var ftl = SEntMan.GetComponentOrNull<FTLComponent>(shuttle);
+            var sx = Xform(shuttle);
+            debug.Add($"shuttle={shuttle} map={sx.MapID} grid={sx.GridUid} pos={sx.WorldPosition} ftl={(ftl == null ? "none" : $"{ftl.State}")} exists={SEntMan.EntityExists(shuttle)}");
+            var query = SEntMan.EntityQueryEnumerator<DockingComponent, TransformComponent>();
+            while (query.MoveNext(out var uid, out var dock, out var xform))
+            {
+                if (xform.GridUid != targetGrid)
+                    continue;
+                dockCount++;
+                if (dock.Docked)
+                    dockedCount++;
+                var pd = SEntMan.GetComponentOrNull<PriorityDockComponent>(uid);
+                debug.Add($"dock={uid} pos={xform.WorldPosition} docked={dock.Docked} with={dock.DockedWith} tag={pd?.Tag}");
+            }
+        });
+        Assert.Fail($"Timed out waiting for the shuttle to dock ({label}); docks={dockCount}, docked={dockedCount}; {string.Join(" | ", debug)}");
     }
 
     private TransformComponent Xform(EntityUid uid)
@@ -800,19 +828,25 @@ public sealed class MiningShuttleTest : GameTest
 
     private async Task<EntityUid> FindConsoleOnGrid(EntityUid grid)
     {
-        EntityUid? console = null;
+        EntityUid? fallback = null;
+        EntityUid? miningConsole = null;
         await Server.WaitPost(() =>
         {
             var query = SEntMan.EntityQueryEnumerator<MiningShuttleConsoleComponent, TransformComponent>();
-            while (query.MoveNext(out var uid, out _, out var xform))
+            while (query.MoveNext(out var uid, out var comp, out var xform))
             {
-                if (xform.GridUid == grid)
+                if (xform.GridUid != grid)
+                    continue;
+
+                fallback ??= uid;
+                if (comp.Mode == MiningShuttleConsoleMode.Mining)
                 {
-                    console = uid;
+                    miningConsole = uid;
                     return;
                 }
             }
         });
+        var console = miningConsole ?? fallback;
         Assert.That(console, Is.Not.Null, "The outpost has no mining console.");
         return console!.Value;
     }

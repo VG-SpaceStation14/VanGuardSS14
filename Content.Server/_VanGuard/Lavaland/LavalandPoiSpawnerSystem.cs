@@ -45,6 +45,10 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
             return;
 
         var origin = Transform(outpost).WorldPosition;
+        var outpostGrid = Comp<MapGridComponent>(outpost);
+        var outpostBounds = outpostGrid.LocalAABB
+            .Translated(Transform(outpost).WorldPosition)
+            .Enlarged(spawner.Comp.ClearRadius);
         var positions = new List<LavalandPoi>();
 
         // A tendril is only created on a tile that the biome will actually
@@ -65,6 +69,8 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
                     continue;
 
                 var chosenOffset = _transform.ToWorldPosition(coordinates) - origin;
+                if (outpostBounds.Contains(origin + chosenOffset))
+                    continue;
                 if (positions.Any(existing =>
                         (existing.Offset - chosenOffset).LengthSquared() <
                         spawner.Comp.ClearRadius * spawner.Comp.ClearRadius))
@@ -79,7 +85,7 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
             }
         }
 
-        var occupied = new List<Box2>();
+        var occupied = new List<Box2> { outpostBounds };
         foreach (var dungeon in spawner.Comp.Dungeons)
         {
             var placed = false;

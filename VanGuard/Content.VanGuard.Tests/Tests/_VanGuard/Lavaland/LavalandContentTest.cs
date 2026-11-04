@@ -723,33 +723,45 @@ public sealed class LavalandContentTest : GameTest
             "MobBasilisk",
         };
 
-        await Server.WaitPost(() =>
+        try
         {
-            foreach (var proto in faunae)
-                entities.Add(SEntMan.SpawnEntity(proto, new EntityCoordinates(grid, 10, 0)));
-            entities.Add(SEntMan.SpawnEntity("MobHuman", new EntityCoordinates(grid, 20, 0)));
-            entities.Add(SEntMan.SpawnEntity("MobChicken", new EntityCoordinates(grid, 30, 0)));
-            Assert.That(Server.System<SharedWeatherSystem>().TrySetWeather(mapId, "WeatherAshfall", out _), Is.True);
-        });
-        await Pair.RunTicksSync(10);
+            await Server.WaitPost(() => Server.System<SharedWeatherSystem>().TrySetWeather(mapId, null, out _));
+            await Server.WaitPost(() =>
+            {
+                foreach (var proto in faunae)
+                    entities.Add(SEntMan.SpawnEntity(proto, new EntityCoordinates(grid, 10, 0)));
+                entities.Add(SEntMan.SpawnEntity("MobHuman", new EntityCoordinates(grid, 20, 0)));
+                entities.Add(SEntMan.SpawnEntity("MobChicken", new EntityCoordinates(grid, 30, 0)));
+                Assert.That(Server.System<SharedWeatherSystem>().TrySetWeather(mapId, "WeatherAshfall", out _), Is.True);
+            });
+            await Pair.RunTicksSync(10);
 
-        await Server.WaitPost(() =>
+            await Server.WaitPost(() =>
+            {
+                var damage = Server.System<DamageableSystem>();
+                for (var i = 0; i < faunae.Length; i++)
+                    Assert.That(damage.GetTotalDamage(entities[i]).Float(), Is.EqualTo(0f), $"{faunae[i]} took storm damage.");
+                Assert.That(damage.GetTotalDamage(entities[^2]).Float(), Is.GreaterThan(0f), "Player took no storm damage.");
+                Assert.That(damage.GetTotalDamage(entities[^1]).Float(), Is.GreaterThan(0f), "Ordinary animal took no storm damage.");
+
+                Assert.That(damage.TryChangeDamage(entities[0],
+                    new DamageSpecifier(SProtoMan.Index<DamageTypePrototype>(new ProtoId<DamageTypePrototype>("Heat")), 10),
+                    ignoreResistances: true), Is.True);
+                Assert.That(damage.GetTotalDamage(entities[0]).Float(), Is.GreaterThan(0f));
+            });
+        }
+        finally
         {
-            var damage = Server.System<DamageableSystem>();
-            for (var i = 0; i < faunae.Length; i++)
-                Assert.That(damage.GetTotalDamage(entities[i]).Float(), Is.EqualTo(0f), $"{faunae[i]} took storm damage.");
-            Assert.That(damage.GetTotalDamage(entities[^2]).Float(), Is.GreaterThan(0f), "Player took no storm damage.");
-            Assert.That(damage.GetTotalDamage(entities[^1]).Float(), Is.GreaterThan(0f), "Ordinary animal took no storm damage.");
-
-            // Immunity must not block ordinary damage sources.
-            Assert.That(damage.TryChangeDamage(entities[0],
-                new DamageSpecifier(SProtoMan.Index<DamageTypePrototype>(new ProtoId<DamageTypePrototype>("Heat")), 10),
-                ignoreResistances: true), Is.True);
-            Assert.That(damage.GetTotalDamage(entities[0]).Float(), Is.GreaterThan(0f));
-            Server.System<SharedWeatherSystem>().TrySetWeather(mapId, null, out _);
-            foreach (var entity in entities)
-                SEntMan.DeleteEntity(entity);
-        });
+            await Server.WaitPost(() =>
+            {
+                Server.System<SharedWeatherSystem>().TrySetWeather(mapId, null, out _);
+                foreach (var entity in entities)
+                {
+                    if (SEntMan.EntityExists(entity))
+                        SEntMan.DeleteEntity(entity);
+                }
+            });
+        }
     }
 
     [Test]

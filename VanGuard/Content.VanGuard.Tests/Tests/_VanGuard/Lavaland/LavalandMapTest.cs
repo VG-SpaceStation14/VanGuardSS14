@@ -457,6 +457,14 @@ public sealed class LavalandMapTest : GameTest
                     $"Dungeon grid {stableUid} still has Shuttle physics.");
             }
 
+            foreach (var (dungeonGridUid, _) in dungeonGrids)
+            {
+                var dungeonGrid = SEntMan.GetComponent<MapGridComponent>(dungeonGridUid);
+                var dungeonBounds = dungeonGrid.LocalAABB.Translated(xformSystem.GetWorldPosition(dungeonGridUid));
+                Assert.That(dungeonBounds.Intersects(clearBounds), Is.False,
+                    $"POI {dungeonGridUid} overlaps the outpost clearance.");
+            }
+
             for (var i = 0; i < dungeonGrids.Count; i++)
             {
                 var first = dungeonGrids[i].Uid;

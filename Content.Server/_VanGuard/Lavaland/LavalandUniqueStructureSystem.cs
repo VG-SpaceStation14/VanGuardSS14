@@ -262,5 +262,24 @@ public sealed partial class LavalandUniqueStructureSystem : EntitySystem
                 }
             }
         }
+
+        // GetAnchoredEntities can miss entities whose fixture is not yet
+        // anchored. Sweep the planet map directly as a final safety net.
+        var mapId = Transform(mapUid).MapID;
+        var sweep = EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+        while (sweep.MoveNext(out var entity, out var meta, out var xform))
+        {
+            if (xform.MapID != mapId || xform.GridUid != mapUid || !bounds.Contains(xform.WorldPosition))
+                continue;
+
+            var id = meta.EntityPrototype?.ID;
+            if (id?.StartsWith("AsteroidRock", StringComparison.Ordinal) == true ||
+                id?.StartsWith("WallRock", StringComparison.Ordinal) == true ||
+                id?.StartsWith("FloraRock", StringComparison.Ordinal) == true ||
+                HasComp<ChasmComponent>(entity))
+            {
+                QueueDel(entity);
+            }
+        }
     }
 }
