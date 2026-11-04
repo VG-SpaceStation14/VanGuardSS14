@@ -42,6 +42,7 @@ public sealed class LavalandMapTest : GameTest
     public override PoolSettings PoolSettings => new()
     {
         Connected = true,
+        Dirty = true,
         DummyTicker = false,
     };
 
