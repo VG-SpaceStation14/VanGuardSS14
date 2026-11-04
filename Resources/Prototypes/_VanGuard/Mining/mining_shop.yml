@@ -65,6 +65,8 @@
     price: 800
   - id: MedkitToxinFilled
     price: 1000
+  - id: LavalandStabilizingSerum
+    price: 300
 
 - type: miningShopSection
   id: EquipmentWearable

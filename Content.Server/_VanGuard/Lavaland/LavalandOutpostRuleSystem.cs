@@ -14,6 +14,9 @@ using Robust.Shared.EntitySerialization;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Physics;
+using Robust.Shared.Physics.Components;
+using Robust.Shared.Physics.Systems;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
@@ -32,6 +35,7 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
     [Dependency] private MetaDataSystem _meta = default!;
     [Dependency] private LavalandPoiSpawnerSystem _poi = default!;
     [Dependency] private RestrictedRangeSystem _restricted = default!;
+    [Dependency] private SharedPhysicsSystem _physics = default!;
 
     public override void Initialize()
     {
@@ -89,6 +93,16 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
         ent.Comp.OutpostGrid = outpost.Owner;
         _meta.SetEntityName(outpost.Owner, Loc.GetString("lavaland-outpost-name"));
 
+        // The outpost is authored as a shuttle. Keep it static so physics
+        // cannot drift it away from the map centre over time.
+        RemComp<ShuttleComponent>(outpost.Owner);
+        if (TryComp<PhysicsComponent>(outpost.Owner, out var outpostPhysics))
+        {
+            _physics.SetBodyType(outpost.Owner, BodyType.Static, body: outpostPhysics);
+            _physics.SetLinearVelocity(outpost.Owner, Vector2.Zero, body: outpostPhysics);
+            _physics.SetAngularVelocity(outpost.Owner, 0f, body: outpostPhysics);
+        }
+
         // Give the outpost dock a stable, localized name for the shuttle console.
         // This is code-side because the map itself is only allowed a prototype id
         // replacement in this iteration.
@@ -99,7 +113,8 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
         // necessarily centred around its own origin, so translate by the negation
         // of its local AABB centre first.
         var outpostXform = Transform(outpost.Owner);
-        _transform.SetLocalPosition(outpost.Owner, -outpost.Comp.LocalAABB.Center, outpostXform);
+        var correction = outpostXform.LocalPosition + outpost.Comp.LocalAABB.Center;
+        _transform.SetLocalPosition(outpost.Owner, outpostXform.LocalPosition - correction, outpostXform);
         _transform.SetLocalRotation(outpost.Owner, Angle.Zero, outpostXform);
 
         ReserveOutpostArea(mapUid, outpost, outpostXform, ent.Comp.ClearRadius);
@@ -118,6 +133,12 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
 
         if (TryComp<LavalandPoiSpawnerComponent>(ent.Owner, out var poi))
             _poi.SpawnPois((ent.Owner, poi), mapUid, outpost.Owner);
+
+        // Structure loading can materialize additional outpost tiles. Correct
+        // the centre once more and reserve the final footprint.
+        var finalCorrection = outpostXform.LocalPosition + outpost.Comp.LocalAABB.Center;
+        _transform.SetLocalPosition(outpost.Owner, outpostXform.LocalPosition - finalCorrection, outpostXform);
+        ReserveOutpostArea(mapUid, outpost, outpostXform, ent.Comp.ClearRadius);
 
         var restriction = EnsureComp<RestrictedRangeComponent>(mapUid);
         restriction.Range = ent.Comp.MapBorderRadius;

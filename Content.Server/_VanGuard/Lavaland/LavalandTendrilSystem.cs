@@ -70,11 +70,38 @@ public sealed partial class LavalandTendrilSystem : EntitySystem
                 continue;
 
             timer.NextSpawn = _timing.CurTime + TimeSpan.FromSeconds(comp.SpawnDelay);
-            var coords = Transform(uid).Coordinates.Offset(_random.NextVector2(3));
-            var mob = Spawn(_random.Pick(comp.Spawns), coords);
+            if (!TrySpawnTendrilMob(uid, comp, out var mob))
+                continue;
+
             EnsureComp<LavalandTendrilMobComponent>(mob).Tendril = uid;
             comp.Mobs.Add(mob);
         }
+    }
+
+    /// <summary>
+    /// Spawns a tendril mob only on a validated, unblocked basalt tile.
+    /// </summary>
+    private bool TrySpawnTendrilMob(EntityUid tendril, LavalandTendrilComponent comp, out EntityUid mob)
+    {
+        mob = default;
+        var xform = Transform(tendril);
+        if (xform.MapUid is not { } mapUid || !TryComp<MapGridComponent>(mapUid, out var grid))
+            return false;
+
+        var indices = _map.TileIndicesFor(mapUid, grid, xform.Coordinates);
+        for (var attempt = 0; attempt < 20; attempt++)
+        {
+            var offset = new Vector2i(_random.Next(-3, 4), _random.Next(-3, 4));
+            var candidate = indices + offset;
+            if (!_features.TryGetValidSpawn(mapUid, grid, candidate, out var coords, out var tile, tendril))
+                continue;
+
+            _features.PrepareSpawnTile(mapUid, grid, candidate, tile);
+            mob = Spawn(_random.Pick(comp.Spawns), coords);
+            return true;
+        }
+
+        return false;
     }
 
     /// <summary>
@@ -149,9 +176,14 @@ public sealed partial class LavalandTendrilSystem : EntitySystem
         // A deliberate three-stage warning: cracking shell, growing rumble,
         // then the actual collapse when the chasm opens.
         // ADT uses one long destruction cue that covers the chasm opening.
-        _audio.PlayPvs(CrackSound, coords);
+        if (coords.IsValid(EntityManager))
+            _audio.PlayPvs(CrackSound, coords);
+
         Timer.Spawn(TimeSpan.FromSeconds(ent.Comp.ChasmDelay), () =>
         {
+            if (!coords.IsValid(EntityManager))
+                return;
+
             _audio.PlayPvs(CollapseSound, coords);
             SpawnChasm(coords, ent.Comp.ChasmRadius);
         });
@@ -159,6 +191,9 @@ public sealed partial class LavalandTendrilSystem : EntitySystem
 
     private void SpawnChasm(EntityCoordinates origin, int radius)
     {
+        if (!origin.IsValid(EntityManager))
+            return;
+
         for (var x = -radius; x <= radius; x++)
         {
             for (var y = -radius; y <= radius; y++)

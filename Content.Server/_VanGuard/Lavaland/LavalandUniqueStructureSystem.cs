@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Numerics;
 using Content.Server.Parallax;
+using Content.Shared.Chasm;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Shuttles.Systems;
 using Robust.Shared.EntitySerialization;
@@ -10,6 +11,8 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
+using Robust.Shared.Prototypes;
+using Robust.Shared.Timing;
 using Robust.Shared.Random;
 
 namespace Content.Server._VanGuard.Lavaland;
@@ -29,6 +32,7 @@ public sealed partial class LavalandUniqueStructureSystem : EntitySystem
     [Dependency] private SharedShuttleSystem _shuttle = default!;
     [Dependency] private MetaDataSystem _meta = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
+    [Dependency] private ITileDefinitionManager _tiles = default!;
 
     private readonly HashSet<(MapId Map, string Id)> _spawned = new();
 
@@ -36,7 +40,8 @@ public sealed partial class LavalandUniqueStructureSystem : EntitySystem
         Entity<LavalandUniqueStructureSpawnerComponent> spawner,
         EntityUid mapUid,
         EntityUid outpost,
-        List<LavalandPoi> pois)
+        List<LavalandPoi> pois,
+        List<Box2> occupied)
     {
         if (spawner.Comp.Structures.Count == 0)
             return;
@@ -49,7 +54,7 @@ public sealed partial class LavalandUniqueStructureSystem : EntitySystem
             if (!_spawned.Add((mapId, structure.Id)))
                 continue;
 
-            if (!TrySpawn(structure, mapUid, mapId, origin, pois))
+            if (!TrySpawn(structure, mapUid, mapId, origin, pois, occupied))
             {
                 _spawned.Remove((mapId, structure.Id));
                 Log.Warning($"Could not place unique Lavaland structure {structure.Id}.");
@@ -62,15 +67,19 @@ public sealed partial class LavalandUniqueStructureSystem : EntitySystem
         EntityUid mapUid,
         MapId mapId,
         Vector2 origin,
-        List<LavalandPoi> pois)
+        List<LavalandPoi> pois,
+        List<Box2> occupied)
     {
         if (structure.Variants.Count == 0 || !TryComp<MapGridComponent>(mapUid, out var mapGrid))
             return false;
 
         var variants = structure.Variants.ToList();
-        _random.Shuffle(variants);
 
-        for (var attempt = 0; attempt < 80; attempt++)
+        // One Lavaland map exists per round, so pick the layout randomly for
+        // this world and fall back to the other layouts only if it fails.
+        var startVariant = _random.Next(variants.Count);
+
+        for (var attempt = 0; attempt < 120; attempt++)
         {
             var angle = _random.NextFloat(0f, MathF.PI * 2f);
             var distance = _random.NextFloat(structure.MinDistance, structure.MaxDistance);
@@ -83,10 +92,11 @@ public sealed partial class LavalandUniqueStructureSystem : EntitySystem
                 continue;
             }
 
-            foreach (var variant in variants)
+            for (var i = 0; i < variants.Count; i++)
             {
+                var variant = variants[(startVariant + i) % variants.Count];
                 if (!_loader.TryLoadGrid(mapId, variant, out var grid,
-                        new DeserializationOptions { InitializeMaps = true }) ||
+                        new DeserializationOptions { InitializeMaps = false }) ||
                     grid is null)
                 {
                     continue;
@@ -94,13 +104,25 @@ public sealed partial class LavalandUniqueStructureSystem : EntitySystem
 
                 if (!TryComp<MapGridComponent>(grid.Value.Owner, out var gridComp))
                 {
-                    QueueDel(grid.Value.Owner);
+                    DeleteGridTree(grid.Value.Owner);
                     continue;
                 }
 
+                // Clear the planet-side footprint before placing the structure.
+                // This removes generated lava/chasms and rock entities that
+                // would otherwise end up inside the base or arena.
+                var bounds = gridComp.LocalAABB.Translated(origin + offset);
+                var placementBounds = bounds.Enlarged(4f);
+                if (occupied.Any(existing => existing.Intersects(placementBounds)))
+                {
+                    DeleteGridTree(grid.Value.Owner);
+                    continue;
+                }
+
+                ClearArea(mapUid, mapGrid, bounds);
+
                 // Reserve before moving so the biome cannot grow through the
                 // structure interior.
-                var bounds = gridComp.LocalAABB.Translated(origin + offset);
                 _biome.ReserveTiles(mapUid, bounds, new List<(Vector2i, Tile)>());
 
                 // Centre the authored grid on the chosen point.
@@ -121,11 +143,124 @@ public sealed partial class LavalandUniqueStructureSystem : EntitySystem
 
                 _meta.SetEntityName(grid.Value.Owner, Loc.GetString(structure.Name));
                 _shuttle.AddIFFFlag(grid.Value.Owner, IFFFlags.Hide);
-                pois.Add(new LavalandPoi(offset, structure.Name, true));
+
+                // Initialize only after the grid is in its final position. This
+                // prevents spawners from firing at the map origin while a
+                // candidate layout is still being validated.
+                InitializeGridTree(grid.Value.Owner);
+                var spawnedGrid = grid.Value.Owner;
+                Timer.Spawn(TimeSpan.Zero, () =>
+                {
+                    if (Exists(spawnedGrid))
+                        EnsureGuaranteedSpawns(spawnedGrid, structure.GuaranteedSpawns);
+                });
+                occupied.Add(placementBounds);
+                pois.Add(new LavalandPoi(offset, structure.Name, structure.FaxName, true, false));
                 return true;
             }
         }
 
         return false;
+    }
+
+    private void EnsureGuaranteedSpawns(EntityUid grid, List<EntProtoId> prototypes)
+    {
+        if (prototypes.Count == 0)
+            return;
+
+        foreach (var prototype in prototypes)
+        {
+            var found = false;
+            var query = EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+            while (query.MoveNext(out _, out var meta, out var xform))
+            {
+                if (xform.GridUid == grid && meta.EntityPrototype?.ID == prototype.Id)
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+                Spawn(prototype, Transform(grid).Coordinates);
+        }
+    }
+
+    private void InitializeGridTree(EntityUid grid)
+    {
+        var pending = new List<EntityUid> { grid };
+        for (var i = 0; i < pending.Count; i++)
+        {
+            var uid = pending[i];
+            if (!TryComp(uid, out MetaDataComponent? meta))
+                continue;
+
+            var children = Transform(uid).ChildEnumerator;
+            while (children.MoveNext(out var child))
+                pending.Add(child);
+
+            if (meta.EntityLifeStage < EntityLifeStage.MapInitialized)
+                EntityManager.RunMapInit(uid, meta);
+        }
+    }
+
+    private void DeleteGridTree(EntityUid grid)
+    {
+        var children = new List<EntityUid>();
+        var query = EntityQueryEnumerator<TransformComponent>();
+        while (query.MoveNext(out var uid, out var xform))
+        {
+            if (uid == grid)
+                continue;
+
+            if (xform.GridUid == grid || xform.ParentUid == grid)
+                children.Add(uid);
+        }
+
+        foreach (var child in children)
+        {
+            if (Exists(child))
+                QueueDel(child);
+        }
+
+        QueueDel(grid);
+    }
+
+    private void ClearArea(EntityUid mapUid, MapGridComponent grid, Box2 bounds)
+    {
+        var min = _map.TileIndicesFor(mapUid, grid, new EntityCoordinates(mapUid, bounds.BottomLeft));
+        var max = _map.TileIndicesFor(mapUid, grid, new EntityCoordinates(mapUid, bounds.TopRight));
+        var basalt = new Tile(_tiles["FloorBasalt"].TileId);
+
+        for (var x = min.X; x <= max.X; x++)
+        {
+            for (var y = min.Y; y <= max.Y; y++)
+            {
+                var indices = new Vector2i(x, y);
+                _map.SetTile(mapUid, grid, indices, basalt);
+
+                var anchored = _map.GetAnchoredEntities(mapUid, grid, indices);
+                while (anchored.MoveNext(out var entity))
+                {
+                    if (HasComp<ChasmComponent>(entity))
+                    {
+                        QueueDel(entity);
+                        continue;
+                    }
+
+                    if (!TryComp<MetaDataComponent>(entity, out var meta))
+                        continue;
+
+                    var id = meta.EntityPrototype?.ID;
+                    if (id == "FloorLavaEntity" ||
+                        id?.StartsWith("AsteroidRock", StringComparison.Ordinal) == true ||
+                        id?.StartsWith("WallRock", StringComparison.Ordinal) == true ||
+                        id?.StartsWith("FloraRock", StringComparison.Ordinal) == true)
+                    {
+                        QueueDel(entity);
+                    }
+                }
+            }
+        }
     }
 }

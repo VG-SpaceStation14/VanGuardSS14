@@ -122,6 +122,20 @@
 
 
 - type: biomeMarkerLayer
+  id: LavalandRareMobs
+  entityMask:
+    BasaltOne: LavalandRareMobSpawner
+    BasaltTwo: LavalandRareMobSpawner
+    BasaltThree: LavalandRareMobSpawner
+    BasaltFour: LavalandRareMobSpawner
+    BasaltFive: LavalandRareMobSpawner
+  radius: 64
+  size: 128
+  minGroupSize: 1
+  maxGroupSize: 1
+  maxCount: 1
+
+- type: biomeMarkerLayer
   id: LavalandArmokPit
   entityMask:
     BasaltOne: FloorChasmEntity

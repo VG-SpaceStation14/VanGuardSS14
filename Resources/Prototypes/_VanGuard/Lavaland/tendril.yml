@@ -77,7 +77,9 @@
           - id: FlashlightSeclite
             weight: 0.15
           - id: WeaponProtoKineticAccelerator
-            weight: 0.05
+            weight: 0.02
+          - id: LavalandWeaponStaffHealing
+            weight: 0.03
 
 - type: entity
   parent: LavalandTendril
@@ -88,6 +90,26 @@
     - MobGoliath
     maxSpawns: 2
     loot: LavalandNecropolisCrateGoliath
+
+- type: entity
+  parent: LavalandTendril
+  id: LavalandTendrilAncientGoliath
+  components:
+  - type: LavalandTendril
+    spawns:
+    - MobAncientGoliath
+    maxSpawns: 1
+    loot: LavalandNecropolisCrateGoliath
+
+- type: entity
+  parent: LavalandTendril
+  id: LavalandTendrilLegion
+  components:
+  - type: LavalandTendril
+    spawns:
+    - LavalandMobLegion
+    maxSpawns: 2
+    loot: LavalandNecropolisCrate
 
 - type: entity
   parent: LavalandTendril

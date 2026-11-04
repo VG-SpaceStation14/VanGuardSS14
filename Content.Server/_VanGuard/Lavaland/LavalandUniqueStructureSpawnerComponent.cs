@@ -26,10 +26,16 @@ public sealed partial class LavalandUniqueStructure
     public string Id = string.Empty;
 
     /// <summary>
-    /// Localization key used for the POI fax entry.
+    /// Localization key used for the grid name / mass scanner.
     /// </summary>
     [DataField(required: true)]
     public LocId Name = string.Empty;
+
+    /// <summary>
+    /// Vague role-play designation used by the survey fax.
+    /// </summary>
+    [DataField(required: true)]
+    public LocId FaxName = string.Empty;
 
     /// <summary>
     /// Map variants. Exactly one is picked per map.
@@ -45,4 +51,11 @@ public sealed partial class LavalandUniqueStructure
 
     [DataField]
     public float ClearRadius = 18f;
+
+    /// <summary>
+    /// Prototypes that must exist inside the placed structure. Missing ones
+    /// are spawned at the structure centre after map initialization.
+    /// </summary>
+    [DataField]
+    public List<EntProtoId> GuaranteedSpawns = new();
 }

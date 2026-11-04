@@ -1,0 +1,115 @@
+- type: Tag
+  id: LavalandStabilizingSerum
+
+- type: entity
+  parent: BaseItem
+  id: LavalandStabilizingSerum
+  name: stabilizing serum
+  description: Stabilizes a decaying legion core into a usable healing core.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Objects/Specific/Salvage/stabilizing_serum.rsi
+    state: icon
+  - type: Item
+    size: Small
+  - type: Tag
+    tags:
+    - LavalandStabilizingSerum
+  - type: StaticPrice
+    price: 300
+
+- type: entity
+  parent: BaseItem
+  id: LavalandLegionCore
+  name: legion core
+  description: A pulsing core torn from a legion. It can be eaten to heal, but it decays quickly.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Objects/Specific/Lavaland/loot.rsi
+    state: legion_core
+  - type: Item
+    size: Small
+  - type: Healing
+    damageContainers:
+    - Biological
+    damage:
+      types:
+        Blunt: -33.33
+        Slash: -33.33
+        Piercing: -33.33
+        Heat: -25
+        Shock: -25
+        Cold: -25
+        Caustic: -25
+    delay: 0.1
+    selfHealPenaltyMultiplier: 0
+    healingBeginSound:
+      path: /Audio/Items/eating_1.ogg
+    healingEndSound:
+      path: /Audio/Items/eating_3.ogg
+  - type: TimedDespawn
+    lifetime: 200
+  - type: SpawnOnDespawn
+    prototype: LavalandLegionCoreDecayed
+  - type: Construction
+    graph: LavalandLegionCoreStable
+    node: start
+
+- type: entity
+  parent: BaseItem
+  id: LavalandLegionCoreDecayed
+  name: decayed legion core
+  description: The core has rotted away. It is no longer useful.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Objects/Specific/Lavaland/loot.rsi
+    state: legion_core_decayed
+  - type: Item
+    size: Small
+
+- type: entity
+  parent: BaseItem
+  id: LavalandLegionCoreStable
+  name: stable legion core
+  description: A stabilized legion core. It can be eaten to heal a large amount of damage.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Objects/Specific/Lavaland/loot.rsi
+    state: legion_core_stable
+  - type: Item
+    size: Small
+  - type: Healing
+    damageContainers:
+    - Biological
+    damage:
+      types:
+        Blunt: -33.33
+        Slash: -33.33
+        Piercing: -33.33
+        Heat: -25
+        Shock: -25
+        Cold: -25
+        Caustic: -25
+    delay: 0.1
+    selfHealPenaltyMultiplier: 0
+    healingBeginSound:
+      path: /Audio/Items/eating_1.ogg
+    healingEndSound:
+      path: /Audio/Items/eating_3.ogg
+  - type: Construction
+    graph: LavalandLegionCoreStable
+    node: stable
+
+- type: constructionGraph
+  id: LavalandLegionCoreStable
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: stable
+      steps:
+      - tag: LavalandStabilizingSerum
+        name: construction-graph-tag-lavaland-stabilizing-serum
+        doAfter: 0.1
+  - node: stable
+    entity: LavalandLegionCoreStable

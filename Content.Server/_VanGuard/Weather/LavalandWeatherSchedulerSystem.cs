@@ -45,7 +45,7 @@ public sealed partial class LavalandWeatherSchedulerSystem : EntitySystem
                 var text = Loc.GetString(message);
                 _chat.ChatMessageToManyFiltered(
                     Filter.BroadcastMap(map.MapId),
-                    ChatChannel.Radio,
+                    ChatChannel.Local,
                     text,
                     text,
                     mapUid,

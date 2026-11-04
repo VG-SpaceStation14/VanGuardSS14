@@ -1,3 +1,4 @@
+using Content.Server._VanGuard.Weather;
 using Content.Server.Parallax;
 using Content.Shared.Chasm;
 using Content.Shared.Maps;
@@ -36,10 +37,20 @@ public sealed partial class LavalandFeatureSystem : EntitySystem
 
     private void OnOreInit(Entity<LavalandOreDepositComponent> ent, ref MapInitEvent args)
     {
-        if (ent.Comp.Ores.Count == 0)
+        var xform = Transform(ent.Owner);
+        if (xform.MapUid is not { } mapUid || !HasComp<LavalandWeatherSchedulerComponent>(mapUid))
+        {
+            QueueDel(ent.Owner);
             return;
+        }
 
-        Spawn(_random.Pick(ent.Comp.Ores), Transform(ent.Owner).Coordinates);
+        if (ent.Comp.Ores.Count == 0)
+        {
+            QueueDel(ent.Owner);
+            return;
+        }
+
+        Spawn(_random.Pick(ent.Comp.Ores), xform.Coordinates);
         QueueDel(ent.Owner);
     }
 

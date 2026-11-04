@@ -36,6 +36,7 @@ using Content.Shared.Station.Systems;
 using Content.Shared.Construction.Prototypes;
 using Content.Server.Construction.Components;
 using Content.Shared.Clothing.Components;
+using Content.Shared.Weapons.Ranged.Components;
 using Robust.Shared.Containers;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
@@ -98,6 +99,25 @@ public sealed class LavalandContentTest : GameTest
             Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("LavalandSpawnMobBloodMiner")), Is.True);
             Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("LavalandCleavingSaw")), Is.True);
             Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("ActionBloodMinerShoot")), Is.True);
+            foreach (var id in new[]
+                     {
+                         "MobAncientGoliath",
+                         "LavalandMobLegion",
+                         "LavalandMobLegionSkull",
+                         "LavalandTendrilAncientGoliath",
+                         "LavalandTendrilLegion",
+                         "LavalandLegionCore",
+                         "LavalandLegionCoreDecayed",
+                         "LavalandLegionCoreStable",
+                         "LavalandStabilizingSerum",
+                         "LavalandWeaponStaffHealing",
+                         "LavalandRareMobSpawner",
+                     })
+            {
+                Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>(id)), Is.True,
+                    $"Missing Lavaland prototype {id}.");
+            }
+            Assert.That(SProtoMan.HasIndex(new ProtoId<ConstructionGraphPrototype>("LavalandLegionCoreStable")), Is.True);
         });
     }
 
@@ -141,6 +161,125 @@ public sealed class LavalandContentTest : GameTest
             {
                 if (spike is { } spikeUid && SEntMan.EntityExists(spikeUid))
                     SEntMan.DeleteEntity(spikeUid);
+            });
+        }
+    }
+
+    [Test]
+    public async Task LegionDropsCorpseAndCoreOnDeath()
+    {
+        var grid = GetStationGrid();
+        EntityUid legion = default;
+
+        try
+        {
+            await Server.WaitPost(() =>
+            {
+                legion = SEntMan.SpawnEntity("LavalandMobLegion", new EntityCoordinates(grid, 0, 0));
+                var damage = new DamageSpecifier(
+                    SProtoMan.Index<DamageTypePrototype>(new ProtoId<DamageTypePrototype>("Slash")), 100);
+                Assert.That(Server.System<DamageableSystem>()
+                    .TryChangeDamage(legion, damage, ignoreResistances: true, ignoreGlobalModifiers: true), Is.True);
+            });
+            await Pair.RunTicksSync(4);
+
+            await Server.WaitPost(() =>
+            {
+                var corpseCount = 0;
+                var coreCount = 0;
+                var query = SEntMan.EntityQueryEnumerator<MetaDataComponent>();
+                while (query.MoveNext(out _, out var meta))
+                {
+                    if (meta.EntityPrototype?.ID == "MobRandomCargoCorpse")
+                        corpseCount++;
+                    if (meta.EntityPrototype?.ID == "LavalandLegionCore")
+                        coreCount++;
+                }
+
+                Assert.That(corpseCount, Is.EqualTo(1), "Legion did not leave a humanoid corpse.");
+                Assert.That(coreCount, Is.EqualTo(1), "Legion did not drop a core.");
+            });
+        }
+        finally
+        {
+            await Server.WaitPost(() =>
+            {
+                if (legion != default && SEntMan.EntityExists(legion))
+                    SEntMan.DeleteEntity(legion);
+            });
+        }
+    }
+
+    [Test]
+    public async Task HealingStaffRechargesOverTime()
+    {
+        var grid = GetStationGrid();
+        EntityUid staff = default;
+
+        try
+        {
+            await Server.WaitPost(() =>
+            {
+                staff = SEntMan.SpawnEntity("LavalandWeaponStaffHealing", new EntityCoordinates(grid, 0, 0));
+                Assert.That(SEntMan.TryGetComponent(staff, out BasicEntityAmmoProviderComponent? ammo), Is.True);
+                Assert.That(ammo!.Capacity, Is.EqualTo(10));
+                Assert.That(SEntMan.TryGetComponent(staff, out RechargeBasicEntityAmmoComponent? recharge), Is.True);
+                Assert.That(recharge!.RechargeCooldown, Is.EqualTo(10f));
+            });
+        }
+        finally
+        {
+            await Server.WaitPost(() =>
+            {
+                if (staff != default && SEntMan.EntityExists(staff))
+                    SEntMan.DeleteEntity(staff);
+            });
+        }
+    }
+
+    [Test]
+    public async Task LegionCoreHealsAndIsConsumed()
+    {
+        var grid = GetStationGrid();
+        EntityUid patient = default;
+        EntityUid core = default;
+
+        try
+        {
+            await Server.WaitPost(() =>
+            {
+                patient = SEntMan.SpawnEntity("MobHuman", new EntityCoordinates(grid, 3000, 3000));
+                var damage = new DamageSpecifier(
+                    SProtoMan.Index<DamageTypePrototype>(new ProtoId<DamageTypePrototype>("Blunt")), 50);
+                Assert.That(Server.System<DamageableSystem>()
+                    .TryChangeDamage(patient, damage, ignoreResistances: true, ignoreGlobalModifiers: true), Is.True);
+
+                core = SEntMan.SpawnEntity("LavalandLegionCore", SEntMan.GetComponent<TransformComponent>(patient).Coordinates);
+                Assert.That(SEntMan.System<SharedHandsSystem>().TryPickupAnyHand(patient, core), Is.True,
+                    "Could not put the legion core into the patient's hand.");
+                var use = new UseInHandEvent(patient);
+                SEntMan.EventBus.RaiseLocalEvent(core, use);
+                Assert.That(use.Handled, Is.True, "Using the legion core was not handled.");
+            });
+
+            await Pair.RunTicksSync(30);
+
+            await Server.WaitPost(() =>
+            {
+                Assert.That(SEntMan.EntityExists(core), Is.False,
+                    "The legion core was not consumed after use.");
+                Assert.That(Server.System<DamageableSystem>().GetTotalDamage(patient).Float(), Is.LessThan(50f),
+                    "The legion core did not heal the patient.");
+            });
+        }
+        finally
+        {
+            await Server.WaitPost(() =>
+            {
+                if (core != default && SEntMan.EntityExists(core))
+                    SEntMan.DeleteEntity(core);
+                if (patient != default && SEntMan.EntityExists(patient))
+                    SEntMan.DeleteEntity(patient);
             });
         }
     }
@@ -218,6 +357,11 @@ public sealed class LavalandContentTest : GameTest
                 entry.Id == "ShelterCapsuleLuxury" || entry.Id == "ShelterCapsuleBar").ToList();
             Assert.That(entries.Count, Is.EqualTo(4), "MiningShop must contain Jaunter and all three capsules.");
             Assert.That(entries.Any(entry => entry.Id == "ShelterCapsuleLivingRoom"), Is.False);
+
+            var medicine = SProtoMan.Index<MiningShopSectionPrototype>(new ProtoId<MiningShopSectionPrototype>("Medicine"));
+            var serum = medicine.Entries.SingleOrDefault(entry => entry.Id == "LavalandStabilizingSerum");
+            Assert.That(serum, Is.Not.Null, "MiningShop Medicine must sell the stabilizing serum.");
+            Assert.That(serum!.Price, Is.EqualTo(300u));
 
             uint total = 0;
             foreach (var entry in entries)

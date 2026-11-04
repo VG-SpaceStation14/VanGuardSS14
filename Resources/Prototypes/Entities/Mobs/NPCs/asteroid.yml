@@ -31,11 +31,14 @@
   name: goliath
   description: A massive beast that uses long tentacles to ensnare its prey, threatening them is not advised under any conditions.
   components:
+  # VG-Tweak Start: use the tg/ADT goliath sprite for the common goliath;
+  # the old asteroid sprite is reserved for the ancient goliath.
   - type: Sprite
-    sprite: Mobs/Aliens/Asteroid/goliath.rsi
+    sprite: _VanGuard/Mobs/Aliens/Lavaland/goliath.rsi
     layers:
     - map: ["enum.DamageStateVisualLayers.Base"]
       state: goliath
+  # VG-Tweak End
   - type: DamageStateVisuals
     states:
       Alive:
@@ -76,9 +79,9 @@
       task: GoliathCompound
     blackboard:
       VisionRadius: !type:Single
-        6
+        12
       AggroVisionRadius: !type:Single
-        10
+        18
       NavSmash: !type:Bool
         true
   - type: NPCUseActionOnTarget
@@ -119,6 +122,7 @@
     range: 10
   - type: WorldTargetAction
     event: !type:GoliathSummonTentacleAction
+      extraSpawns: 2
 
 - type: entity
   id: GoliathTentacle

@@ -74,60 +74,115 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
 
                 _features.PrepareSpawnTile(mapUid, mapGrid, indices, tile);
                 Spawn(prototype, coordinates);
-                positions.Add(new LavalandPoi(chosenOffset, "lavaland-poi-tendril", false));
+                positions.Add(new LavalandPoi(chosenOffset, "lavaland-poi-tendril", "lavaland-poi-tendril-fax", true, true));
                 break;
             }
         }
 
+        var occupied = new List<Box2>();
         foreach (var dungeon in spawner.Comp.Dungeons)
         {
-            var angle = _random.NextFloat(0f, MathF.PI * 2f);
-            var distance = _random.NextFloat(spawner.Comp.MinDistance, spawner.Comp.MaxDistance);
-            var offset = new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * distance;
-            var mapId = Transform(mapUid).MapID;
-            if (!_loader.TryLoadGrid(mapId, dungeon, out var grid, new DeserializationOptions { InitializeMaps = true }) ||
-                grid is null)
+            var placed = false;
+            for (var attempt = 0; attempt < 120; attempt++)
             {
-                continue;
-            }
+                var angle = _random.NextFloat(0f, MathF.PI * 2f);
+                var distance = _random.NextFloat(spawner.Comp.MinDistance, spawner.Comp.MaxDistance);
+                var offset = new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * distance;
+                var mapId = Transform(mapUid).MapID;
+                if (!_loader.TryLoadGrid(mapId, dungeon, out var grid, new DeserializationOptions { InitializeMaps = true }) ||
+                    grid is null)
+                {
+                    continue;
+                }
 
-            // Reserve the generated area before moving the dungeon into place so
-            // biome chunks cannot grow through its interior.
-            if (TryComp<MapGridComponent>(grid.Value.Owner, out var dungeonGrid))
-            {
+                if (!TryComp<MapGridComponent>(grid.Value.Owner, out var dungeonGrid))
+                {
+                    QueueDel(grid.Value.Owner);
+                    continue;
+                }
+
                 var bounds = dungeonGrid.LocalAABB.Translated(origin + offset);
+                var placementBounds = bounds.Enlarged(4f);
+                if (occupied.Any(existing => existing.Intersects(placementBounds)))
+                {
+                    QueueDel(grid.Value.Owner);
+                    continue;
+                }
+
+                // Reserve the generated area before moving the dungeon into place so
+                // biome chunks cannot grow through its interior.
                 _biome.ReserveTiles(mapUid, bounds, new List<(Vector2i, Tile)>());
+
+                _transform.SetLocalPosition(grid.Value.Owner, origin + offset, Transform(grid.Value.Owner));
+                _transform.SetLocalRotation(grid.Value.Owner, Angle.Zero, Transform(grid.Value.Owner));
+
+                // Dungeon maps are authored as shuttles. Turn them into static map
+                // geometry so shuttle physics cannot apply angular velocity to them.
+                RemComp<ShuttleComponent>(grid.Value.Owner);
+                if (TryComp<PhysicsComponent>(grid.Value.Owner, out var physics))
+                {
+                    _physics.SetBodyType(grid.Value.Owner, BodyType.Static, body: physics);
+                    _physics.SetAngularVelocity(grid.Value.Owner, 0f, body: physics);
+                }
+                var gridName = GetDungeonName(dungeon);
+                _meta.SetEntityName(grid.Value.Owner, Loc.GetString(gridName));
+                _shuttle.AddIFFFlag(grid.Value.Owner, IFFFlags.Hide);
+                occupied.Add(placementBounds);
+                positions.Add(new LavalandPoi(offset, gridName, GetDungeonFaxName(dungeon), true, false));
+                placed = true;
+                break;
             }
 
-            _transform.SetLocalPosition(grid.Value.Owner, origin + offset, Transform(grid.Value.Owner));
-            _transform.SetLocalRotation(grid.Value.Owner, Angle.Zero, Transform(grid.Value.Owner));
-
-            // Dungeon maps are authored as shuttles. Turn them into static map
-            // geometry so shuttle physics cannot apply angular velocity to them.
-            RemComp<ShuttleComponent>(grid.Value.Owner);
-            if (TryComp<PhysicsComponent>(grid.Value.Owner, out var physics))
-            {
-                _physics.SetBodyType(grid.Value.Owner, BodyType.Static, body: physics);
-                _physics.SetAngularVelocity(grid.Value.Owner, 0f, body: physics);
-            }
-            var gridName = GetDungeonName(dungeon);
-            _meta.SetEntityName(grid.Value.Owner, Loc.GetString(gridName));
-            _shuttle.AddIFFFlag(grid.Value.Owner, IFFFlags.Hide);
-            positions.Add(new LavalandPoi(offset, gridName, true));
+            if (!placed)
+                Log.Warning($"Could not place Lavaland dungeon {dungeon}.");
         }
 
         if (TryComp<LavalandUniqueStructureSpawnerComponent>(spawner.Owner, out var unique))
-            _unique.SpawnStructures((spawner.Owner, unique), mapUid, outpost, positions);
+            _unique.SpawnStructures((spawner.Owner, unique), mapUid, outpost, positions, occupied);
 
         var faxEntries = positions.Where(poi => poi.InFax).ToList();
         if (!spawner.Comp.SendFax || faxEntries.Count == 0)
             return;
 
-        var content = Loc.GetString("lavaland-poi-fax-header") + "\n\n" +
-                      string.Join("\n", faxEntries.Select(poi =>
-                          Loc.GetString("lavaland-poi-fax-line",
-                              ("x", (int) MathF.Round(poi.Offset.X)),
-                              ("y", (int) MathF.Round(poi.Offset.Y)))));
+        var dungeons = faxEntries.Where(poi => !poi.IsTendril).ToList();
+        var tendrils = faxEntries.Where(poi => poi.IsTendril).ToList();
+        var sections = new List<string>
+        {
+            Loc.GetString("lavaland-poi-fax-header"),
+            Loc.GetString("lavaland-poi-fax-form"),
+            Loc.GetString("lavaland-poi-fax-classification"),
+            Loc.GetString("lavaland-poi-fax-zone"),
+            Loc.GetString("lavaland-poi-fax-rule"),
+        };
+
+        if (dungeons.Count > 0)
+        {
+            sections.Add(string.Empty);
+            sections.Add(Loc.GetString("lavaland-poi-fax-dungeons"));
+            sections.AddRange(dungeons.Select((poi, index) =>
+                Loc.GetString("lavaland-poi-fax-dungeon-entry",
+                    ("index", index + 1),
+                    ("name", Loc.GetString(poi.FaxName)),
+                    ("x", (int) MathF.Round(poi.Offset.X)),
+                    ("y", (int) MathF.Round(poi.Offset.Y)))));
+        }
+
+        if (tendrils.Count > 0)
+        {
+            sections.Add(string.Empty);
+            sections.Add(Loc.GetString("lavaland-poi-fax-tendrils"));
+            sections.AddRange(tendrils.Select((poi, index) =>
+                Loc.GetString("lavaland-poi-fax-tendril-entry",
+                    ("index", index + 1),
+                    ("name", Loc.GetString(poi.FaxName)),
+                    ("x", (int) MathF.Round(poi.Offset.X)),
+                    ("y", (int) MathF.Round(poi.Offset.Y)))));
+        }
+
+        sections.Add(string.Empty);
+        sections.Add(Loc.GetString("lavaland-poi-fax-total", ("count", faxEntries.Count)));
+        sections.Add(Loc.GetString("lavaland-poi-fax-footer"));
+        var content = string.Join("\n", sections);
         var printout = new FaxPrintout(
             content,
             Loc.GetString("lavaland-poi-fax-name"),
@@ -141,13 +196,39 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
 
         Timer.Spawn(TimeSpan.FromSeconds(spawner.Comp.FaxDelay), () =>
         {
+            if (!Exists(mapUid) || !TryComp(mapUid, out TransformComponent? mapXform))
+                return;
+
+            var mapId = mapXform.MapID;
             var query = EntityQueryEnumerator<FaxMachineComponent, TransformComponent>();
             while (query.MoveNext(out var faxUid, out var fax, out var xform))
             {
-                if (xform.MapID == Transform(mapUid).MapID)
+                if (xform.MapID == mapId)
                     _fax.Receive(faxUid, printout, null, fax);
             }
         });
+    }
+
+    private static LocId GetDungeonFaxName(ResPath dungeon)
+    {
+        var path = dungeon.ToString();
+        if (path.Contains("temple"))
+            return "lavaland-fax-object-monument";
+        if (path.Contains("lava_lake_village"))
+            return "lavaland-fax-object-lake-village";
+        if (path.Contains("cave_murder"))
+            return "lavaland-fax-object-cave";
+        if (path.Contains("clown_room"))
+            return "lavaland-fax-object-bright-room";
+        if (path.Contains("grasslanddome"))
+            return "lavaland-fax-object-green-dome";
+        if (path.Contains("lava_river"))
+            return "lavaland-fax-object-lava-river";
+        if (path.Contains("mineshaft"))
+            return "lavaland-fax-object-mineshaft";
+        if (path.Contains("snowydome"))
+            return "lavaland-fax-object-cold-dome";
+        return "lavaland-fax-object-unknown";
     }
 
     private static LocId GetDungeonName(ResPath dungeon)

@@ -32,6 +32,7 @@
     - LavalandChasmOpen
     - LavalandArmokPit
     - LavalandFeatures
+    - LavalandRareMobs
     - OreIron
     - OreCoal
     - OreGold
@@ -53,6 +54,8 @@
     - LavalandTendrilGoliath
     - LavalandTendrilGoliath
     - LavalandTendrilWatcher
+    - LavalandTendrilAncientGoliath
+    - LavalandTendrilLegion
     - LavalandTendrilIcewing
     - LavalandTendrilMagmawing
     - LavalandTendrilPride
@@ -81,9 +84,23 @@
     structures:
     - id: BloodMinerArena
       name: lavaland-poi-blood-miner-arena
+      faxName: lavaland-fax-object-arena
       variants:
       - /Maps/_VanGuard/Lavaland/Dungeons/bloodminerarena.yml
       - /Maps/_VanGuard/Lavaland/Dungeons/bloodminerarena2.yml
+      guaranteedSpawns:
+      - LavalandMobBloodMiner
+      minDistance: 100
+      maxDistance: 220
+      clearRadius: 18
+    - id: LegionBase
+      name: lavaland-poi-legion-base
+      faxName: lavaland-fax-object-legion-base
+      variants:
+      - /Maps/_VanGuard/Lavaland/Dungeons/legionbase.yml
+      guaranteedSpawns:
+      - LavalandWeaponStaffHealing
+      - LavalandMobLegion
       minDistance: 100
       maxDistance: 220
       clearRadius: 18

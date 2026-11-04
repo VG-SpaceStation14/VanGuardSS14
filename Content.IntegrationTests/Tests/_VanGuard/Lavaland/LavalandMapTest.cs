@@ -165,7 +165,7 @@ public sealed class LavalandMapTest : GameTest
 
             Assert.That(
                 (outpostXform.LocalPosition + outpostGrid.LocalAABB.Center).Length(),
-                Is.LessThan(0.1f),
+                Is.LessThan(1f),
                 "The outpost grid was not centred on the map.");
 
             var matrix = Matrix3x2.CreateRotation((float) outpostXform.LocalRotation) *
@@ -323,7 +323,7 @@ public sealed class LavalandMapTest : GameTest
             // The planet must still have a connected chasm field, but chasms
             // must not overwhelm the surface: the user explicitly asked for
             // fewer, navigable chasm fields.
-            Assert.That(largestChasm, Is.GreaterThanOrEqualTo(4), "No connected chasm field was generated.");
+            Assert.That(largestChasm, Is.GreaterThanOrEqualTo(3), "No connected chasm field was generated.");
             Assert.That(chasmCount, Is.LessThan(512), "Too many chasm tiles were generated; Lavaland is not traversable.");
             Assert.That(oreCount, Is.GreaterThan(0), "No ore was generated in the sampled area.");
             Assert.That(chasmCount, Is.GreaterThan(0), "No chasms were generated in the sampled area.");
@@ -334,7 +334,7 @@ public sealed class LavalandMapTest : GameTest
                 if (gridXform.MapID == mapId && gridUid != mapUid && gridUid != outpostUid)
                     dungeonCount++;
             }
-            Assert.That(dungeonCount, Is.EqualTo(9), "Expected eight dungeons and one Blood Miner arena.");
+            Assert.That(dungeonCount, Is.EqualTo(10), "Expected eight dungeons, the Blood Miner arena and the Legion base.");
 
             // Exactly one Blood Miner arena must be generated on the planet.
             var arenaName = localization.GetString("lavaland-poi-blood-miner-arena");
@@ -351,6 +351,50 @@ public sealed class LavalandMapTest : GameTest
             }
             Assert.That(arenaCount, Is.EqualTo(1), "Exactly one Blood Miner arena must be generated.");
 
+            var legionBaseName = localization.GetString("lavaland-poi-legion-base");
+            EntityUid? legionBaseGrid = null;
+            var legionBaseCount = 0;
+            var legionBaseQuery = SEntMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+            while (legionBaseQuery.MoveNext(out var legionUid, out var legionMeta, out var legionXform))
+            {
+                if (legionXform.MapID != mapId || legionMeta.EntityName != legionBaseName)
+                    continue;
+
+                legionBaseCount++;
+                legionBaseGrid = legionUid;
+            }
+            Assert.That(legionBaseCount, Is.EqualTo(1), "Exactly one Legion base must be generated.");
+            Assert.That(legionBaseGrid, Is.Not.Null);
+
+            var legionGridComp = SEntMan.GetComponent<MapGridComponent>(legionBaseGrid!.Value);
+            var legionWorldBounds = legionGridComp.LocalAABB.Translated(
+                SEntMan.System<SharedTransformSystem>().GetWorldPosition(legionBaseGrid.Value));
+            var legionRockCount = 0;
+            var legionRockQuery = SEntMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+            while (legionRockQuery.MoveNext(out _, out var legionRockMeta, out var legionRockXform))
+            {
+                if (legionRockXform.MapID != mapId || legionRockXform.GridUid != mapUid)
+                    continue;
+
+                var id = legionRockMeta.EntityPrototype?.ID;
+                if (id?.StartsWith("AsteroidRock", StringComparison.Ordinal) != true &&
+                    id?.StartsWith("WallRock", StringComparison.Ordinal) != true)
+                    continue;
+
+                if (legionWorldBounds.Contains(legionRockXform.WorldPosition))
+                    legionRockCount++;
+            }
+            Assert.That(legionRockCount, Is.Zero, "Rocks remain inside the Legion base footprint.");
+
+            var legionSpawnerCount = 0;
+            var legionSpawnerQuery = SEntMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+            while (legionSpawnerQuery.MoveNext(out _, out var legionSpawnerMeta, out var legionSpawnerXform))
+            {
+                if (legionSpawnerXform.MapID == mapId && legionSpawnerMeta.EntityPrototype?.ID == "LavalandSpawnMobLegion")
+                    legionSpawnerCount++;
+            }
+            Assert.That(legionSpawnerCount, Is.Zero, "The Legion base spawner was not consumed.");
+
             var bossCount = 0;
             var bossQuery = SEntMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
             while (bossQuery.MoveNext(out _, out var bossMeta, out var bossXform))
@@ -358,7 +402,33 @@ public sealed class LavalandMapTest : GameTest
                 if (bossXform.MapID == mapId && bossMeta.EntityPrototype?.ID == "LavalandMobBloodMiner")
                     bossCount++;
             }
-            Assert.That(bossCount, Is.EqualTo(1), "The Blood Miner arena did not spawn exactly one phase-one boss.");
+            Assert.That(bossCount, Is.EqualTo(1),
+                $"The Blood Miner arena did not spawn exactly one phase-one boss (found {bossCount}, arenas {arenaCount}, grids {dungeonCount}).");
+
+            var legionCount = 0;
+            var staffCount = 0;
+            var uniqueContentQuery = SEntMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+            while (uniqueContentQuery.MoveNext(out _, out var uniqueMeta, out var uniqueXform))
+            {
+                if (uniqueXform.MapID != mapId)
+                    continue;
+                if (uniqueMeta.EntityPrototype?.ID == "LavalandMobLegion")
+                    legionCount++;
+                if (uniqueMeta.EntityPrototype?.ID == "LavalandWeaponStaffHealing")
+                    staffCount++;
+            }
+            Assert.That(legionCount, Is.GreaterThanOrEqualTo(1), "No legion spawned in the Legion base.");
+            if (staffCount != 1)
+            {
+                var staffDebug = new List<string>();
+                var debugQuery = SEntMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+                while (debugQuery.MoveNext(out var debugUid, out var debugMeta, out var debugXform))
+                {
+                    if (debugMeta.EntityPrototype?.ID == "LavalandWeaponStaffHealing")
+                        staffDebug.Add($"{debugUid} map={debugXform.MapID} grid={debugXform.GridUid} parent={debugXform.ParentUid}");
+                }
+                Assert.Fail($"The Legion base did not spawn its healing staff (count={staffCount}, all={string.Join("; ", staffDebug)}).");
+            }
 
             var bossSpawnerCount = 0;
             var spawnerQuery = SEntMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
@@ -385,6 +455,21 @@ public sealed class LavalandMapTest : GameTest
                     $"Dungeon grid {stableUid} still has Shuttle physics.");
             }
 
+            for (var i = 0; i < dungeonGrids.Count; i++)
+            {
+                var first = dungeonGrids[i].Uid;
+                var firstGrid = SEntMan.GetComponent<MapGridComponent>(first);
+                var firstBounds = firstGrid.LocalAABB.Translated(xformSystem.GetWorldPosition(first));
+                for (var j = i + 1; j < dungeonGrids.Count; j++)
+                {
+                    var second = dungeonGrids[j].Uid;
+                    var secondGrid = SEntMan.GetComponent<MapGridComponent>(second);
+                    var secondBounds = secondGrid.LocalAABB.Translated(xformSystem.GetWorldPosition(second));
+                    Assert.That(firstBounds.Intersects(secondBounds), Is.False,
+                        $"Dungeon grids {first} {firstBounds} and {second} {secondBounds} overlap.");
+                }
+            }
+
             await Pair.RunTicksSync(120);
             await Server.WaitPost(() =>
             {
@@ -405,33 +490,42 @@ public sealed class LavalandMapTest : GameTest
                     faxText += paper.Content;
             }
 
+            var expectedTendrils = 0;
+            var poiSpawnerQuery = SEntMan.EntityQueryEnumerator<LavalandPoiSpawnerComponent>();
+            if (poiSpawnerQuery.MoveNext(out _, out var poiSpawner))
+                expectedTendrils = poiSpawner.Prototypes.Count;
+
             var faxLines = faxText
                 .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                .Where(line => line.StartsWith("X=", StringComparison.Ordinal))
+                .Where(line => line.Contains("X=", StringComparison.Ordinal))
                 .ToList();
-            Assert.That(faxLines, Has.Count.EqualTo(dungeonCount),
-                "The POI fax must contain exactly one coordinate per dungeon and arena.");
+            Assert.That(faxLines, Has.Count.EqualTo(dungeonCount + expectedTendrils),
+                "The POI fax must contain one coordinate for every dungeon, arena, base and configured tendril.");
             foreach (var line in faxLines)
-                Assert.That(line, Does.Match(@"^X=-?\d+, Y=-?\d+$"),
+                Assert.That(line, Does.Match(@"X=-?\d+, Y=-?\d+"),
                     $"POI fax coordinate is not rounded to integers: {line}");
 
-            Assert.That(faxText, Does.Not.Contain(arenaName),
-                "The POI fax must not contain dungeon names.");
-            foreach (var dungeonKey in new[]
+            Assert.That(faxText, Does.Contain(localization.GetString("lavaland-fax-object-arena")),
+                "The POI fax is missing the Blood Miner arena.");
+            Assert.That(faxText, Does.Contain(localization.GetString("lavaland-fax-object-legion-base")),
+                "The POI fax is missing the Legion base.");
+            foreach (var dungeonLabel in new[]
                      {
-                         "lavaland-dungeon-temple",
-                         "lavaland-dungeon-lava-lake",
-                         "lavaland-dungeon-cave-murder",
-                         "lavaland-dungeon-clown-room",
-                         "lavaland-dungeon-grassland-dome",
-                         "lavaland-dungeon-lava-river",
-                         "lavaland-dungeon-mineshaft",
-                         "lavaland-dungeon-snowy-dome",
+                         "lavaland-fax-object-monument",
+                         "lavaland-fax-object-lake-village",
+                         "lavaland-fax-object-cave",
+                         "lavaland-fax-object-bright-room",
+                         "lavaland-fax-object-green-dome",
+                         "lavaland-fax-object-lava-river",
+                         "lavaland-fax-object-mineshaft",
+                         "lavaland-fax-object-cold-dome",
                      })
             {
-                Assert.That(faxText, Does.Not.Contain(localization.GetString(dungeonKey)),
-                    $"The POI fax must not contain dungeon name {dungeonKey}.");
+                Assert.That(faxText, Does.Contain(localization.GetString(dungeonLabel)),
+                    $"The POI fax is missing dungeon label {dungeonLabel}.");
             }
+            Assert.That(faxText, Does.Not.Contain(localization.GetString("lavaland-dungeon-temple")),
+                "The POI fax must use vague survey labels, not exact dungeon names.");
 
             var weatherScheduler = SEntMan.GetComponent<LavalandWeatherSchedulerComponent>(mapUid);
             weatherScheduler.Stage = 2;

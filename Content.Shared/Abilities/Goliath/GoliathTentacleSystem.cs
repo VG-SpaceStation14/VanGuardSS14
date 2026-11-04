@@ -43,11 +43,23 @@ public sealed partial class GoliathTentacleSystem : EntitySystem
         var dirs = new List<Direction>();
         dirs.AddRange(args.OffsetDirections);
 
-        for (var i = 0; i < 3; i++)
+        // VG-Tweak Start
+        // Allow actions to choose the number of extra tentacles: the ancient
+        // goliath uses two (three total) while the common goliath keeps three.
+        for (var i = 0; i < args.ExtraSpawns; i++)
         {
-            var dir = _random.PickAndTake(dirs);
+            // VG-Tweak: ancient goliaths can request more than the four
+            // cardinal directions.
+            var dir = dirs.Count > 0
+                ? _random.PickAndTake(dirs)
+                : _random.Pick(new[]
+                {
+                    Direction.North, Direction.South, Direction.East, Direction.West,
+                    Direction.NorthEast, Direction.SouthEast, Direction.SouthWest, Direction.NorthWest,
+                });
             spawnPos.Add(coords.Offset(dir));
         }
+        // VG-Tweak End
 
         if (_transform.GetGrid(coords) is not { } grid || !TryComp<MapGridComponent>(grid, out var gridComp))
             return;
