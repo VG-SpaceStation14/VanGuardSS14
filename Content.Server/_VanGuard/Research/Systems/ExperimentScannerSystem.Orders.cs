@@ -33,13 +33,24 @@ public sealed partial class ExperimentScannerSystem
         if (candidates.Count == 0)
             return false;
 
-        var selected = _random.Pick(candidates);
-        if (!TryCreateOrder(station, selected, db.NextOrderId, out var order))
-            return false;
+        // A randomly selected experiment may not be creatable on this station
+        // (for example, when no matching species or vending machine exists).
+        // Keep trying the remaining candidates instead of reporting the whole
+        // pool as empty.
+        while (candidates.Count > 0)
+        {
+            var selected = _random.Pick(candidates);
+            candidates.Remove(selected);
 
-        db.NextOrderId++;
-        db.AvailableOrders.Add(order);
-        return true;
+            if (!TryCreateOrder(station, selected, db.NextOrderId, out var order))
+                continue;
+
+            db.NextOrderId++;
+            db.AvailableOrders.Add(order);
+            return true;
+        }
+
+        return false;
     }
 
     private bool TryCreateOrder(
