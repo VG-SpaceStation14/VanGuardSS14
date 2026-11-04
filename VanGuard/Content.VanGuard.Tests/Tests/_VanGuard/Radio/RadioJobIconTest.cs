@@ -9,6 +9,7 @@ using Robust.Client.UserInterface.Controls;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Localization;
 using Robust.Shared.Maths;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
 namespace Content.IntegrationTests.Tests._VanGuard.Radio;
@@ -20,6 +21,9 @@ namespace Content.IntegrationTests.Tests._VanGuard.Radio;
 [TestFixture]
 public sealed class RadioJobIconTest : GameTest
 {
+    private static readonly ProtoId<JobIconPrototype> CaptainIcon = "JobIconCaptain";
+    private static readonly ProtoId<JobIconPrototype> NoIdIcon = "JobIconNoId";
+
     [Test]
     public async Task MarkupUsesEquippedIdCardIcon()
     {
@@ -108,7 +112,7 @@ public sealed class RadioJobIconTest : GameTest
             Assert.That(icon.SetWidth, Is.EqualTo(16f));
             Assert.That(icon.SetHeight, Is.EqualTo(16f));
             Assert.That(icon.ToolTip,
-                Is.EqualTo(CProtoMan.Index<JobIconPrototype>("JobIconCaptain").LocalizedJobName));
+                Is.EqualTo(CProtoMan.Index(CaptainIcon).LocalizedJobName));
 
             label.Orphan();
         });
@@ -127,7 +131,7 @@ public sealed class RadioJobIconTest : GameTest
             Assert.That(icon, Is.Not.Null, "the fallback job icon was not created");
             Assert.That(icon!.Texture, Is.Not.Null, "the fallback job icon has no texture");
             Assert.That(icon.ToolTip,
-                Is.EqualTo(CProtoMan.Index<JobIconPrototype>("JobIconNoId").LocalizedJobName));
+                Is.EqualTo(CProtoMan.Index(NoIdIcon).LocalizedJobName));
 
             label.Orphan();
         });
