@@ -48,6 +48,10 @@
     locTurnedOff: emitter-turn-off-broadcast
     radioChannel: Engineering
     requirePowered: true
+  # VG-Tweak Start
+  - type: RadioIconOverride
+    icon: JobIconMachine
+  # VG-Tweak End
   - type: Gun
     showExamineText: false
     burstCooldown: 1.4

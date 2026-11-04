@@ -530,6 +530,10 @@
           - Write
   - type: CargoOrderConsole
     removeLimitAccess: [ "Quartermaster" ]
+  # VG-Tweak Start
+  - type: RadioIconOverride
+    icon: JobIconCargoConsole
+  # VG-Tweak End
   - type: DeviceLinkSource
     range: 200
     ports:

@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Content.Shared._VanGuard.Radio;
 using Content.Shared.Access.Components;
 using Content.Shared.Inventory;
 using Content.Shared.PDA;
@@ -31,7 +32,9 @@ public sealed partial class RadioJobIconSystem : EntitySystem
     {
         var icon = NoIdIcon;
 
-        if (TryGetIdCard(speaker, out var idCard) && IsValidIcon(idCard.JobIcon))
+        if (TryComp<RadioIconOverrideComponent>(speaker, out var iconOverride) && IsValidIcon(iconOverride.Icon))
+            icon = iconOverride.Icon;
+        else if (TryGetIdCard(speaker, out var idCard) && IsValidIcon(idCard.JobIcon))
             icon = idCard.JobIcon;
 
         if (!ProtoMan.TryIndex(icon, out _))

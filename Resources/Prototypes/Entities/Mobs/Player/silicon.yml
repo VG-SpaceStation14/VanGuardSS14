@@ -29,6 +29,10 @@
     - Supply
   - type: IgnoreUIRange
   - type: StationAiHeld
+  # VG-Tweak Start
+  - type: RadioIconOverride
+    icon: JobIconStationAi
+  # VG-Tweak End
   - type: StationAiOverlay
   - type: ShowElectrocutionHUD
   - type: ActionGrant

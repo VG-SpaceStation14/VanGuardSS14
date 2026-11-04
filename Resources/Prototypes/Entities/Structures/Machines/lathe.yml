@@ -45,6 +45,10 @@
     price: 800
   - type: ResearchClient
   - type: TechnologyDatabase
+  # VG-Tweak Start
+  - type: RadioIconOverride
+    icon: JobIconMachine
+  # VG-Tweak End
   - type: ApcPowerReceiver
     powerLoad: 150
   - type: PowerState

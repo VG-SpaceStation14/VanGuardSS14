@@ -1,0 +1,44 @@
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconMachine
+  icon:
+    sprite: /Textures/_VanGuard/Interface/Misc/machine_job_icons.rsi
+    state: Machine
+  jobName: job-name-machine
+  isCrewJob: false
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSalvageMagnet
+  icon:
+    sprite: /Textures/_VanGuard/Interface/Misc/machine_job_icons.rsi
+    state: SalvageMagnet
+  jobName: job-name-salvage-magnet
+  isCrewJob: false
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconAnomalyGenerator
+  icon:
+    sprite: /Textures/_VanGuard/Interface/Misc/machine_job_icons.rsi
+    state: AnomalyGenerator
+  jobName: job-name-anomaly-generator
+  isCrewJob: false
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconCargoConsole
+  icon:
+    sprite: /Textures/_VanGuard/Interface/Misc/machine_job_icons.rsi
+    state: CargoConsole
+  jobName: job-name-cargo-console
+  isCrewJob: false
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconCriminalRecords
+  icon:
+    sprite: /Textures/_VanGuard/Interface/Misc/machine_job_icons.rsi
+    state: CriminalRecords
+  jobName: job-name-criminal-records
+  isCrewJob: false
