@@ -148,6 +148,17 @@ public sealed partial class LavalandUniqueStructureSystem : EntitySystem
                 // prevents spawners from firing at the map origin while a
                 // candidate layout is still being validated.
                 InitializeGridTree(grid.Value.Owner);
+
+                // The Legion base map has authored Space holes in its
+                // interior. Without sealing them the planet surface (lava or
+                // chasm) remains visible through the base floor.
+                SealHoles(grid.Value.Owner, gridComp);
+
+                // Initialization can trigger lazy biome generation around the
+                // structure. Clear the final footprint once more so the base
+                // never ends up embedded in rock.
+                ClearArea(mapUid, mapGrid, bounds);
+
                 var spawnedGrid = grid.Value.Owner;
                 Timer.Spawn(TimeSpan.Zero, () =>
                 {
@@ -224,6 +235,32 @@ public sealed partial class LavalandUniqueStructureSystem : EntitySystem
         }
 
         QueueDel(grid);
+    }
+
+    private void SealHoles(EntityUid grid, MapGridComponent gridComp)
+    {
+        var space = _tiles["Space"].TileId;
+        var floor = new Tile(_tiles["FloorCave"].TileId);
+        var min = new Vector2i(
+            (int) MathF.Floor(gridComp.LocalAABB.Left),
+            (int) MathF.Floor(gridComp.LocalAABB.Bottom));
+        var max = new Vector2i(
+            (int) MathF.Ceiling(gridComp.LocalAABB.Right),
+            (int) MathF.Ceiling(gridComp.LocalAABB.Top));
+
+        for (var x = min.X; x < max.X; x++)
+        {
+            for (var y = min.Y; y < max.Y; y++)
+            {
+                var indices = new Vector2i(x, y);
+                if (!_map.TryGetTile(gridComp, indices, out var tile) ||
+                    tile.IsEmpty ||
+                    tile.TypeId == space)
+                {
+                    _map.SetTile(grid, gridComp, indices, floor);
+                }
+            }
+        }
     }
 
     private void ClearArea(EntityUid mapUid, MapGridComponent grid, Box2 bounds)

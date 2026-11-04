@@ -14,6 +14,9 @@ using Content.Shared.Damage;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Hands.EntitySystems;
+using Content.Shared.Item.ItemToggle;
+using Content.Shared.Item.ItemToggle.Components;
+using Content.Shared.Weapons.Melee;
 using Content.Shared.Teleportation.Components;
 using Content.Shared.Teleportation.Systems;
 using Content.Shared.Chasm;
@@ -39,6 +42,7 @@ using Content.Shared.Clothing.Components;
 using Content.Shared.Weapons.Ranged.Components;
 using Robust.Shared.Containers;
 using Robust.Shared.Map;
+using Robust.Shared.Timing;
 using Robust.Shared.Maths;
 
 using Robust.Shared.EntitySerialization;
@@ -289,6 +293,83 @@ public sealed class LavalandContentTest : GameTest
                     SEntMan.DeleteEntity(core);
                 if (patient != default && SEntMan.EntityExists(patient))
                     SEntMan.DeleteEntity(patient);
+            });
+        }
+    }
+
+    [Test]
+    public async Task CleavingSawHasTwoCombatModes()
+    {
+        var grid = GetStationGrid();
+        var saw = default(EntityUid);
+        try
+        {
+            await Server.WaitPost(() =>
+            {
+                saw = SEntMan.SpawnEntity("LavalandCleavingSaw", new EntityCoordinates(grid, 1200, 1200));
+                var melee = SEntMan.GetComponent<MeleeWeaponComponent>(saw);
+                Assert.That(melee.Damage.GetTotal().Float(), Is.EqualTo(12f),
+                    "The saw must start in its inactive, low-damage mode.");
+
+                var toggle = SEntMan.GetComponent<ItemToggleComponent>(saw);
+                Assert.That(toggle.Activated, Is.False);
+                Server.System<ItemToggleSystem>().Toggle((saw, toggle));
+                Assert.That(SEntMan.GetComponent<ItemToggleComponent>(saw).Activated, Is.True);
+                Assert.That(SEntMan.GetComponent<MeleeWeaponComponent>(saw).Damage.GetTotal().Float(),
+                    Is.EqualTo(30f), "The active saw must use its high-damage mode.");
+            });
+        }
+        finally
+        {
+            await Server.WaitPost(() =>
+            {
+                if (SEntMan.EntityExists(saw))
+                    SEntMan.DeleteEntity(saw);
+            });
+        }
+    }
+
+    [Test]
+    public async Task FailedShelterDeploymentStartsCooldown()
+    {
+        var grid = GetStationGrid();
+        var player = Pair.Player!.AttachedEntity!.Value;
+        var capsule = default(EntityUid);
+        var wall = default(EntityUid);
+
+        try
+        {
+            await Server.WaitPost(() =>
+            {
+                var coords = new EntityCoordinates(grid, 1400, 1400);
+                wall = SEntMan.SpawnEntity("WallSolid", coords);
+                capsule = SEntMan.SpawnEntity("ShelterCapsule", coords);
+                SEntMan.EventBus.RaiseLocalEvent(capsule, new UseInHandEvent(player));
+            });
+
+            await Pair.RunTicksSync(170);
+
+            await Server.WaitPost(() =>
+            {
+                var comp = SEntMan.GetComponent<ShelterCapsuleComponent>(capsule);
+                Assert.That(comp.CooldownUntil, Is.Not.Null,
+                    "A failed deployment must start the failure cooldown.");
+                Assert.That(comp.CooldownUntil!.Value, Is.GreaterThan(Server.ResolveDependency<IGameTiming>().CurTime),
+                    "The failure cooldown must still be active after the failed deployment.");
+
+                SEntMan.EventBus.RaiseLocalEvent(capsule, new UseInHandEvent(player));
+                Assert.That(comp.NextSpawn, Is.Null,
+                    "Using the capsule during the failure cooldown must not begin another deployment.");
+            });
+        }
+        finally
+        {
+            await Server.WaitPost(() =>
+            {
+                if (SEntMan.EntityExists(capsule))
+                    SEntMan.DeleteEntity(capsule);
+                if (SEntMan.EntityExists(wall))
+                    SEntMan.DeleteEntity(wall);
             });
         }
     }

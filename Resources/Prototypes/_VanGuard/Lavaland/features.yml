@@ -19,4 +19,12 @@
   components:
   - type: LavalandBiomeFeature
     options:
-    - LavalandTendril
+    - LavalandTendrilGoliath
+    - LavalandTendrilGoliath
+    - LavalandTendrilLegion
+    - LavalandTendrilLegion
+    - LavalandTendrilWatcher
+    - LavalandTendrilAncientGoliath
+    - LavalandTendrilIcewing
+    - LavalandTendrilMagmawing
+    - LavalandTendrilPride

@@ -52,6 +52,7 @@ public sealed partial class ShelterCapsuleSystem : EntitySystem
                 continue;
             }
 
+            comp.CooldownUntil = _timing.CurTime + comp.FailureCooldown;
             _popup.PopupEntity(Loc.GetString("shelter-capsule-error", ("reason", error ?? "unknown")), uid, PopupType.LargeCaution);
         }
     }
@@ -62,6 +63,12 @@ public sealed partial class ShelterCapsuleSystem : EntitySystem
             return;
 
         args.Handled = true;
+        if (ent.Comp.CooldownUntil is { } cooldown && _timing.CurTime < cooldown)
+        {
+            _popup.PopupPredicted(Loc.GetString("shelter-capsule-cooldown"), ent, args.User, PopupType.MediumCaution);
+            return;
+        }
+
         ent.Comp.User = args.User;
         ent.Comp.NextSpawn = _timing.CurTime + ent.Comp.Delay;
         _popup.PopupPredicted(Loc.GetString("shelter-capsule-warning"), ent, args.User, PopupType.LargeCaution);
