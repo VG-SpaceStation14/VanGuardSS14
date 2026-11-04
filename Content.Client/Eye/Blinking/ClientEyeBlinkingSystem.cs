@@ -206,6 +206,14 @@ public sealed partial class ClientEyeBlinkingSystem : EyeBlinkingSystem
     /// with defined minimum and maximum blink intervals.</param>
     public void ResetBlink(Entity<EyeBlinkingComponent> ent)
     {
+        // VG-Tweak Start: do not schedule new blink cycles for dead entities.
+        if (ent.Comp.Status.HasFlag(BlinkStatus.Dead))
+        {
+            ent.Comp.BlinkInProgress = false;
+            return;
+        }
+        // VG-Tweak End
+
         // VG-Tweak Start: intensity-scaled interval + long interval chance
         var intensity = GetBlinkIntensity(ent);
         var minInterval = LerpTimeSpan(ent.Comp.MinBlinkInterval, ent.Comp.InjuredMinBlinkInterval, intensity);
@@ -283,7 +291,9 @@ public sealed partial class ClientEyeBlinkingSystem : EyeBlinkingSystem
         // Initialize and randomize the blink timer.
         ResetBlink(ent);
 
-        ChangeEyesState(ent, ent.Comp.Status != BlinkStatus.Normal);
+        // VG-Tweak Start: dead entities must not be initialized with closed eyes.
+        ChangeEyesState(ent, ShouldCloseEyes(ent.Comp.Status));
+        // VG-Tweak End
 
         ent.Comp.LastStatus = ent.Comp.Status;
     }
@@ -437,8 +447,18 @@ public sealed partial class ClientEyeBlinkingSystem : EyeBlinkingSystem
         {
             // We can see again! Open our eyes and restart the cycle.
             ChangeEyesState(ent, false);
+            // VG-Tweak Start: clear any blink that was interrupted by death.
+            CancelBlink(ent);
+            // VG-Tweak End
             ResetBlink(ent);
         }
+        // VG-Tweak Start: dead entities always keep their eyes open.
+        else if (ent.Comp.Status.HasFlag(BlinkStatus.Dead))
+        {
+            ChangeEyesState(ent, false);
+            CancelBlink(ent);
+        }
+        // VG-Tweak End
         else if (oldValue == BlinkStatus.Normal && !ent.Comp.Status.HasFlag(BlinkStatus.Dead))
         {
             // Eyes need to close (unless we're dead!)
