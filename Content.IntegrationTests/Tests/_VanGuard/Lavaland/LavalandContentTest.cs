@@ -60,8 +60,8 @@ public sealed class LavalandContentTest : GameTest
     public override PoolSettings PoolSettings => new()
     {
         Connected = true,
+        Dirty = true,
         DummyTicker = false,
-        Fresh = true,
     };
 
     [Test]
