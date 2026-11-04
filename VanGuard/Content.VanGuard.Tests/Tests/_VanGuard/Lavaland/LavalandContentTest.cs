@@ -47,6 +47,7 @@ using Robust.Shared.Utility;
 
 
 using Content.IntegrationTests.Fixtures;
+using Content.IntegrationTests.Fixtures.Attributes;
 using Robust.Shared.GameObjects;
 
 using Robust.Shared.Map.Components;
@@ -61,6 +62,14 @@ public sealed class LavalandContentTest : GameTest
     {
         Connected = true,
         Dirty = true,
+        DummyTicker = false,
+    };
+
+    public static PoolSettings Fresh => new()
+    {
+        Connected = true,
+        Dirty = true,
+        Fresh = true,
         DummyTicker = false,
     };
 
@@ -707,6 +716,7 @@ public sealed class LavalandContentTest : GameTest
     }
 
     [Test]
+    [PairConfig(nameof(Fresh))]
     public async Task LavalandFaunaIsStormImmuneButPlayersAndAnimalsAreNot()
     {
         var grid = GetStationGrid();
