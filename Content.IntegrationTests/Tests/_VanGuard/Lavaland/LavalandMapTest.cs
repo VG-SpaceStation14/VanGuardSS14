@@ -37,6 +37,7 @@ using Robust.Shared.Prototypes;
 namespace Content.IntegrationTests.Tests._VanGuard.Lavaland;
 
 [TestFixture]
+[NonParallelizable]
 public sealed class LavalandMapTest : GameTest
 {
     public override PoolSettings PoolSettings => new()
