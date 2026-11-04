@@ -460,7 +460,13 @@ public sealed class LavalandMapTest : GameTest
             {
                 if (stableXform.MapID != mapId || stableUid == mapUid || stableUid == outpostUid)
                     continue;
-                dungeonGrids.Add((stableUid, stableXform.LocalRotation));
+
+                // Internal child grids of a POI can legitimately overlap each
+                // other. Only named root POIs participate in the placement checks.
+                var stableMeta = SEntMan.GetComponent<MetaDataComponent>(stableUid);
+                if (stableMeta.EntityName != "grid")
+                    dungeonGrids.Add((stableUid, stableXform.LocalRotation));
+
                 Assert.That(SEntMan.HasComponent<Content.Shared.Shuttles.Components.ShuttleComponent>(stableUid), Is.False,
                     $"Dungeon grid {stableUid} still has Shuttle physics.");
             }
