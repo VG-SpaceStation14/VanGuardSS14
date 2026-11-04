@@ -1,0 +1,29 @@
+meta:
+  format: 7
+  category: Map
+  engineVersion: 294.0.0
+  forkId: ""
+  forkVersion: ""
+  time: 11/02/2026 08:45:00
+  entityCount: 1
+maps:
+- 1
+grids: []
+orphans: []
+nullspace: []
+tilemap: {}
+entities:
+- proto: ""
+  entities:
+  - uid: 1
+    components:
+    - type: MetaData
+      name: lavaland-map-name
+    - type: Transform
+    - type: Map
+      mapPaused: True
+    - type: GridTree
+    - type: Broadphase
+    - type: OccluderTree
+    - type: ChunkContainer
+      chunkEntities: []

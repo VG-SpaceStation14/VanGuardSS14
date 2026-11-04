@@ -1,0 +1,67 @@
+- type: entity
+  parent: BaseItem
+  id: LavalandCleavingSaw
+  name: cleaving saw
+  description: A brutal telescopic saw carried by the Blood Miner. Heavy, but it cuts through hide and bone alike.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Objects/Weapons/Melee/cleaving_saw.rsi
+    layers:
+    - state: icon_off
+      map: ["enum.ToggleableVisuals.Layer"]
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        enum.ToggleableVisuals.Layer:
+          True: {state: icon_on}
+          False: {state: icon_off}
+  - type: ItemToggle
+    soundActivate:
+      path: /Audio/_VanGuard/Effects/Magic/Clockwork/fellowship_armory.ogg
+    soundDeactivate:
+      path: /Audio/_VanGuard/Effects/Magic/Clockwork/fellowship_armory.ogg
+  - type: ItemTogglePrefix
+    prefixOn: on
+    prefixOff: off
+  - type: ItemToggleMeleeWeapon
+    activatedDamage:
+      types:
+        Slash: 30
+    deactivatedDamage:
+      types:
+        Slash: 12
+  - type: Item
+    size: Normal
+    sprite: _VanGuard/Objects/Weapons/Melee/cleaving_saw-inhands.rsi
+    heldPrefix: off
+  - type: ItemToggleSize
+    activatedSize: Large
+    deactivatedSize: Normal
+  - type: LavalandSwitchableWeapon
+    attackRateActivated: 1
+    attackRateDeactivated: 2
+  - type: MeleeWeapon
+    damage:
+      types:
+        Slash: 12
+    attackRate: 2
+    angle: 90
+    animation: WeaponArcSlash
+    soundHit:
+      path: /Audio/Weapons/bladeslice.ogg
+  - type: UseDelay
+    delay: 1
+  - type: DisarmMalus
+    malus: 0
+  - type: ComponentToggler
+    components:
+    - type: Reflect
+      reflectProb: 0.15
+  - type: Clothing
+    sprite: _VanGuard/Objects/Weapons/Melee/cleaving_saw.rsi
+    quickEquip: false
+    slots:
+    - Belt
+  - type: StaticPrice
+    price: 1000

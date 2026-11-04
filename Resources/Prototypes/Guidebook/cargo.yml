@@ -5,6 +5,9 @@
   children:
   - CargoBounties
   - Salvage
+  # VG-Tweak Start
+  - Lavaland
+  # VG-Tweak End
 
 - type: guideEntry
   id: CargoBounties
@@ -15,3 +18,10 @@
   id: Salvage
   name: guide-entry-salvage
   text: "/ServerInfo/Guidebook/Cargo/Salvage.xml"
+
+# VG-Tweak Start
+- type: guideEntry
+  id: Lavaland
+  name: guide-entry-lavaland
+  text: "/ServerInfo/Guidebook/_VanGuard/Lavaland.xml"
+# VG-Tweak End

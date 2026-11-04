@@ -1,0 +1,12 @@
+- type: entity
+  parent: ClothingOuterHardsuitSalvage
+  id: ClothingOuterHardsuitMining
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: ToggleableClothing
+    clothingPrototype: ClothingHeadHelmetHardsuitMining
+
+- type: entity
+  parent: ClothingHeadHelmetHardsuitSalvage
+  id: ClothingHeadHelmetHardsuitMining
+  categories: [ HideSpawnMenu ]

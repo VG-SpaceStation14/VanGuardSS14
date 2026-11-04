@@ -1,0 +1,34 @@
+- type: entity
+  parent: BaseItem
+  id: ShelterCapsule
+  name: bluespace shelter capsule
+  description: An emergency shelter stored within a pocket of bluespace.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Objects/Specific/Salvage/shelter_capsule.rsi
+    state: capsule
+  - type: Item
+    size: Tiny
+  - type: ShelterCapsule
+    gridPath: /Maps/_VanGuard/Lavaland/small.yml
+
+- type: entity
+  parent: ShelterCapsule
+  id: ShelterCapsuleLuxury
+  name: luxury bluespace shelter capsule
+  description: An exorbitantly expensive luxury suite stored within a pocket of bluespace.
+  components:
+  - type: ShelterCapsule
+    delay: 8
+    gridPath: /Maps/_VanGuard/Lavaland/luxury.yml
+
+- type: entity
+  parent: ShelterCapsule
+  id: ShelterCapsuleBar
+  name: luxury elite bar capsule
+  description: A luxury bar in a capsule. Bartender required and not included.
+  components:
+  - type: ShelterCapsule
+    delay: 10
+    gridPath: /Maps/_VanGuard/Lavaland/bar.yml
+

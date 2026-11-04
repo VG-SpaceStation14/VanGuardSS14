@@ -5,6 +5,9 @@
   abstract: true
   description: It's like it's staring right through you.
   components:
+  # VG-Tweak Start: Lavaland fauna is adapted to ash storms
+  - type: LavalandAshStormImmune
+  # VG-Tweak End
   - type: NpcFactionMember
     factions:
     - SimpleHostile

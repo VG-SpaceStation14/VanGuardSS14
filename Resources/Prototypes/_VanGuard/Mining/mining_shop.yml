@@ -36,8 +36,16 @@
     price: 1000
   - id: Fulton
     price: 1750
+  - id: Jaunter
+    price: 900
   - id: WeaponGrapplingGun
     price: 750
+  - id: ShelterCapsule
+    price: 500
+  - id: ShelterCapsuleLuxury
+    price: 3500
+  - id: ShelterCapsuleBar
+    price: 7500
 
 - type: miningShopSection
   id: Medicine
@@ -57,6 +65,8 @@
     price: 800
   - id: MedkitToxinFilled
     price: 1000
+  - id: LavalandStabilizingSerum
+    price: 300
 
 - type: miningShopSection
   id: EquipmentWearable

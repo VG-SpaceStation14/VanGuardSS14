@@ -1,0 +1,231 @@
+- type: roleLoadout
+  id: JobMiner
+  groups:
+  - Inventory
+  - GroupTankHarness
+  - MinerID
+  - PdaPen
+  - SalvageSpecialistBackpack
+  - MinerJumpsuit
+  - MinerEars
+  - MinerHead
+  - MinerNeck
+  - MinerOuter
+  - MinerShoes
+  - MinerBelt
+  - Glasses
+  - AssistiveItems
+  - Survival
+  - Trinkets
+  - GroupSpeciesBreathTool
+  - VGStickers
+
+- type: loadoutGroup
+  id: MinerShoes
+  name: loadout-group-miner-shoes
+  loadouts:
+  - SalvageBoots
+  - MinerFootWrapsWhite
+  - MinerFootWrapsHighWhite
+  - MinerFootWrapsBrown
+  - MinerFootWrapsHighBrown
+  - MinerFootWrapsBlack
+  - MinerFootWrapsHighBlack
+
+- type: loadoutGroup
+  id: MinerJumpsuit
+  name: loadout-group-miner-jumpsuit
+  loadouts:
+  - MinerExplorerJumpsuit
+
+- type: loadout
+  id: MinerSalvageJumpsuit
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitSalvageSpecialist
+
+- type: loadout
+  id: MinerExplorerJumpsuit
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitMinerExplorer
+
+- type: loadoutGroup
+  id: MinerEars
+  name: loadout-group-miner-ears
+  loadouts:
+  - MinerHeadset
+
+- type: loadout
+  id: MinerHeadset
+  equipment:
+    ears: ClothingHeadsetMining
+
+- type: loadoutGroup
+  id: MinerHead
+  name: loadout-group-miner-head
+  minLimit: 0
+  loadouts:
+  - MinerCargoCap
+
+- type: loadout
+  id: MinerCargoCap
+  equipment:
+    head: ClothingHeadHatCargosoft
+
+- type: loadoutEffectGroup
+  id: MinerSalvagerSupremeTime
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobMiner
+      time: 18000
+
+- type: loadoutGroup
+  id: MinerNeck
+  name: loadout-group-miner-neck
+  minLimit: 0
+  loadouts:
+  - MinerCopperCape
+  - MinerSilverCape
+  - MinerGoldenCape
+  - MinerPlatinumCape
+  - MinerEmeraldCape
+  - MinerDiamondCape
+  - MinerRubieCape
+
+- type: loadoutEffectGroup
+  id: MinerCape15
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobMiner
+      time: 54000
+
+- type: loadoutEffectGroup
+  id: MinerCape30
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobMiner
+      time: 108000
+
+- type: loadoutEffectGroup
+  id: MinerCape60
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobMiner
+      time: 216000
+
+- type: loadoutEffectGroup
+  id: MinerCape100
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobMiner
+      time: 360000
+
+- type: loadoutEffectGroup
+  id: MinerCape300
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobMiner
+      time: 1080000
+
+- type: loadout
+  id: MinerCopperCape
+  equipment:
+    neck: ClothingNeckMinerCopperCape
+- type: loadout
+  id: MinerSilverCape
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MinerSalvagerSupremeTime
+  equipment:
+    neck: ClothingNeckMinerSilverCape
+- type: loadout
+  id: MinerGoldenCape
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MinerCape15
+  equipment:
+    neck: ClothingNeckMinerGoldenCape
+- type: loadout
+  id: MinerPlatinumCape
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MinerCape30
+  equipment:
+    neck: ClothingNeckMinerPlatinumCape
+- type: loadout
+  id: MinerEmeraldCape
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MinerCape60
+  equipment:
+    neck: ClothingNeckMinerEmeraldCape
+- type: loadout
+  id: MinerDiamondCape
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MinerCape100
+  equipment:
+    neck: ClothingNeckMinerDiamondCape
+- type: loadout
+  id: MinerRubieCape
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MinerCape300
+  equipment:
+    neck: ClothingNeckMinerRubieCape
+
+- type: loadout
+  id: MinerFootWrapsWhite
+  equipment: { shoes: ClothingShoesFootWrapsWhite }
+- type: loadout
+  id: MinerFootWrapsHighWhite
+  equipment: { shoes: ClothingShoesFootWrapsHighWhite }
+- type: loadout
+  id: MinerFootWrapsBrown
+  equipment: { shoes: ClothingShoesFootWrapsBrown }
+- type: loadout
+  id: MinerFootWrapsHighBrown
+  equipment: { shoes: ClothingShoesFootWrapsHighBrown }
+- type: loadout
+  id: MinerFootWrapsBlack
+  equipment: { shoes: ClothingShoesFootWrapsBlack }
+- type: loadout
+  id: MinerFootWrapsHighBlack
+  equipment: { shoes: ClothingShoesFootWrapsHighBlack }
+
+- type: loadoutGroup
+  id: MinerBelt
+  name: loadout-group-miner-belt
+  minLimit: 0
+  loadouts:
+  - MinerSalvageWebbing
+  - MinerToolbelt
+
+- type: loadout
+  id: MinerSalvageWebbing
+  equipment: { belt: ClothingBeltSalvageWebbing }
+- type: loadout
+  id: MinerToolbelt
+  equipment: { belt: ClothingBeltUtilityFilled }
+
+- type: loadoutGroup
+  id: MinerOuter
+  name: loadout-group-miner-outer
+  minLimit: 0
+  loadouts:
+  - MinerWintercoat
+
+- type: loadout
+  id: MinerWintercoat
+  equipment: { outerClothing: ClothingOuterWinterMiner }

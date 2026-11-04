@@ -1,0 +1,78 @@
+- type: entity
+  parent: AirlockShuttle
+  id: AirlockShuttleMiningLocked
+  suffix: Mining, Locked
+  components:
+  - type: PriorityDock
+    tag: DockMining
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsCargoSalvage ]
+  - type: Wires
+    layoutId: AirlockCargo
+
+- type: entity
+  parent: BaseComputer
+  id: MiningShuttleConsole
+  components:
+  - type: MiningShuttleConsole
+  - type: ActivatableUI
+    key: enum.MiningShuttleConsoleUiKey.MiningShuttleConsole
+  - type: ActivatableUIRequiresAccess
+  - type: UserInterface
+    interfaces:
+      enum.MiningShuttleConsoleUiKey.MiningShuttleConsole:
+        type: MiningConsoleBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: AccessReader
+    access: [["Cargo"], ["Salvage"]]
+  - type: Computer
+    board: MiningShuttleConsoleCircuitboard
+  - type: ComputerVisuals
+    stateScreen: shuttle
+  - type: PointLight
+    radius: 1.5
+    energy: 4.0
+    color: "#b89f25"
+
+- type: entity
+  parent: BaseComputerCircuitboard
+  id: MiningShuttleConsoleCircuitboard
+  components:
+  - type: Sprite
+    state: cpu_supply
+  - type: ComputerBoard
+    prototype: MiningShuttleConsole
+
+- type: entity
+  parent: AirlockExternalShuttleLocked
+  id: AirlockShuttleMiningGuestLocked
+  suffix: Mining Guest, Locked
+  components:
+  - type: PriorityDock
+    tag: DockMiningGuest
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsCargoSalvage ]
+  - type: Wires
+    layoutId: AirlockCargo
+
+- type: entity
+  parent: MiningShuttleConsole
+  id: GuestShuttleConsole
+  components:
+  - type: MiningShuttleConsole
+    mode: Guest
+    dockTag: DockMiningGuest
+  - type: Computer
+    board: GuestShuttleConsoleCircuitboard
+
+- type: entity
+  parent: BaseComputerCircuitboard
+  id: GuestShuttleConsoleCircuitboard
+  components:
+  - type: Sprite
+    state: cpu_supply
+  - type: ComputerBoard
+    prototype: GuestShuttleConsole

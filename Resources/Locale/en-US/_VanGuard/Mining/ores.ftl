@@ -65,3 +65,19 @@ stack-bluespace-ore = bluespace ore
 stack-bluespace-crystal = bluespace crystal
 
 research-technology-bluespace-crystal = Artificial Crystal Reproduction
+
+# Ore veins in asteroids and rock
+ent-AsteroidRockCopper = copper ore vein
+    .desc = An ore vein rich with copper.
+ent-AsteroidRockZinc = zinc ore vein
+    .desc = An ore vein rich with zinc.
+ent-AsteroidRockLead = lead ore vein
+    .desc = An ore vein rich with lead.
+ent-AsteroidRockBluespace = bluespace ore vein
+    .desc = An ore vein rich with bluespace crystals.
+ent-IronRockCopper = copper-bearing ironrock
+    .desc = Ironrock veined with copper.
+ent-IronRockZinc = zinc-bearing ironrock
+    .desc = Ironrock veined with zinc.
+ent-IronRockLead = lead-bearing ironrock
+    .desc = Ironrock veined with lead.

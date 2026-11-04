@@ -869,6 +869,14 @@
   loadouts:
   - SalvageBoots
   - CargoWinterBoots
+  # VG-Tweak Start
+  - MinerFootWrapsWhite
+  - MinerFootWrapsHighWhite
+  - MinerFootWrapsBrown
+  - MinerFootWrapsHighBrown
+  - MinerFootWrapsBlack
+  - MinerFootWrapsHighBlack
+  # VG-Tweak End
 
 #- type: loadoutGroup
 #  id: SalvageSpecialistJobTrinkets

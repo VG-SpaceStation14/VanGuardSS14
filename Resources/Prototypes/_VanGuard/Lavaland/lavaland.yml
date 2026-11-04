@@ -1,0 +1,112 @@
+# Lavaland iteration 1: planet map, outpost bootstrap and FTL target.
+
+- type: entity
+  id: LavalandLoader
+  parent: BaseSilentGameRule
+  components:
+  - type: LoadMapRule
+    mapPath: /Maps/_VanGuard/Lavaland/lavaland.yml
+  - type: LavalandOutpostRule
+    biome: Lava
+    gridPath: /Maps/_VanGuard/Lavaland/mining_outpost.yml
+    clearRadius: 10
+    mapLight: "#6e2c2c"
+    # Old-build Lavaland atmosphere: 13.65346 mol O2 + 23.24754 mol N2.
+    # At 313.15 K and 2500 L this gives about 38.4 kPa total pressure and a
+    # 14.2 kPa oxygen partial pressure, which is too low to breathe.
+    atmosphere:
+      temperature: 313.15
+      volume: 2500
+      moles:
+        Oxygen: 13.65346
+        Nitrogen: 23.24754
+    disableLightCycle: true
+    removeRoof: true
+    sunShadowDirection: "-1,-1"
+    sunShadowAlpha: 0.75
+    gravityEnabled: true
+    gravityInherent: true
+    ftlPointProto: LavalandFTLPoint
+    markerLayers:
+    - LavalandChasm
+    - LavalandChasmOpen
+    - LavalandArmokPit
+    - LavalandFeatures
+    - LavalandRareMobs
+    - OreIron
+    - OreCoal
+    - OreGold
+    - OreSilver
+    - OrePlasma
+    - OreUranium
+    - OreQuartz
+    - OreDiamond
+    mapBorderRadius: 250
+  - type: LavalandPoiSpawner
+    prototypes:
+    - LavalandTendril
+    - LavalandTendril
+    - LavalandTendril
+    - LavalandTendril
+    - LavalandTendril
+    - LavalandTendril
+    - LavalandTendrilGoliath
+    - LavalandTendrilGoliath
+    - LavalandTendrilGoliath
+    - LavalandTendrilWatcher
+    - LavalandTendrilAncientGoliath
+    - LavalandTendrilLegion
+    - LavalandTendrilIcewing
+    - LavalandTendrilMagmawing
+    - LavalandTendrilPride
+    - LavalandTendrilWatcher
+    - LavalandTendrilIcewing
+    - LavalandTendrilMagmawing
+    - LavalandTendrilPride
+    - LavalandTendrilWatcher
+    - LavalandTendrilIcewing
+    - LavalandTendrilMagmawing
+    - LavalandTendrilPride
+    minDistance: 100
+    maxDistance: 220
+    clearRadius: 18
+    sendFax: true
+    dungeons:
+    - /Maps/_VanGuard/Lavaland/Dungeons/temple.yml
+    - /Maps/_VanGuard/Lavaland/Dungeons/lava_lake_village.yml
+    - /Maps/_VanGuard/Lavaland/Dungeons/cave_murder.yml
+    - /Maps/_VanGuard/Lavaland/Dungeons/clown_room.yml
+    - /Maps/_VanGuard/Lavaland/Dungeons/grasslanddome.yml
+    - /Maps/_VanGuard/Lavaland/Dungeons/lava_river.yml
+    - /Maps/_VanGuard/Lavaland/Dungeons/mineshaft.yml
+    - /Maps/_VanGuard/Lavaland/Dungeons/snowydome.yml
+  - type: LavalandUniqueStructureSpawner
+    structures:
+    - id: BloodMinerArena
+      name: lavaland-poi-blood-miner-arena
+      faxName: lavaland-fax-object-arena
+      variants:
+      - /Maps/_VanGuard/Lavaland/Dungeons/bloodminerarena.yml
+      - /Maps/_VanGuard/Lavaland/Dungeons/bloodminerarena2.yml
+      guaranteedSpawns:
+      - LavalandMobBloodMiner
+      minDistance: 100
+      maxDistance: 220
+      clearRadius: 18
+    - id: LegionBase
+      name: lavaland-poi-legion-base
+      faxName: lavaland-fax-object-legion-base
+      variants:
+      - /Maps/_VanGuard/Lavaland/Dungeons/legionbase.yml
+      guaranteedSpawns:
+      - LavalandWeaponStaffHealing
+      - LavalandMobLegion
+      minDistance: 100
+      maxDistance: 220
+      clearRadius: 18
+
+
+# FTL target marker. The localized name comes from the prototype name key.
+- type: entity
+  parent: FTLPoint
+  id: LavalandFTLPoint

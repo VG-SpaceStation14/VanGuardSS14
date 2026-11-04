@@ -1,0 +1,7 @@
+- type: entity
+  parent: SpawnPointSalvageSpecialist
+  id: SpawnPointMiner
+  name: miner spawn point
+  components:
+  - type: SpawnPoint
+    job_id: Miner

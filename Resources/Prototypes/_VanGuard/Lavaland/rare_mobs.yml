@@ -1,0 +1,22 @@
+- type: entity
+  parent: MarkerBase
+  id: LavalandRareMobSpawner
+  name: rare lavaland mob spawner
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobGoliath
+    - LavalandMobLegion
+    - MobWatcherLavaland
+    - MobWatcherIcewing
+    - MobWatcherMagmawing
+    - MobWatcherPride
+    rarePrototypes:
+    - MobAncientGoliath
+    rareChance: 0.2
+    deleteSpawnerAfterSpawn: true

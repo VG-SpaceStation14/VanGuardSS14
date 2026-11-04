@@ -1,0 +1,30 @@
+- type: entity
+  parent: BaseRock
+  id: LavalandOreDeposit
+  name: ore deposit
+  components:
+  - type: LavalandOreDeposit
+
+- type: entity
+  parent: BaseRock
+  id: LavalandBiomeFeature
+  name: lavaland feature
+  components:
+  - type: LavalandBiomeFeature
+  - type: InteractionOutline
+
+- type: entity
+  parent: LavalandBiomeFeature
+  id: LavalandTendrilFeature
+  components:
+  - type: LavalandBiomeFeature
+    options:
+    - LavalandTendrilGoliath
+    - LavalandTendrilGoliath
+    - LavalandTendrilLegion
+    - LavalandTendrilLegion
+    - LavalandTendrilWatcher
+    - LavalandTendrilAncientGoliath
+    - LavalandTendrilIcewing
+    - LavalandTendrilMagmawing
+    - LavalandTendrilPride

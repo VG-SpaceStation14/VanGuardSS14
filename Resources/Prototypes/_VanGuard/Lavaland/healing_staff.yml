@@ -1,0 +1,10 @@
+- type: entity
+  parent: WeaponStaffHealing
+  id: LavalandWeaponStaffHealing
+  name: staff of healing
+  description: A rare staff that fires healing bolts. Its charges slowly replenish over time.
+  components:
+  - type: RechargeBasicEntityAmmo
+    rechargeCooldown: 10
+    rechargeSound:
+      path: /Audio/Magic/forcewall.ogg

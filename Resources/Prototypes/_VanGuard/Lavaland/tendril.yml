@@ -1,0 +1,236 @@
+- type: entity
+  parent: BaseStructure
+  id: LavalandTendril
+  description: A pulsing growth rooted in the planet's crust.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Structures/Specific/tendril.rsi
+    state: tendril
+    drawdepth: Mobs
+  - type: LavalandTendril
+  - type: LavalandAshStormImmune
+  - type: Injurable
+    damageContainer: Biological
+  - type: Damageable
+    damageModifierSet: Skeleton
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 250
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.25,-0.45,0.25,0.45"
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+        density: 200
+
+- type: entity
+  parent: CrateGenericSteel
+  id: LavalandNecropolisCrate
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Structures/Storage/Crates/necropolis.rsi
+    layers:
+    - state: base
+    - state: closed
+      map: [ "enum.StorageVisualLayers.Door" ]
+  - type: Icon
+    sprite: _VanGuard/Structures/Storage/Crates/necropolis.rsi
+    state: icon
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: SteelOre
+          amount: 3
+        - !type:GroupSelector
+          children:
+          - id: GoldOre
+            weight: 0.35
+          - id: SilverOre
+            weight: 0.30
+          - id: PlasmaOre
+            weight: 0.20
+          - id: UraniumOre
+            weight: 0.10
+          - id: DiamondOre
+            weight: 0.05
+        - !type:GroupSelector
+          children:
+          - id: SurvivalKnife
+            weight: 0.35
+          - id: MineralScanner
+            weight: 0.25
+          - id: OreBag
+            weight: 0.20
+          - id: FlashlightSeclite
+            weight: 0.15
+          - id: WeaponProtoKineticAccelerator
+            weight: 0.02
+          - id: LavalandWeaponStaffHealing
+            weight: 0.03
+
+- type: entity
+  parent: LavalandTendril
+  id: LavalandTendrilGoliath
+  components:
+  - type: LavalandTendril
+    spawns:
+    - MobGoliath
+    maxSpawns: 2
+    loot: LavalandNecropolisCrateGoliath
+
+- type: entity
+  parent: LavalandTendril
+  id: LavalandTendrilAncientGoliath
+  components:
+  - type: LavalandTendril
+    spawns:
+    - MobAncientGoliath
+    maxSpawns: 1
+    loot: LavalandNecropolisCrateGoliath
+
+- type: entity
+  parent: LavalandTendril
+  id: LavalandTendrilLegion
+  components:
+  - type: LavalandTendril
+    spawns:
+    - LavalandMobLegion
+    maxSpawns: 2
+    loot: LavalandNecropolisCrate
+
+- type: entity
+  parent: LavalandTendril
+  id: LavalandTendrilWatcher
+  components:
+  - type: LavalandTendril
+    spawns:
+    - MobWatcherLavaland
+    maxSpawns: 2
+    loot: LavalandNecropolisCrateWatcher
+
+- type: entity
+  parent: CrateGenericSteel
+  id: LavalandNecropolisCrateGoliath
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Structures/Storage/Crates/necropolis.rsi
+    layers:
+    - state: base
+    - state: closed
+      map: [ "enum.StorageVisualLayers.Door" ]
+  - type: Icon
+    sprite: _VanGuard/Structures/Storage/Crates/necropolis.rsi
+    state: icon
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: MaterialGoliathHide1
+          amount: 2
+        - id: FoodMeatGoliath
+          amount: 2
+        - !type:GroupSelector
+          children:
+          - id: SteelOre
+            weight: 0.45
+          - id: GoldOre
+            weight: 0.25
+          - id: PlasmaOre
+            weight: 0.20
+          - id: DiamondOre
+            weight: 0.10
+        - !type:GroupSelector
+          children:
+          - id: SurvivalKnife
+            weight: 0.35
+          - id: WeaponProtoKineticAccelerator
+            weight: 0.20
+          - id: ClothingOuterArmorMiner
+            weight: 0.10
+          - id: MedkitBruteFilled
+            weight: 0.20
+          - id: SpaceCash1000
+            weight: 0.15
+        - id: MaterialGoliathHide1
+          prob: 0.35
+
+- type: entity
+  parent: CrateGenericSteel
+  id: LavalandNecropolisCrateWatcher
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Structures/Storage/Crates/necropolis.rsi
+    layers:
+    - state: base
+    - state: closed
+      map: [ "enum.StorageVisualLayers.Door" ]
+  - type: Icon
+    sprite: _VanGuard/Structures/Storage/Crates/necropolis.rsi
+    state: icon
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: PlasmaOre
+          amount: 3
+        - !type:GroupSelector
+          children:
+          - id: DiamondOre
+            weight: 0.25
+          - id: UraniumOre
+            weight: 0.25
+          - id: GoldOre
+            weight: 0.30
+          - id: SilverOre
+            weight: 0.20
+        - !type:GroupSelector
+          children:
+          - id: AdvancedMineralScanner
+            weight: 0.25
+          - id: PKAUpgradeDamage
+            weight: 0.25
+          - id: PKAUpgradeRange
+            weight: 0.20
+          - id: MedkitBurnFilled
+            weight: 0.20
+          - id: SpaceCash1000
+            weight: 0.10
+        - id: SpaceCash100
+          prob: 0.4
+
+- type: entity
+  parent: LavalandTendril
+  id: LavalandTendrilIcewing
+  components:
+  - type: LavalandTendril
+    spawns: [ MobWatcherIcewing ]
+    loot: LavalandNecropolisCrateWatcher
+
+- type: entity
+  parent: LavalandTendril
+  id: LavalandTendrilMagmawing
+  components:
+  - type: LavalandTendril
+    spawns: [ MobWatcherMagmawing ]
+    loot: LavalandNecropolisCrateWatcher
+
+- type: entity
+  parent: LavalandTendril
+  id: LavalandTendrilPride
+  components:
+  - type: LavalandTendril
+    spawns: [ MobWatcherPride ]
+    loot: LavalandNecropolisCrateWatcher

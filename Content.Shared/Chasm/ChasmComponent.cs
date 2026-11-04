@@ -78,4 +78,11 @@ public readonly record struct CompletedFallingIntoChasmEvent(Entity<ChasmCompone
 /// This event is raised on a chasm when <paramref name="Faller"/> has finished falling into it, just before it is deleted.
 /// </summary>
 [ByRefEvent]
-public readonly record struct EntityCompletedFallingIntoChasmEvent(Entity<ChasmFallingComponent> Faller);
+// VG-Tweak Start
+// Собственная модификация VanGuardSS14: событие должно позволять системам
+// спасти падающего (например, джаунтеру) до удаления.
+public record struct EntityCompletedFallingIntoChasmEvent(Entity<ChasmFallingComponent> Faller)
+{
+    public bool Cancelled;
+}
+// VG-Tweak End

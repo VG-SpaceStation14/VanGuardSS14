@@ -1,0 +1,42 @@
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckMinerCopperCape
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/copper_cape.rsi
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckMinerSilverCape
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/silver_cape.rsi
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckMinerGoldenCape
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/golden_cape.rsi
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckMinerPlatinumCape
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/platinum_cape.rsi
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckMinerEmeraldCape
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/emerald_cape.rsi
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckMinerDiamondCape
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/diamond_cape.rsi
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckMinerRubieCape
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Neck/Cloaks/rubie_cape.rsi

@@ -7,6 +7,9 @@
   - CargoTechnician
   - Quartermaster
   - SalvageSpecialist
+  # VG-Tweak Start: Lavaland shaft miner
+  - Miner
+  # VG-Tweak End
 
 - type: department
   id: CentralCommand

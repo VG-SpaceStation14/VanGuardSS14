@@ -1,0 +1,81 @@
+- type: entity
+  parent: BaseAction
+  id: ActionAncientGoliathTentacle
+  categories: [ HideSpawnMenu ]
+  name: "[color=red]Ancient Tentacle Slam[/color]"
+  description: Summon six tentacles around the target.
+  components:
+  - type: Action
+    raiseOnUser: true
+    sound:
+      path: /Audio/Weapons/slash.ogg
+    useDelay: 3
+  - type: Sprite
+    sprite: Mobs/Aliens/Asteroid/goliath.rsi
+    layers:
+    - state: goliath_tentacle_spawn
+      map: ["enum.ActionVisuals.Icon"]
+    - state: goliath_tentacle_wiggle
+      map: ["enum.ActionVisuals.IconToggled"]
+      visible: false
+  - type: TargetAction
+    range: 10
+  - type: WorldTargetAction
+    event: !type:GoliathSummonTentacleAction
+      extraSpawns: 5
+
+- type: entity
+  parent: MobGoliath
+  id: MobAncientGoliath
+  name: ancient goliath
+  description: An older, slower goliath with a thicker hide and a six-tentacle slam.
+  components:
+  - type: Sprite
+    sprite: Mobs/Aliens/Asteroid/goliath.rsi
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: goliath
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: goliath
+      Dead:
+        Base: goliath_dead
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 1.0
+    baseSprintSpeed: 1.5
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      225: Dead
+  - type: MeleeWeapon
+    soundHit:
+      path: /Audio/Weapons/smash.ogg
+    angle: 0
+    attackRate: 0.75
+    animation: WeaponArcPunch
+    damage:
+      types:
+        Slash: 20
+        Piercing: 5
+  - type: NPCUseActionOnTarget
+    actionId: ActionAncientGoliathTentacle
+  - type: HTN
+    constantlyReplan: false
+    rootTask:
+      task: GoliathCompound
+    blackboard:
+      VisionRadius: !type:Single
+        14
+      AggroVisionRadius: !type:Single
+        20
+      NavSmash: !type:Bool
+        true
+  - type: ToolRefinable
+    refineResult:
+    - id: MaterialGoliathHide1
+      amount: 5
+    - id: FoodMeatGoliath
+      amount: 5
+    - id: MaterialBones1
+      amount: 3
