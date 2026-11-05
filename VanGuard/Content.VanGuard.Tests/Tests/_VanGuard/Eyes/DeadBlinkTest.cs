@@ -225,4 +225,76 @@ public sealed class DeadBlinkTest : GameTest
         await Server.WaitPost(() => SDeleteNow(serverMob));
         await RunTicksSync(10);
     }
+
+    [Test]
+    public async Task SpawnedCorpseDoesNotBlink()
+    {
+        EntityUid serverCorpse = default;
+        NetEntity serverNetCorpse = default;
+        var map = await Pair.CreateTestMap();
+
+        await Server.WaitPost(() =>
+        {
+            serverCorpse = SSpawnAtPosition("SalvageHumanCorpse", map.GridCoords);
+            serverNetCorpse = SEntMan.GetNetEntity(serverCorpse);
+        });
+        await Pair.RunUntilSynced();
+        await RunTicksSync(30);
+
+        await Server.WaitAssertion(() =>
+        {
+            var mobState = SEntMan.GetComponent<MobStateComponent>(serverCorpse);
+            Assert.That(mobState.CurrentState, Is.EqualTo(MobState.Dead),
+                "the spawned corpse is not in the Dead mob state");
+        });
+
+        EyeBlinkingComponent blinking = null!;
+
+        for (var attempt = 0; attempt < 30; attempt++)
+        {
+            if (attempt > 0)
+                await RunTicksSync(1);
+
+            await Client.WaitPost(() =>
+            {
+                if (!CEntMan.TryGetEntity(serverNetCorpse, out var clientCorpse) || clientCorpse == null)
+                    return;
+
+                var query = CEntMan.EntityQueryEnumerator<EyeBlinkingComponent>();
+                while (query.MoveNext(out _, out var comp))
+                {
+                    if (comp.Body != clientCorpse.Value)
+                        continue;
+
+                    blinking = comp;
+                    break;
+                }
+            });
+
+            if (blinking != null)
+                break;
+        }
+
+        Assert.That(blinking, Is.Not.Null, "the client did not initialize EyeBlinkingComponent for the corpse");
+        Assert.That(blinking.Eyelids, Is.Not.Empty, "the client did not initialize eyelid layers for the corpse");
+
+        await Client.WaitAssertion(() =>
+        {
+            Assert.That(blinking.Status.HasFlag(BlinkStatus.Dead), Is.True,
+                "the corpse did not receive the Dead blink status");
+            Assert.That(blinking.BlinkInProgress, Is.False);
+            Assert.That(blinking.Eyelids.Any(e => e.IsClosed), Is.False, "the corpse spawned with closed eyes");
+        });
+
+        await RunTicksSync(300);
+
+        await Client.WaitAssertion(() =>
+        {
+            Assert.That(blinking.BlinkInProgress, Is.False, "the corpse started a blink");
+            Assert.That(blinking.Eyelids.Any(e => e.IsClosed), Is.False, "the corpse blinked");
+        });
+
+        await Server.WaitPost(() => SDeleteNow(serverCorpse));
+        await RunTicksSync(10);
+    }
 }

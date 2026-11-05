@@ -4,6 +4,8 @@ using Content.Shared.Body;
 using Content.Shared.DisplacementMap;
 using Content.Shared.Eye.Blinking;
 using Content.Shared.Humanoid;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Components;
 using Content.Shared.StatusEffectNew;
 using Robust.Client.GameObjects;
 using Robust.Client.ResourceManagement;
@@ -287,6 +289,11 @@ public sealed partial class ClientEyeBlinkingSystem : EyeBlinkingSystem
         ent.Comp.Body = body;
 
         InitEyelidsLayers(ent, body, targetLayer);
+
+        // VG-Tweak Start: use the actual mob state for entities spawned already dead.
+        if (TryComp<MobStateComponent>(body, out var mobState))
+            SetStatusFlag(ent, BlinkStatus.Dead, mobState.CurrentState == MobState.Dead);
+        // VG-Tweak End
 
         // Initialize and randomize the blink timer.
         ResetBlink(ent);

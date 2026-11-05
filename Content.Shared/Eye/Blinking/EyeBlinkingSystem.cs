@@ -61,6 +61,9 @@ public abstract partial class EyeBlinkingSystem : EntitySystem
     {
         SetEyelidsColor(ent, args.Base?.SkinColor);
         AddEyeAction(ent, ent.Owner);
+        // VG-Tweak Start: sync initial mob state for entities spawned already dead.
+        SyncMobState(ent, GetActiveEntity(ent));
+        // VG-Tweak End
     }
 
     [SubscribeLocalEvent]
@@ -72,6 +75,9 @@ public abstract partial class EyeBlinkingSystem : EntitySystem
             SetEyelidsColor(ent, profile.Value.SkinColor);
 
         AddEyeAction(ent, args.Body.Owner);
+        // VG-Tweak Start: sync initial mob state for entities spawned already dead.
+        SyncMobState(ent, args.Body.Owner);
+        // VG-Tweak End
     }
 
     [SubscribeLocalEvent]
@@ -312,6 +318,18 @@ public abstract partial class EyeBlinkingSystem : EntitySystem
         StatusChanged(ent, prevStatus);
         Dirty(ent);
     }
+
+    // VG-Tweak Start: synchronize the blink status with the actual mob state.
+    // This covers entities that are spawned directly in the Dead state and
+    // therefore never receive a MobStateChangedEvent.
+    private void SyncMobState(Entity<EyeBlinkingComponent> ent, EntityUid body)
+    {
+        if (!TryComp<MobStateComponent>(body, out var mobState))
+            return;
+
+        SetStatusFlag(ent, BlinkStatus.Dead, mobState.CurrentState == MobState.Dead);
+    }
+    // VG-Tweak End
 
     /// <summary>
     /// Returns the entity that should be used for the eyes.
