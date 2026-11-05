@@ -481,5 +481,5 @@
       prob: 0.50
       orGroup: monospaceDecals
     # VG-Tweak Start: Lavaland planet bootstrap
-    - id: LavalandLoader
+    - id: LavalandLoaderRoundstart
     # VG-Tweak End

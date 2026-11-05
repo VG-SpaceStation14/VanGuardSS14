@@ -1,6 +1,7 @@
 using System.Numerics;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server._VanGuard.Shuttles.Components;
+using Content.Server.Maps;
 using Content.Server.Parallax;
 using Content.Shared.GameTicking;
 using Content.Shared.Gravity;
@@ -36,6 +37,7 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
     [Dependency] private LavalandPoiSpawnerSystem _poi = default!;
     [Dependency] private RestrictedRangeSystem _restricted = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
+    [Dependency] private IGameMapManager _gameMapManager = default!;
 
     public override void Initialize()
     {
@@ -55,6 +57,14 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
 
         ent.Comp.Map = mapUid;
         ent.Comp.MapId = args.Map;
+
+        // A test/empty map has no station gameplay and must not pay for a full Lavaland
+        // bootstrap. Explicit LavalandLoader rules keep SkipOnEmptyMap disabled.
+        if (ent.Comp.SkipOnEmptyMap && _gameMapManager.GetSelectedMap()?.ID == "Empty")
+        {
+            Log.Info("Skipping Lavaland bootstrap on the empty map.");
+            return;
+        }
 
         _map.SetPaused(mapUid, false);
         _meta.SetEntityName(mapUid, Loc.GetString("lavaland-map-name"));

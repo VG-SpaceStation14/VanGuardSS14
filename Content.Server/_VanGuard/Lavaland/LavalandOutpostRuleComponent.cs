@@ -112,6 +112,13 @@ public sealed partial class LavalandOutpostRuleComponent : Component
     public float MapBorderRadius = 250f;
 
     /// <summary>
+    /// When true, the automatic round-start loader skips the expensive planet
+    /// bootstrap on the empty/test map. Explicit LavalandLoader rules leave this disabled.
+    /// </summary>
+    [DataField]
+    public bool SkipOnEmptyMap;
+
+    /// <summary>
     /// Runtime reference to the created map, used by tests and diagnostics.
     /// </summary>
     [ViewVariables]
