@@ -1,3 +1,4 @@
+using Content.Shared.Buckle.Components;
 using Content.Shared.Standing;
 using Robust.Client.GameObjects;
 using DrawDepth = Content.Shared.DrawDepth.DrawDepth;
@@ -17,9 +18,26 @@ public sealed partial class CrawlingSystem : EntitySystem
 
     private void OnAppearanceChange(EntityUid uid, StandingStateComponent comp, AppearanceChangeEvent args)
     {
-        if (args.Sprite == null)
+        UpdateDrawDepth(uid);
+    }
+
+    private void UpdateDrawDepth(EntityUid uid)
+    {
+        if (!TryComp<SpriteComponent>(uid, out var sprite))
             return;
 
-        _sprite.SetDrawDepth(uid, _standing.IsDown(uid) ? (int)DrawDepth.SmallMobs : (int)DrawDepth.Mobs);
+        // Buckled entities are handled by the client buckle sorting, which knows
+        // whether the strap is a chair or a bed.
+        if (TryComp<BuckleComponent>(uid, out var buckle) && buckle.Buckled)
+            return;
+
+        if (_standing.IsDown(uid))
+        {
+            _sprite.SetDrawDepth((uid, sprite), (int) DrawDepth.SmallMobs);
+            return;
+        }
+
+        if (sprite.DrawDepth == (int) DrawDepth.SmallMobs)
+            _sprite.SetDrawDepth((uid, sprite), (int) DrawDepth.Mobs);
     }
 }

@@ -1,4 +1,5 @@
 using Content.Shared.Buckle.Components;
+using ContentDrawDepth = Content.Shared.DrawDepth.DrawDepth;
 using Robust.Client.GameObjects;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Maths;
@@ -77,6 +78,17 @@ internal sealed partial class BuckleSystem
 
         if (!_spriteQuery.TryComp(buckledEntity, out var buckledSprite))
             return;
+
+        // Beds and rollerbeds use a lying strap. The character lies on top of the
+        // bed, not behind it, so never apply the chair occlusion rule there.
+        if (strap.Comp.Position != StrapPosition.Stand)
+        {
+            buckle.OriginalDrawDepth ??= buckledSprite.DrawDepth;
+            if (buckledSprite.DrawDepth != (int) ContentDrawDepth.Mobs)
+                _sprite.SetDrawDepth((buckledEntity, buckledSprite), (int) ContentDrawDepth.Mobs);
+
+            return;
+        }
 
         chairInFront ??= (_xformSystem.GetWorldRotation(strap) + _eye.CurrentEye.Rotation)
             .GetCardinalDir() == Direction.North;
