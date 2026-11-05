@@ -15,38 +15,56 @@ namespace Content.IntegrationTests.Tests._VanGuard.Eyes;
 ///     and blinking must resume after revival.
 /// </summary>
 [TestFixture]
+[NonParallelizable]
 public sealed class DeadBlinkTest : GameTest
 {
     [Test]
     public async Task DeadMobKeepsEyesOpenAndResumesAfterRevival()
     {
         EntityUid serverMob = default;
+        NetEntity serverNetMob = default;
         var map = await Pair.CreateTestMap();
 
-        await Server.WaitPost(() => serverMob = SSpawnAtPosition("MobHuman", map.GridCoords));
-        await RunTicksSync(10);
+        await Server.WaitPost(() =>
+        {
+            serverMob = SSpawnAtPosition("MobHuman", map.GridCoords);
+            serverNetMob = SEntMan.GetNetEntity(serverMob);
+        });
+        await Pair.RunUntilSynced();
+        await RunTicksSync(30);
 
         EntityUid clientEyes = default;
         EyeBlinkingComponent blinking = null!;
         ClientEyeBlinkingSystem clientBlinking = null!;
 
-        await Client.WaitPost(() =>
+        // Wait for the client to receive the spawned mob before mapping its entity.
+        for (var attempt = 0; attempt < 30; attempt++)
         {
-            var clientMob = ToClientUid(serverMob);
+            if (attempt > 0)
+                await RunTicksSync(1);
 
-            var query = CEntMan.EntityQueryEnumerator<EyeBlinkingComponent>();
-            while (query.MoveNext(out var uid, out var comp))
+            await Client.WaitPost(() =>
             {
-                if (comp.Body != clientMob)
-                    continue;
+                clientBlinking ??= Client.System<ClientEyeBlinkingSystem>();
 
-                clientEyes = uid;
-                blinking = comp;
+                if (!CEntMan.TryGetEntity(serverNetMob, out var clientMob) || clientMob == null)
+                    return;
+
+                var query = CEntMan.EntityQueryEnumerator<EyeBlinkingComponent>();
+                while (query.MoveNext(out var uid, out var comp))
+                {
+                    if (comp.Body != clientMob.Value)
+                        continue;
+
+                    clientEyes = uid;
+                    blinking = comp;
+                    break;
+                }
+            });
+
+            if (blinking != null)
                 break;
-            }
-
-            clientBlinking = Client.System<ClientEyeBlinkingSystem>();
-        });
+        }
 
         Assert.That(blinking, Is.Not.Null, "the client did not initialize EyeBlinkingComponent");
         Assert.That(blinking.Eyelids, Is.Not.Empty, "the client did not initialize eyelid layers");
@@ -133,28 +151,47 @@ public sealed class DeadBlinkTest : GameTest
     public async Task DeadMobWithOpenEyesStaysOpenAfterRepeatedDeathEvent()
     {
         EntityUid serverMob = default;
+        NetEntity serverNetMob = default;
         var map = await Pair.CreateTestMap();
 
-        await Server.WaitPost(() => serverMob = SSpawnAtPosition("MobHuman", map.GridCoords));
-        await RunTicksSync(10);
+        await Server.WaitPost(() =>
+        {
+            serverMob = SSpawnAtPosition("MobHuman", map.GridCoords);
+            serverNetMob = SEntMan.GetNetEntity(serverMob);
+        });
+        await Pair.RunUntilSynced();
+        await RunTicksSync(30);
 
         EntityUid clientMob = default;
         EyeBlinkingComponent blinking = null!;
 
-        await Client.WaitPost(() =>
+        // Wait for the client to receive the spawned mob before mapping its entity.
+        for (var attempt = 0; attempt < 30; attempt++)
         {
-            clientMob = ToClientUid(serverMob);
+            if (attempt > 0)
+                await RunTicksSync(1);
 
-            var query = CEntMan.EntityQueryEnumerator<EyeBlinkingComponent>();
-            while (query.MoveNext(out _, out var comp))
+            await Client.WaitPost(() =>
             {
-                if (comp.Body != clientMob)
-                    continue;
+                if (!CEntMan.TryGetEntity(serverNetMob, out var mappedMob) || mappedMob == null)
+                    return;
 
-                blinking = comp;
+                clientMob = mappedMob.Value;
+
+                var query = CEntMan.EntityQueryEnumerator<EyeBlinkingComponent>();
+                while (query.MoveNext(out _, out var comp))
+                {
+                    if (comp.Body != clientMob)
+                        continue;
+
+                    blinking = comp;
+                    break;
+                }
+            });
+
+            if (blinking != null)
                 break;
-            }
-        });
+        }
 
         Assert.That(blinking, Is.Not.Null, "the client did not initialize EyeBlinkingComponent");
         Assert.That(blinking.Eyelids, Is.Not.Empty, "the client did not initialize eyelid layers");

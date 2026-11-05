@@ -16,22 +16,22 @@ public sealed class StorageSoundSourceTest : GameTest
     [Test]
     public async Task NestedStorageResolvesToOutermostContainer()
     {
-        EntityUid box = default;
+        EntityUid outer = default;
         EntityUid backpack = default;
         EntityUid medkit = default;
 
         await Server.WaitPost(() =>
         {
-            box = SSpawn("BoxCardboard");
+            outer = SSpawn("ClothingBackpackSatchelAdmin");
             backpack = SSpawn("ClothingBackpack");
             medkit = SSpawn("Medkit");
 
             var containers = SEntMan.System<SharedContainerSystem>();
-            var boxStorage = SEntMan.GetComponent<StorageComponent>(box);
+            var outerStorage = SEntMan.GetComponent<StorageComponent>(outer);
             var backpackStorage = SEntMan.GetComponent<StorageComponent>(backpack);
 
             Assert.That(containers.Insert(medkit, backpackStorage.Container), Is.True);
-            Assert.That(containers.Insert(backpack, boxStorage.Container), Is.True);
+            Assert.That(containers.Insert(backpack, outerStorage.Container), Is.True);
         });
 
         await Server.WaitAssertion(() =>
@@ -40,9 +40,9 @@ public sealed class StorageSoundSourceTest : GameTest
 
             Assert.Multiple(() =>
             {
-                Assert.That(StorageSoundSource.Resolve(SEntMan, containers, medkit), Is.EqualTo(box));
-                Assert.That(StorageSoundSource.Resolve(SEntMan, containers, backpack), Is.EqualTo(box));
-                Assert.That(StorageSoundSource.Resolve(SEntMan, containers, box), Is.EqualTo(box));
+                Assert.That(StorageSoundSource.Resolve(SEntMan, containers, medkit), Is.EqualTo(outer));
+                Assert.That(StorageSoundSource.Resolve(SEntMan, containers, backpack), Is.EqualTo(outer));
+                Assert.That(StorageSoundSource.Resolve(SEntMan, containers, outer), Is.EqualTo(outer));
             });
         });
     }
