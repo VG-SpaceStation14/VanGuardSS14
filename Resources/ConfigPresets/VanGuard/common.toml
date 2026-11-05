@@ -1,0 +1,38 @@
+[net]
+tickrate = 30
+
+[netres]
+limit = 25.0
+
+[infolinks]
+discord = "https://discord.gg/nW73CdBYkg"
+github = "https://github.com/VG-SpaceStation14/VanGuardSS14"
+wiki = "https://vanguardproject.ru"
+appeal = "https://discord.com/channels/1476194828185239595/1476922279660228682"
+bug_report = "https://discord.com/channels/1476194828185239595/1480344699469300023"
+website = "https://boosty.to/vanguardalbuka"
+
+[viewport]
+maximum_width = 29
+
+[game]
+lobbyduration = 240
+map_pool = "VanGuardMapPool"
+secret_weight_prototype = "CorvaxSecretDefault"
+round_restart_time = 240
+
+[chat]
+max_announcement_length = 512
+
+[server]
+rules_file = "VanGuardRuleset"
+
+[admin]
+see_own_notes = true
+
+[afk]
+time = 1800
+confirm_timeout = 300
+
+[res]
+validate_prototype_upload = false

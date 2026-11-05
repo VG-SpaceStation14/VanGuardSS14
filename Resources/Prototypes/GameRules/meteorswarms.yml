@@ -151,7 +151,9 @@
   components:
   - type: StationEvent
     weight: 18
-    minimumPlayers: 15
+    # VG-Tweak Start: keep damaging swarms out of very low pop
+    minimumPlayers: 20
+    # VG-Tweak End
   - type: MeteorSwarm
     meteors:
       MeteorSmall: 7

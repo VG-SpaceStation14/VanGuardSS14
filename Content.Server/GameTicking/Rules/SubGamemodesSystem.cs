@@ -13,6 +13,14 @@ public sealed partial class SubGamemodesSystem : GameRuleSystem<SubGamemodesComp
 {
     protected override void Added(Entity<SubGamemodesComponent, GameRuleComponent> ent, ref GameRuleAddedEvent args)
     {
+        // VG-Tweak Start: keep additional antagonists out of low-pop rounds
+        if (GameTicker.ReadyPlayerCount() < ent.Comp1.MinPlayers)
+        {
+            Log.Info($"Not adding subgamemodes of {ToPrettyString(ent.Owner):rule}: {GameTicker.ReadyPlayerCount()} ready players, {ent.Comp1.MinPlayers} required.");
+            return;
+        }
+        // VG-Tweak End
+
         var picked = EntitySpawnCollection.GetSpawns(ent.Comp1.Rules, RobustRandom);
         foreach (var id in picked)
         {

@@ -1,0 +1,56 @@
+[game]
+hostname = "✨ VanGuard Project - Симфония далеких звёзд"
+desc = """VanGuard - ламповый Медиум РП сервер с уютной атмосферой, где упор ставится на комфортный для игрока отыгрыш.
+У нас ты встретишь:
+
+⚙️   Уникальные игровые механики, то чего нету на других станциях;
+🔥   Лояльность к новым игрокам и отзывчивая администрация всегда рядом;
+🎮   Широкий простор для отыгрыша;
+
+Ждём тебя! 🌟"""
+maxplayers = 50
+soft_max_players = 50
+map_rotation = true
+fallbackpreset = "extended"
+lobbyenabled = true
+role_timers = true
+
+[server]
+lobby_name = "VanGuard Project - Симфония далеких звёзд"
+
+[game.panic_bunker]
+enabled = false
+show_reason = true
+min_account_age = 0
+min_overall_minutes = 0
+deny_vpn = true
+enable_without_admins = true
+disable_with_admins = true
+
+[rules]
+time = 180.0
+
+[hub]
+advertise = true
+tags = "lang:ru,rp:med,region:eu_e"
+
+[ic]
+flavor_text = true
+punctuation = false
+
+[ooc]
+enable_during_round = false
+
+[atmos]
+space_wind = true
+space_wind_max_velocity = 22.0
+
+[vote]
+restart_required_ratio = 0.85
+same_type_timeout = 300.0
+timerrestart = 30
+preset_enabled = false
+restart_enabled = false
+
+[ghost.go_lobby]
+enabled = false
