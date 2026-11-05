@@ -39,11 +39,15 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private IGameMapManager _gameMapManager = default!;
 
+    private bool _automaticLavalandLoaded;
+    private MapId? _automaticLavalandMap;
+
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<LavalandOutpostRuleComponent, RuleLoadedGridsEvent>(OnRuleLoadedGrids);
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => _automaticLavalandLoaded = false);
     }
 
     private void OnRuleLoadedGrids(Entity<LavalandOutpostRuleComponent> ent, ref RuleLoadedGridsEvent args)
@@ -58,12 +62,30 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
         ent.Comp.Map = mapUid;
         ent.Comp.MapId = args.Map;
 
-        // A test/empty map has no station gameplay and must not pay for a full Lavaland
-        // bootstrap. Explicit LavalandLoader rules keep SkipOnEmptyMap disabled.
-        if (ent.Comp.SkipOnEmptyMap && _gameMapManager.GetSelectedMap()?.ID == "Empty")
+        // The automatic loader is attached to the station variation, which can be
+        // instantiated once per station. Lavaland only exists once per round.
+        if (ent.Comp.SkipOnEmptyMap)
         {
-            Log.Info("Skipping Lavaland bootstrap on the empty map.");
-            return;
+            if (_automaticLavalandLoaded)
+                return;
+
+            // A test/empty map has no station gameplay and must not pay for a full
+            // Lavaland bootstrap. Explicit LavalandLoader rules keep SkipOnEmptyMap disabled.
+            if (_gameMapManager.GetSelectedMap()?.ID == "Empty")
+            {
+                Log.Info("Skipping Lavaland bootstrap on the empty map.");
+                return;
+            }
+
+            _automaticLavalandLoaded = true;
+
+            // LoadMapRule creates a new map for every automatic round-start
+            // instance. Remove the previous round's planet so it cannot accumulate
+            // in reused test pairs (and in long-running servers).
+            if (_automaticLavalandMap is { } previous && _map.MapExists(previous))
+                _map.QueueDeleteMap(previous);
+
+            _automaticLavalandMap = args.Map;
         }
 
         _map.SetPaused(mapUid, false);
