@@ -41,37 +41,9 @@ internal sealed partial class BuckleSystem : SharedBuckleSystem
         if (args.NewRotation == args.OldRotation)
             return;
 
-        if (!_spriteQuery.TryComp(ent, out SpriteComponent? strapSprite))
-            return;
-
-        var newDir = (args.NewRotation + _eye.CurrentEye.Rotation).GetCardinalDir();
-        var oldDir = (args.OldRotation + _eye.CurrentEye.Rotation).GetCardinalDir();
-
-        if (newDir == oldDir)
-            return;
-
-        var isNorth = newDir == Direction.North;
-
-        foreach (var buckledEntity in ent.Comp.BuckledEntities)
-        {
-            if (!TryComp<BuckleComponent>(buckledEntity, out var buckle))
-                continue;
-
-            if (!_spriteQuery.TryComp(buckledEntity, out SpriteComponent? buckledSprite))
-                continue;
-
-            if (isNorth)
-            {
-                // This will only assign if empty, it won't get overwritten by new depth on multiple calls, which do happen easily
-                buckle.OriginalDrawDepth ??= buckledSprite.DrawDepth;
-                _sprite.SetDrawDepth((buckledEntity, buckledSprite), strapSprite.DrawDepth - 1);
-            }
-            else if (buckle.OriginalDrawDepth.HasValue)
-            {
-                _sprite.SetDrawDepth((buckledEntity, buckledSprite), buckle.OriginalDrawDepth.Value);
-                buckle.OriginalDrawDepth = null;
-            }
-        }
+        // VG-Tweak Start
+        UpdateStrapDrawDepth(ent);
+        // VG-Tweak End
     }
 
     [SubscribeLocalEvent]
@@ -90,22 +62,9 @@ internal sealed partial class BuckleSystem : SharedBuckleSystem
     [SubscribeLocalEvent]
     private void OnBuckledEvent(Entity<BuckleComponent> ent, ref BuckledEvent args)
     {
-        if (!args.Strap.Comp.ModifyBuckleDrawDepth)
-            return;
-
-        if (!_spriteQuery.TryComp(args.Strap, out SpriteComponent? strapSprite))
-            return;
-
-        if (!_spriteQuery.TryComp(ent.Owner, out SpriteComponent? buckledSprite))
-            return;
-
-        var angle = _xformSystem.GetWorldRotation(args.Strap) + _eye.CurrentEye.Rotation; // Get true screen position, or close enough
-
-        if (angle.GetCardinalDir() != Direction.North)
-            return;
-
-        ent.Comp.OriginalDrawDepth ??= buckledSprite.DrawDepth;
-        _sprite.SetDrawDepth((ent.Owner, buckledSprite), strapSprite.DrawDepth - 1);
+        // VG-Tweak Start
+        UpdateBuckleDrawDepth(args.Strap, ent.Owner);
+        // VG-Tweak End
     }
 
     /// <summary>
