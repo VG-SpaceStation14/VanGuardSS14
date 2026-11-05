@@ -17,4 +17,12 @@ public sealed partial class SubGamemodesComponent : Component
     /// </summary>
     [DataField(required: true)]
     public List<EntitySpawnEntry> Rules = new();
+
+    // VG-Tweak Start: allow presets to keep additional antagonists out of low-pop rounds
+    /// <summary>
+    /// Minimum number of ready players required before any subgamemode is added.
+    /// </summary>
+    [DataField]
+    public int MinPlayers;
+    // VG-Tweak End
 }

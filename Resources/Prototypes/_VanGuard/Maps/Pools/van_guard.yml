@@ -1,0 +1,14 @@
+- type: gameMapPool
+  id: VanGuardMapPool
+  maps:
+  # Base maps, available from zero players.
+  - VG_Packed
+  - VG_Silly
+
+  # Low-pop maps.
+  - VG_Saltern
+  - VG_Cluster
+  - VG_Tushkan
+
+  # Mid/high-pop map. Not part of the low-pop rotation.
+  - VG_Marathon
