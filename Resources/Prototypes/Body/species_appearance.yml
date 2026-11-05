@@ -43,8 +43,9 @@
     - map: [ "belt" ]
     - map: [ "id" ]
     # - map: [ "outerClothing" ] # Corvax-Shit-Fix
-    - map: [ "back" ]
+    # - map: [ "back" ] # VG-Tweak
     - map: [ "neck" ]
+    - map: [ "back" ] # VG-Tweak
     - map: [ "suitstorage" ]
 
     # Stuff that goes in front of equipment
