@@ -146,6 +146,11 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
         if (TryComp<LavalandUniqueStructureSpawnerComponent>(spawner.Owner, out var unique))
             _unique.SpawnStructures((spawner.Owner, unique), mapUid, outpost, positions, occupied);
 
+        // Authored dungeon maps can load more than one root grid. Sweep the
+        // planet once so every grid, including child and sibling grids, becomes
+        // static planet geometry instead of keeping shuttle physics.
+        ClearShuttlePhysics(Transform(mapUid).MapID, mapUid);
+
         var faxEntries = positions.Where(poi => poi.InFax).ToList();
         if (!spawner.Comp.SendFax || faxEntries.Count == 0)
             return;
@@ -235,6 +240,23 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
         if (path.Contains("snowydome"))
             return "lavaland-fax-object-cold-dome";
         return "lavaland-fax-object-unknown";
+    }
+
+    private void ClearShuttlePhysics(MapId mapId, EntityUid mapUid)
+    {
+        var query = EntityQueryEnumerator<MapGridComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out _, out var xform))
+        {
+            if (xform.MapID != mapId || uid == mapUid)
+                continue;
+
+            RemComp<ShuttleComponent>(uid);
+            if (!TryComp<PhysicsComponent>(uid, out var physics))
+                continue;
+
+            _physics.SetBodyType(uid, BodyType.Static, body: physics);
+            _physics.SetAngularVelocity(uid, 0f, body: physics);
+        }
     }
 
     private void DeleteGridTree(EntityUid grid)
