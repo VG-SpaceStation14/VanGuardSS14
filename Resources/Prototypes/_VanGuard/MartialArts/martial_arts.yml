@@ -1,0 +1,478 @@
+- type: martialArt
+  id: CQC
+  name: vg-martial-style-cqc-name
+  description: vg-martial-style-cqc-desc
+  moves:
+  - CQCSlam
+  - CQCDoubleHit
+  - CQCIntercept
+  - CQCGrab
+  - CQCConsecutive
+  - CQCLegSweep
+  comboCooldown: 0.6
+  necksnap: true
+
+- type: martialArt
+  id: SleepingCarp
+  name: vg-martial-style-carp-name
+  description: vg-martial-style-carp-desc
+  moves:
+  - CarpTeeth
+  - CarpWave
+  - CarpIntercept
+  canShoot: false
+  reflectProbability: 1
+  maxCounter: 4
+  counterWindow: 6
+  comboCooldown: 0.6
+
+- type: martialArt
+  id: PTCR
+  name: vg-martial-style-ptcr-name
+  description: vg-martial-style-ptcr-desc
+  moves:
+  - PTCRWristlock
+  - PTCRSweep
+  comboCooldown: 0.6
+
+- type: martialArt
+  id: Cookbook
+  name: vg-martial-style-cookbook-name
+  description: vg-martial-style-cookbook-desc
+  moves:
+  - CookbookBatter
+  - CookbookUnwind
+  - CookbookRoll
+  - CookbookPress
+  unarmedBonusDamage:
+    types:
+      Blunt: 10
+  comboCooldown: 0.6
+
+- type: martialArt
+  id: KravMaga
+  name: vg-martial-style-krav-name
+  description: vg-martial-style-krav-desc
+  moves:
+  - KravLegSweep
+  - KravLungPunch
+  - KravNeckChop
+  comboCooldown: 0.4
+
+- type: martialArt
+  id: Judo
+  name: vg-martial-style-judo-name
+  description: vg-martial-style-judo-desc
+  moves:
+  - JudoLegTrip
+  - JudoGroundPunch
+  - JudoEyePress
+  - JudoThrow
+  comboCooldown: 0.6
+
+# CQC
+- type: martialArtMove
+  id: CQCSlam
+  name: vg-martial-move-cqc-slam-name
+  description: vg-martial-move-cqc-slam-desc
+  sequence: [Grab, Hit]
+  requiresStandingTarget: true
+  effects:
+  - !type:MartialArtPopupEffect
+    text: vg-martial-popup-cqc-slam
+  - !type:MartialArtDamageEffect
+    damage:
+      types:
+        Blunt: 20
+  - !type:MartialArtKnockdownEffect
+    dropItems: false
+  - !type:MartialArtSoundEffect
+    sound:
+      collection: GenericHit
+
+- type: martialArtMove
+  id: CQCDoubleHit
+  name: vg-martial-move-cqc-double-name
+  description: vg-martial-move-cqc-double-desc
+  sequence: [Hit, Hit]
+  effects:
+  - !type:MartialArtDamageEffect
+    damage:
+      types:
+        Blunt: 10
+  - !type:MartialArtSleepEffect
+    duration: 5
+    onlyIfStaminaCritical: true
+  - !type:MartialArtDamageEffect
+    onlyIfDowned: true
+    damage:
+      types:
+        Blunt: 15
+  - !type:MartialArtPopupEffect
+    text: vg-martial-popup-cqc-double
+  - !type:MartialArtSoundEffect
+    sound:
+      collection: GenericHit
+
+- type: martialArtMove
+  id: CQCIntercept
+  name: vg-martial-move-cqc-intercept-name
+  description: vg-martial-move-cqc-intercept-desc
+  sequence: [Disarm, Grab]
+  effects:
+  - !type:MartialArtPopupEffect
+    text: vg-martial-popup-cqc-intercept
+  - !type:MartialArtDropItemEffect
+    steal: true
+
+- type: martialArtMove
+  id: CQCGrab
+  name: vg-martial-move-cqc-grab-name
+  description: vg-martial-move-cqc-grab-desc
+  sequence: [Grab, Grab]
+  effects:
+  - !type:MartialArtPopupEffect
+    text: vg-martial-popup-cqc-restrain
+  - !type:MartialArtKnockdownEffect
+    dropItems: true
+  - !type:MartialArtStaminaEffect
+    amount: 55
+
+- type: martialArtMove
+  id: CQCConsecutive
+  name: vg-martial-move-cqc-consecutive-name
+  description: vg-martial-move-cqc-consecutive-desc
+  sequence: [Disarm, Disarm, Hit]
+  effects:
+  - !type:MartialArtDamageEffect
+    damage:
+      types:
+        Blunt: 10
+  - !type:MartialArtPopupEffect
+    text: vg-martial-popup-cqc-consecutive
+  - !type:MartialArtDamageEffect
+    onlyIfDowned: true
+    damage:
+      types:
+        Blunt: 25
+  - !type:MartialArtKnockdownEffect
+  - !type:MartialArtStaminaEffect
+    amount: 60
+  - !type:MartialArtSoundEffect
+    sound:
+      collection: GenericHit
+
+- type: martialArtMove
+  id: CQCLegSweep
+  name: vg-martial-move-cqc-sweep-name
+  description: vg-martial-move-cqc-sweep-desc
+  sequence: [Grab, Disarm]
+  effects:
+  - !type:MartialArtPopupEffect
+    text: vg-martial-popup-cqc-sweep
+  - !type:MartialArtKnockdownEffect
+  - !type:MartialArtSoundEffect
+    sound:
+      collection: GenericHit
+
+# Sleeping Carp
+- type: martialArtMove
+  id: CarpTeeth
+  name: vg-martial-move-carp-teeth-name
+  description: vg-martial-move-carp-teeth-desc
+  sequence: [Hit, Hit]
+  effects:
+  - !type:MartialArtDamageEffect
+    damage:
+      types:
+        Slash: 10
+  - !type:MartialArtCounterEffect
+    amount: 1
+    damagePerStack:
+      types:
+        Slash: 20
+  - !type:MartialArtSoundEffect
+    sound:
+      collection: GenericHit
+  - !type:MartialArtPopupEffect
+    text: vg-martial-popup-carp-teeth
+
+- type: martialArtMove
+  id: CarpWave
+  name: vg-martial-move-carp-wave-name
+  description: vg-martial-move-carp-wave-desc
+  sequence: [Hit, Disarm]
+  effects:
+  - !type:MartialArtDamageEffect
+    damage:
+      types:
+        Slash: 15
+  - !type:MartialArtKnockdownEffect
+    dropItems: false
+  - !type:MartialArtSleepEffect
+    duration: 1
+  - !type:MartialArtThrowEffect
+    speed: 25
+  - !type:MartialArtPopupEffect
+    text: vg-martial-popup-carp-wave
+
+- type: martialArtMove
+  id: CarpIntercept
+  name: vg-martial-move-carp-intercept-name
+  description: vg-martial-move-carp-intercept-desc
+  sequence: [Disarm, Disarm]
+  effects:
+  - !type:MartialArtDamageEffect
+    damage:
+      types:
+        Blunt: 10
+  - !type:MartialArtDropItemEffect
+    steal: true
+  - !type:MartialArtPopupEffect
+    text: vg-martial-popup-carp-intercept
+
+# PTCR
+- type: martialArtMove
+  id: PTCRWristlock
+  name: vg-martial-move-ptcr-wristlock-name
+  description: vg-martial-move-ptcr-wristlock-desc
+  sequence: [Hit, Grab, Disarm]
+  effects:
+  - !type:MartialArtPopupEffect
+    text: vg-martial-popup-ptcr-wristlock
+  - !type:MartialArtStaminaEffect
+    amount: 60
+
+- type: martialArtMove
+  id: PTCRSweep
+  name: vg-martial-move-ptcr-sweep-name
+  description: vg-martial-move-ptcr-sweep-desc
+  sequence: [Disarm, Grab]
+  effects:
+  - !type:MartialArtPopupEffect
+    text: vg-martial-popup-ptcr-sweep
+  - !type:MartialArtKnockdownEffect
+    dropItems: false
+  - !type:MartialArtSoundEffect
+    sound:
+      collection: GenericHit
+
+# Cookbook
+- type: martialArtMove
+  id: CookbookBatter
+  name: vg-martial-move-cookbook-batter-name
+  description: vg-martial-move-cookbook-batter-desc
+  sequence: [Grab, Hit]
+  effects:
+  - !type:MartialArtPopupEffect
+    text: vg-martial-popup-cookbook-batter
+  - !type:MartialArtDamageEffect
+    damage:
+      types:
+        Blunt: 10
+  - !type:MartialArtKnockdownEffect
+    dropItems: false
+  - !type:MartialArtStopPullEffect
+  - !type:MartialArtSoundEffect
+    sound:
+      collection: GenericHit
+
+- type: martialArtMove
+  id: CookbookUnwind
+  name: vg-martial-move-cookbook-unwind-name
+  description: vg-martial-move-cookbook-unwind-desc
+  sequence: [Disarm, Grab]
+  effects:
+  - !type:MartialArtPopupEffect
+    text: vg-martial-popup-cookbook-unwind
+  - !type:MartialArtStaminaEffect
+    amount: 35
+
+- type: martialArtMove
+  id: CookbookRoll
+  name: vg-martial-move-cookbook-roll-name
+  description: vg-martial-move-cookbook-roll-desc
+  sequence: [Grab, Grab]
+  effects:
+  - !type:MartialArtPopupEffect
+    text: vg-martial-popup-cookbook-roll
+  - !type:MartialArtKnockdownEffect
+    dropItems: true
+  - !type:MartialArtStaminaEffect
+    amount: 35
+
+- type: martialArtMove
+  id: CookbookPress
+  name: vg-martial-move-cookbook-press-name
+  description: vg-martial-move-cookbook-press-desc
+  sequence: [Grab, Disarm]
+  effects:
+  - !type:MartialArtPopupEffect
+    text: vg-martial-popup-cookbook-press
+  - !type:MartialArtKnockdownEffect
+    dropItems: true
+  - !type:MartialArtSoundEffect
+    sound:
+      collection: GenericHit
+
+# Krav Maga
+- type: martialArtMove
+  id: KravLegSweep
+  name: vg-martial-move-krav-sweep-name
+  description: vg-martial-move-krav-sweep-desc
+  action: ActionKravLegSweep
+  cooldown: 2
+  effects:
+  - !type:MartialArtDamageEffect
+    damage:
+      types:
+        Blunt: 10
+  - !type:MartialArtKnockdownEffect
+  - !type:MartialArtSoundEffect
+    sound:
+      collection: GenericHit
+
+- type: martialArtMove
+  id: KravLungPunch
+  name: vg-martial-move-krav-lung-name
+  description: vg-martial-move-krav-lung-desc
+  action: ActionKravLungPunch
+  cooldown: 3
+  effects:
+  - !type:MartialArtDamageEffect
+    damage:
+      types:
+        Asphyxiation: 15
+  - !type:MartialArtSoundEffect
+    sound:
+      collection: GenericHit
+
+- type: martialArtMove
+  id: KravNeckChop
+  name: vg-martial-move-krav-neck-name
+  description: vg-martial-move-krav-neck-desc
+  action: ActionKravNeckChop
+  cooldown: 2
+  effects:
+  - !type:MartialArtDamageEffect
+    damage:
+      types:
+        Blunt: 5
+  - !type:MartialArtMuteEffect
+    duration: 10
+  - !type:MartialArtSoundEffect
+    sound:
+      collection: GenericHit
+
+# Judo
+- type: martialArtMove
+  id: JudoLegTrip
+  name: vg-martial-move-judo-trip-name
+  description: vg-martial-move-judo-trip-desc
+  sequence: [Grab, Disarm]
+  effects:
+  - !type:MartialArtKnockdownEffect
+    dropItems: false
+    stunSeconds: 1
+  - !type:MartialArtDamageEffect
+    damage:
+      types:
+        Blunt: 5
+
+- type: martialArtMove
+  id: JudoGroundPunch
+  name: vg-martial-move-judo-ground-name
+  description: vg-martial-move-judo-ground-desc
+  sequence: [Disarm, Disarm, Grab]
+  requiresDownedTarget: true
+  effects:
+  - !type:MartialArtStaminaEffect
+    amount: 45
+  - !type:MartialArtDamageEffect
+    damage:
+      types:
+        Blunt: 10
+
+- type: martialArtMove
+  id: JudoEyePress
+  name: vg-martial-move-judo-eye-name
+  description: vg-martial-move-judo-eye-desc
+  sequence: [Hit, Grab, Disarm]
+  effects:
+  - !type:MartialArtEyeDamageEffect
+    amount: 2
+  - !type:MartialArtPopupEffect
+    text: vg-martial-popup-judo-eye
+
+- type: martialArtMove
+  id: JudoThrow
+  name: vg-martial-move-judo-throw-name
+  description: vg-martial-move-judo-throw-desc
+  sequence: [Disarm, Hit]
+  requiresTargetPullingUser: true
+  effects:
+  - !type:MartialArtDamageEffect
+    damage:
+      types:
+        Blunt: 10
+  - !type:MartialArtThrowEffect
+    speed: 12
+
+# Actions
+- type: entity
+  parent: BaseAction
+  id: ActionKravLegSweep
+  name: vg-martial-action-krav-sweep
+  description: vg-martial-action-krav-sweep-desc
+  components:
+  - type: Action
+    useDelay: 2
+  - type: Sprite
+    sprite: Interface/Actions/actions_crit.rsi
+    state: lastwords
+  - type: InstantAction
+    event: !type:MartialArtActionEvent
+      move: KravLegSweep
+
+- type: entity
+  parent: BaseAction
+  id: ActionKravLungPunch
+  name: vg-martial-action-krav-lung
+  description: vg-martial-action-krav-lung-desc
+  components:
+  - type: Action
+    useDelay: 3
+  - type: Sprite
+    sprite: Interface/Actions/actions_crit.rsi
+    state: lastwords
+  - type: InstantAction
+    event: !type:MartialArtActionEvent
+      move: KravLungPunch
+
+- type: entity
+  parent: BaseAction
+  id: ActionKravNeckChop
+  name: vg-martial-action-krav-neck
+  description: vg-martial-action-krav-neck-desc
+  components:
+  - type: Action
+    useDelay: 2
+  - type: Sprite
+    sprite: Interface/Actions/actions_crit.rsi
+    state: fakedeath
+  - type: InstantAction
+    event: !type:MartialArtActionEvent
+      move: KravNeckChop
+
+- type: entity
+  parent: BaseAction
+  id: ActionMartialCycle
+  name: vg-martial-action-cycle
+  description: vg-martial-action-cycle-desc
+  components:
+  - type: Action
+  - type: Sprite
+    sprite: Interface/Actions/actions_crit.rsi
+    state: lastwords
+  - type: InstantAction
+    event: !type:MartialArtCycleEvent

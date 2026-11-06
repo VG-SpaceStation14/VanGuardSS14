@@ -1,0 +1,32 @@
+- type: listing
+  id: UplinkCQCManual
+  name: uplink-cqc-manual-name
+  description: uplink-cqc-manual-desc
+  icon: { sprite: /Textures/Objects/Misc/books.rsi, state: icon_text }
+  productEntity: CQCManual
+  discountCategory: rareDiscounts
+  discountDownTo:
+    Telecrystal: 8
+  cost:
+    Telecrystal: 12
+  categories:
+    - UplinkWeaponry
+  conditions:
+    - !type:StoreWhitelistCondition
+      whitelist:
+        tags:
+          - NukeOpsUplink
+
+- type: listing
+  id: UplinkSleepingCarpScroll
+  name: uplink-sleeping-carp-name
+  description: uplink-sleeping-carp-desc
+  icon: { sprite: /Textures/Objects/Misc/books.rsi, state: icon_text }
+  productEntity: SleepingCarpScroll
+  discountCategory: rareDiscounts
+  discountDownTo:
+    Telecrystal: 10
+  cost:
+    Telecrystal: 17
+  categories:
+    - UplinkWeaponry

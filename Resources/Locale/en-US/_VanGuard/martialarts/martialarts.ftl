@@ -1,0 +1,121 @@
+guide-entry-martialarts = Martial Arts
+
+ent-CQCManual = CQC manual
+    .desc = A one-use manual on close quarters combat.
+ent-SleepingCarpScroll = scroll of the sleeping carp
+    .desc = A one-use scroll teaching the Way of the Sleeping Carp.
+ent-PTCRBook = police self-defence manual
+    .desc = A one-use compilation of police self-defence techniques.
+ent-CookbookManual = cookbook of techniques
+    .desc = A one-use cookbook about preparing a bun thief.
+ent-ClothingHandsGlovesKravMaga = Krav Maga gloves
+    .desc = Combat gloves with a Krav Maga training chip.
+ent-ClothingBeltJudo = corporate judo belt
+    .desc = A security belt with a judo manual sewn into the lining.
+
+ent-ActionKravLegSweep = Leg Sweep
+    .desc = Prepare a Krav Maga leg sweep.
+ent-ActionKravLungPunch = Lung Punch
+    .desc = Prepare a lung punch.
+ent-ActionKravNeckChop = Neck Chop
+    .desc = Prepare a neck chop.
+ent-ActionMartialCycle = Cycle Martial Art
+    .desc = Switch to the next known martial art.
+
+vg-martial-style-cqc-name = CQC
+vg-martial-style-cqc-desc = A hard close-quarters style built on grabs and finishers.
+vg-martial-style-carp-name = Way of the Sleeping Carp
+vg-martial-style-carp-desc = Reflect projectiles at the cost of being unable to shoot.
+vg-martial-style-ptcr-name = PTCR
+vg-martial-style-ptcr-desc = Police self-defence based on joint locks and sweeps.
+vg-martial-style-cookbook-name = Cookbook of Techniques
+vg-martial-style-cookbook-desc = A strange style that turns a fight into cooking.
+vg-martial-style-krav-name = Krav Maga
+vg-martial-style-krav-desc = Practical self-defence with prepared strikes.
+vg-martial-style-judo-name = Corporate Judo
+vg-martial-style-judo-desc = Throws and control woven into a security belt.
+
+vg-martial-move-cqc-slam-name = Slam
+vg-martial-move-cqc-slam-desc = Grab + hit: knocks the target down without dropping items.
+vg-martial-move-cqc-double-name = Double Strike
+vg-martial-move-cqc-double-desc = Hit + hit: damage and sleep against a stamina-critical target.
+vg-martial-move-cqc-intercept-name = Intercept
+vg-martial-move-cqc-intercept-desc = Disarm + grab: takes the target's item.
+vg-martial-move-cqc-grab-name = Restrain
+vg-martial-move-cqc-grab-desc = Grab + grab: knocks down and deals stamina damage.
+vg-martial-move-cqc-consecutive-name = Consecutive Strikes
+vg-martial-move-cqc-consecutive-desc = Disarm + disarm + hit: a flurry of blows.
+vg-martial-move-cqc-sweep-name = Leg Sweep
+vg-martial-move-cqc-sweep-desc = Grab + disarm: knocks the target down.
+
+vg-martial-move-carp-teeth-name = Carp Teeth
+vg-martial-move-carp-teeth-desc = Hit + hit: slashing damage that grows with charges.
+vg-martial-move-carp-wave-name = Crashing Wave
+vg-martial-move-carp-wave-desc = Hit + disarm: throws and sleeps the target.
+vg-martial-move-carp-intercept-name = Intercept
+vg-martial-move-carp-intercept-desc = Disarm + disarm: steals the target's item.
+
+vg-martial-move-ptcr-wristlock-name = Wrist Lock
+vg-martial-move-ptcr-wristlock-desc = Hit + grab + disarm: a painful joint lock.
+vg-martial-move-ptcr-sweep-name = Leg Sweep
+vg-martial-move-ptcr-sweep-desc = Disarm + grab: knocks the target down.
+
+vg-martial-move-cookbook-batter-name = Batter
+vg-martial-move-cookbook-batter-desc = Grab + hit: tenderises the target.
+vg-martial-move-cookbook-unwind-name = Unwind
+vg-martial-move-cookbook-unwind-desc = Disarm + grab: stamina damage.
+vg-martial-move-cookbook-roll-name = Roll Out
+vg-martial-move-cookbook-roll-desc = Grab + grab: knocks down and drops items.
+vg-martial-move-cookbook-press-name = Press
+vg-martial-move-cookbook-press-desc = Grab + disarm: knocks down and drops items.
+
+vg-martial-move-krav-sweep-name = Leg Sweep
+vg-martial-move-krav-sweep-desc = A prepared sweep that knocks the target down.
+vg-martial-move-krav-lung-name = Lung Punch
+vg-martial-move-krav-lung-desc = A prepared strike dealing asphyxiation damage.
+vg-martial-move-krav-neck-name = Neck Chop
+vg-martial-move-krav-neck-desc = A prepared strike that temporarily mutes the target.
+
+vg-martial-move-judo-trip-name = Leg Trip
+vg-martial-move-judo-trip-desc = Grab + disarm: knocks down and briefly stuns.
+vg-martial-move-judo-ground-name = Ground Control
+vg-martial-move-judo-ground-desc = Downed target only: stamina damage and a strike.
+vg-martial-move-judo-eye-name = Eye Press
+vg-martial-move-judo-eye-desc = Hit + grab + disarm: damages the eyes.
+vg-martial-move-judo-throw-name = Nage Waza
+vg-martial-move-judo-throw-desc = Disarm + hit: throws a target that is grabbing you.
+
+vg-martial-popup-cqc-slam = { CAPITALIZE($user) } slams { $target } into the floor!
+vg-martial-popup-cqc-double = { CAPITALIZE($user) } rains blows on { $target }!
+vg-martial-popup-cqc-intercept = { CAPITALIZE($user) } intercepts { $target }'s weapon!
+vg-martial-popup-cqc-restrain = { CAPITALIZE($user) } restrains { $target }!
+vg-martial-popup-cqc-consecutive = { CAPITALIZE($user) } unleashes a flurry on { $target }!
+vg-martial-popup-cqc-sweep = { CAPITALIZE($user) } sweeps { $target } off their feet!
+vg-martial-popup-carp-teeth = { CAPITALIZE($user) } sinks their teeth into { $target }!
+vg-martial-popup-carp-wave = { CAPITALIZE($user) } blasts { $target } away like a wave!
+vg-martial-popup-carp-intercept = { CAPITALIZE($user) } twists { $target }'s arm!
+vg-martial-popup-ptcr-wristlock = { CAPITALIZE($user) } locks { $target }'s wrist!
+vg-martial-popup-ptcr-sweep = { CAPITALIZE($user) } sweeps { $target } off their feet!
+vg-martial-popup-cookbook-batter = { CAPITALIZE($user) } batters { $target } like meat!
+vg-martial-popup-cookbook-unwind = { CAPITALIZE($user) } unwinds { $target }!
+vg-martial-popup-cookbook-roll = { CAPITALIZE($user) } rolls { $target } out like dough!
+vg-martial-popup-cookbook-press = { CAPITALIZE($user) } squeezes { $target } like a melon!
+vg-martial-popup-judo-eye = { CAPITALIZE($user) } presses into { $target }'s eyes!
+vg-martial-necksnap = { CAPITALIZE($user) } snaps { $target }'s neck!
+
+vg-martial-book-invalid-user = You cannot study martial arts in this state.
+vg-martial-book-already-known = You already know this martial art.
+vg-martial-book-failed = Failed to learn the martial art.
+vg-martial-learned = You have learned the martial art: { $style }.
+vg-martial-equipment-learned = You have learned the martial art: { $style }.
+vg-martial-style-selected = Current martial art: { $style }.
+vg-martial-no-other-style = You know no other martial art.
+vg-martial-move-not-known = You do not know this move.
+vg-martial-move-passive = This move is performed with a combo.
+vg-martial-move-ready = Move prepared: { $move }.
+vg-martial-cannot-shoot = Your martial art prevents shooting.
+vg-martial-failed = The move failed.
+vg-martial-failed-range = The target is out of range.
+vg-martial-failed-standing = The target must be standing.
+vg-martial-failed-downed = The target must be downed.
+vg-martial-failed-grab = You need to grab the target.

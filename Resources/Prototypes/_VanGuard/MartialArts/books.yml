@@ -1,0 +1,127 @@
+- type: entity
+  parent: BaseItem
+  id: CQCManual
+  name: CQC manual
+  description: A one-use manual describing Close Quarters Combat.
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/books.rsi
+    layers:
+    - state: paper
+    - state: cover_base
+      color: "#2f3a4a"
+    - state: decor_wingette
+      color: "#4b5d75"
+    - state: icon_text
+  - type: Item
+  - type: Tag
+    tags:
+    - Book
+  - type: GuideHelp
+    guides:
+    - MartialArts
+  - type: MartialArtsBook
+    style: CQC
+    learnTime: 4
+
+- type: entity
+  parent: BaseItem
+  id: SleepingCarpScroll
+  name: scroll of the sleeping carp
+  description: A one-use scroll describing the Way of the Sleeping Carp.
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/books.rsi
+    layers:
+    - state: paper
+    - state: cover_old
+      color: "#4b7a4e"
+    - state: decor_bottom
+      color: "#2f5732"
+    - state: icon_text
+  - type: Item
+  - type: Tag
+    tags:
+    - Book
+  - type: GuideHelp
+    guides:
+    - MartialArts
+  - type: MartialArtsBook
+    style: SleepingCarp
+    learnTime: 4
+
+- type: entity
+  parent: BaseItem
+  id: PTCRBook
+  name: police self-defence manual
+  description: A one-use manual of the Police Tactical Combat Response technique.
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/books.rsi
+    layers:
+    - state: paper
+    - state: cover_strong
+      color: "#3d4f63"
+    - state: decor_diagonal
+      color: "#647b92"
+    - state: icon_text
+  - type: Item
+  - type: Tag
+    tags:
+    - Book
+  - type: GuideHelp
+    guides:
+    - MartialArts
+  - type: MartialArtsBook
+    style: PTCR
+    learnTime: 4
+
+- type: entity
+  parent: BaseItem
+  id: CookbookManual
+  name: cookbook of techniques
+  description: A one-use cookbook that explains how to tenderise a thief.
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/books.rsi
+    layers:
+    - state: paper
+    - state: cover_base
+      color: "#7a3d2c"
+    - state: decor_wingette
+      color: "#a25a3d"
+    - state: icon_text
+  - type: Item
+  - type: Tag
+    tags:
+    - Book
+  - type: GuideHelp
+    guides:
+    - MartialArts
+  - type: MartialArtsBook
+    style: Cookbook
+    learnTime: 4
+
+- type: entity
+  parent: ClothingHandsGlovesCombat
+  id: ClothingHandsGlovesKravMaga
+  name: Krav Maga gloves
+  description: Combat gloves with a training chip that teaches Krav Maga while worn.
+  components:
+  - type: GuideHelp
+    guides:
+    - MartialArts
+  - type: MartialArtsClothing
+    style: KravMaga
+
+- type: entity
+  parent: ClothingBeltSecurity
+  id: ClothingBeltJudo
+  name: corporate judo belt
+  description: A security belt with a judo manual sewn into the lining.
+  components:
+  - type: GuideHelp
+    guides:
+    - MartialArts
+  - type: MartialArtsClothing
+    style: Judo
