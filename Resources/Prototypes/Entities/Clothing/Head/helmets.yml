@@ -21,6 +21,11 @@
     sound:
       path: /Audio/_VanGuard/Items/handling/helmet_drop.ogg
   # VG-Tweak End
+  # VG-Tweak Start: helmets cover eyes, ears and masks
+  - type: SlotBlock
+    slots: [ears, eyes, mask]
+    blockEquip: false
+  # VG-Tweak End
 
 - type: entity
   parent: ClothingHeadHelmetBase

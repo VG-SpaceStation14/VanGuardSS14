@@ -17,6 +17,11 @@ public sealed partial class SlotBlockSystem : EntitySystem
 
     private void OnEquipAttempt(Entity<SlotBlockComponent> ent, ref InventoryRelayedEvent<IsEquippingTargetAttemptEvent> args)
     {
+        // VG-Tweak Start: clothing-order blockers only guard removal.
+        if (!ent.Comp.BlockEquip)
+            return;
+        // VG-Tweak End
+
         if (args.Args.Cancelled || (args.Args.SlotFlags & ent.Comp.Slots) == 0)
             return;
 

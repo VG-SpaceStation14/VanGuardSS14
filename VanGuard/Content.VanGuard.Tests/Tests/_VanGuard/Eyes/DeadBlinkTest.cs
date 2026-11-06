@@ -2,6 +2,7 @@
 using System.Linq;
 using Content.Client.Eye.Blinking;
 using Content.IntegrationTests.Fixtures;
+using Content.IntegrationTests.Fixtures.Attributes;
 using Content.Shared.Eye.Blinking;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
@@ -18,7 +19,17 @@ namespace Content.IntegrationTests.Tests._VanGuard.Eyes;
 [NonParallelizable]
 public sealed class DeadBlinkTest : GameTest
 {
+    // This test asserts client-only eyelid/timer state, so a pair reused after
+    // another client test can otherwise start from a stale desynchronised state.
+    public static PoolSettings FreshPair => new()
+    {
+        Connected = true,
+        Fresh = true,
+        Destructive = true,
+    };
+
     [Test]
+    [PairConfig(nameof(FreshPair))]
     public async Task DeadMobKeepsEyesOpenAndResumesAfterRevival()
     {
         EntityUid serverMob = default;
