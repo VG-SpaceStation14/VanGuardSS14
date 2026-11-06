@@ -1,6 +1,9 @@
 - type: vendingMachineInventory
   id: ChefvendInventory
   startingInventory:
+    # VG-Tweak Start: martial arts manual
+    CookbookManual: 2
+    # VG-Tweak End
     ReagentContainerFlour: 2
     ReagentContainerCornmeal: 2
     ReagentContainerSugar: 2

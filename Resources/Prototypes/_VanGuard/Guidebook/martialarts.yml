@@ -1,0 +1,4 @@
+- type: guideEntry
+  id: MartialArts
+  name: guide-entry-martialarts
+  text: "/ServerInfo/_VanGuard/Guidebook/MartialArts/MartialArts.xml"

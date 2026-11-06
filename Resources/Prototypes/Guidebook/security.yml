@@ -6,6 +6,9 @@
   - Forensics
   - Defusal
   - CriminalRecords
+  # VG-Tweak Start: martial arts guide
+  - MartialArts
+  # VG-Tweak End
 
 - type: guideEntry
   id: Forensics

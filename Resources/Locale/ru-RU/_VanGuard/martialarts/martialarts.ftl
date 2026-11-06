@@ -1,0 +1,121 @@
+guide-entry-martialarts = Боевые искусства
+
+ent-CQCManual = мануал CQC
+    .desc = Одноразовый мануал по тактике ближнего боя.
+ent-SleepingCarpScroll = свиток Спящего Карпа
+    .desc = Одноразовый свиток, обучающий Пути Спящего Карпа.
+ent-PTCRBook = полицейский мануал самообороны
+    .desc = Одноразовый сборник приёмов полицейской техники самообороны.
+ent-CookbookManual = кулинарная книга приёмов
+    .desc = Одноразовая книга о том, как приготовить отбивную из вора булочек.
+ent-ClothingHandsGlovesKravMaga = перчатки крав-маги
+    .desc = Боевые перчатки с обучающим чипом крав-маги.
+ent-ClothingBeltJudo = корпоративный пояс дзюдо
+    .desc = Пояс СБ со вшитым руководством по дзюдо.
+
+ent-ActionKravLegSweep = Подсечка
+    .desc = Подготовить подсечку крав-маги.
+ent-ActionKravLungPunch = Удар в лёгкие
+    .desc = Подготовить удар в лёгкие.
+ent-ActionKravNeckChop = Удар по горлу
+    .desc = Подготовить удар по горлу.
+ent-ActionMartialCycle = Сменить боевой стиль
+    .desc = Переключиться на следующий изученный боевой стиль.
+
+vg-martial-style-cqc-name = CQC
+vg-martial-style-cqc-desc = Жёсткий стиль ближнего боя с захватами и добиванием.
+vg-martial-style-carp-name = Путь Спящего Карпа
+vg-martial-style-carp-desc = Отражение снарядов ценой полного запрета стрельбы.
+vg-martial-style-ptcr-name = ПТСР
+vg-martial-style-ptcr-desc = Полицейская техника самообороны и болевых замков.
+vg-martial-style-cookbook-name = Кулинарная книга приёмов
+vg-martial-style-cookbook-desc = Необычный стиль, превращающий драку в готовку.
+vg-martial-style-krav-name = Крав-мага
+vg-martial-style-krav-desc = Прикладная самооборона с подготовленными ударами.
+vg-martial-style-judo-name = Корпоративное дзюдо
+vg-martial-style-judo-desc = Броски и контроль, вшитые в пояс СБ.
+
+vg-martial-move-cqc-slam-name = Слэм
+vg-martial-move-cqc-slam-desc = Захват + удар: сбивает с ног без выбивания предметов.
+vg-martial-move-cqc-double-name = Двойной удар
+vg-martial-move-cqc-double-desc = Удар + удар: урон и сон по цели в стамина-крите.
+vg-martial-move-cqc-intercept-name = Перехват
+vg-martial-move-cqc-intercept-desc = Обезоруживание + захват: забирает предмет.
+vg-martial-move-cqc-grab-name = Захват
+vg-martial-move-cqc-grab-desc = Захват + захват: сбивает с ног и наносит урон стамине.
+vg-martial-move-cqc-consecutive-name = Серия
+vg-martial-move-cqc-consecutive-desc = Обезоруживание + обезоруживание + удар: серия ударов.
+vg-martial-move-cqc-sweep-name = Подсечка
+vg-martial-move-cqc-sweep-desc = Захват + обезоруживание: сбивает с ног.
+
+vg-martial-move-carp-teeth-name = Карпьи зубы
+vg-martial-move-carp-teeth-desc = Удар + удар: режущий урон, растущий с зарядами.
+vg-martial-move-carp-wave-name = Удар волны
+vg-martial-move-carp-wave-desc = Удар + обезоруживание: отбрасывает и усыпляет цель.
+vg-martial-move-carp-intercept-name = Перехват
+vg-martial-move-carp-intercept-desc = Обезоруживание + обезоруживание: крадёт предмет.
+
+vg-martial-move-ptcr-wristlock-name = Завод руки
+vg-martial-move-ptcr-wristlock-desc = Удар + захват + обезоруживание: болевой замок.
+vg-martial-move-ptcr-sweep-name = Подсечка
+vg-martial-move-ptcr-sweep-desc = Обезоруживание + захват: сбивает с ног.
+
+vg-martial-move-cookbook-batter-name = Отбивание
+vg-martial-move-cookbook-batter-desc = Захват + удар: отбивная из противника.
+vg-martial-move-cookbook-unwind-name = Раскручивание
+vg-martial-move-cookbook-unwind-desc = Обезоруживание + захват: урон стамине.
+vg-martial-move-cookbook-roll-name = Раскатывание
+vg-martial-move-cookbook-roll-desc = Захват + захват: сбивает и выбивает предметы.
+vg-martial-move-cookbook-press-name = Выжимание
+vg-martial-move-cookbook-press-desc = Захват + обезоруживание: сбивает и выбивает предметы.
+
+vg-martial-move-krav-sweep-name = Подсечка
+vg-martial-move-krav-sweep-desc = Подготовленная подсечка, сбивающая цель.
+vg-martial-move-krav-lung-name = Удар в лёгкие
+vg-martial-move-krav-lung-desc = Подготовленный удар удушающим уроном.
+vg-martial-move-krav-neck-name = Удар по горлу
+vg-martial-move-krav-neck-desc = Подготовленный удар, временно лишающий голоса.
+
+vg-martial-move-judo-trip-name = Проход в ноги
+vg-martial-move-judo-trip-desc = Захват + обезоруживание: сбивает и оглушает.
+vg-martial-move-judo-ground-name = Боевой захват
+vg-martial-move-judo-ground-desc = Только по лежачей цели: урон стамине и удар.
+vg-martial-move-judo-eye-name = Вдавливание глаз
+vg-martial-move-judo-eye-desc = Удар + захват + обезоруживание: повреждает глаза.
+vg-martial-move-judo-throw-name = Нагэ-вадза
+vg-martial-move-judo-throw-desc = Обезоруживание + удар: бросок того, кто вас удерживает.
+
+vg-martial-popup-cqc-slam = { CAPITALIZE($user) } вбивает { $target } в пол!
+vg-martial-popup-cqc-double = { CAPITALIZE($user) } наносит { $target } серию ударов!
+vg-martial-popup-cqc-intercept = { CAPITALIZE($user) } перехватывает оружие { $target }!
+vg-martial-popup-cqc-restrain = { CAPITALIZE($user) } сдавливает { $target }!
+vg-martial-popup-cqc-consecutive = { CAPITALIZE($user) } обрушивает на { $target } град ударов!
+vg-martial-popup-cqc-sweep = { CAPITALIZE($user) } проводит подсечку { $target }!
+vg-martial-popup-carp-teeth = { CAPITALIZE($user) } вгрызается в { $target }!
+vg-martial-popup-carp-wave = { CAPITALIZE($user) } отбрасывает { $target } волной!
+vg-martial-popup-carp-intercept = { CAPITALIZE($user) } выкручивает руку { $target }!
+vg-martial-popup-ptcr-wristlock = { CAPITALIZE($user) } заламывает руку { $target }!
+vg-martial-popup-ptcr-sweep = { CAPITALIZE($user) } сбивает { $target } с ног!
+vg-martial-popup-cookbook-batter = { CAPITALIZE($user) } отбивает { $target }, как мясо!
+vg-martial-popup-cookbook-unwind = { CAPITALIZE($user) } раскручивает { $target }!
+vg-martial-popup-cookbook-roll = { CAPITALIZE($user) } раскатывает { $target }, как тесто!
+vg-martial-popup-cookbook-press = { CAPITALIZE($user) } сжимает { $target }, как арбуз!
+vg-martial-popup-judo-eye = { CAPITALIZE($user) } вдавливает пальцы в глаза { $target }!
+vg-martial-necksnap = { CAPITALIZE($user) } ломает шею { $target }!
+
+vg-martial-book-invalid-user = Вы не можете изучать боевые искусства в таком состоянии.
+vg-martial-book-already-known = Вы уже знаете этот боевой стиль.
+vg-martial-book-failed = Не удалось изучить боевой стиль.
+vg-martial-learned = Вы изучили боевой стиль: { $style }.
+vg-martial-equipment-learned = Вы освоили боевой стиль: { $style }.
+vg-martial-style-selected = Текущий боевой стиль: { $style }.
+vg-martial-no-other-style = У вас нет другого изученного боевого стиля.
+vg-martial-move-not-known = Этот приём вам неизвестен.
+vg-martial-move-passive = Этот приём выполняется комбинацией действий.
+vg-martial-move-ready = Приём подготовлен: { $move }.
+vg-martial-cannot-shoot = Ваш боевой стиль не позволяет стрелять.
+vg-martial-failed = Приём не удался.
+vg-martial-failed-range = Цель слишком далеко.
+vg-martial-failed-standing = Для приёма цель должна стоять.
+vg-martial-failed-downed = Для приёма цель должна лежать.
+vg-martial-failed-grab = Необходим захват цели.
