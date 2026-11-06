@@ -18,6 +18,14 @@ namespace Content.IntegrationTests.Tests._VanGuard.Eyes;
 [NonParallelizable]
 public sealed class DeadBlinkTest : GameTest
 {
+    // This fixture asserts client-only eyelid/timer state, so a pair reused after
+    // another client test can otherwise start from a stale desynchronised state.
+    public override PoolSettings PoolSettings => new()
+    {
+        Connected = true,
+        Fresh = true,
+    };
+
     [Test]
     public async Task DeadMobKeepsEyesOpenAndResumesAfterRevival()
     {
