@@ -13,4 +13,12 @@ public sealed partial class SlotBlockComponent : Component
     /// </summary>
     [DataField(required: true), AutoNetworkedField]
     public SlotFlags Slots = SlotFlags.NONE;
+
+    // VG-Tweak Start: VanGuard clothing-order blockers only prevent removal.
+    /// <summary>
+    /// Whether this blocker also prevents equipping into the covered slots.
+    /// </summary>
+    [DataField]
+    public bool BlockEquip = true;
+    // VG-Tweak End
 }

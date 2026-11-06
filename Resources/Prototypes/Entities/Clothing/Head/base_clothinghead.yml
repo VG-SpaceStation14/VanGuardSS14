@@ -115,9 +115,11 @@
   id: ClothingHeadEVAHelmetBase
   name: base space helmet
   components:
-# SlotBlocker blocked until UI change
-#  - type: SlotBlock
-#    slots: [ears, eyes, mask]
+  # VG-Tweak Start: full head protection covers eyes, ears and mask
+  - type: SlotBlock
+    slots: [ears, eyes, mask]
+    blockEquip: false
+  # VG-Tweak End
   - type: BreathMask
   - type: Item
     size: Normal
@@ -151,9 +153,11 @@
   name: base hardsuit helmet
   categories: [ HideSpawnMenu ]
   components:
-# SlotBlocker blocked until UI change
-#  - type: SlotBlock
-#    slots: [ears, eyes, mask]
+  # VG-Tweak Start: full head protection covers eyes, ears and mask
+  - type: SlotBlock
+    slots: [ears, eyes, mask]
+    blockEquip: false
+  # VG-Tweak End
   - type: BreathMask
   - type: Sprite
     state: icon # default state used by most inheritors
@@ -208,9 +212,11 @@
   name: base hardsuit helmet with light
   categories: [ HideSpawnMenu ]
   components:
-# SlotBlocker blocked until UI change
-#  - type: SlotBlock
-#    slots: [ears, eyes, mask]
+  # VG-Tweak Start: full head protection covers eyes, ears and mask
+  - type: SlotBlock
+    slots: [ears, eyes, mask]
+    blockEquip: false
+  # VG-Tweak End
   - type: Sprite
     layers:
     - state: icon

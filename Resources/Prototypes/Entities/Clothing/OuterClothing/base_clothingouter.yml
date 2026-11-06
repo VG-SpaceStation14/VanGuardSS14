@@ -25,6 +25,11 @@
     equipSound:
       collection: GenericEquip
   # VG-Tweak End
+  # VG-Tweak Start: outer clothing covers the jumpsuit
+  - type: SlotBlock
+    slots: [innerclothing]
+    blockEquip: false
+  # VG-Tweak End
   - type: Sprite
     state: icon
 
@@ -160,9 +165,11 @@
   id: ClothingOuterEVASuitBase
   name: base EVA Suit
   components:
-# SlotBlocker blocked until UI change
-#  - type: SlotBlock
-#    slots: [innerclothing, feet]
+  # VG-Tweak Start: EVA suits cover jumpsuit, gloves and footwear
+  - type: SlotBlock
+    slots: [innerclothing, gloves, feet]
+    blockEquip: false
+  # VG-Tweak End
   - type: PressureProtection
     highPressureMultiplier: 0.6
     lowPressureMultiplier: 1000
