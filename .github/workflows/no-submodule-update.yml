@@ -23,6 +23,13 @@ jobs:
       - name: Check changed files
         shell: pwsh
         run: |
+          # The long-lived upstream synchronization branch intentionally merges
+          # engine updates together with upstream content changes.
+          if ("${{ github.event.pull_request.head.ref }}" -eq "upstream") {
+            Write-Host "Upstream synchronization branch; submodule update is expected."
+            exit 0
+          }
+
           $changedFiles = @(git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}")
 
           if ($changedFiles.Count -eq 1 -and $changedFiles[0] -eq "RobustToolbox") {
