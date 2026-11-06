@@ -498,6 +498,12 @@ public abstract partial class SharedStaminaSystem : EntitySystem
     /// <param name="ent">Entity to update</param>
     private void AdjustStatus(Entity<StaminaComponent?> ent)
     {
+        // VG-Tweak Start: do not create/update the stamina status effect while the
+        // entity is being deleted; shutdown handlers can still trigger stamina changes.
+        if (TerminatingOrDeleted(ent.Owner) || EntityManager.IsQueuedForDeletion(ent.Owner))
+            return;
+        // VG-Tweak End
+
         if (!Resolve(ent, ref ent.Comp))
             return;
 

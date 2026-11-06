@@ -434,6 +434,12 @@ public abstract partial class SharedStunSystem
 
     private bool TryForceStand(Entity<StaminaComponent?> entity, bool popUp)
     {
+        // VG-Tweak Start: ComponentShutdown handlers may request a forced stand during
+        // deletion; do not touch stamina/status effects for an entity that is going away.
+        if (TerminatingOrDeleted(entity.Owner) || EntityManager.IsQueuedForDeletion(entity.Owner))
+            return false;
+        // VG-Tweak End
+
         // Can't force stand if no Stamina.
         if (!Resolve(entity, ref entity.Comp, false))
             return false;
