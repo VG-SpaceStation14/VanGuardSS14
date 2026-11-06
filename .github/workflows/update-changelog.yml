@@ -1,0 +1,75 @@
+name: Update VanGuard changelog
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check 'ruamel.yaml>=0.18,<0.19'
+
+      - name: Rebuild changelog
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python Tools/vanguard/update_changelog.py
+
+      - name: Validate changelog
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from ruamel.yaml import YAML
+
+          path = Path("Resources/Changelog/ChangelogVanGuard.yml")
+          data = YAML(typ="safe").load(path.read_text(encoding="utf-8"))
+          entries = data.get("Entries") if isinstance(data, dict) else None
+          if not isinstance(entries, list) or not entries:
+              raise SystemExit("Changelog must contain a non-empty Entries list")
+          for expected, entry in enumerate(entries, start=1):
+              if entry.get("id") != expected:
+                  raise SystemExit(f"Unexpected changelog id: {entry.get('id')}")
+              changes = entry.get("changes")
+              if not isinstance(changes, list) or not changes:
+                  raise SystemExit(f"Empty changes for id {expected}")
+              for change in changes:
+                  if change.get("type") not in {"Add", "Tweak", "Fix", "Remove"}:
+                      raise SystemExit(f"Invalid change type for id {expected}")
+                  if not change.get("message"):
+                      raise SystemExit(f"Empty message for id {expected}")
+          print(f"Validated {len(entries)} entries")
+          PY
+
+      - name: Check for changes
+        id: check
+        run: |
+          if git diff --quiet -- Resources/Changelog/ChangelogVanGuard.yml; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Resources/Changelog/ChangelogVanGuard.yml
+          git commit -m "chore(changelog): update changelog"
+          git push origin master
