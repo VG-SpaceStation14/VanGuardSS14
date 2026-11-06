@@ -2,6 +2,7 @@ using System.Numerics;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server._VanGuard.Shuttles.Components;
 using Content.Server.Maps;
+using Content.Shared._VanGuard.CCVars;
 using Content.Server.Parallax;
 using Content.Shared.GameTicking;
 using Content.Shared.Gravity;
@@ -18,6 +19,7 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
+using Robust.Shared.Configuration;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
@@ -38,6 +40,7 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
     [Dependency] private RestrictedRangeSystem _restricted = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private IGameMapManager _gameMapManager = default!;
+    [Dependency] private IConfigurationManager _configuration = default!;
 
     private bool _automaticLavalandLoaded;
     private MapId? _automaticLavalandMap;
@@ -66,6 +69,9 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
         // instantiated once per station. Lavaland only exists once per round.
         if (ent.Comp.SkipOnEmptyMap)
         {
+            if (!_configuration.GetCVar(VGCCVars.LavalandRoundstart))
+                return;
+
             if (_automaticLavalandLoaded)
                 return;
 

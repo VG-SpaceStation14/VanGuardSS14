@@ -36,3 +36,6 @@ confirm_timeout = 300
 
 [res]
 validate_prototype_upload = false
+
+[vg]
+lavaland_roundstart = true

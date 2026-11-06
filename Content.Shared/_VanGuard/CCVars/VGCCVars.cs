@@ -53,4 +53,11 @@ public sealed class VGCCVars
     /// </summary>
     public static readonly CVarDef<bool> PointingChatSprites =
         CVarDef.Create("vg.pointing_chat_sprites", true, CVar.CLIENT | CVar.ARCHIVE);
+
+    /// <summary>
+    ///     Enables the automatic round-start Lavaland bootstrap. Disabled by default
+    ///     for lightweight/test servers; VanGuard's common config enables it.
+    /// </summary>
+    public static readonly CVarDef<bool> LavalandRoundstart =
+        CVarDef.Create("vg.lavaland_roundstart", false, CVar.SERVERONLY);
 }
