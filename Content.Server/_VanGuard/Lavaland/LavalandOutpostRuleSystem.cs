@@ -1,6 +1,8 @@
 using System.Numerics;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server._VanGuard.Shuttles.Components;
+using Content.Server.Maps;
+using Content.Shared._VanGuard.CCVars;
 using Content.Server.Parallax;
 using Content.Shared.GameTicking;
 using Content.Shared.Gravity;
@@ -17,6 +19,7 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
+using Robust.Shared.Configuration;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
@@ -36,12 +39,18 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
     [Dependency] private LavalandPoiSpawnerSystem _poi = default!;
     [Dependency] private RestrictedRangeSystem _restricted = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
+    [Dependency] private IGameMapManager _gameMapManager = default!;
+    [Dependency] private IConfigurationManager _configuration = default!;
+
+    private bool _automaticLavalandLoaded;
+    private MapId? _automaticLavalandMap;
 
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<LavalandOutpostRuleComponent, RuleLoadedGridsEvent>(OnRuleLoadedGrids);
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => _automaticLavalandLoaded = false);
     }
 
     private void OnRuleLoadedGrids(Entity<LavalandOutpostRuleComponent> ent, ref RuleLoadedGridsEvent args)
@@ -55,6 +64,35 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
 
         ent.Comp.Map = mapUid;
         ent.Comp.MapId = args.Map;
+
+        // The automatic loader is attached to the station variation, which can be
+        // instantiated once per station. Lavaland only exists once per round.
+        if (ent.Comp.SkipOnEmptyMap)
+        {
+            if (!_configuration.GetCVar(VGCCVars.LavalandRoundstart))
+                return;
+
+            if (_automaticLavalandLoaded)
+                return;
+
+            // A test/empty map has no station gameplay and must not pay for a full
+            // Lavaland bootstrap. Explicit LavalandLoader rules keep SkipOnEmptyMap disabled.
+            if (_gameMapManager.GetSelectedMap()?.ID == "Empty")
+            {
+                Log.Info("Skipping Lavaland bootstrap on the empty map.");
+                return;
+            }
+
+            _automaticLavalandLoaded = true;
+
+            // LoadMapRule creates a new map for every automatic round-start
+            // instance. Remove the previous round's planet so it cannot accumulate
+            // in reused test pairs (and in long-running servers).
+            if (_automaticLavalandMap is { } previous && _map.MapExists(previous))
+                _map.QueueDeleteMap(previous);
+
+            _automaticLavalandMap = args.Map;
+        }
 
         _map.SetPaused(mapUid, false);
         _meta.SetEntityName(mapUid, Loc.GetString("lavaland-map-name"));

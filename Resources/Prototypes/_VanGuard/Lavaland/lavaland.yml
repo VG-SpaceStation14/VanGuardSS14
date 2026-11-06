@@ -106,6 +106,14 @@
       clearRadius: 18
 
 
+- type: entity
+  parent: LavalandLoader
+  id: LavalandLoaderRoundstart
+  components:
+  - type: LavalandOutpostRule
+    skipOnEmptyMap: true
+
+
 # FTL target marker. The localized name comes from the prototype name key.
 - type: entity
   parent: FTLPoint
