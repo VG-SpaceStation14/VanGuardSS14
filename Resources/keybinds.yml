@@ -301,7 +301,10 @@ binds:
   mod1: Shift
 - function: FlipObject
   type: State
+  # VG-Tweak Start: F is the handover key.
   key: F
+  mod1: Alt
+  # VG-Tweak End
 - function: TextCursorLeft
   type: State
   key: Left
@@ -552,6 +555,11 @@ binds:
   type: State
   key: C
   mod1: Shift
+# VG-Tweak End
+# VG-Tweak Start: hand item offer key
+- function: OfferItem
+  type: State
+  key: F
 # VG-Tweak End
 - function: OpenAbilitiesMenu
   type: State

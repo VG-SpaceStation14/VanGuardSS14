@@ -188,6 +188,9 @@ namespace Content.Client.Options.UI.Tabs
             AddButton(ContentKeyFunctions.ActivateItemInWorld);
             AddButton(ContentKeyFunctions.AltActivateItemInWorld);
             AddButton(ContentKeyFunctions.Drop);
+            // VG-Tweak Start: hand item offer key
+            AddButton(ContentKeyFunctions.OfferItem);
+            // VG-Tweak End
             AddButton(ContentKeyFunctions.ExamineEntity);
             AddButton(ContentKeyFunctions.SwapHands);
             AddButton(ContentKeyFunctions.SwapHandsReverse);

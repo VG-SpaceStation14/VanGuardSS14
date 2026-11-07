@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Original give_item icon from Paradise/SS220; centered for VanGuard",
+  "size": {"x": 32, "y": 32},
+  "states": [{"name": "give_item"}]
+}
