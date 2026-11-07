@@ -1,5 +1,7 @@
 - type: guideEntry
   id: CorporateLaw
+  # VanGuard: скрыто, заменено копией в _VanGuard
+  ruleEntry: true
   name: guide-entry-corporate-law
   text: "/ServerInfo/Corvax/Guidebook/CorporateLaw/CorporateLaw.xml"
   children:

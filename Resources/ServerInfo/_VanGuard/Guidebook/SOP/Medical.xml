@@ -1,0 +1,109 @@
+<Document>
+  # Общие СРП
+  ### Сотрудник медицинского отдела обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-medical-general-must"/>
+
+  ### Сотрудник медицинского отдела имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-medical-general-right"/>
+
+  ### Сотруднику медицинского отдела запрещено
+  <FTLTextpart Key="guidebook-vanguard-SOP-medical-general-prohibited"/>
+
+  # Должностные СРП
+  ## СРП Главного врача
+  ### Главный врач обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-ChiefMedicalOfficer-must"/>
+
+  ### Главный врач имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-ChiefMedicalOfficer-right"/>
+
+  ### Главному врачу запрещено
+  <FTLTextpart Key="guidebook-vanguard-SOP-ChiefMedicalOfficer-prohibited"/>
+
+  ## СРП Ведущего врача
+  ### Ведущий врач обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-SeniorPhysician-must"/>
+
+  ### Ведущий врач имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-SeniorPhysician-right"/>
+
+  ## СРП Парамедика
+  ### Парамедик обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-Paramedic-must"/>
+
+  ### Парамедик имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-Paramedic-right"/>
+
+  ### Парамедику запрещено
+  <FTLTextpart Key="guidebook-vanguard-SOP-Paramedic-prohibited"/>
+
+  ## СРП Врача
+  ### Врач обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-MedicalDoctor-must"/>
+
+  ### Врач имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-MedicalDoctor-right"/>
+
+  ### Врачу запрещено
+  <FTLTextpart Key="guidebook-vanguard-SOP-MedicalDoctor-prohibited"/>
+
+  ## СРП Химика
+  ### Химик обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-Chemist-must"/>
+
+  ### Химик имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-Chemist-right"/>
+
+  ### Химику запрещено
+  <FTLTextpart Key="guidebook-vanguard-SOP-Chemist-prohibited"/>
+
+  ## СРП Психолога
+  ### Психолог обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-Psychologist-must"/>
+
+  ### Психолог имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-Psychologist-right"/>
+
+  ### Психологу запрещено
+  <FTLTextpart Key="guidebook-vanguard-SOP-Psychologist-prohibited"/>
+
+  ## СРП Хирурга
+  ### Хирург обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-Surgeon-must"/>
+
+  ### Хирургу запрещено
+  <FTLTextpart Key="guidebook-vanguard-SOP-Surgeon-prohibited"/>
+
+  ## СРП Вирусолога
+  ### Вирусолог обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-Virologist-must"/>
+
+  ### Вирусолог имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-Virologist-right"/>
+
+  ## СРП Интерна
+  ### Интерн обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-MedicalIntern-must"/>
+
+  ### Интерн имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-MedicalIntern-right"/>
+
+  ### Интерну запрещено
+  <FTLTextpart Key="guidebook-vanguard-SOP-MedicalIntern-prohibited"/>
+
+  # Процедуры и протоколы
+  ## Техника безопасности медицинского отдела
+  <FTLTextpart Key="guidebook-vanguard-SOP-medical-procedure-safety"/>
+
+  ## Нормы обращения с телами разумных существ
+  <FTLTextpart Key="guidebook-vanguard-SOP-medical-procedure-bodies"/>
+
+  ## Процедура хранения и передачи имущества пациентов
+  <FTLTextpart Key="guidebook-vanguard-SOP-medical-procedure-property"/>
+
+  ## Алгоритм работы с пациентами с выраженным расстройством сознания
+  <FTLTextpart Key="guidebook-vanguard-SOP-medical-procedure-psychiatric"/>
+
+  ## Врачебная тайна
+  <FTLTextpart Key="guidebook-vanguard-SOP-medical-confidentiality"/>
+</Document>

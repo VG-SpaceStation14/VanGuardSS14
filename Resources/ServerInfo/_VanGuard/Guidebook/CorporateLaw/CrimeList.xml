@@ -1,0 +1,598 @@
+<Document>
+  # Корпоративный закон, таблица статей
+  Коды и названия всех статей корпоративного закона. (Вы можете нажать на статью, чтобы перейти к её описанию.)
+
+  <Table Columns="8">
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        Раздел
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        Глава
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        Статьи
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#0F4F27">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        XX1
+        - Незначительные правонарушения
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#414700">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        XX2
+        - Легкие правонарушения
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#5F3800">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        XX3
+        - Средние правонарушения
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#611300">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        XX4
+        - Тяжкие правонарушения
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#56000C">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      XX5
+      - Особо тяжкие правонарушения
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#121212">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      XX6
+      - Критические правонарушения
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      1XX
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        11X
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#0F4F27">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        111
+        [textlink="Оскорбление символов власти" link="VanGuardCLChapter11"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#414700">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        112
+        [textlink="Сопротивление органам власти" link="VanGuardCLChapter11"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#5F3800">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        113
+        [textlink="Забастовка" link="VanGuardCLChapter11"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#611300">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#56000C">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      115
+        [textlink="Неподчинение в ЧС" link="VanGuardCLChapter11"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#121212">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      116
+        [textlink="Мятеж" link="VanGuardCLChapter11"]
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        12X
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#0F4F27">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        121
+        [textlink="Неуважение к суду" link="VanGuardCLChapter12"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#414700">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        122
+        [textlink="Сокрытие преступления" link="VanGuardCLChapter12"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#5F3800">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        123
+        [textlink="Побег из места заключения" link="VanGuardCLChapter12"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#611300">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        124
+        [textlink="Неисполнение приговора суда" link="VanGuardCLChapter12"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#56000C">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        125
+        [textlink="Сокрытие крупного преступления" link="VanGuardCLChapter12"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#121212">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        126
+        [textlink="Побег из места пожизненного заключения" link="VanGuardCLChapter12"]
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        13X
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#0F4F27">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        131
+        [textlink="Пропаганда запрещённых организаций" link="VanGuardCLChapter13"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#414700">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#5F3800">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        133
+        [textlink="Саботаж" link="VanGuardCLChapter13"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#611300">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#56000C">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      135
+        [textlink="Членство в преступных группировках" link="VanGuardCLChapter13"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#121212">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      136
+        [textlink="Крупный саботаж" link="VanGuardCLChapter13"]
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        14X
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#0F4F27">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        141
+        [textlink="Неисполнение особых распоряжений" link="VanGuardCLChapter14"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#414700">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        142
+        [textlink="Халатность" link="VanGuardCLChapter14"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#5F3800">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#611300">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        144
+        [textlink="Грубая халатность" link="VanGuardCLChapter14"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#56000C">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      145
+        [textlink="Самоуправство" link="VanGuardCLChapter14"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#121212">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      2XX
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        21X
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#0F4F27">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#414700">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        212
+        [textlink="Нанесение легких телесных повреждений" link="VanGuardCLChapter21"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#5F3800">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        213
+        [textlink="Причинение среднего вреда здоровью" link="VanGuardCLChapter21"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#611300">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        214
+        [textlink="Причинение тяжкого вреда здоровью" link="VanGuardCLChapter21"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#56000C">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      215
+        [textlink="Причинение особо тяжкого вреда здоровью" link="VanGuardCLChapter21"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#121212">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      216
+        [textlink="Особо тяжкое убийство" link="VanGuardCLChapter21"]
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        22X
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#0F4F27">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        221
+        [textlink="Оскорбление, клевета" link="VanGuardCLChapter22"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#414700">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#5F3800">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        223
+        [textlink="Дача ложных показаний" link="VanGuardCLChapter22"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#611300">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        224
+        [textlink="Незаконное ограничение свободы" link="VanGuardCLChapter22"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#56000C">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#121212">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      3XX
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        31X
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#0F4F27">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        311
+        [textlink="Мелкая кража" link="VanGuardCLChapter31"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#414700">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        312
+        [textlink="Кража" link="VanGuardCLChapter31"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#5F3800">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        313
+        [textlink="Грабеж" link="VanGuardCLChapter31"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#611300">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        314
+        [textlink="Крупное хищение" link="VanGuardCLChapter31"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#56000C">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      315
+        [textlink="Хищение особо ценного имущества" link="VanGuardCLChapter32"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#121212">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        32X
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#0F4F27">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        321
+        [textlink="Порча имущества" link="VanGuardCLChapter32"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#414700">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        322
+        [textlink="Порча ценного имущества" link="VanGuardCLChapter32"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#5F3800">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        323
+        [textlink="Уничтожение имущества" link="VanGuardCLChapter32"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#611300">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        324
+        [textlink="Уничтожение ценного имущества" link="VanGuardCLChapter32"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#56000C">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#121212">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        326
+        [textlink="Уничтожение особо ценного имущества" link="VanGuardCLChapter32"]
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      4XX
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        41X
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#0F4F27">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        411
+        [textlink="Хулиганство" link="VanGuardCLChapter41"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#414700">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#5F3800">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        413
+        [textlink="Мошенничество" link="VanGuardCLChapter41"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#611300">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#56000C">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      415
+        [textlink="Крупное мошенничество" link="VanGuardCLChapter41"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#121212">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      416
+        [textlink="Террористический акт" link="VanGuardCLChapter41"]
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        42X
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#0F4F27">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        421
+        [textlink="Необоснованное посещение технических помещений, космоса" link="VanGuardCLChapter42"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#414700">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        422
+        [textlink="Проникновение на территорию отдела" link="VanGuardCLChapter42"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#5F3800">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        423
+        [textlink="Проникновение в стратегическую точку" link="VanGuardCLChapter42"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#611300">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#56000C">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      425
+        [textlink="Проникновение на закрытую корпоративную территорию" link="VanGuardCLChapter42"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#121212">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        43X
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#0F4F27">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        431
+        [textlink="Злоупотребление экипировкой" link="VanGuardCLChapter43"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#414700">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        432
+        [textlink="Незаконное владение опасными предметами" link="VanGuardCLChapter43"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#5F3800">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        433
+        [textlink="Нарушение порядка владения регулируемыми предметами" link="VanGuardCLChapter43"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#611300">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        434
+        [textlink="Незаконное владение предметами ограниченного оборота" link="VanGuardCLChapter43"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#56000C">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      435
+        [textlink="Незаконное владение контрабандными предметами" link="VanGuardCLChapter43"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#121212">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      436
+        [textlink="Незаконное владение террористическими средствами" link="VanGuardCLChapter43"]
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        44X
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#0F4F27">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#414700">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      442
+        [textlink="Незаконный оборот опасных веществ и наркотиков" link="VanGuardCLChapter44"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#5F3800">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      443
+        [textlink="Незаконный оборот сильнодействующих лекарств" link="VanGuardCLChapter44"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#611300">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      444
+        [textlink="Незаконный оборот токсинов и веществ с боевым потенциалом" link="VanGuardCLChapter44"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#56000C">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      445
+        [textlink="Незаконный оборот стимуляторов и экзотических веществ" link="VanGuardCLChapter44"]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#121212">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      </Box>
+    </ColorBox>
+
+  </Table>
+
+</Document>

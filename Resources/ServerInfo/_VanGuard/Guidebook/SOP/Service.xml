@@ -1,0 +1,139 @@
+<Document>
+  # Должностные СРП
+  ## СРП Главы персонала
+  ### Глава персонала обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-HeadOfPersonnel-must"/>
+
+  ### Глава персонала имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-HeadOfPersonnel-right"/>
+
+  ### Главе персонала запрещено
+  <FTLTextpart Key="guidebook-vanguard-SOP-HeadOfPersonnel-prohibited"/>
+
+  ## СРП Сервисного работника
+  ### Сервисный работник обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-ServiceWorker-must"/>
+
+  ### Сервисный работник имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-ServiceWorker-right"/>
+
+  ## СРП Клоуна
+  ### Клоун обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-Clown-must"/>
+
+  ### Клоун имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-Clown-right"/>
+
+  ### Клоуну запрещено
+  <FTLTextpart Key="guidebook-vanguard-SOP-Clown-prohibited"/>
+
+  ## СРП Мима
+  ### Мим обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-Mime-must"/>
+
+  ### Мим имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-Mime-right"/>
+
+  ### Миму запрещено
+  <FTLTextpart Key="guidebook-vanguard-SOP-Mime-prohibited"/>
+
+  ## СРП Шеф-повара
+  ### Шеф-повар обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-Chef-must"/>
+
+  ### Шеф-повар имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-Chef-right"/>
+
+  ### Шеф-повару запрещено
+  <FTLTextpart Key="guidebook-vanguard-SOP-Chef-prohibited"/>
+
+  ## СРП Ботаника
+  ### Ботаник обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-Botanist-must"/>
+
+  ### Ботаник имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-Botanist-right"/>
+
+  ### Ботанику запрещено
+  <FTLTextpart Key="guidebook-vanguard-SOP-Botanist-prohibited"/>
+
+  ## СРП Бармена
+  ### Бармен обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-Bartender-must"/>
+
+  ### Бармен имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-Bartender-right"/>
+
+  ### Бармену запрещено
+  <FTLTextpart Key="guidebook-vanguard-SOP-Bartender-prohibited"/>
+
+  ## СРП Уборщика
+  ### Уборщик обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-Janitor-must"/>
+
+  ### Уборщик имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-Janitor-right"/>
+
+  ### Уборщику запрещено
+  <FTLTextpart Key="guidebook-vanguard-SOP-Janitor-prohibited"/>
+
+  ## СРП Библиотекаря
+  ### Библиотекарь обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-Librarian-must"/>
+
+  ### Библиотекарь имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-Librarian-right"/>
+
+  ### Библиотекарю запрещено
+  <FTLTextpart Key="guidebook-vanguard-SOP-Librarian-prohibited"/>
+
+  ## СРП Священника
+  ### Священник обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-Chaplain-must"/>
+
+  ### Священник имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-Chaplain-right"/>
+
+  ### Священнику запрещено
+  <FTLTextpart Key="guidebook-vanguard-SOP-Chaplain-prohibited"/>
+
+  ## СРП Музыканта
+  ### Музыкант обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-Musician-must"/>
+
+  ### Музыкант имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-Musician-right"/>
+
+  ### Музыканту запрещено
+  <FTLTextpart Key="guidebook-vanguard-SOP-Musician-prohibited"/>
+
+  ## СРП Репортёра
+  ### Репортёр обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-Reporter-must"/>
+
+  ### Репортёр имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-Reporter-right"/>
+
+  ### Репортёру запрещено
+  <FTLTextpart Key="guidebook-vanguard-SOP-Reporter-prohibited"/>
+
+  ## СРП Боксера
+  ### Боксер обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-Boxer-must"/>
+
+  ### Боксер имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-Boxer-right"/>
+
+  ### Боксеру запрещено
+  <FTLTextpart Key="guidebook-vanguard-SOP-Boxer-prohibited"/>
+
+  ## СРП Зоотехника
+  ### Зоотехник обязан
+  <FTLTextpart Key="guidebook-vanguard-SOP-Zookeeper-must"/>
+
+  ### Зоотехник имеет право
+  <FTLTextpart Key="guidebook-vanguard-SOP-Zookeeper-right"/>
+
+  ### Зоотехнику запрещено
+  <FTLTextpart Key="guidebook-vanguard-SOP-Zookeeper-prohibited"/>
+</Document>
