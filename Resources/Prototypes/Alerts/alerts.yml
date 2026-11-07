@@ -386,14 +386,44 @@
 
 - type: alert
   id: Pulled
-  icons: [ /Textures/Interface/Alerts/Pull/pulled.png ]
+  icons:
+  - /Textures/Interface/Alerts/Pull/pulled.png
+  # VG-Tweak Start: staged grab alert icons
+  - sprite: /Textures/_VanGuard/Interface/Alerts/grab.rsi
+    state: grabbed-soft
+  - sprite: /Textures/_VanGuard/Interface/Alerts/grab.rsi
+    state: grabbed-hard
+  - sprite: /Textures/_VanGuard/Interface/Alerts/grab.rsi
+    state: grabbed-choke
+  # VG-Tweak End
+  # VG-Tweak Start: staged grab alert severity
+  maxSeverity: 3
+  # VG-Tweak End
+  # VG-Tweak Start: staged grab alert minimum
+  minSeverity: 0
+  # VG-Tweak End
   clickEvent: !type:StopBeingPulledAlertEvent
   name: alerts-pulled-name
   description: alerts-pulled-desc
 
 - type: alert
   id: Pulling
-  icons: [ /Textures/Interface/Alerts/Pull/pulling.png ]
+  icons:
+  - /Textures/Interface/Alerts/Pull/pulling.png
+  # VG-Tweak Start: staged grab alert icons
+  - sprite: /Textures/_VanGuard/Interface/Alerts/grab.rsi
+    state: grab-soft
+  - sprite: /Textures/_VanGuard/Interface/Alerts/grab.rsi
+    state: grab-hard
+  - sprite: /Textures/_VanGuard/Interface/Alerts/grab.rsi
+    state: grab-choke
+  # VG-Tweak End
+  # VG-Tweak Start: staged grab alert severity
+  maxSeverity: 3
+  # VG-Tweak End
+  # VG-Tweak Start: staged grab alert minimum
+  minSeverity: 0
+  # VG-Tweak End
   clickEvent: !type:StopPullingAlertEvent
   name: alerts-pulling-name
   description: alerts-pulling-desc

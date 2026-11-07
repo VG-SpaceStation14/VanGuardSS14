@@ -1,4 +1,7 @@
 using Content.Shared.ActionBlocker;
+// VG-Tweak Start: grab stage input
+using Content.Shared._VanGuard.Grab;
+// VG-Tweak End
 using Content.Shared.Administration.Logs;
 using Content.Shared.Alert;
 using Content.Shared.Buckle.Components;
@@ -484,6 +487,13 @@ public sealed partial class PullingSystem : EntitySystem
 
         if (pullable.Comp.Puller == pullerUid)
         {
+            // VG-Tweak Start: repeated pull input advances the VanGuard grab stage.
+            var grabToggle = new GrabStageToggleEvent(pullerUid, pullable.Owner);
+            RaiseLocalEvent(pullerUid, grabToggle);
+            if (grabToggle.Handled)
+                return true;
+            // VG-Tweak End
+
             return TryStopPull(pullable, pullable.Comp);
         }
 
@@ -580,8 +590,10 @@ public sealed partial class PullingSystem : EntitySystem
         // Messaging
         var message = new PullStartedMessage(pullerUid, pullableUid);
         _modifierSystem.RefreshMovementSpeedModifiers(pullerUid);
-        _alertsSystem.ShowAlert(pullerUid, pullerComp.PullingAlert);
-        _alertsSystem.ShowAlert(pullableUid, pullableComp.PulledAlert);
+        // VG-Tweak Start: staged grab alerts have severity, start at the normal state.
+        _alertsSystem.ShowAlert(pullerUid, pullerComp.PullingAlert, 0);
+        _alertsSystem.ShowAlert(pullableUid, pullableComp.PulledAlert, 0);
+        // VG-Tweak End
 
         RaiseLocalEvent(pullerUid, message);
         RaiseLocalEvent(pullableUid, message);

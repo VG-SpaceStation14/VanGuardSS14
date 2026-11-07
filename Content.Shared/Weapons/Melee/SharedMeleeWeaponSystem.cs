@@ -472,7 +472,9 @@ public abstract partial class SharedMeleeWeaponSystem : EntitySystem
                     if (!DoDisarm(user, disarm, weaponUid, weapon, session))
                         return false;
 
-                    animation = weapon.Animation;
+                    // VG-Tweak Start: use the dedicated disarm animation for RMB disarms.
+                    animation = weapon.DisarmAnimation;
+                    // VG-Tweak End
                     break;
                 case HeavyAttackEvent heavy:
                     if (!DoHeavyAttack(user, heavy, weaponUid, weapon, session))

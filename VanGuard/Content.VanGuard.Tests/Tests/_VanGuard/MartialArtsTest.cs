@@ -1,14 +1,23 @@
 using System.Collections.Generic;
 using System.Numerics;
 using System.Linq;
+using Content.Server._VanGuard.Grab;
 using Content.Server._VanGuard.MartialArts;
+using Content.Server._VanGuard.WeaponCombos;
+using Content.Shared._VanGuard.Grab;
 using Content.Shared._VanGuard.MartialArts;
+using Content.Shared._VanGuard.WeaponCombos;
+using Content.Shared.Damage.Prototypes;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction.Events;
+using Content.Shared.Mobs.Systems;
+using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Movement.Pulling.Systems;
 using Content.Shared.Movement.Pulling.Events;
 using Content.Shared.Standing;
+using Content.Shared.Stunnable;
+using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Melee.Events;
 using Content.IntegrationTests.Fixtures;
 using Robust.Shared.GameObjects;
@@ -23,6 +32,8 @@ namespace Content.IntegrationTests.Tests._VanGuard;
 [NonParallelizable]
 public sealed class MartialArtsTest : GameTest
 {
+    private static readonly ProtoId<DamageTypePrototype> BluntDamage = "Blunt";
+
     public override PoolSettings PoolSettings => new()
     {
         Connected = true,
@@ -63,6 +74,48 @@ public sealed class MartialArtsTest : GameTest
             var hit = new MeleeHitEvent(new HashSet<EntityUid> { target }, user, user, new Content.Shared.Damage.DamageSpecifier(), null);
             SEntMan.EventBus.RaiseLocalEvent(user, hit);
         });
+    }
+
+
+    private async Task RaiseWeaponHit(EntityUid user, EntityUid weapon, EntityUid target, bool heavy)
+    {
+        await Server.WaitPost(() =>
+        {
+            var hit = new MeleeHitEvent(new HashSet<EntityUid> { target }, user, weapon,
+                new Content.Shared.Damage.DamageSpecifier(), heavy ? Vector2.UnitX : null);
+            SEntMan.EventBus.RaiseLocalEvent(weapon, hit);
+        });
+    }
+
+    private async Task StartGrab(EntityUid user, EntityUid target, bool advanceToSoft = true)
+    {
+        var pulling = Server.System<PullingSystem>();
+        var started = false;
+        await Server.WaitPost(() => started = pulling.TryStartPull(user, target));
+        Assert.That(started, Is.True, "Failed to start the test pull");
+
+        if (advanceToSoft)
+        {
+            var stages = Server.System<GrabStageSystem>();
+            await Server.WaitPost(() => Assert.That(stages.TryAdvanceStage(user), Is.True, "Failed to advance to soft grab"));
+            await Pair.RunTicksSync(20);
+        }
+    }
+
+    private async Task AdvanceGrab(EntityUid user, GrabStage targetStage)
+    {
+        var stages = Server.System<GrabStageSystem>();
+        while (true)
+        {
+            var current = GrabStage.None;
+            await Server.WaitAssertion(() => current = SEntMan.GetComponent<GrabStageComponent>(user).Stage);
+            if (current >= targetStage)
+                return;
+
+            await Server.WaitPost(() => Assert.That(stages.TryAdvanceStage(user), Is.True,
+                $"Failed to advance grab from {current} to {targetStage}"));
+            await Pair.RunTicksSync(20);
+        }
     }
 
     [Test]
@@ -111,10 +164,7 @@ public sealed class MartialArtsTest : GameTest
         var damage = Server.System<DamageableSystem>();
         var before = damage.GetTotalDamage(target).Float();
 
-        await Server.WaitPost(() =>
-        {
-            SEntMan.EventBus.RaiseLocalEvent(user, new PullStartedMessage(user, target));
-        });
+        await StartGrab(user, target);
         await RaiseMelee(user, target);
 
         var after = damage.GetTotalDamage(target).Float();
@@ -147,10 +197,6 @@ public sealed class MartialArtsTest : GameTest
         var damage = Server.System<DamageableSystem>();
         var before = damage.GetTotalDamage(target).Float();
 
-        await Server.WaitPost(() =>
-        {
-            SEntMan.EventBus.RaiseLocalEvent(user, new PullStartedMessage(user, target));
-        });
         await RaiseMelee(user, target);
 
         var after = damage.GetTotalDamage(target).Float();
@@ -266,10 +312,7 @@ public sealed class MartialArtsTest : GameTest
             var disarm = new Content.Shared.Actions.Events.DisarmAttemptEvent(ptcrTarget, ptcrUser);
             SEntMan.EventBus.RaiseLocalEvent(ptcrUser, ref disarm);
         });
-        await Server.WaitPost(() =>
-        {
-            SEntMan.EventBus.RaiseLocalEvent(ptcrUser, new PullStartedMessage(ptcrUser, ptcrTarget));
-        });
+        await StartGrab(ptcrUser, ptcrTarget);
         await RaiseMelee(ptcrUser, ptcrTarget);
 
         var downed = false;
@@ -286,10 +329,7 @@ public sealed class MartialArtsTest : GameTest
             var disarm = new Content.Shared.Actions.Events.DisarmAttemptEvent(cookTarget, cookUser);
             SEntMan.EventBus.RaiseLocalEvent(cookUser, ref disarm);
         });
-        await Server.WaitPost(() =>
-        {
-            SEntMan.EventBus.RaiseLocalEvent(cookUser, new PullStartedMessage(cookUser, cookTarget));
-        });
+        await StartGrab(cookUser, cookTarget);
 
         await Server.WaitAssertion(() =>
         {
@@ -310,8 +350,8 @@ public sealed class MartialArtsTest : GameTest
             SEntMan.EventBus.RaiseLocalEvent(user, ref disarm);
             var disarm2 = new Content.Shared.Actions.Events.DisarmAttemptEvent(target, user);
             SEntMan.EventBus.RaiseLocalEvent(user, ref disarm2);
-            SEntMan.EventBus.RaiseLocalEvent(user, new PullStartedMessage(user, target));
         });
+        await StartGrab(user, target);
 
         await Server.WaitAssertion(() =>
         {
@@ -340,18 +380,28 @@ public sealed class MartialArtsTest : GameTest
                 var (user, target, _) = await CreateFighters();
                 await Learn(user, style.ID);
 
+                if (move.RequiresTargetPullingUser)
+                    await StartGrab(target, user);
+                else if (move.RequiresUserPullingTarget)
+                    await StartGrab(user, target);
+
                 await Server.WaitPost(() =>
                 {
                     var standing = SEntMan.System<StandingStateSystem>();
                     if (move.RequiresDownedTarget)
                         standing.Down(target, force: true);
 
-                    var pulling = SEntMan.System<PullingSystem>();
-                    if (move.RequiresTargetPullingUser)
-                        pulling.TryStartPull(target, user);
+                    var knowledge = SEntMan.GetComponent<MartialArtsKnowledgeComponent>(user);
+                    knowledge.History.Clear();
 
-                    if (move.RequiresUserPullingTarget)
-                        pulling.TryStartPull(user, target);
+                    if ((move.RequiresUserPullingTarget || move.RequiresTargetPullingUser) &&
+                        !move.Sequence.Contains(MartialArtActionType.Grab))
+                    {
+                        var stages = SEntMan.System<GrabStageSystem>();
+                        var puller = move.RequiresUserPullingTarget ? user : target;
+                        if (SEntMan.GetComponent<GrabStageComponent>(puller).Stage < GrabStage.Soft)
+                            Assert.That(stages.TryAdvanceStage(puller), Is.True);
+                    }
                 });
 
                 if (move.Action != null)
@@ -374,8 +424,14 @@ public sealed class MartialArtsTest : GameTest
                             case MartialArtActionType.Grab:
                                 await Server.WaitPost(() =>
                                 {
-                                    SEntMan.EventBus.RaiseLocalEvent(user, new PullStartedMessage(user, target));
+                                    var stages = SEntMan.System<GrabStageSystem>();
+                                    var puller = move.RequiresTargetPullingUser ? target : user;
+                                    Assert.That(SEntMan.TryGetComponent<GrabStageComponent>(puller, out var grab),
+                                        $"Move {style.ID}/{move.ID}: puller {puller} has no grab stage");
+                                    if (grab!.Stage < GrabStage.Choke)
+                                        Assert.That(stages.TryAdvanceStage(puller), Is.True);
                                 });
+                                await Pair.RunTicksSync(20);
                                 break;
                             case MartialArtActionType.Disarm:
                                 await Server.WaitPost(() =>
@@ -442,6 +498,293 @@ public sealed class MartialArtsTest : GameTest
         {
             var comp = SEntMan.GetComponent<MartialArtsKnowledgeComponent>(user);
             Assert.That(comp.CurrentStyle, Is.EqualTo(new ProtoId<MartialArtPrototype>("PTCR")));
+        });
+    }
+
+
+    [Test]
+    public async Task GrabStagesAdvanceAndEscape()
+    {
+        var (user, target, _) = await CreateFighters();
+        await StartGrab(user, target);
+
+        var stages = Server.System<GrabStageSystem>();
+        await Server.WaitAssertion(() =>
+        {
+            var comp = SEntMan.GetComponent<GrabStageComponent>(user);
+            Assert.That(comp.Stage, Is.EqualTo(GrabStage.Soft));
+            Assert.That(SEntMan.HasComponent<GrabStageTargetComponent>(target), Is.True);
+        });
+
+        await AdvanceGrab(user, GrabStage.Hard);
+        await Pair.RunTicksSync(20);
+        await AdvanceGrab(user, GrabStage.Choke);
+
+        await Server.WaitAssertion(() =>
+        {
+            var comp = SEntMan.GetComponent<GrabStageComponent>(user);
+            Assert.That(comp.Stage, Is.EqualTo(GrabStage.Choke));
+        });
+
+        // The victim can spend a do-after to lower the grab.
+        var escapeStarted = false;
+        await Server.WaitPost(() => escapeStarted = stages.TryStartEscape(user, target));
+        Assert.That(escapeStarted, Is.True);
+        await Pair.RunTicksSync(120);
+        await Server.WaitAssertion(() =>
+        {
+            var comp = SEntMan.GetComponent<GrabStageComponent>(user);
+            Assert.That(comp.Stage, Is.LessThan(GrabStage.Choke));
+        });
+
+        await Server.WaitPost(() => Assert.That(stages.TryLowerStage(user), Is.True));
+        await Pair.RunTicksSync(20);
+        await Server.WaitPost(() => Assert.That(stages.TryLowerStage(user), Is.True));
+        await Pair.RunTicksSync(20);
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.HasComponent<GrabStageComponent>(user), Is.False);
+            Assert.That(SEntMan.GetComponent<PullerComponent>(user).Pulling, Is.Null);
+        });
+    }
+
+    [Test]
+    public async Task RepeatedPullInputAdvancesGrabStage()
+    {
+        var (user, target, _) = await CreateFighters();
+        await StartGrab(user, target, advanceToSoft: false);
+
+        var pulling = Server.System<PullingSystem>();
+        await Server.WaitPost(() =>
+        {
+            var pullable = SEntMan.GetComponent<PullableComponent>(target);
+            Assert.That(pulling.TogglePull(new Entity<PullableComponent>(target, pullable), user), Is.True);
+        });
+
+        await Server.WaitAssertion(() =>
+            Assert.That(SEntMan.GetComponent<GrabStageComponent>(user).Stage, Is.EqualTo(GrabStage.Soft)));
+    }
+
+    [Test]
+    public async Task GrabBreaksOnDistanceAndDeath()
+    {
+        var (user, target, _) = await CreateFighters();
+        await StartGrab(user, target);
+
+        await Server.WaitPost(() =>
+        {
+            Server.System<Robust.Shared.GameObjects.SharedTransformSystem>()
+                .SetWorldPosition(target, new Vector2(20, 0));
+        });
+        await Pair.RunTicksSync(30);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.HasComponent<GrabStageComponent>(user), Is.False, "Far target must break the grab stage");
+            Assert.That(SEntMan.GetComponent<PullerComponent>(user).Pulling, Is.Null);
+        });
+
+        var (deadUser, deadTarget, _) = await CreateFighters();
+        await StartGrab(deadUser, deadTarget);
+        await Server.WaitPost(() =>
+        {
+            var damage = new Content.Shared.Damage.DamageSpecifier(
+                SProtoMan.Index(BluntDamage), 1000);
+            Server.System<DamageableSystem>().TryChangeDamage(deadTarget, damage, ignoreResistances: true);
+        });
+        await Pair.RunTicksSync(30);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.HasComponent<GrabStageComponent>(deadUser), Is.False, "Dead target must break the grab stage");
+            Assert.That(SEntMan.GetComponent<PullerComponent>(deadUser).Pulling, Is.Null);
+        });
+    }
+
+    [Test]
+    public async Task MartialStyleUsesSecondaryAttackAnimation()
+    {
+        var (user, _, _) = await CreateFighters();
+        await Learn(user, "CQC");
+
+        await Server.WaitAssertion(() =>
+        {
+            var melee = SEntMan.GetComponent<MeleeWeaponComponent>(user);
+            Assert.That(melee.WideAnimation.Id, Is.EqualTo("WeaponArcMartialSecondary"));
+        });
+    }
+
+
+    [Test]
+    public async Task CqcNeckSnapRequiresChokeStage()
+    {
+        var (user, target, _) = await CreateFighters();
+        await Learn(user, "CQC");
+        await StartGrab(user, target);
+
+        // Soft grab is not enough for the neck snap.
+        await RaiseMelee(user, target);
+        await Server.WaitAssertion(() => Assert.That(Server.System<MobStateSystem>().IsDead(target), Is.False));
+
+        await AdvanceGrab(user, GrabStage.Choke);
+        await Server.WaitAssertion(() => Assert.That(SEntMan.GetComponent<GrabStageComponent>(user).Stage, Is.EqualTo(GrabStage.Choke)));
+        await Server.WaitPost(() =>
+        {
+            Server.System<StandingStateSystem>().Down(target, force: true);
+            SEntMan.GetComponent<Content.Shared.Damage.Components.StaminaComponent>(target).Critical = true;
+        });
+        await RaiseMelee(user, target);
+
+        await Server.WaitAssertion(() => Assert.That(Server.System<MobStateSystem>().IsDead(target), Is.True));
+    }
+
+
+
+    [Test]
+    public async Task WeaponCombosSwitchStanceAndApplyEffects()
+    {
+        var (user, target, _) = await CreateFighters();
+        var combos = Server.System<WeaponComboSystem>();
+        EntityUid? tonfa = null;
+        EntityUid? fireaxe = null;
+        EntityUid? katana = null;
+
+        await Server.WaitPost(() =>
+        {
+            tonfa = SEntMan.SpawnEntity("WeaponTonfa", SEntMan.GetComponent<TransformComponent>(user).Coordinates);
+            fireaxe = SEntMan.SpawnEntity("FireAxeFlaming", SEntMan.GetComponent<TransformComponent>(user).Coordinates);
+            katana = SEntMan.SpawnEntity("WeaponCursedKatana", SEntMan.GetComponent<TransformComponent>(user).Coordinates);
+        });
+
+        var damage = Server.System<DamageableSystem>();
+
+        // Tonfa: protective light + offensive light.
+        var toneBefore = damage.GetTotalDamage(target).Float();
+        await RaiseWeaponHit(user, tonfa!.Value, target, heavy: false);
+        await Server.WaitPost(() => combos.ToggleStance(tonfa!.Value));
+        await RaiseWeaponHit(user, tonfa.Value, target, heavy: false);
+        Assert.That(damage.GetTotalDamage(target).Float(), Is.GreaterThan(toneBefore), "Tonfa light combo should deal damage");
+
+        // Fireaxe: protective heavy + offensive light knocks a standing target down.
+        await Server.WaitPost(() => Assert.That(SEntMan.GetComponent<WeaponComboComponent>(fireaxe!.Value).Stance, Is.EqualTo(WeaponComboStance.Protective)));
+        await RaiseWeaponHit(user, fireaxe!.Value, target, heavy: true);
+        await Server.WaitPost(() => combos.ToggleStance(fireaxe!.Value));
+        await RaiseWeaponHit(user, fireaxe.Value, target, heavy: false);
+        var downed = false;
+        await Server.WaitAssertion(() => downed = SEntMan.System<StandingStateSystem>().IsDown(target));
+        Assert.That(downed, Is.True, "Fireaxe combo should knock the target down");
+
+        // Cursed katana: offensive heavy + offensive heavy on a standing target.
+        await Server.WaitPost(() =>
+        {
+            SEntMan.System<StandingStateSystem>().Stand(target, force: true);
+            combos.ToggleStance(katana!.Value);
+        });
+        var katanaBefore = damage.GetTotalDamage(target).Float();
+        await RaiseWeaponHit(user, katana!.Value, target, heavy: true);
+        await RaiseWeaponHit(user, katana.Value, target, heavy: true);
+        Assert.That(damage.GetTotalDamage(target).Float(), Is.GreaterThan(katanaBefore), "Cursed katana combo should deal damage");
+    }
+
+
+
+    [Test]
+    public async Task HardGrabThrowMakesTargetFall()
+    {
+        var (user, target, _) = await CreateFighters();
+        await StartGrab(user, target);
+        await AdvanceGrab(user, GrabStage.Hard);
+
+        var stages = Server.System<GrabStageSystem>();
+        var thrown = false;
+        await Server.WaitPost(() =>
+        {
+            thrown = stages.TryThrow(user, target, new EntityCoordinates(user, new Vector2(1, 0)));
+        });
+
+        Assert.That(thrown, Is.True);
+        await Server.WaitAssertion(() => Assert.That(SEntMan.HasComponent<GrabThrownComponent>(target), Is.True));
+
+        await Server.WaitPost(() =>
+        {
+            var thrownComp = SEntMan.GetComponent<Content.Shared.Throwing.ThrownItemComponent>(target);
+            var hit = new Content.Shared.Throwing.ThrowDoHitEvent(target, target, thrownComp);
+            SEntMan.EventBus.RaiseLocalEvent(target, ref hit);
+        });
+
+        await Server.WaitAssertion(() =>
+            Assert.That(SEntMan.System<StandingStateSystem>().IsDown(target), Is.True));
+    }
+
+
+    [Test]
+    public async Task HardGrabThrowUsesThrowKeyPath()
+    {
+        var (user, target, _) = await CreateFighters();
+        await StartGrab(user, target);
+        await AdvanceGrab(user, GrabStage.Hard);
+
+        var hands = Server.System<Content.Server.Hands.Systems.HandsSystem>();
+        var thrown = false;
+        await Server.WaitPost(() =>
+        {
+            thrown = hands.ThrowHeldItem(user, new EntityCoordinates(user, new Vector2(1, 0)));
+        });
+
+        Assert.That(thrown, Is.True, "Ctrl+Q should throw the grabbed target");
+        await Server.WaitAssertion(() => Assert.That(SEntMan.HasComponent<GrabThrownComponent>(target), Is.True));
+    }
+
+    [Test]
+    public async Task ChokeholdCausesSuffocation()
+    {
+        var (user, target, _) = await CreateFighters();
+        await StartGrab(user, target);
+        await AdvanceGrab(user, GrabStage.Choke);
+
+        var respirator = SEntMan.GetComponent<Content.Server.Body.Components.RespiratorComponent>(target);
+        var before = respirator.Saturation;
+        await Pair.RunTicksSync(150);
+        await Server.WaitAssertion(() =>
+        {
+            var after = SEntMan.GetComponent<Content.Server.Body.Components.RespiratorComponent>(target).Saturation;
+            Assert.That(after, Is.LessThan(before), "A chokehold should lower respiration saturation");
+        });
+    }
+
+    [Test]
+    public async Task FastStandFromKnockdownAlert()
+    {
+        var (user, _, _) = await CreateFighters();
+        var stun = Server.System<Content.Shared.Stunnable.SharedStunSystem>();
+
+        await Server.WaitPost(() => Assert.That(stun.TryKnockdown(user, TimeSpan.FromSeconds(5), force: true), Is.True));
+        await Server.WaitAssertion(() => Assert.That(SEntMan.HasComponent<KnockedDownComponent>(user), Is.True));
+
+        await Server.WaitAssertion(() =>
+        {
+            var hands = SEntMan.GetComponent<Content.Shared.Hands.Components.HandsComponent>(user);
+            TestContext.Progress.WriteLine($"fast stand free hand: {SEntMan.System<SharedHandsSystem>().TryGetEmptyHand((user, hands), out _)}");
+        });
+        await Server.WaitPost(() => SEntMan.EventBus.RaiseLocalEvent(user, new KnockedDownAlertEvent()));
+        await Pair.RunTicksSync(5);
+        await Server.WaitAssertion(() =>
+        {
+            var standing = SEntMan.System<StandingStateSystem>();
+            Assert.That(standing.IsDown(user), Is.False, "The knockdown alert should fast-stand the player");
+        });
+    }
+
+    [Test]
+    public async Task UnarmedRightClickUsesDisarmAnimation()
+    {
+        var (user, _, _) = await CreateFighters();
+        await Server.WaitAssertion(() =>
+        {
+            var melee = SEntMan.GetComponent<MeleeWeaponComponent>(user);
+            Assert.That(melee.AltDisarm, Is.True, "Unarmed right-click must be a disarm");
+            Assert.That(melee.DisarmAnimation.Id, Is.EqualTo("WeaponArcDisarm"),
+                "Right-click must use the dedicated disarm animation");
         });
     }
 

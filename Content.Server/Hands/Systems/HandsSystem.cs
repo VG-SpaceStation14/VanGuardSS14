@@ -1,3 +1,6 @@
+// VG-Tweak Start: grab throw virtual item detection
+using Content.Shared.Inventory.VirtualItem;
+// VG-Tweak End
 using System.Numerics;
 using Content.Server.Stack;
 using Content.Server.Stunnable;
@@ -7,6 +10,9 @@ using Content.Shared.Damage.Systems;
 using Content.Shared.Explosion;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
+// VG-Tweak Start: grab throw request
+using Content.Shared._VanGuard.Grab;
+// VG-Tweak End
 using Content.Shared.Input;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Movement.Pulling.Systems;
@@ -138,8 +144,20 @@ namespace Content.Server.Hands.Systems
         {
             if (ContainerSystem.IsEntityInContainer(player) ||
                 !TryComp(player, out HandsComponent? hands) ||
-                !TryGetActiveItem((player, hands), out var throwEnt) ||
-                !_actionBlockerSystem.CanThrow(player, throwEnt.Value))
+                !TryGetActiveItem((player, hands), out var throwEnt))
+                return false;
+
+            // VG-Tweak Start: Ctrl+Q on a grab virtual item throws the grabbed target.
+            if (TryComp<VirtualItemComponent>(throwEnt, out var virtualItem))
+            {
+                var throwRequest = new GrabThrowRequestEvent(player, virtualItem.BlockingEntity, coordinates);
+                RaiseLocalEvent(player, throwRequest);
+                if (throwRequest.Handled)
+                    return true;
+            }
+            // VG-Tweak End
+
+            if (!_actionBlockerSystem.CanThrow(player, throwEnt.Value))
                 return false;
 
             if (_timing.CurTime < hands.NextThrowTime)

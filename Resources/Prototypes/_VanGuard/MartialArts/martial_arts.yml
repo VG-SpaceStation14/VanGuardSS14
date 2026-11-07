@@ -76,6 +76,7 @@
   name: vg-martial-move-cqc-slam-name
   description: vg-martial-move-cqc-slam-desc
   sequence: [Grab, Hit]
+  requiresUserPullingTarget: true
   requiresStandingTarget: true
   effects:
   - !type:MartialArtPopupEffect
@@ -119,6 +120,7 @@
   name: vg-martial-move-cqc-intercept-name
   description: vg-martial-move-cqc-intercept-desc
   sequence: [Disarm, Grab]
+  requiresUserPullingTarget: true
   effects:
   - !type:MartialArtPopupEffect
     text: vg-martial-popup-cqc-intercept
@@ -130,6 +132,7 @@
   name: vg-martial-move-cqc-grab-name
   description: vg-martial-move-cqc-grab-desc
   sequence: [Grab, Grab]
+  requiresUserPullingTarget: true
   effects:
   - !type:MartialArtPopupEffect
     text: vg-martial-popup-cqc-restrain
@@ -143,6 +146,7 @@
   name: vg-martial-move-cqc-consecutive-name
   description: vg-martial-move-cqc-consecutive-desc
   sequence: [Disarm, Disarm, Hit]
+  requiresUserPullingTarget: true
   effects:
   - !type:MartialArtDamageEffect
     damage:
@@ -167,6 +171,7 @@
   name: vg-martial-move-cqc-sweep-name
   description: vg-martial-move-cqc-sweep-desc
   sequence: [Grab, Disarm]
+  requiresUserPullingTarget: true
   effects:
   - !type:MartialArtPopupEffect
     text: vg-martial-popup-cqc-sweep
@@ -237,6 +242,7 @@
   name: vg-martial-move-ptcr-wristlock-name
   description: vg-martial-move-ptcr-wristlock-desc
   sequence: [Hit, Grab, Disarm]
+  requiresUserPullingTarget: true
   effects:
   - !type:MartialArtPopupEffect
     text: vg-martial-popup-ptcr-wristlock
@@ -248,6 +254,7 @@
   name: vg-martial-move-ptcr-sweep-name
   description: vg-martial-move-ptcr-sweep-desc
   sequence: [Disarm, Grab]
+  requiresUserPullingTarget: true
   effects:
   - !type:MartialArtPopupEffect
     text: vg-martial-popup-ptcr-sweep
@@ -263,6 +270,7 @@
   name: vg-martial-move-cookbook-batter-name
   description: vg-martial-move-cookbook-batter-desc
   sequence: [Grab, Hit]
+  requiresUserPullingTarget: true
   effects:
   - !type:MartialArtPopupEffect
     text: vg-martial-popup-cookbook-batter
@@ -282,6 +290,7 @@
   name: vg-martial-move-cookbook-unwind-name
   description: vg-martial-move-cookbook-unwind-desc
   sequence: [Disarm, Grab]
+  requiresUserPullingTarget: true
   effects:
   - !type:MartialArtPopupEffect
     text: vg-martial-popup-cookbook-unwind
@@ -293,6 +302,7 @@
   name: vg-martial-move-cookbook-roll-name
   description: vg-martial-move-cookbook-roll-desc
   sequence: [Grab, Grab]
+  requiresUserPullingTarget: true
   effects:
   - !type:MartialArtPopupEffect
     text: vg-martial-popup-cookbook-roll
@@ -306,6 +316,7 @@
   name: vg-martial-move-cookbook-press-name
   description: vg-martial-move-cookbook-press-desc
   sequence: [Grab, Disarm]
+  requiresUserPullingTarget: true
   effects:
   - !type:MartialArtPopupEffect
     text: vg-martial-popup-cookbook-press
@@ -370,6 +381,7 @@
   name: vg-martial-move-judo-trip-name
   description: vg-martial-move-judo-trip-desc
   sequence: [Grab, Disarm]
+  requiresUserPullingTarget: true
   effects:
   - !type:MartialArtKnockdownEffect
     dropItems: false
@@ -384,6 +396,7 @@
   name: vg-martial-move-judo-ground-name
   description: vg-martial-move-judo-ground-desc
   sequence: [Disarm, Disarm, Grab]
+  requiresUserPullingTarget: true
   requiresDownedTarget: true
   effects:
   - !type:MartialArtStaminaEffect
@@ -398,6 +411,7 @@
   name: vg-martial-move-judo-eye-name
   description: vg-martial-move-judo-eye-desc
   sequence: [Hit, Grab, Disarm]
+  requiresUserPullingTarget: true
   effects:
   - !type:MartialArtEyeDamageEffect
     amount: 2

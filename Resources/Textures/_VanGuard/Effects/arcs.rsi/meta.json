@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Made by descente for Adventure Time server",
+  "states": [
+    {
+      "name": "attack-fist-mistal",
+      "delays": [
+        [
+          0.05,
+          0.05,
+          0.2,
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "mistral-slash"
+    }
+  ]
+}

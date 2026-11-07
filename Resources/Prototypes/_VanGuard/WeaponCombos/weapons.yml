@@ -1,0 +1,180 @@
+- type: entity
+  name: tonfa
+  parent: BaseItem
+  id: WeaponTonfa
+  description: A balanced baton with a side handle, made for close control.
+  components:
+  - type: Tag
+    tags:
+    - SecBeltEquip
+  - type: Sprite
+    sprite: _VanGuard/Objects/Weapons/Melee/tonfa.rsi
+    layers:
+    - state: icon-prot
+      map: [ "enum.WeaponComboVisuals.State" ]
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.WeaponComboVisuals.State:
+        enum.WeaponComboVisuals.State:
+          Protective: { state: icon-prot }
+          Offensive: { state: icon-of }
+  - type: Item
+  - type: Clothing
+    sprite: _VanGuard/Objects/Weapons/Melee/tonfa.rsi
+    quickEquip: false
+    slots:
+    - Belt
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    angle: 10
+    attackRate: 2
+    damage:
+      types:
+        Blunt: 5
+  - type: WeaponCombo
+    swapSound: /Audio/Effects/thudswoosh.ogg
+    moves:
+    - actions: [OffensiveHeavy, OffensiveHeavy, OffensiveLight]
+      effects:
+      - !type:MartialArtDamageEffect
+        damage:
+          types:
+            Blunt: 5
+      - !type:MartialArtDropItemEffect
+      - !type:MartialArtSoundEffect
+        sound:
+          collection: GenericHit
+    - actions: [ProtectiveHeavy, ProtectiveHeavy, OffensiveLight]
+      effects:
+      - !type:MartialArtConditionalEffect
+        condition: TargetDowned
+        effects:
+        - !type:MartialArtStatusEffect
+          effect: StatusEffectSlowdown
+          duration: 10
+        - !type:MartialArtKnockdownEffect
+          dropItems: false
+      - !type:MartialArtSoundEffect
+        sound:
+          collection: GenericHit
+    - actions: [OffensiveHeavy, OffensiveHeavy, ProtectiveLight]
+      effects:
+      - !type:MartialArtConditionalEffect
+        condition: TargetPullingUser
+        effects:
+        - !type:MartialArtStopTargetPullEffect
+        - !type:MartialArtKnockdownEffect
+          dropItems: false
+        - !type:MartialArtSoundEffect
+          sound:
+            collection: GenericHit
+    - actions: [ProtectiveHeavy, OffensiveHeavy]
+      effects:
+      - !type:MartialArtStaminaEffect
+        amount: 40
+      - !type:MartialArtSoundEffect
+        sound:
+          collection: GenericHit
+    - actions: [ProtectiveLight, OffensiveLight]
+      effects:
+      - !type:MartialArtDamageEffect
+        damage:
+          types:
+            Blunt: 10
+      - !type:MartialArtSoundEffect
+        sound:
+          collection: GenericHit
+
+- type: entity
+  name: cursed katana
+  parent: Katana
+  id: WeaponCursedKatana
+  description: A katana that remembers every cut.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Objects/Weapons/Melee/katana_cursed.rsi
+    layers:
+    - state: icon-prot
+      map: [ "enum.WeaponComboVisuals.State" ]
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.WeaponComboVisuals.State:
+        enum.WeaponComboVisuals.State:
+          Protective: { state: icon-prot }
+          Offensive: { state: icon-of }
+  - type: Item
+    sprite: _VanGuard/Objects/Weapons/Melee/katana_cursed.rsi
+  - type: Clothing
+    sprite: _VanGuard/Objects/Weapons/Melee/katana_cursed.rsi
+    quickEquip: false
+    slots:
+    - Back
+    - Belt
+  - type: MeleeWeapon
+    attackRate: 1.3
+    range: 2.3
+    damage:
+      types:
+        Slash: 15
+        Structural: 30
+  - type: WeaponCombo
+    swapSound: /Audio/Effects/thudswoosh.ogg
+    moves:
+    - actions: [OffensiveHeavy, OffensiveHeavy]
+      effects:
+      - !type:MartialArtConditionalEffect
+        condition: TargetStanding
+        effects:
+        - !type:MartialArtDamageEffect
+          damage:
+            types:
+              Slash: 10
+        - !type:MartialArtKnockdownEffect
+          dropItems: false
+      - !type:MartialArtSoundEffect
+        sound:
+          collection: MetalThud
+    - actions: [ProtectiveHeavy, OffensiveLight, ProtectiveHeavy]
+      effects:
+      - !type:MartialArtConditionalEffect
+        condition: TargetStunned
+        effects:
+        - !type:MartialArtDamageEffect
+          damage:
+            types:
+              Slash: 25
+        - !type:MartialArtThrowEffect
+          speed: 13
+      - !type:MartialArtSoundEffect
+        sound:
+          collection: MetalThud
+    - actions: [ProtectiveHeavy, OffensiveLight, ProtectiveLight]
+      effects:
+      - !type:MartialArtConditionalEffect
+        condition: UserPullingTarget
+        effects:
+        - !type:MartialArtDamageEffect
+          damage:
+            types:
+              Slash: 15
+        - !type:MartialArtKnockdownEffect
+          dropItems: false
+      - !type:MartialArtSoundEffect
+        sound:
+          collection: MetalThud
+    - actions: [ProtectiveHeavy, OffensiveHeavy]
+      effects:
+      - !type:MartialArtConditionalEffect
+        condition: TargetDowned
+        effects:
+        - !type:MartialArtDamageEffect
+          damage:
+            types:
+              Slash: 20
+        - !type:MartialArtKnockdownEffect
+          dropItems: false
+      - !type:MartialArtSoundEffect
+        sound:
+          collection: MetalThud

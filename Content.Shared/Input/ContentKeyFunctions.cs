@@ -6,6 +6,10 @@ namespace Content.Shared.Input
     public static class ContentKeyFunctions
     {
         public static readonly BoundKeyFunction ToggleKnockdown = "ToggleKnockdown";
+
+        // VG-Tweak Start: fast stand from knockdown.
+        public static readonly BoundKeyFunction ForceStand = "ForceStand";
+        // VG-Tweak End
         public static readonly BoundKeyFunction UseItemInHand = "ActivateItemInHand";
         public static readonly BoundKeyFunction AltUseItemInHand = "AltActivateItemInHand";
         public static readonly BoundKeyFunction ActivateItemInWorld = "ActivateItemInWorld";
