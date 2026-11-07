@@ -130,3 +130,26 @@ public sealed partial class MartialArtCounterEffect : IMartialArtEffect
     [DataField]
     public DamageSpecifier? DamagePerStack;
 }
+
+[Serializable, NetSerializable, DataDefinition]
+public sealed partial class MartialArtConditionalEffect : IMartialArtEffect
+{
+    [DataField]
+    public MartialArtCondition Condition;
+
+    [DataField]
+    public List<IMartialArtEffect> Effects = new();
+}
+
+[Serializable, NetSerializable]
+public enum MartialArtCondition : byte
+{
+    TargetDowned,
+    TargetStanding,
+    TargetStunned,
+    UserPullingTarget,
+    TargetPullingUser,
+}
+
+[Serializable, NetSerializable, DataDefinition]
+public sealed partial class MartialArtStopTargetPullEffect : IMartialArtEffect;

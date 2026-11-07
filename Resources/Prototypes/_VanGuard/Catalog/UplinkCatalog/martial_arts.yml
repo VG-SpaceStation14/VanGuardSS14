@@ -30,3 +30,19 @@
     Telecrystal: 17
   categories:
     - UplinkWeaponry
+
+- type: listing
+  id: UplinkKravMagaGloves
+  name: uplink-krav-maga-gloves-name
+  description: uplink-krav-maga-gloves-desc
+  icon: { sprite: /Textures/Clothing/Hands/Gloves/combat.rsi, state: icon }
+  productEntity: ClothingHandsGlovesKravMagaChameleon
+  discountCategory: rareDiscounts
+  discountDownTo:
+    Telecrystal: 5
+  cost:
+    Telecrystal: 8
+  categories:
+    - UplinkWeaponry
+
+

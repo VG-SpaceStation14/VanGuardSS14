@@ -87,3 +87,31 @@
     slots:
     - back
     - suitStorage
+
+  # VG-Tweak Start: VanGuard fireaxe stance combos
+  - type: WeaponCombo
+    swapSound: /Audio/Effects/thudswoosh.ogg
+    moves:
+    - actions: [ProtectiveHeavy, OffensiveLight]
+      effects:
+      - !type:MartialArtConditionalEffect
+        condition: TargetStanding
+        effects:
+        - !type:MartialArtKnockdownEffect
+          dropItems: false
+      - !type:MartialArtSoundEffect
+        sound:
+          collection: MetalThud
+    - actions: [ProtectiveHeavy, OffensiveHeavy]
+      effects:
+      - !type:MartialArtConditionalEffect
+        condition: TargetPullingUser
+        effects:
+        - !type:MartialArtStopTargetPullEffect
+        - !type:MartialArtStatusEffect
+          effect: StatusEffectSlowdown
+          duration: 3
+        - !type:MartialArtSoundEffect
+          sound:
+            collection: MetalThud
+  # VG-Tweak End

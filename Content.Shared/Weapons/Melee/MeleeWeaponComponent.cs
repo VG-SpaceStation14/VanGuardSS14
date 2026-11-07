@@ -105,6 +105,11 @@ public sealed partial class MeleeWeaponComponent : Component
     [DataField, AutoNetworkedField]
     public EntProtoId WideAnimation = "WeaponArcSlash";
 
+    // VG-Tweak Start: dedicated animation for right-click disarms.
+    [DataField, AutoNetworkedField]
+    public EntProtoId DisarmAnimation = "WeaponArcDisarm";
+    // VG-Tweak End
+
     /// <summary>
     /// Rotation of the animation.
     /// 0 degrees means the top faces the attacker.

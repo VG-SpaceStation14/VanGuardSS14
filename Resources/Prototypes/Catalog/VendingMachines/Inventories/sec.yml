@@ -23,6 +23,7 @@
     SecurityBola: 6
     # VG-Tweak Start: martial arts manuals and equipment
     PTCRBook: 4
+    WeaponTonfa: 3
     # VG-Tweak End
   # security officers need to follow a diet regimen!
   contrabandInventory:

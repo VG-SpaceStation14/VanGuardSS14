@@ -1,5 +1,6 @@
 using System.Linq;
 using Content.Server.DoAfter;
+using Content.Shared._VanGuard.Grab;
 using Content.Shared._VanGuard.MartialArts;
 using Content.Shared.Actions;
 using Content.Shared.Actions.Components;
@@ -29,6 +30,7 @@ using Content.Shared.Stunnable;
 using Content.Shared.Standing;
 using Content.Shared.StatusEffectNew;
 using Content.Shared.Throwing;
+using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Melee.Events;
 using Content.Shared.Weapons.Ranged.Events;
 using Content.Shared.Weapons.Reflect;
@@ -74,11 +76,12 @@ public sealed partial class MartialArtsSystem : EntitySystem
 
         SubscribeLocalEvent<MartialArtsKnowledgeComponent, MeleeHitEvent>(OnMeleeHit);
         SubscribeLocalEvent<MartialArtsKnowledgeComponent, DisarmAttemptEvent>(OnDisarmAttempt);
-        SubscribeLocalEvent<MartialArtsKnowledgeComponent, PullStartedMessage>(OnPullStarted);
+        SubscribeLocalEvent<MartialArtsKnowledgeComponent, GrabStageChangedEvent>(OnGrabStageChanged);
         SubscribeLocalEvent<MartialArtsKnowledgeComponent, ToggleCombatActionEvent>(OnCombatToggled);
         SubscribeLocalEvent<MartialArtsKnowledgeComponent, MartialArtActionEvent>(OnMartialArtAction);
         SubscribeLocalEvent<MartialArtsKnowledgeComponent, MartialArtCycleEvent>(OnCycleStyle);
         SubscribeLocalEvent<MartialArtsKnowledgeComponent, ComponentStartup>(OnKnowledgeStartup);
+        SubscribeLocalEvent<MartialArtsKnowledgeComponent, ComponentShutdown>(OnKnowledgeShutdown);
 
         SubscribeLocalEvent<MartialArtsBookComponent, UseInHandEvent>(OnBookUse);
         SubscribeLocalEvent<MartialArtsBookComponent, MartialArtsBookDoAfterEvent>(OnBookLearned);
@@ -147,7 +150,12 @@ public sealed partial class MartialArtsSystem : EntitySystem
         RefreshActions(user, comp);
 
         if (style == null)
+        {
+            RestoreMeleeVisuals(user, comp);
             return;
+        }
+
+        ApplyMeleeVisuals(user, comp);
 
         if (_prototypes.TryIndex(style, out var prototype) && prototype.ReflectProbability > 0f)
         {
@@ -288,6 +296,36 @@ public sealed partial class MartialArtsSystem : EntitySystem
 
     #endregion
 
+    private void ApplyMeleeVisuals(EntityUid user, MartialArtsKnowledgeComponent comp)
+    {
+        if (!TryComp<MeleeWeaponComponent>(user, out var melee))
+            return;
+
+        comp.OriginalAnimation ??= melee.Animation;
+        comp.OriginalWideAnimation ??= melee.WideAnimation;
+        melee.Animation = "WeaponArcMartialPrimary";
+        melee.WideAnimation = "WeaponArcMartialSecondary";
+        Dirty(user, melee);
+    }
+
+    private void RestoreMeleeVisuals(EntityUid user, MartialArtsKnowledgeComponent comp)
+    {
+        if (comp.OriginalAnimation == null && comp.OriginalWideAnimation == null)
+            return;
+
+        if (TryComp<MeleeWeaponComponent>(user, out var melee))
+        {
+            if (comp.OriginalAnimation is { } animation)
+                melee.Animation = animation;
+            if (comp.OriginalWideAnimation is { } wideAnimation)
+                melee.WideAnimation = wideAnimation;
+            Dirty(user, melee);
+        }
+
+        comp.OriginalAnimation = null;
+        comp.OriginalWideAnimation = null;
+    }
+
     #region Combo tracking
 
     private void OnMeleeHit(Entity<MartialArtsKnowledgeComponent> ent, ref MeleeHitEvent args)
@@ -349,16 +387,24 @@ public sealed partial class MartialArtsSystem : EntitySystem
         RecordAction(args.DisarmerUid, args.TargetUid, MartialArtActionType.Disarm, comp, style);
     }
 
-    private void OnPullStarted(Entity<MartialArtsKnowledgeComponent> ent, ref PullStartedMessage args)
+    private void OnGrabStageChanged(Entity<MartialArtsKnowledgeComponent> ent, ref GrabStageChangedEvent args)
     {
-        if (args.PullerUid != ent.Owner || !IsValidTarget(args.PullerUid, args.PulledUid))
+        if (args.Puller != ent.Owner || args.NewStage <= args.OldStage)
+            return;
+
+        if (!IsValidTarget(args.Puller, args.Pulled))
             return;
 
         if (ent.Comp.CurrentStyle is not { } current ||
             !_prototypes.TryIndex(current, out var style))
             return;
 
-        RecordAction(args.PullerUid, args.PulledUid, MartialArtActionType.Grab, ent.Comp, style);
+        RecordAction(args.Puller, args.Pulled, MartialArtActionType.Grab, ent.Comp, style);
+    }
+
+    private void OnKnowledgeShutdown(Entity<MartialArtsKnowledgeComponent> ent, ref ComponentShutdown args)
+    {
+        RestoreMeleeVisuals(ent.Owner, ent.Comp);
     }
 
     private void OnCombatToggled(Entity<MartialArtsKnowledgeComponent> ent, ref ToggleCombatActionEvent args)
@@ -496,7 +542,9 @@ public sealed partial class MartialArtsSystem : EntitySystem
 
         if (move.RequiresTargetPullingUser)
         {
-            if (!TryComp<PullerComponent>(target, out var targetPuller) || targetPuller.Pulling != user)
+            if (!TryComp<PullerComponent>(target, out var targetPuller) || targetPuller.Pulling != user ||
+                !TryComp<GrabStageComponent>(target, out var targetGrab) ||
+                targetGrab.Stage < GrabStage.Soft || targetGrab.Grabbing != user)
             {
                 failure = "vg-martial-failed-grab";
                 return false;
@@ -505,7 +553,9 @@ public sealed partial class MartialArtsSystem : EntitySystem
 
         if (move.RequiresUserPullingTarget)
         {
-            if (!TryComp<PullerComponent>(user, out var userPuller) || userPuller.Pulling != target)
+            if (!TryComp<PullerComponent>(user, out var userPuller) || userPuller.Pulling != target ||
+                !TryComp<GrabStageComponent>(user, out var userGrab) ||
+                userGrab.Stage < GrabStage.Soft || userGrab.Grabbing != target)
             {
                 failure = "vg-martial-failed-grab";
                 return false;
@@ -543,17 +593,24 @@ public sealed partial class MartialArtsSystem : EntitySystem
         TryNeckSnap(user, target, style, comp);
     }
 
-    private void ApplyEffect(
+    public void ApplyEffect(
         EntityUid user,
         EntityUid target,
         IMartialArtEffect effect,
-        MartialArtPrototype style,
-        MartialArtsKnowledgeComponent comp)
+        MartialArtPrototype? style = null,
+        MartialArtsKnowledgeComponent? comp = null)
     {
         var downed = _standing.IsDown(target);
 
         switch (effect)
         {
+            case MartialArtConditionalEffect conditional:
+                if (MatchesCondition(user, target, conditional.Condition))
+                {
+                    foreach (var nested in conditional.Effects)
+                        ApplyEffect(user, target, nested, style, comp);
+                }
+                break;
             case MartialArtDamageEffect damage:
                 if (damage.OnlyIfDowned && !downed)
                     return;
@@ -568,7 +625,7 @@ public sealed partial class MartialArtsSystem : EntitySystem
 
             case MartialArtKnockdownEffect knockdown:
                 _stun.TryKnockdown(target, knockdown.StunSeconds is { } seconds ? TimeSpan.FromSeconds(seconds) : null,
-                    drop: knockdown.DropItems, force: true);
+                    autoStand: false, drop: knockdown.DropItems, force: true);
                 break;
 
             case MartialArtStatusEffect status:
@@ -620,7 +677,18 @@ public sealed partial class MartialArtsSystem : EntitySystem
                 }
                 break;
 
+            case MartialArtStopTargetPullEffect:
+                if (TryComp<PullerComponent>(target, out var targetPuller) && targetPuller.Pulling == user &&
+                    TryComp<PullableComponent>(user, out var userPullable))
+                {
+                    _pulling.TryStopPull(user, userPullable, target);
+                }
+                break;
+
             case MartialArtCounterEffect counter:
+                if (style == null || comp == null)
+                    break;
+
                 if (comp.CounterExpires < _timing.CurTime)
                     comp.Counter = 0;
 
@@ -634,6 +702,21 @@ public sealed partial class MartialArtsSystem : EntitySystem
                 comp.CounterExpires = _timing.CurTime + TimeSpan.FromSeconds(style.CounterWindow);
                 break;
         }
+    }
+
+    private bool MatchesCondition(EntityUid user, EntityUid target, MartialArtCondition condition)
+    {
+        return condition switch
+        {
+            MartialArtCondition.TargetDowned => _standing.IsDown(target),
+            MartialArtCondition.TargetStanding => !_standing.IsDown(target),
+            MartialArtCondition.TargetStunned => HasComp<StunnedComponent>(target),
+            MartialArtCondition.UserPullingTarget => TryComp<PullerComponent>(user, out var userPuller) &&
+                                                    userPuller.Pulling == target,
+            MartialArtCondition.TargetPullingUser => TryComp<PullerComponent>(target, out var targetPuller) &&
+                                                    targetPuller.Pulling == user,
+            _ => false,
+        };
     }
 
     private void TryDropOrSteal(EntityUid user, EntityUid target, bool steal)
@@ -656,6 +739,7 @@ public sealed partial class MartialArtsSystem : EntitySystem
 
         if (!_standing.IsDown(target) || _mobState.IsDead(target) ||
             !TryComp<PullerComponent>(user, out var puller) || puller.Pulling != target ||
+            !TryComp<GrabStageComponent>(user, out var grab) || grab.Stage < GrabStage.Choke ||
             !TryComp<StaminaComponent>(target, out var stamina) || !stamina.Critical ||
             !_thresholds.TryGetDeadThreshold(target, out var threshold) || threshold is not { } dead)
             return;

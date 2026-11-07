@@ -547,6 +547,12 @@ binds:
 - function: ToggleKnockdown
   type: State
   key: C
+# VG-Tweak Start: fast stand from knockdown
+- function: ForceStand
+  type: State
+  key: C
+  mod1: Shift
+# VG-Tweak End
 - function: OpenAbilitiesMenu
   type: State
   key: K

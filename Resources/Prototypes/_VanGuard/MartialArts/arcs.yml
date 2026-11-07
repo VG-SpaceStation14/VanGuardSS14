@@ -1,0 +1,25 @@
+- type: entity
+  parent: WeaponArcStatic
+  id: WeaponArcMartialPrimary
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Effects/arcs.rsi
+    state: attack-fist-mistal
+    drawdepth: Effects
+  - type: WeaponArcVisuals
+    fadeOut: false
+  - type: TimedDespawn
+    lifetime: 0.299
+
+- type: entity
+  parent: WeaponArcStatic
+  id: WeaponArcMartialSecondary
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Effects/arcs.rsi
+    state: mistral-slash
+    drawdepth: Effects
+  - type: WeaponArcVisuals
+    animation: Slash

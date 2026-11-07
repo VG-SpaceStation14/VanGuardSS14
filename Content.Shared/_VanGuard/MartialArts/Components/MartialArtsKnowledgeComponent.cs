@@ -29,6 +29,9 @@ public sealed partial class MartialArtsKnowledgeComponent : Component
     public readonly List<MartialArtsComboEntry> History = new();
     public readonly Dictionary<ProtoId<MartialArtMovePrototype>, EntityUid> GrantedActions = new();
     public EntityUid? CycleAction;
+
+    public EntProtoId? OriginalAnimation;
+    public EntProtoId? OriginalWideAnimation;
 }
 
 public readonly record struct MartialArtsComboEntry(MartialArtActionType Action, EntityUid Target, TimeSpan At);

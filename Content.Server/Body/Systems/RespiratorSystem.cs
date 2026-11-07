@@ -21,6 +21,10 @@ using Content.Shared.EntityEffects.Effects.Body;
 using Content.Shared.EntityEffects.Effects.Damage;
 using Content.Shared.Metabolism;
 using Content.Shared.Mobs.Systems;
+// VG-Tweak Start: staged grab suffocation
+using Content.Shared._VanGuard.Grab;
+using Content.Shared.Movement.Pulling.Components;
+// VG-Tweak End
 using JetBrains.Annotations;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
@@ -89,7 +93,9 @@ public sealed partial class RespiratorSystem : EntitySystem
 
             UpdateSaturation(uid, -(float)respirator.UpdateInterval.TotalSeconds, respirator);
 
-            if (!_mobState.IsIncapacitated(uid)) // cannot breathe in crit.
+            // VG-Tweak Start: a chokehold prevents inhaling and causes suffocation.
+            if (!_mobState.IsIncapacitated(uid) && !IsBeingChoked(uid))
+            // VG-Tweak End
             {
                 switch (respirator.Status)
                 {
@@ -352,6 +358,16 @@ public sealed partial class RespiratorSystem : EntitySystem
     {
         _alertsSystem.ClearAlert(args.Body.Owner, ent.Comp.Alert);
     }
+
+    // VG-Tweak Start: staged grab suffocation
+    private bool IsBeingChoked(EntityUid uid)
+    {
+        if (!TryComp<PullableComponent>(uid, out var pullable) || pullable.Puller is not { } puller)
+            return false;
+
+        return TryComp<GrabStageComponent>(puller, out var stage) && stage.Stage >= GrabStage.Choke;
+    }
+    // VG-Tweak End
 
     public void UpdateSaturation(EntityUid uid, float amount, RespiratorComponent? respirator = null)
     {

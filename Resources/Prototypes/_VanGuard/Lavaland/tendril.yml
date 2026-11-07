@@ -70,6 +70,8 @@
           children:
           - id: SurvivalKnife
             weight: 0.35
+          - id: WeaponCursedKatana
+            weight: 0.02
           - id: MineralScanner
             weight: 0.25
           - id: OreBag
@@ -162,6 +164,8 @@
             weight: 0.10
           - id: MedkitBruteFilled
             weight: 0.20
+          - id: WeaponCursedKatana
+            weight: 0.02
           - id: SpaceCash1000
             weight: 0.15
         - id: MaterialGoliathHide1
@@ -206,6 +210,8 @@
             weight: 0.20
           - id: MedkitBurnFilled
             weight: 0.20
+          - id: WeaponCursedKatana
+            weight: 0.02
           - id: SpaceCash1000
             weight: 0.10
         - id: SpaceCash100

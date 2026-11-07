@@ -125,3 +125,13 @@
     - MartialArts
   - type: MartialArtsClothing
     style: Judo
+
+- type: entity
+  parent: ClothingHandsChameleon
+  id: ClothingHandsGlovesKravMagaChameleon
+  name: chameleon Krav Maga gloves
+  description: Chameleon gloves with a hidden Krav Maga training chip.
+  suffix: Chameleon
+  components:
+  - type: MartialArtsClothing
+    style: KravMaga

@@ -77,6 +77,9 @@ public abstract partial class SharedStunSystem
 
         CommandBinds.Builder
             .Bind(ContentKeyFunctions.ToggleKnockdown, InputCmdHandler.FromDelegate(HandleToggleKnockdown, handle: false))
+            // VG-Tweak Start: Shift+C fast stand.
+            .Bind(ContentKeyFunctions.ForceStand, InputCmdHandler.FromDelegate(HandleForceStand, handle: false))
+            // VG-Tweak End
             .Register<SharedStunSystem>();
     }
 
@@ -258,6 +261,27 @@ public abstract partial class SharedStunSystem
         ToggleKnockdown(playerEnt);
     }
 
+    // VG-Tweak Start: fast stand via Shift+C or the knockdown alert.
+    private void HandleForceStand(ICommonSession? session)
+    {
+        if (session?.AttachedEntity is not { Valid: true } playerEnt ||
+            !Exists(playerEnt) ||
+            !TryComp<KnockedDownComponent>(playerEnt, out _) ||
+            HasComp<StunnedComponent>(playerEnt))
+            return;
+
+        HandleStandAttempt(playerEnt);
+    }
+
+    private void HandleStandAttempt(EntityUid uid)
+    {
+        if (_hands.TryGetEmptyHand(uid, out _))
+            ForceStandUp(uid);
+        else
+            TryStanding(uid);
+    }
+    // VG-Tweak End
+
     /// <summary>
     /// Handles an entity trying to make itself fall down.
     /// </summary>
@@ -403,8 +427,17 @@ public abstract partial class SharedStunSystem
         // That way if we fail to stand, the game will try to stand for us when we are able to
         SetAutoStand(entity, true);
 
-        if (StandingBlocked((entity, entity.Comp)))
+        // VG-Tweak Start: force-stand is an intentional fast recovery and bypasses the
+        // remaining knockdown timer, while still checking stun, space and free hands.
+        if (HasComp<StunnedComponent>(entity))
             return;
+
+        if (IntersectingStandingColliders(entity.Owner))
+        {
+            _popup.PopupEntity(Loc.GetString("knockdown-component-stand-no-room"), entity, entity, PopupType.SmallCaution);
+            return;
+        }
+        // VG-Tweak End
 
         if (!_hands.TryGetEmptyHand(entity.Owner, out _))
             return;
@@ -425,9 +458,9 @@ public abstract partial class SharedStunSystem
         if (args.Handled)
             return;
 
-        // If we're already trying to stand, or we fail to stand try forcing it
-        if (!TryStanding(entity.Owner))
-            ForceStandUp((entity.Owner, entity.Comp));
+        // VG-Tweak Start: the knockdown alert performs a fast stand when possible.
+        HandleStandAttempt(entity.Owner);
+        // VG-Tweak End
 
         args.Handled = true;
     }
