@@ -17,4 +17,6 @@ public sealed partial class GrabStageComponent : Component
     public TimeSpan NextStageChange;
     public TimeSpan NextDistanceCheck;
     public TimeSpan EscapeStartedAt;
+    public bool AdvanceInProgress;
+    public TimeSpan AdvanceAt;
 }

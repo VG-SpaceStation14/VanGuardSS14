@@ -6,4 +6,7 @@ namespace Content.Shared._VanGuard.Grab;
 /// verb handler (the upstream pull system already owns that subscription).
 /// </summary>
 [RegisterComponent]
-public sealed partial class GrabStageTargetComponent : Component;
+public sealed partial class GrabStageTargetComponent : Component
+{
+    public int EscapeAttempts;
+}

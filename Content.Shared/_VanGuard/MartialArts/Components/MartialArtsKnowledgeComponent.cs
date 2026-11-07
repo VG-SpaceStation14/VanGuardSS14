@@ -14,6 +14,12 @@ public sealed partial class MartialArtsKnowledgeComponent : Component
     [DataField]
     public HashSet<ProtoId<MartialArtPrototype>> TemporaryStyles = new();
 
+    /// <summary>
+    /// Equipment items currently granting each temporary style. A style must only be
+    /// forgotten when its last source is removed.
+    /// </summary>
+    public readonly Dictionary<ProtoId<MartialArtPrototype>, HashSet<EntityUid>> TemporaryStyleSources = new();
+
     [DataField]
     public ProtoId<MartialArtPrototype>? CurrentStyle;
 

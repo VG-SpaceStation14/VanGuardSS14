@@ -161,6 +161,9 @@
               Slash: 15
         - !type:MartialArtKnockdownEffect
           dropItems: false
+        - !type:MartialArtStatusEffect
+          effect: StatusEffectStunned
+          duration: 4
       - !type:MartialArtSoundEffect
         sound:
           collection: MetalThud
@@ -175,6 +178,7 @@
               Slash: 20
         - !type:MartialArtKnockdownEffect
           dropItems: false
+        - !type:MartialArtTeleportToTargetEffect
       - !type:MartialArtSoundEffect
         sound:
           collection: MetalThud

@@ -37,11 +37,21 @@ public partial class MobStateSystem
         SubscribeLocalEvent<MobStateComponent, EmoteAttemptEvent>(CheckAct);
         SubscribeLocalEvent<MobStateComponent, DropAttemptEvent>(CheckAct);
         SubscribeLocalEvent<MobStateComponent, PickupAttemptEvent>(CheckAct);
-        SubscribeLocalEvent<MobStateComponent, StartPullAttemptEvent>(CheckAct);
+        // VG-Tweak Start: dead/critical mobs can still be pulled as corpses.
+        SubscribeLocalEvent<MobStateComponent, StartPullAttemptEvent>(OnStartPullAttempt);
+        // VG-Tweak End
         SubscribeLocalEvent<MobStateComponent, UpdateCanMoveEvent>(CheckAct);
         SubscribeLocalEvent<MobStateComponent, StandAttemptEvent>(CheckAct);
         SubscribeLocalEvent<MobStateComponent, PointAttemptEvent>(OnPointAttempt);
     }
+
+    // VG-Tweak Start: only a dead/critical puller is blocked, not a dead target.
+    private void OnStartPullAttempt(Entity<MobStateComponent> ent, ref StartPullAttemptEvent args)
+    {
+        if (args.Puller == ent.Owner)
+            CheckAct(ent.Owner, ent.Comp, args);
+    }
+    // VG-Tweak End
 
     [SubscribeLocalEvent]
     private void OnUnbuckleAttempt(Entity<MobStateComponent> ent, ref UnbuckleAttemptEvent args)

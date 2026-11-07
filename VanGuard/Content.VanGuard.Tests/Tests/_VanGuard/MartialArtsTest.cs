@@ -9,6 +9,7 @@ using Content.Shared._VanGuard.MartialArts;
 using Content.Shared._VanGuard.WeaponCombos;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.Damage.Systems;
+using Content.Shared.Inventory;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Mobs.Systems;
@@ -105,17 +106,40 @@ public sealed class MartialArtsTest : GameTest
     private async Task AdvanceGrab(EntityUid user, GrabStage targetStage)
     {
         var stages = Server.System<GrabStageSystem>();
-        while (true)
+        var attempts = 0;
+        while (attempts++ < 10)
         {
             var current = GrabStage.None;
             await Server.WaitAssertion(() => current = SEntMan.GetComponent<GrabStageComponent>(user).Stage);
             if (current >= targetStage)
+            {
+                // Respect the post-stage cooldown before requesting the next stage.
+                await Pair.RunTicksSync(60);
                 return;
+            }
 
             await Server.WaitPost(() => Assert.That(stages.TryAdvanceStage(user), Is.True,
                 $"Failed to advance grab from {current} to {targetStage}"));
-            await Pair.RunTicksSync(20);
+
+            // Choke can have a do-after (and armor can extend it); wait for the stage
+            // instead of assuming all transitions are instantaneous.
+            for (var i = 0; i < 20; i++)
+            {
+                await Pair.RunTicksSync(10);
+                await Server.WaitAssertion(() =>
+                {
+                    Assert.That(SEntMan.HasComponent<GrabStageComponent>(user), Is.True, "stage component disappeared");
+                    current = SEntMan.GetComponent<GrabStageComponent>(user).Stage;
+                });
+                if (current >= targetStage)
+                    break;
+            }
+
+            // Intermediate stages are expected; continue until the requested stage.
+            await Pair.RunTicksSync(60);
         }
+
+        Assert.Fail($"Grab did not reach {targetStage}");
     }
 
     [Test]
@@ -299,6 +323,112 @@ public sealed class MartialArtsTest : GameTest
         {
             var knowledge = SEntMan.GetComponent<MartialArtsKnowledgeComponent>(user);
             Assert.That(knowledge.TemporaryStyles, Does.Not.Contain(new ProtoId<MartialArtPrototype>("KravMaga")));
+        });
+    }
+
+
+    [Test]
+    public async Task JudoBeltGrantsAndRemovesTemporaryStyle()
+    {
+        var (user, _, _) = await CreateFighters();
+        EntityUid? belt = null;
+
+        await Server.WaitPost(() =>
+        {
+            belt = SEntMan.SpawnEntity("ClothingBeltJudo", SEntMan.GetComponent<TransformComponent>(user).Coordinates);
+            var inventory = SEntMan.System<Content.Shared.Inventory.InventorySystem>();
+            Assert.That(inventory.TryEquip(user, belt.Value, "belt"), Is.True);
+        });
+
+        await Server.WaitAssertion(() =>
+            Assert.That(SEntMan.GetComponent<MartialArtsKnowledgeComponent>(user).TemporaryStyles,
+                Does.Contain(new ProtoId<MartialArtPrototype>("Judo"))));
+
+        await Server.WaitPost(() =>
+        {
+            var inventory = SEntMan.System<Content.Shared.Inventory.InventorySystem>();
+            Assert.That(inventory.TryUnequip(user, "belt"), Is.True);
+        });
+
+        await Server.WaitAssertion(() =>
+            Assert.That(SEntMan.GetComponent<MartialArtsKnowledgeComponent>(user).TemporaryStyles,
+                Does.Not.Contain(new ProtoId<MartialArtPrototype>("Judo"))));
+    }
+
+
+    [Test]
+    public async Task DeletingEquippedSourceRemovesTemporaryStyle()
+    {
+        var (user, _, _) = await CreateFighters();
+        EntityUid? gloves = null;
+
+        await Server.WaitPost(() =>
+        {
+            var inventory = SEntMan.System<Content.Shared.Inventory.InventorySystem>();
+            gloves = SEntMan.SpawnEntity("ClothingHandsGlovesKravMaga", SEntMan.GetComponent<TransformComponent>(user).Coordinates);
+            Assert.That(inventory.TryEquip(user, gloves.Value, "gloves"), Is.True);
+        });
+        await Server.WaitPost(() => SEntMan.QueueDeleteEntity(gloves));
+        await Pair.RunTicksSync(10);
+
+        await Server.WaitAssertion(() =>
+            Assert.That(SEntMan.GetComponent<MartialArtsKnowledgeComponent>(user).TemporaryStyles,
+                Does.Not.Contain(new ProtoId<MartialArtPrototype>("KravMaga"))));
+    }
+
+    [Test]
+    public async Task MultipleClothingSourcesKeepStyleUntilLastRemoved()
+    {
+        var (user, _, _) = await CreateFighters();
+        EntityUid? gloves = null;
+        EntityUid? hat = null;
+
+        await Server.WaitPost(() =>
+        {
+            var inventory = SEntMan.System<Content.Shared.Inventory.InventorySystem>();
+            gloves = SEntMan.SpawnEntity("ClothingHandsGlovesKravMaga", SEntMan.GetComponent<TransformComponent>(user).Coordinates);
+            hat = SEntMan.SpawnEntity("ClothingHeadHatChef", SEntMan.GetComponent<TransformComponent>(user).Coordinates);
+            var extra = SEntMan.AddComponent<MartialArtsClothingComponent>(hat.Value);
+            extra.Style = "KravMaga";
+            Assert.That(inventory.TryEquip(user, gloves.Value, "gloves"), Is.True);
+            Assert.That(inventory.TryEquip(user, hat.Value, "head"), Is.True);
+        });
+
+        await Server.WaitPost(() =>
+            Assert.That(SEntMan.System<Content.Shared.Inventory.InventorySystem>().TryUnequip(user, "gloves"), Is.True));
+
+        await Server.WaitAssertion(() =>
+            Assert.That(SEntMan.GetComponent<MartialArtsKnowledgeComponent>(user).TemporaryStyles,
+                Does.Contain(new ProtoId<MartialArtPrototype>("KravMaga")),
+                "Another equipped source must keep the style"));
+
+        await Server.WaitPost(() =>
+            Assert.That(SEntMan.System<Content.Shared.Inventory.InventorySystem>().TryUnequip(user, "head"), Is.True));
+
+        await Server.WaitAssertion(() =>
+            Assert.That(SEntMan.GetComponent<MartialArtsKnowledgeComponent>(user).TemporaryStyles,
+                Does.Not.Contain(new ProtoId<MartialArtPrototype>("KravMaga"))));
+    }
+
+    [Test]
+    public async Task PermanentBookStyleSurvivesClothingRemoval()
+    {
+        var (user, _, _) = await CreateFighters();
+        var system = Server.System<MartialArtsSystem>();
+        await Server.WaitPost(() => Assert.That(system.TryLearnStyle(user, "CQC", permanent: true), Is.True));
+
+        await Server.WaitPost(() =>
+        {
+            var inventory = SEntMan.System<Content.Shared.Inventory.InventorySystem>();
+            var gloves = SEntMan.SpawnEntity("ClothingHandsGlovesKravMaga", SEntMan.GetComponent<TransformComponent>(user).Coordinates);
+            Assert.That(inventory.TryEquip(user, gloves, "gloves"), Is.True);
+            Assert.That(inventory.TryUnequip(user, "gloves"), Is.True);
+        });
+
+        await Server.WaitAssertion(() =>
+        {
+            var knowledge = SEntMan.GetComponent<MartialArtsKnowledgeComponent>(user);
+            Assert.That(knowledge.KnownStyles, Does.Contain(new ProtoId<MartialArtPrototype>("CQC")));
         });
     }
 
@@ -585,19 +715,23 @@ public sealed class MartialArtsTest : GameTest
         });
 
         var (deadUser, deadTarget, _) = await CreateFighters();
-        await StartGrab(deadUser, deadTarget);
         await Server.WaitPost(() =>
         {
             var damage = new Content.Shared.Damage.DamageSpecifier(
-                SProtoMan.Index(BluntDamage), 1000);
+                SProtoMan.Index(BluntDamage), 200);
             Server.System<DamageableSystem>().TryChangeDamage(deadTarget, damage, ignoreResistances: true);
         });
-        await Pair.RunTicksSync(30);
+        await Pair.RunTicksSync(5);
+
+        var pulling = Server.System<PullingSystem>();
+        await Server.WaitPost(() => Assert.That(pulling.TryStartPull(deadUser, deadTarget), Is.True));
+        await Pair.RunTicksSync(5);
 
         await Server.WaitAssertion(() =>
         {
-            Assert.That(SEntMan.HasComponent<GrabStageComponent>(deadUser), Is.False, "Dead target must break the grab stage");
-            Assert.That(SEntMan.GetComponent<PullerComponent>(deadUser).Pulling, Is.Null);
+            Assert.That(SEntMan.HasComponent<GrabStageComponent>(deadUser), Is.False, "Dead targets do not get a stage");
+            Assert.That(SEntMan.GetComponent<PullerComponent>(deadUser).Pulling, Is.EqualTo(deadTarget),
+                "A dead target should still be draggable by normal pulling");
         });
     }
 
@@ -676,6 +810,17 @@ public sealed class MartialArtsTest : GameTest
 
 
 
+
+    [Test]
+    public async Task SoftGrabCannotThrow()
+    {
+        var (user, target, _) = await CreateFighters();
+        await StartGrab(user, target);
+        await Server.WaitPost(() =>
+            Assert.That(Server.System<GrabStageSystem>().TryThrow(user, target,
+                new EntityCoordinates(user, new Vector2(1, 0))), Is.False));
+    }
+
     [Test]
     public async Task HardGrabThrowMakesTargetFall()
     {
@@ -693,6 +838,7 @@ public sealed class MartialArtsTest : GameTest
         Assert.That(thrown, Is.True);
         await Server.WaitAssertion(() => Assert.That(SEntMan.HasComponent<GrabThrownComponent>(target), Is.True));
 
+        var stamina = SEntMan.GetComponent<Content.Shared.Damage.Components.StaminaComponent>(target).StaminaDamage;
         await Server.WaitPost(() =>
         {
             var thrownComp = SEntMan.GetComponent<Content.Shared.Throwing.ThrownItemComponent>(target);
@@ -701,7 +847,11 @@ public sealed class MartialArtsTest : GameTest
         });
 
         await Server.WaitAssertion(() =>
-            Assert.That(SEntMan.System<StandingStateSystem>().IsDown(target), Is.True));
+        {
+            Assert.That(SEntMan.System<StandingStateSystem>().IsDown(target), Is.True);
+            Assert.That(SEntMan.GetComponent<Content.Shared.Damage.Components.StaminaComponent>(target).StaminaDamage,
+                Is.GreaterThan(stamina), "Grab collision should cost the thrown target stamina");
+        });
     }
 
 
@@ -723,6 +873,45 @@ public sealed class MartialArtsTest : GameTest
         await Server.WaitAssertion(() => Assert.That(SEntMan.HasComponent<GrabThrownComponent>(target), Is.True));
     }
 
+
+    [Test]
+    public async Task GrabThrowHitsBystanderAndThrower()
+    {
+        var (user, target, _) = await CreateFighters();
+        EntityUid? bystander = null;
+        await Server.WaitPost(() =>
+        {
+            bystander = SEntMan.SpawnEntity("MobHuman", SEntMan.GetComponent<TransformComponent>(target).Coordinates);
+        });
+
+        await StartGrab(user, target);
+        await AdvanceGrab(user, GrabStage.Hard);
+        await Server.WaitPost(() =>
+        {
+            Assert.That(Server.System<GrabStageSystem>().TryThrow(user, target,
+                new EntityCoordinates(user, new Vector2(1, 0))), Is.True);
+        });
+
+        var bystanderStamina = SEntMan.GetComponent<Content.Shared.Damage.Components.StaminaComponent>(bystander!.Value).StaminaDamage;
+        var userStamina = SEntMan.GetComponent<Content.Shared.Damage.Components.StaminaComponent>(user).StaminaDamage;
+        await Server.WaitPost(() =>
+        {
+            var thrownComp = SEntMan.GetComponent<Content.Shared.Throwing.ThrownItemComponent>(target);
+            var hitBystander = new Content.Shared.Throwing.ThrowDoHitEvent(target, bystander.Value, thrownComp);
+            SEntMan.EventBus.RaiseLocalEvent(target, ref hitBystander);
+            var hitThrower = new Content.Shared.Throwing.ThrowDoHitEvent(target, user, thrownComp);
+            SEntMan.EventBus.RaiseLocalEvent(target, ref hitThrower);
+        });
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.GetComponent<Content.Shared.Damage.Components.StaminaComponent>(bystander!.Value).StaminaDamage,
+                Is.GreaterThan(bystanderStamina), "Bystander collision should cost stamina");
+            Assert.That(SEntMan.GetComponent<Content.Shared.Damage.Components.StaminaComponent>(user).StaminaDamage,
+                Is.GreaterThan(userStamina), "Collision with the thrower should cost the thrower stamina");
+        });
+    }
+
     [Test]
     public async Task ChokeholdCausesSuffocation()
     {
@@ -730,6 +919,12 @@ public sealed class MartialArtsTest : GameTest
         await StartGrab(user, target);
         await AdvanceGrab(user, GrabStage.Choke);
 
+        var respiratorSystem = Server.System<Content.Server.Body.Systems.RespiratorSystem>();
+        await Server.WaitAssertion(() =>
+        {
+            var respirator = SEntMan.GetComponent<Content.Server.Body.Components.RespiratorComponent>(target);
+            respiratorSystem.UpdateSaturation(target, respirator.MaxSaturation, respirator);
+        });
         var respirator = SEntMan.GetComponent<Content.Server.Body.Components.RespiratorComponent>(target);
         var before = respirator.Saturation;
         await Pair.RunTicksSync(150);
@@ -738,6 +933,80 @@ public sealed class MartialArtsTest : GameTest
             var after = SEntMan.GetComponent<Content.Server.Body.Components.RespiratorComponent>(target).Saturation;
             Assert.That(after, Is.LessThan(before), "A chokehold should lower respiration saturation");
         });
+    }
+
+
+
+    [Test]
+    public async Task GrabbedTargetCannotBePulledByThirdParty()
+    {
+        var (user, target, _) = await CreateFighters();
+        await StartGrab(user, target);
+
+        EntityUid? third = null;
+        await Server.WaitPost(() =>
+            third = SEntMan.SpawnEntity("MobHuman", SEntMan.GetComponent<TransformComponent>(target).Coordinates));
+
+        var pulling = Server.System<PullingSystem>();
+        await Server.WaitPost(() => Assert.That(pulling.TryStartPull(third!.Value, target), Is.False));
+    }
+
+    [Test]
+    public async Task GrabProtectionBlocksStages()
+    {
+        var (user, target, _) = await CreateFighters();
+        await StartGrab(user, target);
+        var stages = Server.System<GrabStageSystem>();
+
+        await Server.WaitPost(() => SEntMan.EnsureComponent<GrabProtectionComponent>(target));
+        await Server.WaitPost(() => Assert.That(stages.TryAdvanceStage(user), Is.False));
+        await Server.WaitAssertion(() =>
+            Assert.That(SEntMan.GetComponent<GrabStageComponent>(user).Stage, Is.EqualTo(GrabStage.Soft)));
+    }
+
+
+    [Test]
+    public async Task EquippedGrabProtectionArmorBlocksStages()
+    {
+        var (user, target, _) = await CreateFighters();
+        await StartGrab(user, target);
+
+        EntityUid? vest = null;
+        await Server.WaitPost(() =>
+        {
+            vest = SEntMan.SpawnEntity("ClothingOuterArmorRaid", SEntMan.GetComponent<TransformComponent>(target).Coordinates);
+            var inventory = Server.System<InventorySystem>();
+            Assert.That(inventory.TryEquip(target, vest.Value, "outerClothing", silent: true), Is.True);
+        });
+
+        await Server.WaitPost(() =>
+            Assert.That(Server.System<GrabStageSystem>().TryAdvanceStage(user), Is.False));
+        await Server.WaitAssertion(() =>
+            Assert.That(SEntMan.GetComponent<GrabStageComponent>(user).Stage, Is.EqualTo(GrabStage.Soft)));
+    }
+
+    [Test]
+    public async Task GrabTimeModifierDelaysChoke()
+    {
+        var (user, target, _) = await CreateFighters();
+        await StartGrab(user, target);
+        await Server.WaitPost(() =>
+        {
+            var modifier = SEntMan.EnsureComponent<GrabStageTimeModifierComponent>(target);
+            modifier.Modifiers[GrabStage.Choke] = 2f;
+        });
+
+        await AdvanceGrab(user, GrabStage.Hard);
+        var stages = Server.System<GrabStageSystem>();
+        await Server.WaitPost(() => Assert.That(stages.TryAdvanceStage(user), Is.True));
+
+        // The old choke transition is one second; a 2x modifier must keep it at Hard for longer.
+        await Pair.RunTicksSync(40);
+        await Server.WaitAssertion(() =>
+            Assert.That(SEntMan.GetComponent<GrabStageComponent>(user).Stage, Is.EqualTo(GrabStage.Hard)));
+        await Pair.RunTicksSync(80);
+        await Server.WaitAssertion(() =>
+            Assert.That(SEntMan.GetComponent<GrabStageComponent>(user).Stage, Is.EqualTo(GrabStage.Choke)));
     }
 
     [Test]

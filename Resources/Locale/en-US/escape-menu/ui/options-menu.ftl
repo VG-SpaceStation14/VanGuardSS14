@@ -152,6 +152,9 @@ ui-options-function-move-down = Move Down
 ui-options-function-move-right = Move Right
 ui-options-function-walk = Walk
 ui-options-function-toggle-knockdown = Toggle Crawling
+# VG-Tweak Start: fast stand keybind
+ui-options-function-force-stand = Fast Stand Up
+# VG-Tweak End
 
 ui-options-function-camera-rotate-left = Rotate left
 ui-options-function-camera-rotate-right = Rotate right
