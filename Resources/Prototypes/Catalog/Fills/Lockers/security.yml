@@ -51,6 +51,9 @@
     - id: PlushieLizardJobWarden
       prob: 0.02
     - id: SecApartmentTablet # Corvax-SecApartment
+    # VG-Tweak Start: Krav Maga acquisition from the old Warden locker
+    - id: ClothingHandsGlovesKravMaga
+    # VG-Tweak End
 
 - type: entityTable
   id: FillLockerWardenHarduit

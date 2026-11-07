@@ -36,6 +36,7 @@ using Content.Shared.Weapons.Ranged.Events;
 using Content.Shared.Weapons.Reflect;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
@@ -70,6 +71,7 @@ public sealed partial class MartialArtsSystem : EntitySystem
     [Dependency] private BlindableSystem _blindable = default!;
     [Dependency] private ThrowingSystem _throwing = default!;
     [Dependency] private DoAfterSystem _doAfter = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
     public override void Initialize()
     {
         base.Initialize();
@@ -88,6 +90,7 @@ public sealed partial class MartialArtsSystem : EntitySystem
 
         SubscribeLocalEvent<MartialArtsClothingComponent, GotEquippedEvent>(OnClothingEquipped);
         SubscribeLocalEvent<MartialArtsClothingComponent, GotUnequippedEvent>(OnClothingUnequipped);
+        SubscribeLocalEvent<MartialArtsClothingComponent, EntityTerminatingEvent>(OnClothingTerminating);
 
         SubscribeLocalEvent<MartialArtsNoShootComponent, ShotAttemptedEvent>(OnShotAttempted);
     }
@@ -685,6 +688,10 @@ public sealed partial class MartialArtsSystem : EntitySystem
                 }
                 break;
 
+            case MartialArtTeleportToTargetEffect:
+                _transform.SetCoordinates(user, Transform(target).Coordinates);
+                break;
+
             case MartialArtCounterEffect counter:
                 if (style == null || comp == null)
                     break;
@@ -843,20 +850,83 @@ public sealed partial class MartialArtsSystem : EntitySystem
         if (args.EquipTarget == clothing.Owner)
             return;
 
-        if (TryLearnStyle(args.EquipTarget, clothing.Comp.Style, permanent: false))
+        clothing.Comp.Wearer = args.EquipTarget;
+        if (AddTemporaryStyleSource(args.EquipTarget, clothing.Owner, clothing.Comp.Style) &&
+            _prototypes.TryIndex(clothing.Comp.Style, out var style))
         {
-            if (_prototypes.TryIndex(clothing.Comp.Style, out var style))
-                _popup.PopupEntity(Loc.GetString("vg-martial-equipment-learned", ("style", Loc.GetString(style.Name))), args.EquipTarget, args.EquipTarget);
+            _popup.PopupEntity(Loc.GetString("vg-martial-equipment-learned", ("style", Loc.GetString(style.Name))), args.EquipTarget, args.EquipTarget);
         }
     }
 
     private void OnClothingUnequipped(Entity<MartialArtsClothingComponent> clothing, ref GotUnequippedEvent args)
     {
-        if (args.EquipTarget == clothing.Owner ||
-            !TryComp<MartialArtsKnowledgeComponent>(args.EquipTarget, out var comp))
+        if (args.EquipTarget == clothing.Owner)
             return;
 
-        ForgetStyle(args.EquipTarget, comp, clothing.Comp.Style);
+        if (clothing.Comp.Wearer == args.EquipTarget)
+            clothing.Comp.Wearer = null;
+
+        RemoveTemporaryStyleSource(args.EquipTarget, clothing.Owner, clothing.Comp.Style);
+    }
+
+    private void OnClothingTerminating(Entity<MartialArtsClothingComponent> clothing, ref EntityTerminatingEvent args)
+    {
+        if (clothing.Comp.Wearer is not { } wearer)
+            return;
+
+        clothing.Comp.Wearer = null;
+        RemoveTemporaryStyleSource(wearer, clothing.Owner, clothing.Comp.Style);
+    }
+
+    private bool AddTemporaryStyleSource(EntityUid user, EntityUid source, ProtoId<MartialArtPrototype> style)
+    {
+        var comp = EnsureComp<MartialArtsKnowledgeComponent>(user);
+        if (comp.KnownStyles.Contains(style))
+            return false;
+
+        if (!comp.TemporaryStyleSources.TryGetValue(style, out var sources))
+            comp.TemporaryStyleSources[style] = sources = new HashSet<EntityUid>();
+
+        sources.Add(source);
+        var addedStyle = comp.TemporaryStyles.Add(style);
+        if (addedStyle)
+        {
+            if (comp.CurrentStyle == null)
+                SetCurrentStyle(user, comp, style);
+            else
+                RefreshActions(user, comp);
+        }
+
+        return addedStyle;
+    }
+
+    private void RemoveTemporaryStyleSource(EntityUid user, EntityUid source, ProtoId<MartialArtPrototype> style)
+    {
+        if (!TryComp<MartialArtsKnowledgeComponent>(user, out var comp))
+            return;
+
+        if (!comp.TemporaryStyleSources.TryGetValue(style, out var sources))
+            return;
+
+        sources.Remove(source);
+        if (sources.Count > 0)
+            return;
+
+        comp.TemporaryStyleSources.Remove(style);
+        if (comp.KnownStyles.Contains(style))
+            return;
+
+        comp.TemporaryStyles.Remove(style);
+        if (comp.CurrentStyle != style)
+            return;
+
+        ProtoId<MartialArtPrototype>? next = null;
+        if (comp.KnownStyles.Count > 0)
+            next = comp.KnownStyles.First();
+        else if (comp.TemporaryStyles.Count > 0)
+            next = comp.TemporaryStyles.First();
+
+        SetCurrentStyle(user, comp, next);
     }
 
     private void OnShotAttempted(Entity<MartialArtsNoShootComponent> ent, ref ShotAttemptedEvent args)

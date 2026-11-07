@@ -6,16 +6,11 @@
   productEntity: CQCManual
   discountCategory: rareDiscounts
   discountDownTo:
-    Telecrystal: 8
+    Telecrystal: 5
   cost:
-    Telecrystal: 12
+    Telecrystal: 8
   categories:
     - UplinkWeaponry
-  conditions:
-    - !type:StoreWhitelistCondition
-      whitelist:
-        tags:
-          - NukeOpsUplink
 
 - type: listing
   id: UplinkSleepingCarpScroll
@@ -30,6 +25,11 @@
     Telecrystal: 17
   categories:
     - UplinkWeaponry
+  conditions:
+    - !type:StoreWhitelistCondition
+      blacklist:
+        tags:
+          - NukeOpsUplink
 
 - type: listing
   id: UplinkKravMagaGloves
@@ -39,9 +39,9 @@
   productEntity: ClothingHandsGlovesKravMagaChameleon
   discountCategory: rareDiscounts
   discountDownTo:
-    Telecrystal: 5
+    Telecrystal: 2
   cost:
-    Telecrystal: 8
+    Telecrystal: 4
   categories:
     - UplinkWeaponry
 

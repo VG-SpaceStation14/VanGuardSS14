@@ -144,3 +144,4 @@ weapon-combo-stance-protective = защитная
 weapon-combo-stance-offensive = атакующая
 grab-stage-no-hands = Для удушающего захвата нужна свободная рука.
 grab-stage-need-hard = Для броска нужен жёсткий захват или удушение.
+grab-stage-protected = Цель защищена от захватов.
