@@ -352,6 +352,9 @@
     - id: SecApartmentTablet
     - id: PrinterDocFlatpack
     # Corvax-End
+    # VG-Tweak Start: PTCR book from the old HoS locker
+    - id: PTCRBook
+    # VG-Tweak End
 
 # Hardsuit table, used for suit storage as well
 - type: entityTable

@@ -24,14 +24,11 @@
     # VG-Tweak Start: martial arts manuals and equipment
     PTCRBook: 4
     WeaponTonfa: 3
+    ClothingBeltJudo: 3
     # VG-Tweak End
   # security officers need to follow a diet regimen!
   contrabandInventory:
     WeaponMeleeNeedle: 2
     FoodDonutHomer: 12
     FoodBoxDonut: 2
-    # VG-Tweak Start: martial arts equipment
-    ClothingHandsGlovesKravMaga: 2
-    ClothingBeltJudo: 3
-    # VG-Tweak End
     #box evidence

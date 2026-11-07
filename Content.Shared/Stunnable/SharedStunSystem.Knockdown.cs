@@ -477,7 +477,9 @@ public abstract partial class SharedStunSystem
         if (!Resolve(entity, ref entity.Comp, false))
             return false;
 
-        var ev = new TryForceStandEvent(entity.Comp.ForceStandStamina);
+        // VG-Tweak Start: old fast-stand cost is 30% of the stamina crit threshold.
+        var ev = new TryForceStandEvent(entity.Comp.CritThreshold * 0.30f);
+        // VG-Tweak End
         RaiseLocalEvent(entity, ref ev);
 
         if (!Stamina.TryTakeStamina(entity, ev.Stamina, entity.Comp, visual: true))

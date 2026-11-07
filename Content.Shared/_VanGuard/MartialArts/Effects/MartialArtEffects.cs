@@ -153,3 +153,6 @@ public enum MartialArtCondition : byte
 
 [Serializable, NetSerializable, DataDefinition]
 public sealed partial class MartialArtStopTargetPullEffect : IMartialArtEffect;
+
+[Serializable, NetSerializable, DataDefinition]
+public sealed partial class MartialArtTeleportToTargetEffect : IMartialArtEffect;

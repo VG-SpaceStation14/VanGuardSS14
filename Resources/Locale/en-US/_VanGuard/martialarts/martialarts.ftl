@@ -144,3 +144,4 @@ weapon-combo-stance-protective = protective
 weapon-combo-stance-offensive = offensive
 grab-stage-no-hands = A chokehold needs a free hand.
 grab-stage-need-hard = A hard grab or chokehold is required to throw.
+grab-stage-protected = The target is protected from grabs.

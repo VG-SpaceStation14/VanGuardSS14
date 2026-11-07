@@ -1,3 +1,9 @@
+using Content.Shared.Pulling.Events;
+using Content.Shared.Climbing.Events;
+using Content.Shared.Toilet.Components;
+using Content.Shared.Damage;
+using Content.Shared.Damage.Systems;
+using Content.Shared.Stunnable;
 using Content.Shared.Actions.Events;
 using Content.Shared.Alert;
 using Content.Server.DoAfter;
@@ -7,6 +13,7 @@ using Content.Shared.DoAfter;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.IdentityManagement;
+using Content.Shared.Inventory;
 using Content.Shared.Interaction;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
@@ -48,6 +55,9 @@ public sealed partial class GrabStageSystem : EntitySystem
     [Dependency] private ThrowingSystem _throwing = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private AlertsSystem _alerts = default!;
+    [Dependency] private InventorySystem _inventory = default!;
+    [Dependency] private DamageableSystem _damage = default!;
+    [Dependency] private SharedStunSystem _stun = default!;
 
     public override void Initialize()
     {
@@ -58,6 +68,8 @@ public sealed partial class GrabStageSystem : EntitySystem
         SubscribeLocalEvent<PullerComponent, GrabStageToggleEvent>(OnGrabToggle);
         SubscribeLocalEvent<GrabStageTargetComponent, GetVerbsEvent<Verb>>(OnGetVerbs);
         SubscribeLocalEvent<GrabStageTargetComponent, DisarmAttemptEvent>(OnGrabbedDisarmAttempt);
+        SubscribeLocalEvent<GrabStageTargetComponent, BeingPulledAttemptEvent>(OnBeingPulledAttempt);
+        SubscribeLocalEvent<GrabStageTargetComponent, SelfBeforeClimbEvent>(OnBeforeClimb);
         SubscribeLocalEvent<PullerComponent, GrabThrowRequestEvent>(OnThrowRequest);
         SubscribeLocalEvent<PullableComponent, GrabEscapeDoAfterEvent>(OnEscapeComplete);
         SubscribeLocalEvent<PullableComponent, SpeakAttemptEvent>(OnSpeakAttempt);
@@ -67,7 +79,8 @@ public sealed partial class GrabStageSystem : EntitySystem
 
     private void OnPullStarted(Entity<PullerComponent> puller, ref PullStartedMessage args)
     {
-        if (args.PullerUid != puller.Owner || !HasComp<MobStateComponent>(args.PulledUid))
+        if (args.PullerUid != puller.Owner || !HasComp<MobStateComponent>(args.PulledUid) ||
+            _mobState.IsDead(args.PulledUid))
             return;
 
         var comp = EnsureComp<GrabStageComponent>(puller.Owner);
@@ -100,6 +113,45 @@ public sealed partial class GrabStageSystem : EntitySystem
         args.Cancelled = true;
     }
 
+    private void OnBeforeClimb(Entity<GrabStageTargetComponent> target, ref SelfBeforeClimbEvent args)
+    {
+        if (args.GettingPutOnTable != target.Owner ||
+            args.PuttingOnTable == target.Owner ||
+            !TryComp<PullerComponent>(args.PuttingOnTable, out var puller) ||
+            puller.Pulling != target.Owner ||
+            !TryComp<GrabStageComponent>(args.PuttingOnTable, out var stage) ||
+            stage.Stage < GrabStage.Hard)
+            return;
+
+        args.Cancel();
+
+        if (TryComp<ToiletComponent>(args.BeingClimbedOn.Owner, out var toilet) && toilet.ToggleSeat)
+        {
+            _damage.TryChangeDamage(target.Owner, new DamageSpecifier { DamageDict = { ["Asphyxiation"] = 5 } },
+                origin: args.PuttingOnTable);
+        }
+        else
+        {
+            _damage.TryChangeDamage(target.Owner, new DamageSpecifier { DamageDict = { ["Blunt"] = 17 } },
+                origin: args.PuttingOnTable);
+        }
+
+        _audio.PlayPvs(GrabSound, target.Owner);
+        _stun.TryUpdateParalyzeDuration(target.Owner, TimeSpan.FromSeconds(2));
+        if (TryComp<PullableComponent>(target.Owner, out var pullable))
+            _pulling.TryStopPull(target.Owner, pullable, args.PuttingOnTable);
+    }
+
+    private void OnBeingPulledAttempt(Entity<GrabStageTargetComponent> target, ref BeingPulledAttemptEvent args)
+    {
+        if (args.Puller == args.Pulled || !TryComp<PullableComponent>(target.Owner, out var pullable) ||
+            pullable.Puller is not { } currentPuller || args.Puller == currentPuller)
+            return;
+
+        if (TryComp<GrabStageComponent>(currentPuller, out var stage) && stage.Stage >= GrabStage.Soft)
+            args.Cancel();
+    }
+
     private void OnGrabToggle(Entity<PullerComponent> puller, ref GrabStageToggleEvent args)
     {
         if (args.Puller != puller.Owner)
@@ -115,6 +167,11 @@ public sealed partial class GrabStageSystem : EntitySystem
 
     public bool TryAdvanceStage(EntityUid puller)
     {
+        return TryAdvanceStageInternal(puller, fromDoAfter: false);
+    }
+
+    private bool TryAdvanceStageInternal(EntityUid puller, bool fromDoAfter)
+    {
         if (!TryComp<GrabStageComponent>(puller, out var comp) ||
             !TryComp<PullerComponent>(puller, out var pullerComp) ||
             pullerComp.Pulling is not { } target)
@@ -123,8 +180,22 @@ public sealed partial class GrabStageSystem : EntitySystem
         if (comp.Stage >= GrabStage.Choke || _timing.CurTime < comp.NextStageChange)
             return false;
 
-        if (!ValidateGrab(puller, target, comp))
+        if (comp.AdvanceInProgress)
+        {
+            if (_timing.CurTime < comp.AdvanceAt)
+                return false;
+
+            comp.AdvanceInProgress = false;
+        }
+
+        if (_mobState.IsDead(target) || !ValidateGrab(puller, target, comp))
             return false;
+
+        if (HasGrabProtection(target))
+        {
+            _popup.PopupEntity(Loc.GetString("grab-stage-protected"), puller, puller);
+            return false;
+        }
 
         var newStage = comp.Stage + 1;
 
@@ -136,6 +207,15 @@ public sealed partial class GrabStageSystem : EntitySystem
             return false;
         }
 
+        var transitionTime = GetTransitionTime(target, newStage);
+        if (!fromDoAfter && transitionTime > TimeSpan.Zero)
+        {
+            comp.AdvanceInProgress = true;
+            comp.AdvanceAt = _timing.CurTime + transitionTime;
+            return true;
+        }
+
+        comp.AdvanceInProgress = false;
         var oldStage = comp.Stage;
         comp.Stage = newStage;
         comp.NextStageChange = _timing.CurTime + StageCooldown;
@@ -145,6 +225,9 @@ public sealed partial class GrabStageSystem : EntitySystem
         RaiseLocalEvent(puller, ref changed);
         RaiseLocalEvent(target, ref changed);
         ShowStageAlerts(puller, target, newStage);
+
+        if (TryComp<GrabStageTargetComponent>(target, out var targetStage))
+            targetStage.EscapeAttempts = 0;
 
         // Old grab behavior: a chokehold forces the victim to drop held items.
         if (newStage == GrabStage.Choke && TryComp<HandsComponent>(target, out var targetHands))
@@ -178,6 +261,7 @@ public sealed partial class GrabStageSystem : EntitySystem
             return true;
         }
 
+        comp.AdvanceInProgress = false;
         var oldStage = comp.Stage;
         comp.Stage--;
         comp.NextStageChange = _timing.CurTime + StageCooldown;
@@ -214,7 +298,17 @@ public sealed partial class GrabStageSystem : EntitySystem
             comp.Stage == GrabStage.None)
             return false;
 
-        var args = new DoAfterArgs(EntityManager, target, TimeSpan.FromSeconds(1 + (int) comp.Stage * 0.5f),
+        // Old stats: soft/hard have no escape do-after, choke takes two attempts.
+        if (comp.Stage != GrabStage.Choke)
+            return TryLowerStage(puller, target);
+
+        if (!TryComp<GrabStageTargetComponent>(target, out var targetComp))
+            return false;
+
+        if (targetComp.EscapeAttempts == 0)
+            targetComp.EscapeAttempts = 1;
+
+        var args = new DoAfterArgs(EntityManager, target, TimeSpan.FromSeconds(1),
             new GrabEscapeDoAfterEvent(), target, target: target)
         {
             BreakOnDamage = false,
@@ -233,6 +327,18 @@ public sealed partial class GrabStageSystem : EntitySystem
             return;
 
         args.Handled = true;
+
+        if (TryComp<GrabStageComponent>(puller, out var stage) &&
+            stage.Stage == GrabStage.Choke &&
+            TryComp<GrabStageTargetComponent>(pullable.Owner, out var targetComp) &&
+            targetComp.EscapeAttempts < 2)
+        {
+            targetComp.EscapeAttempts++;
+            TryStartEscape(puller, pullable.Owner);
+            _popup.PopupEntity(Loc.GetString("grab-escape-attempt-popup-self"), pullable.Owner, pullable.Owner);
+            return;
+        }
+
         TryLowerStage(puller, pullable.Owner);
         _popup.PopupEntity(Loc.GetString("grab-stage-escape"), pullable.Owner, pullable.Owner);
     }
@@ -343,17 +449,31 @@ public sealed partial class GrabStageSystem : EntitySystem
         if (!TryComp<GrabStageComponent>(puller, out var stage) || stage.Stage < GrabStage.Hard)
             return false;
 
-        var direction = coordinates is { } coords
-            ? _transform.ToMapCoordinates(coords).Position - Transform(puller).WorldPosition
-            : Transform(target).WorldPosition - Transform(puller).WorldPosition;
-
-        if (direction.LengthSquared() < 0.001f)
+        if (_mobState.IsDead(target) || HasGrabProtection(target))
             return false;
 
+        if (!TryComp<PullerComponent>(puller, out var pullerComp) ||
+            _timing.CurTime < pullerComp.NextThrow)
+            return false;
+
+        var start = _transform.ToMapCoordinates(Transform(target).Coordinates).Position;
+        var destination = coordinates is { } coords
+            ? _transform.ToMapCoordinates(coords).Position
+            : Transform(puller).WorldPosition;
+
+        var vector = Vector2.Clamp(destination - start, new Vector2(-2.5f), new Vector2(2.5f));
+        if (vector.LengthSquared() < 0.001f)
+            return false;
+
+        var selfVector = Vector2.Clamp(-vector, new Vector2(-0.25f), new Vector2(0.25f));
+
         StopGrab(puller, target, stage);
+        pullerComp.NextThrow = _timing.CurTime + TimeSpan.FromSeconds(1);
+
         var thrown = EnsureComp<GrabThrownComponent>(target);
         thrown.Thrower = puller;
-        _throwing.TryThrow(target, direction, 8f, puller);
+        _throwing.TryThrow(target, vector, 8f, puller, animated: false, playSound: false, doSpin: false);
+        _throwing.TryThrow(puller, selfVector, 5f, puller, animated: false, playSound: false, doSpin: false);
         _audio.PlayPvs(GrabSound, target);
         return true;
     }
@@ -365,6 +485,9 @@ public sealed partial class GrabStageSystem : EntitySystem
         var query = EntityQueryEnumerator<GrabStageComponent>();
         while (query.MoveNext(out var puller, out var comp))
         {
+            if (comp.AdvanceInProgress && _timing.CurTime >= comp.AdvanceAt)
+                TryAdvanceStageInternal(puller, fromDoAfter: true);
+
             if (_timing.CurTime < comp.NextDistanceCheck)
                 continue;
 
@@ -381,9 +504,75 @@ public sealed partial class GrabStageSystem : EntitySystem
                 continue;
             }
 
+            if (_mobState.IsDead(target))
+            {
+                ClearGrabStage(puller, target, comp);
+                continue;
+            }
+
             if (!ValidateGrab(puller, target, comp))
+            {
                 StopGrab(puller, target, comp);
+            }
         }
+    }
+
+    private bool HasGrabProtection(EntityUid target)
+    {
+        if (HasComp<GrabProtectionComponent>(target))
+            return true;
+
+        if (!TryComp<InventoryComponent>(target, out var inventory))
+            return false;
+
+        foreach (var slot in inventory.Slots)
+        {
+            if ((slot.SlotFlags & SlotFlags.POCKET) != 0)
+                continue;
+
+            if (_inventory.TryGetSlotEntity(target, slot.Name, out var item, inventory) &&
+                HasComp<GrabProtectionComponent>(item.Value))
+                return true;
+        }
+
+        return false;
+    }
+
+    private TimeSpan GetTransitionTime(EntityUid target, GrabStage stage)
+    {
+        if (stage != GrabStage.Choke)
+            return TimeSpan.Zero;
+
+        var multiplier = 1f;
+        if (TryComp<GrabStageTimeModifierComponent>(target, out var directModifier) &&
+            directModifier.Modifiers.TryGetValue(stage, out var directValue))
+        {
+            multiplier *= directValue;
+        }
+
+        if (TryComp<InventoryComponent>(target, out var inventory))
+        {
+            foreach (var slot in inventory.Slots)
+            {
+                if ((slot.SlotFlags & SlotFlags.POCKET) != 0)
+                    continue;
+
+                if (!_inventory.TryGetSlotEntity(target, slot.Name, out var item, inventory) ||
+                    !TryComp<GrabStageTimeModifierComponent>(item.Value, out var modifier) ||
+                    !modifier.Modifiers.TryGetValue(stage, out var value))
+                    continue;
+
+                multiplier *= value;
+            }
+        }
+
+        return TimeSpan.FromSeconds(multiplier);
+    }
+
+    private void ClearGrabStage(EntityUid puller, EntityUid target, GrabStageComponent comp)
+    {
+        RemComp<GrabStageTargetComponent>(target);
+        RemComp<GrabStageComponent>(puller);
     }
 
     private void ShowStageAlerts(EntityUid puller, EntityUid target, GrabStage stage)
@@ -398,7 +587,7 @@ public sealed partial class GrabStageSystem : EntitySystem
     private bool ValidateGrab(EntityUid puller, EntityUid target, GrabStageComponent comp)
     {
         if (TerminatingOrDeleted(puller) || TerminatingOrDeleted(target) ||
-            _mobState.IsDead(puller) || _mobState.IsDead(target))
+            _mobState.IsDead(puller))
             return false;
 
         if (!_interaction.InRangeUnobstructed(puller, target, MaxGrabDistance))

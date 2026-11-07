@@ -10,4 +10,9 @@ public sealed partial class MartialArtsClothingComponent : Component
 {
     [DataField(required: true)]
     public ProtoId<MartialArtPrototype> Style;
+
+    /// <summary>
+    /// Entity currently wearing this item. Server-side bookkeeping for temporary style sources.
+    /// </summary>
+    public EntityUid? Wearer;
 }

@@ -583,6 +583,13 @@
     price: 5000
 
 # Syndicate Medic Hardsuit
+
+  # VG-Tweak Start: grab stage resistance
+  - type: GrabStageTimeModifier
+    modifiers:
+      Hard: 2.25
+      Choke: 2
+  # VG-Tweak End
 - type: entity
   parent: [ClothingOuterHardsuitSyndie, BaseSyndicateContraband]
   id: ClothingOuterHardsuitSyndieMedic
@@ -601,6 +608,7 @@
     - WhitelistChameleon
 
 #Syndicate Elite Hardsuit
+
 - type: entity
   parent: [ TemperatureProtectionGreat, ClothingOuterHardsuitBase, BaseSyndicateContraband ]
   id: ClothingOuterHardsuitSyndieElite
@@ -645,6 +653,13 @@
     - WhitelistChameleon
 
 #Syndicate Commander Hardsuit
+
+  # VG-Tweak Start: grab stage resistance
+  - type: GrabStageTimeModifier
+    modifiers:
+      Hard: 1.5
+      Choke: 2
+  # VG-Tweak End
 - type: entity
   parent: [ClothingOuterHardsuitBase, BaseSyndicateContraband]
   id: ClothingOuterHardsuitSyndieCommander
@@ -684,6 +699,13 @@
 
 
 #Cybersun Juggernaut Hardsuit
+
+  # VG-Tweak Start: grab stage resistance
+  - type: GrabStageTimeModifier
+    modifiers:
+      Hard: 2.25
+      Choke: 2
+  # VG-Tweak End
 - type: entity
   parent: [ClothingOuterHardsuitBase, BaseSyndicateContraband]
   id: ClothingOuterHardsuitJuggernaut
@@ -720,6 +742,10 @@
     - WhitelistChameleon
 
 #Wizard Hardsuit
+
+  # VG-Tweak Start: grab protection
+  - type: GrabProtection
+  # VG-Tweak End
 - type: entity
   parent: [ ClothingOuterHardsuitBase, BaseMagicalContraband ]
   id: ClothingOuterHardsuitWizard

@@ -108,6 +108,10 @@
   name: Krav Maga gloves
   description: Combat gloves with a training chip that teaches Krav Maga while worn.
   components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Hands/Gloves/kravgloves.rsi
+  - type: Clothing
+    sprite: _VanGuard/Clothing/Hands/Gloves/kravgloves.rsi
   - type: GuideHelp
     guides:
     - MartialArts
@@ -120,6 +124,10 @@
   name: corporate judo belt
   description: A security belt with a judo manual sewn into the lining.
   components:
+  - type: Sprite
+    sprite: _VanGuard/Clothing/Belt/judo_belt.rsi
+  - type: Clothing
+    sprite: _VanGuard/Clothing/Belt/judo_belt.rsi
   - type: GuideHelp
     guides:
     - MartialArts
