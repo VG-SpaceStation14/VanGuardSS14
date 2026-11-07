@@ -13,6 +13,9 @@
     - alertType: Ensnared
     - category: Buckled
     - alertType: Pulling
+    # VG-Tweak Start: handover offer alert ordering
+    - alertType: Offer
+    # VG-Tweak End
     - alertType: Walking
     - category: Piloting
     - alertType: Corporeal
@@ -94,6 +97,17 @@
   name: alerts-on-fire-name
   description: alerts-on-fire-desc
 
+
+# VG-Tweak Start: handover offer alert
+- type: alert
+  id: Offer
+  clickEvent: !type:AcceptHandoverEvent
+  icons:
+  - sprite: /Textures/_VanGuard/Interface/Alerts/offer_item.rsi
+    state: offer_item
+  name: alerts-offer-name
+  description: alerts-offer-desc
+# VG-Tweak End
 
 - type: alert
   id: Cold

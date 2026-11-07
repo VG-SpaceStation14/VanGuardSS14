@@ -116,7 +116,8 @@ namespace Content.Client.Input
                 aghost.AddFunction(keyFunction);
             }
             human.AddFunction(ContentKeyFunctions.ToggleKnockdown);
-            // VG-Tweak Start: fast stand keybind
+            // VG-Tweak Start: hand item offer key and fast stand keybind
+            human.AddFunction(ContentKeyFunctions.OfferItem);
             human.AddFunction(ContentKeyFunctions.ForceStand);
             // VG-Tweak End
             human.AddFunction(ContentKeyFunctions.OpenEmotesMenu);
