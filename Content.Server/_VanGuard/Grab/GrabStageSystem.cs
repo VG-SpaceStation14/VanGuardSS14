@@ -5,6 +5,7 @@ using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Stunnable;
 using Content.Shared.Actions.Events;
+using Content.Server.CombatMode;
 using Content.Shared.Alert;
 using Content.Server.DoAfter;
 using System.Numerics;
@@ -50,6 +51,7 @@ public sealed partial class GrabStageSystem : EntitySystem
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedInteractionSystem _interaction = default!;
+    [Dependency] private CombatModeSystem _combatMode = default!;
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private DoAfterSystem _doAfter = default!;
     [Dependency] private ThrowingSystem _throwing = default!;
@@ -157,6 +159,11 @@ public sealed partial class GrabStageSystem : EntitySystem
         if (args.Puller != puller.Owner)
             return;
 
+        // Grab stages are a combat-mode action. Outside combat this event must
+        // remain unhandled so PullingSystem performs its normal stop-pull.
+        if (!_combatMode.IsInCombatMode(puller.Owner))
+            return;
+
         // A normal pull has no GrabStageComponent and falls through to stopping.
         if (!TryComp<GrabStageComponent>(puller.Owner, out _))
             return;
@@ -172,6 +179,9 @@ public sealed partial class GrabStageSystem : EntitySystem
 
     private bool TryAdvanceStageInternal(EntityUid puller, bool fromDoAfter)
     {
+        if (!_combatMode.IsInCombatMode(puller))
+            return false;
+
         if (!TryComp<GrabStageComponent>(puller, out var comp) ||
             !TryComp<PullerComponent>(puller, out var pullerComp) ||
             pullerComp.Pulling is not { } target)
@@ -385,7 +395,9 @@ public sealed partial class GrabStageSystem : EntitySystem
 
         if (args.User == puller)
         {
-            if (stage.Stage < GrabStage.Choke)
+            var inCombat = _combatMode.IsInCombatMode(puller);
+
+            if (inCombat && stage.Stage < GrabStage.Choke)
             {
                 args.Verbs.Add(new Verb
                 {
@@ -405,7 +417,7 @@ public sealed partial class GrabStageSystem : EntitySystem
                 });
             }
 
-            if (stage.Stage >= GrabStage.Hard)
+            if (inCombat && stage.Stage >= GrabStage.Hard)
             {
                 args.Verbs.Add(new Verb
                 {
@@ -428,6 +440,9 @@ public sealed partial class GrabStageSystem : EntitySystem
 
     private void OnThrowRequest(Entity<PullerComponent> puller, ref GrabThrowRequestEvent args)
     {
+        if (!_combatMode.IsInCombatMode(puller.Owner))
+            return;
+
         if (!TryComp<GrabStageComponent>(puller.Owner, out var stage) ||
             stage.Grabbing != args.Target ||
             puller.Comp.Pulling != args.Target)
@@ -446,6 +461,9 @@ public sealed partial class GrabStageSystem : EntitySystem
 
     public bool TryThrow(EntityUid puller, EntityUid target, EntityCoordinates? coordinates = null)
     {
+        if (!_combatMode.IsInCombatMode(puller))
+            return false;
+
         if (!TryComp<GrabStageComponent>(puller, out var stage) || stage.Stage < GrabStage.Hard)
             return false;
 
@@ -508,6 +526,20 @@ public sealed partial class GrabStageSystem : EntitySystem
             {
                 ClearGrabStage(puller, target, comp);
                 continue;
+            }
+
+            // Combat mode is the gate for soft/hard grabs. If it is turned off
+            // mid-grab, keep the ordinary pull but drop the staged grab so no
+            // hard/soft effects or verbs remain active outside combat.
+            if (comp.Stage != GrabStage.None && !_combatMode.IsInCombatMode(puller))
+            {
+                comp.AdvanceInProgress = false;
+                comp.Stage = GrabStage.None;
+                Dirty(puller, comp);
+                ShowStageAlerts(puller, target, GrabStage.None);
+
+                if (TryComp<GrabStageTargetComponent>(target, out var targetStage))
+                    targetStage.EscapeAttempts = 0;
             }
 
             if (!ValidateGrab(puller, target, comp))

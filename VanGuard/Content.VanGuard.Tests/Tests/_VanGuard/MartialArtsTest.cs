@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using System.Numerics;
 using System.Linq;
+using Content.Server.CombatMode;
 using Content.Server._VanGuard.Grab;
 using Content.Server._VanGuard.MartialArts;
 using Content.Server._VanGuard.WeaponCombos;
+using Content.Shared.CombatMode;
 using Content.Shared._VanGuard.Grab;
 using Content.Shared._VanGuard.MartialArts;
 using Content.Shared._VanGuard.WeaponCombos;
@@ -92,6 +94,13 @@ public sealed class MartialArtsTest : GameTest
     {
         var pulling = Server.System<PullingSystem>();
         var started = false;
+
+        await Server.WaitPost(() =>
+        {
+            var combat = SEntMan.EnsureComponent<CombatModeComponent>(user);
+            Server.System<CombatModeSystem>().SetInCombatMode(user, true, combat);
+        });
+
         await Server.WaitPost(() => started = pulling.TryStartPull(user, target));
         Assert.That(started, Is.True, "Failed to start the test pull");
 
@@ -693,6 +702,64 @@ public sealed class MartialArtsTest : GameTest
 
         await Server.WaitAssertion(() =>
             Assert.That(SEntMan.GetComponent<GrabStageComponent>(user).Stage, Is.EqualTo(GrabStage.Soft)));
+    }
+
+    [Test]
+    public async Task NonCombatPullReleasesOnRepeatedCtrlClick()
+    {
+        var (user, target, _) = await CreateFighters();
+        var pulling = Server.System<PullingSystem>();
+
+        await Server.WaitPost(() => Assert.That(pulling.TryStartPull(user, target), Is.True));
+        await Pair.RunTicksSync(5);
+
+        await Server.WaitPost(() =>
+        {
+            var pullable = SEntMan.GetComponent<PullableComponent>(target);
+            Assert.That(pulling.TogglePull(new Entity<PullableComponent>(target, pullable), user), Is.True);
+        });
+        await Pair.RunTicksSync(5);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.GetComponent<PullerComponent>(user).Pulling, Is.Null,
+                "Repeated Ctrl+click without combat mode must release the ordinary pull");
+            Assert.That(SEntMan.HasComponent<GrabStageComponent>(user), Is.False,
+                "No staged grab may remain after a non-combat release");
+        });
+    }
+
+    [Test]
+    public async Task TurningCombatOffDropsGrabStageButKeepsPull()
+    {
+        var (user, target, _) = await CreateFighters();
+        var pulling = Server.System<PullingSystem>();
+        await StartGrab(user, target);
+
+        await Server.WaitPost(() =>
+        {
+            var combat = SEntMan.GetComponent<CombatModeComponent>(user);
+            Server.System<CombatModeSystem>().SetInCombatMode(user, false, combat);
+        });
+        await Pair.RunTicksSync(5);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.GetComponent<PullerComponent>(user).Pulling, Is.EqualTo(target),
+                "The ordinary pull should survive turning combat mode off");
+            Assert.That(SEntMan.GetComponent<GrabStageComponent>(user).Stage, Is.EqualTo(GrabStage.None),
+                "Soft/hard grab effects must stop when combat mode is disabled");
+        });
+
+        await Server.WaitPost(() =>
+        {
+            var pullable = SEntMan.GetComponent<PullableComponent>(target);
+            Assert.That(pulling.TogglePull(new Entity<PullableComponent>(target, pullable), user), Is.True);
+        });
+        await Pair.RunTicksSync(5);
+
+        await Server.WaitAssertion(() =>
+            Assert.That(SEntMan.GetComponent<PullerComponent>(user).Pulling, Is.Null));
     }
 
     [Test]
