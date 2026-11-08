@@ -1,0 +1,54 @@
+<Document>
+  # Общие права и обязанности
+
+  ## Основные права и обязанности
+  <FTLTextpart Key="guidebook-vanguard-SOP-general-basic"/>
+
+  ### Обязанности
+  <FTLTextpart Key="guidebook-vanguard-SOP-general-basic-duties"/>
+
+  ### Права
+  <FTLTextpart Key="guidebook-vanguard-SOP-general-basic-rights"/>
+
+  ## Права и обязанности гостей
+  <FTLTextpart Key="guidebook-vanguard-SOP-general-guests"/>
+
+  ### Обязанности
+  <FTLTextpart Key="guidebook-vanguard-SOP-general-guests-duties"/>
+
+  ### Права
+  <FTLTextpart Key="guidebook-vanguard-SOP-general-guests-rights"/>
+
+  ## Права и обязанности заключенных
+  <FTLTextpart Key="guidebook-vanguard-SOP-general-prisoners"/>
+
+  ### Обязанности
+  <FTLTextpart Key="guidebook-vanguard-SOP-general-prisoners-duties"/>
+
+  ### Права
+  <FTLTextpart Key="guidebook-vanguard-SOP-general-prisoners-rights"/>
+
+  ## Права и обязанности освобождённых по УДО
+  <FTLTextpart Key="guidebook-vanguard-SOP-general-parole"/>
+
+  ### Обязанности
+  <FTLTextpart Key="guidebook-vanguard-SOP-general-parole-duties"/>
+
+  ### Права
+  <FTLTextpart Key="guidebook-vanguard-SOP-general-parole-rights"/>
+
+  # Общие процедуры оформления заказов
+  <FTLTextpart Key="guidebook-vanguard-SOP-general-orders"/>
+
+  ### Общие обязанности оформления заказов
+  <FTLTextpart Key="guidebook-vanguard-SOP-general-orders-must"/>
+
+  ### Общие запреты оформления заказов
+  <FTLTextpart Key="guidebook-vanguard-SOP-general-orders-prohibited"/>
+
+  ## Взаимодействие с ДСО
+  <FTLTextpart Key="guidebook-vanguard-SOP-general-specialops-instructions"/>
+
+  ## Мобилизация
+  <FTLTextpart Key="guidebook-vanguard-SOP-general-mobilization"/>
+</Document>

@@ -1,0 +1,97 @@
+<Document>
+
+# Приложение
+
+## Имена по расам
+
+Имя и фамилия должны подходить расе и сеттингу. Спорные и уникальные имена согласуются с администрацией; её решение окончательное.
+
+## Общие правила
+
+«Плохо» — это не имя расы, а слово-раса, ник, шутка или чужой персонаж.
+- Ники, игровые теги, наборы букв и цифр.
+- Мета-имена, дающие преимущество или повторяющие служебный шаблон.
+- Имена знаменитостей и персонажей из известных произведений.
+- Бессмыслица, мемы и шутки вместо имени.
+
+## Примеры по расам
+
+<Table Columns="4">
+  <ColorBox Color="#1c3550"><Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">[bold]Раса[/bold]</Box></ColorBox>
+  <ColorBox Color="#1c3550"><Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">[bold]Правило[/bold]</Box></ColorBox>
+  <ColorBox Color="#1c5221"><Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">[bold]Хорошо[/bold]</Box></ColorBox>
+  <ColorBox Color="#5b101a"><Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">[bold]Плохо[/bold]</Box></ColorBox>
+
+  <ColorBox><Box Margin="2">Люди</Box></ColorBox>
+  <ColorBox><Box Margin="2">Имя и фамилия.</Box></ColorBox>
+  <ColorBox><Box Margin="2">Марк Кузнецов</Box></ColorBox>
+  <ColorBox><Box Margin="2">Человек, Иван228</Box></ColorBox>
+
+  <ColorBox><Box Margin="2">Дворфы</Box></ColorBox>
+  <ColorBox><Box Margin="2">Имя и фамилия.</Box></ColorBox>
+  <ColorBox><Box Margin="2">Дарья Лебедева</Box></ColorBox>
+  <ColorBox><Box Margin="2">Дварф, Дварф228</Box></ColorBox>
+
+  <ColorBox><Box Margin="2">Унатхи</Box></ColorBox>
+  <ColorBox><Box Margin="2">Два имени через дефис.</Box></ColorBox>
+  <ColorBox><Box Margin="2">Баар-Бунах</Box></ColorBox>
+  <ColorBox><Box Margin="2">Ящер, Крокодил</Box></ColorBox>
+
+  <ColorBox><Box Margin="2">Вульпакины</Box></ColorBox>
+  <ColorBox><Box Margin="2">Имя и фамилия.</Box></ColorBox>
+  <ColorBox><Box Margin="2">Баралд Балч</Box></ColorBox>
+  <ColorBox><Box Margin="2">Вульпа, Фокс</Box></ColorBox>
+
+  <ColorBox><Box Margin="2">Таяры</Box></ColorBox>
+  <ColorBox><Box Margin="2">Имя и фамилия.</Box></ColorBox>
+  <ColorBox><Box Margin="2">Гаран Гардар</Box></ColorBox>
+  <ColorBox><Box Margin="2">Таяр, Кошка</Box></ColorBox>
+
+  <ColorBox><Box Margin="2">Нианы</Box></ColorBox>
+  <ColorBox><Box Margin="2">Имя и фамилия.</Box></ColorBox>
+  <ColorBox><Box Margin="2">Сократ Винтер</Box></ColorBox>
+  <ColorBox><Box Margin="2">Ниан, Моль</Box></ColorBox>
+
+  <ColorBox><Box Margin="2">Арахниды</Box></ColorBox>
+  <ColorBox><Box Margin="2">Имя и фамилия.</Box></ColorBox>
+  <ColorBox><Box Margin="2">Клубиона Блонди</Box></ColorBox>
+  <ColorBox><Box Margin="2">Арахнид, Паук</Box></ColorBox>
+
+  <ColorBox><Box Margin="2">Слаймолюды</Box></ColorBox>
+  <ColorBox><Box Margin="2">Имя и фамилия; можно звукоподражание.</Box></ColorBox>
+  <ColorBox><Box Margin="2">Бульк, Борис Новиков</Box></ColorBox>
+  <ColorBox><Box Margin="2">Слайм, Слаймолюд</Box></ColorBox>
+
+  <ColorBox><Box Margin="2">Дионы</Box></ColorBox>
+  <ColorBox><Box Margin="2">Имя и фамилия.</Box></ColorBox>
+  <ColorBox><Box Margin="2">Роза Спокойствия</Box></ColorBox>
+  <ColorBox><Box Margin="2">Диона, Дерево</Box></ColorBox>
+
+  <ColorBox><Box Margin="2">Воксы</Box></ColorBox>
+  <ColorBox><Box Margin="2">Только имя.</Box></ColorBox>
+  <ColorBox><Box Margin="2">Кешеваскива</Box></ColorBox>
+  <ColorBox><Box Margin="2">Вокс, Птица</Box></ColorBox>
+
+  <ColorBox><Box Margin="2">КПБ</Box></ColorBox>
+  <ColorBox><Box Margin="2">Имя и код модели.</Box></ColorBox>
+  <ColorBox><Box Margin="2">Вектос КС-85</Box></ColorBox>
+  <ColorBox><Box Margin="2">КПБ, Робот</Box></ColorBox>
+</Table>
+
+
+## Действующие статьи
+
+- [textlink="Корпоративный закон" link="VanGuardCorporateLaw"]
+- [textlink="Стандартные рабочие процедуры (СРП)" link="VanGuardSOP"]
+- [textlink="Коды тревог" link="VanGuardSOPCodes"]
+- [textlink="Законы ИИ" link="Lawsets"]
+- [textlink="Киборги" link="Cyborgs"]
+- [textlink="Робототехника" link="Robotics"]
+- [textlink="Антагонисты" link="Antagonists"]
+- [textlink="Виды" link="Species"]
+- [textlink="Должности" link="Jobs"]
+- [textlink="Карго: заказы и бонусы" link="CargoBounties"]
+- [textlink="Служба безопасности" link="Security"]
+- [textlink="Командование" link="Command"]
+
+</Document>

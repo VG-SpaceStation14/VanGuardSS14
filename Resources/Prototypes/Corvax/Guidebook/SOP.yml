@@ -1,5 +1,7 @@
 - type: guideEntry
   id: SOP
+  # VanGuard: скрыто, заменено копией в _VanGuard
+  ruleEntry: true
   name: guide-entry-sop
   text: "/ServerInfo/Corvax/Guidebook/SOP/SOP.xml"
   children:

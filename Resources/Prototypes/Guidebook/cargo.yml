@@ -23,5 +23,5 @@
 - type: guideEntry
   id: Lavaland
   name: guide-entry-lavaland
-  text: "/ServerInfo/Guidebook/_VanGuard/Lavaland.xml"
+  text: "/ServerInfo/_VanGuard/Guidebook/Lavaland/Lavaland.xml"
 # VG-Tweak End

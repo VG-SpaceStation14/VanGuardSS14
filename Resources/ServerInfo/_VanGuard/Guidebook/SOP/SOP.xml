@@ -1,0 +1,9 @@
+<Document>
+  <ColorBox>
+    <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+      <FTLTextpart Key="guidebook-vanguard-SOP-infobox-main"/>
+    </Box>
+  </ColorBox>
+
+  <FTLTextpart Key="guidebook-vanguard-SOP-desc"/>
+</Document>

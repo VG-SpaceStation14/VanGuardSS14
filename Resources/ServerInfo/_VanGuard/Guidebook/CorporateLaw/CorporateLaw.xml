@@ -1,0 +1,11 @@
+<Document>
+
+# Корпоративный закон
+
+  <Box>
+    <GuideEntityEmbed Entity="BookSpaceLaw"/>
+  </Box>
+
+  <FTLTextpart Key="guidebook-vanguard-corporatelaw-desc"/>
+
+</Document>

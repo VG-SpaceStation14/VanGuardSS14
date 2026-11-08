@@ -17,6 +17,8 @@
 
 - type: guideEntry
   id: SpaceLaw
+  # VanGuard: скрыто, заменено копией в _VanGuard
+  ruleEntry: true
   name: guide-entry-rules-space-law
   text: "/ServerInfo/Guidebook/ServerRules/SpaceLaw/SpaceLaw.xml"
   children:
