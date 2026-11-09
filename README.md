@@ -5,7 +5,8 @@
 <div align="center">
 
   [![Discord](https://img.shields.io/badge/Discord-Наш%20сервер-E05A33?logo=discord&logoColor=white&style=for-the-badge&labelColor=1C1C1C)](https://discord.gg/nW73CdBYkg)
-  [![Wiki](https://img.shields.io/badge/Wiki-Наша%20вики-E05A33?style=for-the-badge&labelColor=1C1C1C)](https://vanguardproject.ru/)
+  [![Сайт](https://img.shields.io/badge/Сайт-Наш%20сайт-E05A33?style=for-the-badge&labelColor=1C1C1C)](https://vanguardproject.ru/index.html)
+  [![Wiki](https://img.shields.io/badge/Wiki-Наша%20вики-E05A33?style=for-the-badge&labelColor=1C1C1C)](https://vanguardproject.ru/wiki.html)
   [![Steam](https://img.shields.io/badge/Steam-В%20Steam-E05A33?logo=steam&logoColor=white&style=for-the-badge&labelColor=1C1C1C)](https://store.steampowered.com/app/1255460/Space_Station_14/)
   [![Launcher](https://img.shields.io/badge/Launcher-Скачать%20лаунчер-E05A33?style=for-the-badge&labelColor=1C1C1C)](https://spacestation14.com/about/download/)
   [![GitHub](https://img.shields.io/github/stars/VG-SpaceStation14/VanGuardSS14?style=for-the-badge&logo=github&logoColor=white&labelColor=1C1C1C&color=E05A33)](https://github.com/VG-SpaceStation14/VanGuardSS14)
@@ -16,9 +17,9 @@
 
 ## 🚀 О проекте
 
-**VanGuard** — русскоязычный сервер и форк [space-syndicate/space-station-14](https://github.com/space-syndicate/space-station-14), который основан на [space-wizards/space-station-14](https://github.com/space-wizards/space-station-14). Игра работает на движке [Robust Toolbox](https://github.com/space-wizards/RobustToolbox).
+**VanGuard** — русскоязычный **MRP+** сервер и форк [space-syndicate/space-station-14](https://github.com/space-syndicate/space-station-14), основанный на [space-wizards/space-station-14](https://github.com/space-wizards/space-station-14). Игра работает на движке [Robust Toolbox](https://github.com/space-wizards/RobustToolbox).
 
-Space Station 14 — ролевая игра, вдохновлённая Space Station 13. Проект поддерживает перевод, регулярно получает изменения из апстрима и содержит собственные доработки. Описание механик находится на [вики](https://vanguardproject.ru/).
+Space Station 14 — ролевая игра, вдохновлённая Space Station 13. Проект делает упор на атмосферный ролевой отыгрыш, уникальные механики и регулярные ивенты, регулярно получает изменения из апстрима. Краткие справочные материалы опубликованы на [сайте](https://vanguardproject.ru/wiki.html); полное руководство по механикам доступно в игре через меню «Руководство».
 
 ## 🛠 Сборка
 
