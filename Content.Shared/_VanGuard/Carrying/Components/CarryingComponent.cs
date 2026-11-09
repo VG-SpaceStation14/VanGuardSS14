@@ -23,6 +23,9 @@ public sealed partial class CarryingComponent : Component
     [DataField]
     public float SprintSpeedModifier = 0.7f;
 
+    [DataField]
+    public ProtoId<AlertPrototype> Alert = "CarryDrop";
+
     public bool Ending;
 
     /// <summary>

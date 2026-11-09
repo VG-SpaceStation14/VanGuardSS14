@@ -11,6 +11,7 @@ using Content.Shared.Popups;
 using Content.Shared.Verbs;
 using Content.Shared._VanGuard.Carrying;
 using Robust.Shared.Input.Binding;
+using Robust.Shared.Map;
 using Robust.Shared.Player;
 
 namespace Content.Server._VanGuard.Carrying;
@@ -23,6 +24,29 @@ public sealed partial class CarryingSystem
             return;
 
         TryToggleCarryMode(carrier);
+    }
+
+    private bool OnCarryDropKey(ICommonSession? session, EntityCoordinates coords, EntityUid netEntity)
+    {
+        if (session?.AttachedEntity is not { } carrier || !HasComp<CarryingComponent>(carrier))
+            return false;
+
+        TryEndCarry(carrier, carrier);
+        return true;
+    }
+
+    private void OnCarrierBeforeInteractHand(Entity<CarryModeComponent> mode, ref BeforeInteractHandEvent args)
+    {
+        if (!mode.Comp.Enabled || args.Handled || args.Target == mode.Owner)
+            return;
+
+        if (!HasComp<HumanoidProfileComponent>(args.Target))
+            return;
+
+        // Suppress the ordinary InteractHand path. This prevents predicted
+        // hug/pet interactions from running before the carry do-after.
+        args.Handled = true;
+        TryStartCarry(mode.Owner, args.Target);
     }
 
     public bool TryToggleCarryMode(EntityUid carrier)
@@ -71,20 +95,6 @@ public sealed partial class CarryingSystem
         return true;
     }
 
-    private void OnTargetInteractHand(Entity<MobStateComponent> target, ref InteractHandEvent args)
-    {
-        if (args.Handled || args.User == target.Owner)
-            return;
-
-        if (!TryComp<CarryModeComponent>(args.User, out var mode) || !mode.Enabled)
-            return;
-
-        if (!HasComp<HumanoidProfileComponent>(target.Owner))
-            return;
-
-        args.Handled = true;
-        TryStartCarry(args.User, target.Owner);
-    }
 
     private void OnTargetVerbs(Entity<MobStateComponent> target, ref GetVerbsEvent<InteractionVerb> args)
     {

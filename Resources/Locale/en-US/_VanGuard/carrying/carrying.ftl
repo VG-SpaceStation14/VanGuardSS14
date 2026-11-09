@@ -1,7 +1,7 @@
 carry-verb = Pick up
 carry-verb-drop = Put down
 
-alerts-carry-mode-name = Carry mode
+alerts-carry-mode-name = Pick up
 alerts-carry-mode-desc = Left-click another person to pick them up.
 alerts-carried-name = Being carried
 alerts-carried-desc = Another person is carrying you.
@@ -37,3 +37,6 @@ carry-escape-start = You try to break free.
 carry-escape-success = You break free from {$user}.
 
 carry-escape-cancelled = Your escape attempt was interrupted.
+
+alerts-carry-drop-name = Drop
+alerts-carry-drop-desc = Click to put the carried person down.

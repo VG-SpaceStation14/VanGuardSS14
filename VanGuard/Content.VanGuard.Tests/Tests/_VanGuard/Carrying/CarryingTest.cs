@@ -11,6 +11,7 @@ using Content.Shared.ActionBlocker;
 using Content.Shared.Alert;
 using Content.Shared.Cuffs.Components;
 using Content.Shared.Damage;
+using ContentDrawDepth = Content.Shared.DrawDepth.DrawDepth;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Events;
@@ -21,7 +22,9 @@ using Content.Shared.Climbing.Components;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Humanoid;
+using Content.Shared.Input;
 using Content.Shared.Interaction;
+using Content.Shared.Interaction.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
@@ -37,10 +40,18 @@ using Content.IntegrationTests.Fixtures;
 using Content.IntegrationTests.Fixtures.Attributes;
 using Robust.Shared.GameObjects;
 using Robust.Client.GameObjects;
+using Robust.Shared.Audio.Components;
+using Robust.Client.Input;
+using Robust.Shared.Input;
+using Robust.Shared.Input.Binding;
 using Robust.Shared.Localization;
 using Robust.Shared.Maths;
 using Robust.Shared.Map;
 using Robust.Shared.Player;
+using Robust.Shared.Prototypes;
+using Robust.Server.Player;
+using Robust.Shared.Timing;
+using Robust.Shared.Network;
 
 namespace Content.IntegrationTests.Tests._VanGuard.Carrying;
 
@@ -105,6 +116,9 @@ public sealed class CarryingTest : GameTest
             Assert.That(SEntMan.GetComponent<TransformComponent>(target).ParentUid, Is.EqualTo(anchor));
             Assert.That(SEntMan.GetComponent<TransformComponent>(anchor!.Value).ParentUid, Is.EqualTo(carrier));
             Assert.That(SEntMan.GetComponent<HandsComponent>(carrier).Hands.Count, Is.EqualTo(2));
+            Assert.That((SEntMan.GetComponent<TransformComponent>(target).WorldPosition -
+                         SEntMan.GetComponent<TransformComponent>(carrier).WorldPosition).Length(),
+                Is.LessThan(0.01f), "the carried body should occupy the carrier's position");
         });
 
         // The carried body must follow the carrier's transform, not stay at its
@@ -141,31 +155,394 @@ public sealed class CarryingTest : GameTest
     }
 
     [Test]
-    public async Task CarryModeAlertTogglesAndClearsOnCarry()
+    public async Task ClientCarryModeSuppressesHugBeforeServerCarry()
     {
         var (carrier, target, _) = await CreatePair();
         var system = Server.System<CarryingSystem>();
-
-        await Server.WaitPost(() => Assert.That(system.TryToggleCarryMode(carrier), Is.True));
-        await Server.WaitAssertion(() =>
-            Assert.That(Server.System<AlertsSystem>().IsShowingAlert(carrier, "CarryMode"), Is.True));
-
-        await Server.WaitPost(() => Assert.That(system.TryToggleCarryMode(carrier), Is.True));
-        await Server.WaitAssertion(() =>
-            Assert.That(Server.System<AlertsSystem>().IsShowingAlert(carrier, "CarryMode"), Is.False));
-
-        await Server.WaitPost(() => Assert.That(system.TryToggleCarryMode(carrier), Is.True));
-        await Server.WaitAssertion(() =>
-            Assert.That(Server.System<AlertsSystem>().IsShowingAlert(carrier, "CarryMode"), Is.True));
-
         await Server.WaitPost(() =>
-            SEntMan.EventBus.RaiseLocalEvent(target, new InteractHandEvent(carrier, target)));
+            Assert.That(Server.PlayerMan.SetAttachedEntity(ServerSession!, carrier, force: true), Is.True));
+        await Server.WaitPost(() => Assert.That(system.TryToggleCarryMode(carrier), Is.True));
+        await Pair.RunTicksSync(20);
+
+        var cCarrier = ToClientUid(carrier);
+        var cTarget = ToClientUid(target);
+        var before = TimeSpan.Zero;
+        await Client.WaitAssertion(() =>
+        {
+            Assert.That(CEntMan.GetComponent<CarryModeComponent>(cCarrier).Enabled, Is.True);
+            before = CEntMan.GetComponent<InteractionPopupComponent>(cTarget).LastInteractTime;
+        });
+
+        await Client.WaitPost(() =>
+            Client.System<SharedInteractionSystem>().InteractHand(cCarrier, cTarget));
+        await Client.WaitAssertion(() =>
+        {
+            Assert.That(CEntMan.GetComponent<InteractionPopupComponent>(cTarget).LastInteractTime,
+                Is.EqualTo(before), "carry mode must suppress the client-predicted hug");
+            Assert.That(CEntMan.HasComponent<CarryingComponent>(cCarrier), Is.False,
+                "the client must not start carrying by itself");
+        });
+
+        await Server.WaitAssertion(() =>
+            Assert.That(SEntMan.HasComponent<CarryingComponent>(carrier), Is.False));
+
+        await Server.WaitPost(() => Assert.That(system.TryToggleCarryMode(carrier), Is.True));
+        await Pair.RunTicksSync(20);
+        await Client.WaitAssertion(() => Assert.That(CEntMan.GetComponent<CarryModeComponent>(cCarrier).Enabled, Is.False));
+
+        var after = TimeSpan.Zero;
+        await Client.WaitAssertion(() => after = CEntMan.GetComponent<InteractionPopupComponent>(cTarget).LastInteractTime);
+        await Client.WaitPost(() =>
+            Client.System<SharedInteractionSystem>().InteractHand(cCarrier, cTarget));
+        await Client.WaitAssertion(() =>
+            Assert.That(CEntMan.GetComponent<InteractionPopupComponent>(cTarget).LastInteractTime,
+                Is.GreaterThan(after), "ordinary hugging must still work outside carry mode"));
+    }
+
+    [Test]
+    public async Task PickupSoundPlaysOnlyOnSuccessfulCarry()
+    {
+        var (carrier, target, _) = await CreatePair();
+        var system = Server.System<CarryingSystem>();
+        await Server.WaitPost(() =>
+            Assert.That(Server.PlayerMan.SetAttachedEntity(ServerSession!, carrier, force: true), Is.True));
+        await Pair.RunTicksSync(20);
+        var before = GetAudioEntities();
+
+        await Server.WaitPost(() => Assert.That(system.TryStartCarry(carrier, target), Is.True));
+        await Pair.RunTicksSync(10);
+        await Server.WaitAssertion(() =>
+            Assert.That(GetNewAudioEntities(before), Is.Empty,
+                "pickup sound must not play when the do-after starts"));
+
+        await Pair.RunTicksSync(55);
+        var successful = GetNewAudioEntities(before)
+            .Where(uid => SEntMan.GetComponent<TransformComponent>(uid).ParentUid == carrier)
+            .ToList();
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(successful, Has.Count.EqualTo(1), "exactly one pickup sound is expected");
+            Assert.That(SEntMan.GetComponent<TransformComponent>(successful[0]).ParentUid,
+                Is.EqualTo(carrier), "the pickup sound should originate from the carrier");
+        });
+
+        await Server.WaitPost(() => Assert.That(system.TryEndCarry(carrier, carrier), Is.True));
+        await Pair.RunTicksSync(5);
+
+        var beforeCancelled = GetAudioEntities();
+        await Server.WaitPost(() => Assert.That(system.TryStartCarry(carrier, target), Is.True));
+        await Pair.RunTicksSync(10);
+        await Server.WaitPost(() =>
+        {
+            var ev = new StunnedEvent();
+            SEntMan.EventBus.RaiseLocalEvent(carrier, ref ev);
+        });
+        await Pair.RunTicksSync(65);
+
+        await Server.WaitAssertion(() =>
+            Assert.That(GetNewAudioEntities(beforeCancelled), Is.Empty,
+                "a cancelled pickup must not play the pickup sound"));
+    }
+
+    [Test]
+    public async Task CarryModeClickSkipsHugAndStartsOnlyCarry()
+    {
+        var (carrier, target, _) = await CreatePair();
+        var system = Server.System<CarryingSystem>();
+        var popup = SEntMan.GetComponent<InteractionPopupComponent>(target);
+        var before = popup.LastInteractTime;
+
+        await Server.WaitPost(() => Assert.That(system.TryToggleCarryMode(carrier), Is.True));
+        await Server.WaitPost(() =>
+            SEntMan.EventBus.RaiseLocalEvent(carrier, new BeforeInteractHandEvent(target)));
         await Pair.RunTicksSync(140);
 
         await Server.WaitAssertion(() =>
         {
-            Assert.That(Server.System<AlertsSystem>().IsShowingAlert(carrier, "CarryMode"), Is.False);
             Assert.That(SEntMan.HasComponent<CarryingComponent>(carrier), Is.True);
+            Assert.That(SEntMan.GetComponent<InteractionPopupComponent>(target).LastInteractTime,
+                Is.EqualTo(before), "the hug interaction must be suppressed by carry mode");
+        });
+
+        await Server.WaitPost(() => Assert.That(system.TryEndCarry(carrier, carrier), Is.True));
+        await Pair.RunTicksSync(5);
+    }
+
+    [Test]
+    public async Task NormalInteractHandStillHugsOutsideCarryMode()
+    {
+        var (carrier, target, _) = await CreatePair();
+        var before = SEntMan.GetComponent<InteractionPopupComponent>(target).LastInteractTime;
+
+        await Server.WaitPost(() =>
+            SEntMan.EventBus.RaiseLocalEvent(target, new InteractHandEvent(carrier, target)));
+        await Pair.RunTicksSync(1);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.HasComponent<CarryingComponent>(carrier), Is.False);
+            Assert.That(SEntMan.GetComponent<InteractionPopupComponent>(target).LastInteractTime,
+                Is.GreaterThan(before), "ordinary hugging must still work outside carry mode");
+        });
+    }
+
+    [Test]
+    public async Task CarryModeClearsOnSuccessfulCarryAndKeepsOneDropAlert()
+    {
+        var (carrier, target, _) = await CreatePair();
+        var system = Server.System<CarryingSystem>();
+        var alerts = Server.System<AlertsSystem>();
+        await Server.WaitPost(() =>
+            Assert.That(Server.PlayerMan.SetAttachedEntity(ServerSession!, carrier, force: true), Is.True));
+        await Server.WaitPost(() => Assert.That(system.TryToggleCarryMode(carrier), Is.True));
+        await Pair.RunTicksSync(20);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.GetComponent<CarryModeComponent>(carrier).Enabled, Is.True);
+            Assert.That(alerts.IsShowingAlert(carrier, "CarryMode"), Is.True);
+        });
+
+        await Server.WaitPost(() =>
+            SEntMan.EventBus.RaiseLocalEvent(carrier, new BeforeInteractHandEvent(target)));
+        await Pair.RunTicksSync(140);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.HasComponent<CarryingComponent>(carrier), Is.True);
+            Assert.That(SEntMan.GetComponent<CarryModeComponent>(carrier).Enabled, Is.False);
+            Assert.That(alerts.IsShowingAlert(carrier, "CarryMode"), Is.False);
+            Assert.That(CountActiveAlerts(carrier, "CarryMode"), Is.EqualTo(0));
+            Assert.That(CountActiveAlerts(carrier, "CarryDrop"), Is.EqualTo(1),
+                "exactly one drop alert must be present");
+        });
+
+        var cCarrier = ToClientUid(carrier);
+        await Client.WaitAssertion(() =>
+        {
+            Assert.That(CEntMan.GetComponent<CarryModeComponent>(cCarrier).Enabled, Is.False);
+            var clientAlerts = Client.System<Content.Client.Alerts.ClientAlertsSystem>();
+            Assert.That(clientAlerts.IsShowingAlert(cCarrier, "CarryMode"), Is.False);
+            Assert.That(clientAlerts.IsShowingAlert(cCarrier, "CarryDrop"), Is.True);
+        });
+
+        await Server.WaitPost(() => Assert.That(system.TryEndCarry(carrier, carrier), Is.True));
+        await Pair.RunTicksSync(10);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(alerts.IsShowingAlert(carrier, "CarryDrop"), Is.False);
+            Assert.That(alerts.IsShowingAlert(carrier, "CarryMode"), Is.False);
+            Assert.That(SEntMan.GetComponent<CarryModeComponent>(carrier).Enabled, Is.False);
+        });
+
+        await Client.WaitAssertion(() =>
+        {
+            var clientAlerts = Client.System<Content.Client.Alerts.ClientAlertsSystem>();
+            Assert.That(clientAlerts.IsShowingAlert(cCarrier, "CarryDrop"), Is.False);
+            Assert.That(clientAlerts.IsShowingAlert(cCarrier, "CarryMode"), Is.False);
+        });
+    }
+
+    [Test]
+    public async Task CancelledPickupKeepsCarryMode()
+    {
+        var (carrier, target, _) = await CreatePair();
+        var system = Server.System<CarryingSystem>();
+        var alerts = Server.System<AlertsSystem>();
+        await Server.WaitPost(() => Assert.That(system.TryToggleCarryMode(carrier), Is.True));
+        await Server.WaitPost(() => Assert.That(system.TryStartCarry(carrier, target), Is.True));
+        await Pair.RunTicksSync(10);
+        await Server.WaitPost(() =>
+        {
+            var ev = new StunnedEvent();
+            SEntMan.EventBus.RaiseLocalEvent(carrier, ref ev);
+        });
+        await Pair.RunTicksSync(140);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.HasComponent<CarryingComponent>(carrier), Is.False);
+            Assert.That(SEntMan.GetComponent<CarryModeComponent>(carrier).Enabled, Is.True);
+            Assert.That(alerts.IsShowingAlert(carrier, "CarryMode"), Is.True);
+            Assert.That(CountActiveAlerts(carrier, "CarryDrop"), Is.EqualTo(0));
+        });
+    }
+
+    [Test]
+    public async Task RepeatedCarryDoesNotDuplicateAlerts()
+    {
+        var (carrier, target, _) = await CreatePair();
+        var system = Server.System<CarryingSystem>();
+        var alerts = Server.System<AlertsSystem>();
+
+        for (var i = 0; i < 2; i++)
+        {
+            await Server.WaitPost(() => Assert.That(system.TryToggleCarryMode(carrier), Is.True));
+            await StartCarry(carrier, target);
+
+            await Server.WaitAssertion(() =>
+            {
+                Assert.That(SEntMan.GetComponent<CarryModeComponent>(carrier).Enabled, Is.False);
+                Assert.That(CountActiveAlerts(carrier, "CarryMode"), Is.EqualTo(0));
+                Assert.That(CountActiveAlerts(carrier, "CarryDrop"), Is.EqualTo(1));
+            });
+
+            await Server.WaitPost(() => Assert.That(system.TryEndCarry(carrier, carrier), Is.True));
+            await Pair.RunTicksSync(10);
+            await Server.WaitAssertion(() =>
+            {
+                Assert.That(CountActiveAlerts(carrier, "CarryMode"), Is.EqualTo(0));
+                Assert.That(CountActiveAlerts(carrier, "CarryDrop"), Is.EqualTo(0));
+            });
+        }
+    }
+
+    [Test]
+    public async Task QEndsCarryThroughRegisteredDropHandler()
+    {
+        var (carrier, target, _) = await CreatePair();
+        var system = Server.System<CarryingSystem>();
+        await Server.WaitPost(() =>
+            Assert.That(Server.PlayerMan.SetAttachedEntity(ServerSession!, carrier, force: true), Is.True));
+        await StartCarry(carrier, target);
+        await Pair.RunTicksSync(20);
+
+        var serverInput = Server.System<SharedInputSystem>();
+        var handlers = serverInput.BindRegistry.GetHandlers(ContentKeyFunctions.Drop).ToList();
+        Assert.That(handlers.Count, Is.GreaterThanOrEqualTo(2),
+            "carry drop handler must be registered before the standard drop handler");
+
+        var funcId = Client.ResolveDependency<IInputManager>().NetworkBindMap
+            .KeyFunctionID(ContentKeyFunctions.Drop);
+        var cCarrier = ToClientUid(carrier);
+        var msg = new ClientFullInputCmdMessage(CGameTiming.CurTick, CGameTiming.TickFraction, funcId)
+        {
+            State = BoundKeyState.Down,
+            Coordinates = CEntMan.GetComponent<TransformComponent>(cCarrier).Coordinates,
+            ScreenCoordinates = default,
+            Uid = cCarrier,
+        };
+        await Client.WaitPost(() =>
+            Client.System<InputSystem>().HandleInputCommand(Client.Session, ContentKeyFunctions.Drop, msg));
+        await Pair.RunTicksSync(10);
+        await Pair.RunTicksSync(10);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.HasComponent<CarryingComponent>(carrier), Is.False);
+            Assert.That(SEntMan.HasComponent<CarriedComponent>(target), Is.False);
+            Assert.That(Server.System<AlertsSystem>().IsShowingAlert(carrier, "CarryDrop"), Is.False);
+            Assert.That(SEntMan.System<SharedHandsSystem>().CountFreeHands(carrier), Is.EqualTo(2));
+        });
+
+    }
+
+    [Test]
+    public async Task QWhileCarryingDoesNotDropAnOrdinaryItem()
+    {
+        var (carrier, target, mapId) = await CreatePair();
+        var system = Server.System<CarryingSystem>();
+        var hands = SEntMan.System<SharedHandsSystem>();
+        EntityUid? item = null;
+        await Server.WaitPost(() =>
+        {
+            hands.AddHand(carrier, "third", HandLocation.Right);
+            item = SEntMan.SpawnEntity("Crowbar", new MapCoordinates(new Vector2(0, 0), mapId));
+            Assert.That(hands.TryPickup(carrier, item.Value), Is.True);
+        });
+        await Server.WaitPost(() =>
+            Assert.That(Server.PlayerMan.SetAttachedEntity(ServerSession!, carrier, force: true), Is.True));
+        await StartCarry(carrier, target);
+        await Pair.RunTicksSync(20);
+
+        var funcId = Client.ResolveDependency<IInputManager>().NetworkBindMap
+            .KeyFunctionID(ContentKeyFunctions.Drop);
+        var cCarrier = ToClientUid(carrier);
+        var msg = new ClientFullInputCmdMessage(CGameTiming.CurTick, CGameTiming.TickFraction, funcId)
+        {
+            State = BoundKeyState.Down,
+            Coordinates = CEntMan.GetComponent<TransformComponent>(cCarrier).Coordinates,
+            ScreenCoordinates = default,
+            Uid = cCarrier,
+        };
+        await Client.WaitPost(() =>
+            Client.System<InputSystem>().HandleInputCommand(Client.Session, ContentKeyFunctions.Drop, msg));
+        await Pair.RunTicksSync(10);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.HasComponent<CarryingComponent>(carrier), Is.False);
+            Assert.That(SEntMan.HasComponent<CarriedComponent>(target), Is.False);
+            Assert.That(hands.IsHolding(carrier, item!.Value), Is.True,
+                "Q must release the carried person without dropping an ordinary item");
+        });
+    }
+
+    [Test]
+    public async Task QWithoutCarryStillUsesStandardDrop()
+    {
+        var (carrier, _, mapId) = await CreatePair();
+        await Server.WaitPost(() =>
+            Assert.That(Server.PlayerMan.SetAttachedEntity(ServerSession!, carrier, force: true), Is.True));
+
+        EntityUid? item = null;
+        var hands = SEntMan.System<SharedHandsSystem>();
+        await Server.WaitPost(() =>
+        {
+            item = SEntMan.SpawnEntity("Crowbar", new MapCoordinates(new Vector2(0, 0), mapId));
+            Assert.That(hands.TryPickup(carrier, item.Value), Is.True);
+        });
+        await Pair.RunTicksSync(20);
+        Assert.That(item, Is.Not.Null);
+
+        var funcId = Client.ResolveDependency<IInputManager>().NetworkBindMap
+            .KeyFunctionID(ContentKeyFunctions.Drop);
+        var cCarrier = ToClientUid(carrier);
+        var msg = new ClientFullInputCmdMessage(CGameTiming.CurTick, CGameTiming.TickFraction, funcId)
+        {
+            State = BoundKeyState.Down,
+            Coordinates = CEntMan.GetComponent<TransformComponent>(cCarrier).Coordinates,
+            ScreenCoordinates = default,
+            Uid = cCarrier,
+        };
+        await Client.WaitPost(() =>
+            Client.System<InputSystem>().HandleInputCommand(Client.Session, ContentKeyFunctions.Drop, msg));
+        await Pair.RunTicksSync(10);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.HasComponent<CarryingComponent>(carrier), Is.False);
+            Assert.That(hands.IsHolding(carrier, item!.Value), Is.False,
+                "Q must keep its normal drop behavior when no one is carried");
+        });
+    }
+
+    [Test]
+    public async Task CarryDropAlertEndsCarryAndClearsItself()
+    {
+        var (carrier, target, _) = await CreatePair();
+        var system = Server.System<CarryingSystem>();
+        var alerts = Server.System<AlertsSystem>();
+        var proto = SProtoMan.Index(new ProtoId<AlertPrototype>("CarryDrop"));
+        await StartCarry(carrier, target);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(alerts.IsShowingAlert(carrier, "CarryDrop"), Is.True);
+            Assert.That(SEntMan.HasComponent<CarryingComponent>(carrier), Is.True);
+        });
+
+        await Server.WaitPost(() => Assert.That(alerts.ActivateAlert(carrier, proto), Is.True));
+        await Pair.RunTicksSync(10);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.HasComponent<CarryingComponent>(carrier), Is.False);
+            Assert.That(SEntMan.HasComponent<CarriedComponent>(target), Is.False);
+            Assert.That(alerts.IsShowingAlert(carrier, "CarryDrop"), Is.False);
+            Assert.That(alerts.ActivateAlert(carrier, proto), Is.False,
+                "a stale alert click must not run cleanup twice");
         });
     }
 
@@ -587,13 +964,12 @@ public sealed class CarryingTest : GameTest
                 var carrying = SEntMan.GetComponent<CarryingComponent>(carrier);
                 Assert.That(carrying.Anchor, Is.Not.Null);
                 var anchor = carrying.Anchor!.Value;
-                var offset = SEntMan.GetComponent<StrapComponent>(anchor).BuckleOffset;
-                var expected = transform.GetWorldPosition(carrier) +
-                               transform.GetWorldRotation(carrier).RotateVec(offset);
+                Assert.That(SEntMan.GetComponent<StrapComponent>(anchor).BuckleOffset, Is.EqualTo(Vector2.Zero));
+                var expected = transform.GetWorldPosition(carrier);
                 Assert.That((transform.GetWorldPosition(target) - expected).Length(),
                     Is.LessThan(0.01f));
                 Assert.That(SEntMan.GetComponent<RotationVisualsComponent>(target).HorizontalRotation,
-                    Is.EqualTo(Angle.FromDegrees(75)));
+                    Is.EqualTo(Angle.FromDegrees(90)));
             });
 
             await Server.WaitPost(() => Assert.That(system.TryEndCarry(carrier, carrier), Is.True));
@@ -742,6 +1118,37 @@ public sealed class CarryingTest : GameTest
     }
 
     [Test]
+    public async Task CustomHorizontalRotationIsRestored()
+    {
+        var (carrier, target, _) = await CreatePair();
+        var system = Server.System<CarryingSystem>();
+        await Server.WaitPost(() => SEntMan.EnsureComponent<KnockedDownComponent>(target));
+        await Pair.RunTicksSync(10);
+        await Server.WaitPost(() =>
+        {
+            var rotation = SEntMan.GetComponent<RotationVisualsComponent>(target);
+            rotation.HorizontalRotation = Angle.FromDegrees(45);
+            SEntMan.Dirty(target, rotation);
+        });
+        await Pair.RunTicksSync(2);
+        await Server.WaitAssertion(() =>
+            Assert.That(SEntMan.GetComponent<RotationVisualsComponent>(target).HorizontalRotation,
+                Is.EqualTo(Angle.FromDegrees(45))));
+
+        await StartCarry(carrier, target);
+        await Server.WaitAssertion(() =>
+            Assert.That(SEntMan.GetComponent<RotationVisualsComponent>(target).HorizontalRotation,
+                Is.EqualTo(Angle.FromDegrees(90))));
+
+        await Server.WaitPost(() => Assert.That(system.TryEndCarry(carrier, carrier), Is.True));
+        await Pair.RunTicksSync(10);
+        await Server.WaitAssertion(() =>
+            Assert.That(SEntMan.GetComponent<RotationVisualsComponent>(target).HorizontalRotation,
+                Is.EqualTo(Angle.FromDegrees(45)),
+                "the original non-default horizontal rotation must survive unbuckle"));
+    }
+
+    [Test]
     public async Task CarryRotationPoseIsAppliedAndRestored()
     {
         var (carrier, target, _) = await CreatePair();
@@ -756,9 +1163,26 @@ public sealed class CarryingTest : GameTest
             var clientTarget = ToClientUid(target);
             Assert.That(CEntMan.HasComponent<CarriedComponent>(clientTarget), Is.True);
             var rotation = CEntMan.GetComponent<RotationVisualsComponent>(clientTarget);
-            Assert.That(rotation.HorizontalRotation, Is.EqualTo(Angle.FromDegrees(75)));
-            Assert.That(CEntMan.GetComponent<SpriteComponent>(clientTarget).Rotation,
-                Is.EqualTo(Angle.FromDegrees(75)));
+            Assert.That(rotation.HorizontalRotation, Is.EqualTo(Angle.FromDegrees(90)));
+            var clientSprite = CEntMan.GetComponent<SpriteComponent>(clientTarget);
+            Assert.That(clientSprite.Rotation, Is.EqualTo(Angle.FromDegrees(90)));
+            Assert.That(clientSprite.DrawDepth, Is.EqualTo((int) ContentDrawDepth.Mobs));
+        });
+
+        var carriedRotation = Angle.Zero;
+        await Client.WaitAssertion(() => carriedRotation =
+            CEntMan.GetComponent<SpriteComponent>(ToClientUid(target)).Rotation);
+        await Server.WaitPost(() =>
+            Server.System<Robust.Shared.GameObjects.SharedTransformSystem>()
+                .SetWorldRotation(carrier, Angle.FromDegrees(90)));
+        await Pair.RunTicksSync(20);
+        await Client.WaitAssertion(() =>
+        {
+            var clientTarget = ToClientUid(target);
+            var sprite = CEntMan.GetComponent<SpriteComponent>(clientTarget);
+            Assert.That(sprite.Rotation, Is.EqualTo(carriedRotation),
+                "carried sprite rotation must remain stable while the carrier turns");
+            Assert.That(sprite.DrawDepth, Is.EqualTo((int) ContentDrawDepth.Mobs));
         });
 
         await Server.WaitPost(() => Assert.That(system.TryEndCarry(carrier, carrier), Is.True));
@@ -769,8 +1193,9 @@ public sealed class CarryingTest : GameTest
             var clientTarget = ToClientUid(target);
             var rotation = CEntMan.GetComponent<RotationVisualsComponent>(clientTarget);
             Assert.That(rotation.HorizontalRotation, Is.EqualTo(Angle.FromDegrees(90)));
-            Assert.That(CEntMan.GetComponent<SpriteComponent>(clientTarget).Rotation,
-                Is.EqualTo(Angle.Zero));
+            var releasedSprite = CEntMan.GetComponent<SpriteComponent>(clientTarget);
+            Assert.That(releasedSprite.Rotation, Is.EqualTo(Angle.Zero));
+            Assert.That(releasedSprite.DrawDepth, Is.EqualTo((int) ContentDrawDepth.Mobs));
         });
     }
 
@@ -967,6 +1392,121 @@ public sealed class CarryingTest : GameTest
 
         await Server.WaitPost(() => SEntMan.RemoveComponent<ChasmFallingComponent>(carrier));
         await Pair.RunTicksSync(10);
+    }
+
+    [Test]
+    public async Task EmergencyEndRestoresClientVisuals()
+    {
+        var (carrier, target, _) = await CreatePair();
+        var system = Server.System<CarryingSystem>();
+        var stun = Server.System<StunSystem>();
+        await Server.WaitPost(() =>
+            Assert.That(Server.PlayerMan.SetAttachedEntity(ServerSession!, carrier, force: true), Is.True));
+        await StartCarry(carrier, target);
+        await Pair.RunTicksSync(20);
+
+        await Client.WaitAssertion(() =>
+        {
+            var clientTarget = ToClientUid(target);
+            var sprite = CEntMan.GetComponent<SpriteComponent>(clientTarget);
+            Assert.That(sprite.DrawDepth, Is.EqualTo((int) ContentDrawDepth.Mobs));
+        });
+
+        await Server.WaitPost(() => Assert.That(stun.TryAddStunDuration(carrier, TimeSpan.FromSeconds(1)), Is.True));
+        await Pair.RunTicksSync(20);
+
+        await Client.WaitAssertion(() =>
+        {
+            var clientTarget = ToClientUid(target);
+            Assert.That(CEntMan.HasComponent<CarriedComponent>(clientTarget), Is.False);
+            Assert.That(CEntMan.GetComponent<SpriteComponent>(clientTarget).DrawDepth,
+                Is.EqualTo((int) ContentDrawDepth.Mobs));
+        });
+        await Server.WaitAssertion(() =>
+            Assert.That(Server.System<AlertsSystem>().IsShowingAlert(carrier, "CarryDrop"), Is.False));
+
+        await Pair.RunTicksSync(100);
+    }
+
+    [Test]
+    public async Task CuffedFourHandedCarrierCanStartWithTwoFreeHands()
+    {
+        var (carrier, target, mapId) = await CreatePair();
+        var system = Server.System<CarryingSystem>();
+        var hands = SEntMan.System<SharedHandsSystem>();
+        await Server.WaitPost(() =>
+        {
+            hands.AddHand(carrier, "extra1", HandLocation.Right);
+            hands.AddHand(carrier, "extra2", HandLocation.Right);
+            var cuffs = SEntMan.SpawnEntity("Handcuffs", new MapCoordinates(Vector2.Zero, mapId));
+            SEntMan.EnsureComponent<CuffableComponent>(carrier);
+            Assert.That(Server.System<CuffableSystem>().TryAddNewCuffs(carrier, carrier, cuffs), Is.True);
+        });
+        await Pair.RunTicksSync(10);
+
+        await Server.WaitPost(() => Assert.That(system.TryStartCarry(carrier, target), Is.True,
+            "two remaining free hands must allow carrying"));
+        await Pair.RunTicksSync(140);
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.HasComponent<CarryingComponent>(carrier), Is.True);
+            Assert.That(SEntMan.GetComponent<CuffableComponent>(carrier).CuffedHandCount, Is.EqualTo(2));
+        });
+
+        await Server.WaitPost(() => Assert.That(system.TryEndCarry(carrier, carrier), Is.True));
+        await Pair.RunTicksSync(5);
+    }
+
+    [Test]
+    public async Task CuffedThreeHandedCarrierCannotStartWithOneFreeHand()
+    {
+        var (carrier, target, mapId) = await CreatePair();
+        var system = Server.System<CarryingSystem>();
+        var hands = SEntMan.System<SharedHandsSystem>();
+        await Server.WaitPost(() =>
+        {
+            hands.AddHand(carrier, "extra1", HandLocation.Right);
+            var cuffs = SEntMan.SpawnEntity("Handcuffs", new MapCoordinates(Vector2.Zero, mapId));
+            SEntMan.EnsureComponent<CuffableComponent>(carrier);
+            Assert.That(Server.System<CuffableSystem>().TryAddNewCuffs(carrier, carrier, cuffs), Is.True);
+        });
+        await Pair.RunTicksSync(10);
+
+        await Server.WaitPost(() => Assert.That(system.TryStartCarry(carrier, target), Is.False,
+            "one remaining free hand is not enough to carry"));
+    }
+
+    [Test]
+    public async Task PartialCuffsOnFourHandsDoNotDropCarriedPerson()
+    {
+        var (carrier, target, mapId) = await CreatePair();
+        var system = Server.System<CarryingSystem>();
+        var hands = SEntMan.System<SharedHandsSystem>();
+        await Server.WaitPost(() =>
+        {
+            hands.AddHand(carrier, "extra1", HandLocation.Right);
+            hands.AddHand(carrier, "extra2", HandLocation.Right);
+        });
+        await StartCarry(carrier, target);
+
+        await Server.WaitPost(() =>
+        {
+            var cuffs = SEntMan.SpawnEntity("Handcuffs", new MapCoordinates(Vector2.Zero, mapId));
+            SEntMan.EnsureComponent<CuffableComponent>(carrier);
+            Assert.That(Server.System<CuffableSystem>().TryAddNewCuffs(carrier, carrier, cuffs), Is.True);
+        });
+        await Pair.RunTicksSync(10);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.GetComponent<CuffableComponent>(carrier).CuffedHandCount, Is.EqualTo(2));
+            Assert.That(SEntMan.GetComponent<CuffableComponent>(carrier).CanStillInteract, Is.True);
+            Assert.That(SEntMan.HasComponent<CarryingComponent>(carrier), Is.True,
+                "the two hands holding the carried person remain occupied by virtual items");
+        });
+
+        await Server.WaitPost(() => Assert.That(system.TryEndCarry(carrier, carrier), Is.True));
+        await Pair.RunTicksSync(5);
     }
 
     [Test]
@@ -1228,6 +1768,31 @@ public sealed class CarryingTest : GameTest
             SEntMan.EnsureComponent<ClimbingComponent>(carrier).IsClimbing = true;
         });
         await Server.WaitPost(() => Assert.That(system.TryStartCarry(carrier, target), Is.False));
+    }
+
+
+    private int CountActiveAlerts(EntityUid uid, string alertId)
+    {
+        if (!SEntMan.TryGetComponent<AlertsComponent>(uid, out var alerts))
+            return 0;
+
+        var key = new ProtoId<AlertPrototype>(alertId);
+        return alerts.Alerts.Keys.Count(alertKey => alertKey.AlertType == key);
+    }
+
+    private HashSet<EntityUid> GetAudioEntities()
+    {
+        var result = new HashSet<EntityUid>();
+        var query = SEntMan.EntityQueryEnumerator<AudioComponent>();
+        while (query.MoveNext(out var uid, out _))
+            result.Add(uid);
+
+        return result;
+    }
+
+    private List<EntityUid> GetNewAudioEntities(HashSet<EntityUid> before)
+    {
+        return GetAudioEntities().Where(uid => !before.Contains(uid)).ToList();
     }
 
 }

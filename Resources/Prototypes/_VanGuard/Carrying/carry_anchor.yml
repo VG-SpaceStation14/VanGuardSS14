@@ -5,7 +5,8 @@
   components:
   - type: Strap
     position: Down
-    buckleOffset: 0.25, 0.35
+    buckleOffset: 0, 0
+    rotation: 90
     buckleOnInteractHand: false
     size: 1000
     modifyBuckleDrawDepth: false

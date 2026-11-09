@@ -1,12 +1,25 @@
 - type: alert
   id: CarryMode
-  icons: [ /Textures/Interface/Alerts/Buckle/buckled.png ]
+  icons:
+  - sprite: /Textures/_VanGuard/Interface/Alerts/carry_entity.rsi
+    state: take_entity
   name: alerts-carry-mode-name
   description: alerts-carry-mode-desc
 
 - type: alert
   id: Carried
   category: Buckled
-  icons: [ /Textures/Interface/Alerts/Buckle/buckled.png ]
+  icons:
+  - sprite: /Textures/_VanGuard/Interface/Alerts/carry_entity.rsi
+    state: take_entity
   name: alerts-carried-name
   description: alerts-carried-desc
+
+- type: alert
+  id: CarryDrop
+  clickEvent: !type:CarryDropAlertEvent
+  icons:
+  - sprite: /Textures/_VanGuard/Interface/Alerts/carry_entity.rsi
+    state: take_entity
+  name: alerts-carry-drop-name
+  description: alerts-carry-drop-desc

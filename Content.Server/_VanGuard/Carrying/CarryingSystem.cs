@@ -33,6 +33,8 @@ using Content.Shared.Pulling.Events;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Popups;
 using Content.Shared._VanGuard.Carrying;
+using Robust.Shared.Audio;
+using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Input.Binding;
@@ -56,6 +58,7 @@ public sealed partial class CarryingSystem : EntitySystem
     private static readonly TimeSpan PickupTime = TimeSpan.FromSeconds(2);
     private static readonly TimeSpan EscapeTime = TimeSpan.FromSeconds(2);
     private static readonly TimeSpan EntryAnimationTime = TimeSpan.FromSeconds(0.25);
+    private static readonly SoundPathSpecifier PickupSound = new("/Audio/Effects/thudswoosh.ogg");
 
     [Dependency] private BuckleSystem _buckle = default!;
     [Dependency] private SharedDoAfterSystem _doAfter = default!;
@@ -71,6 +74,7 @@ public sealed partial class CarryingSystem : EntitySystem
     [Dependency] private SharedContainerSystem _container = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private StandingStateSystem _standing = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
 
     private static readonly EntProtoId CarryAnchor = "CarryAnchor";
 
@@ -81,10 +85,14 @@ public sealed partial class CarryingSystem : EntitySystem
         CommandBinds.Builder
             .Bind(ContentKeyFunctions.CarryMode,
                 InputCmdHandler.FromDelegate(OnCarryKey, handle: false))
+            .BindBefore(ContentKeyFunctions.Drop,
+                new PointerInputCmdHandler(OnCarryDropKey), typeof(SharedHandsSystem))
             .Register<CarryingSystem>();
 
         SubscribeLocalEvent<CarryingComponent, ComponentInit>(OnCarryingInit);
         SubscribeLocalEvent<CarryingComponent, ComponentShutdown>(OnCarryingShutdown);
+        SubscribeLocalEvent<CarryingComponent, CarryDropAlertEvent>(OnCarryDropAlert);
+        SubscribeAllEvent<CarryDropRequestEvent>(OnCarryDropRequest);
         SubscribeLocalEvent<CarryingComponent, RefreshMovementSpeedModifiersEvent>(OnCarrierRefreshSpeed);
         SubscribeLocalEvent<CarryingComponent, GetVerbsEvent<InteractionVerb>>(OnCarrierVerbs);
         SubscribeLocalEvent<CarryingComponent, MobStateChangedEvent>(OnCarrierMobStateChanged);
@@ -121,9 +129,9 @@ public sealed partial class CarryingSystem : EntitySystem
         SubscribeLocalEvent<CarriedComponent, MoveInputEvent>(OnCarriedMoveInput);
         SubscribeLocalEvent<CarriedComponent, CarryEscapeDoAfterEvent>(OnCarryEscapeComplete);
 
-        SubscribeLocalEvent<MobStateComponent, InteractHandEvent>(OnTargetInteractHand, before: [typeof(InteractionPopupSystem)]);
         SubscribeLocalEvent<MobStateComponent, GetVerbsEvent<InteractionVerb>>(OnTargetVerbs);
         SubscribeLocalEvent<CarryModeComponent, ComponentShutdown>(OnCarryModeShutdown);
+        SubscribeLocalEvent<CarryModeComponent, BeforeInteractHandEvent>(OnCarrierBeforeInteractHand);
         SubscribeLocalEvent<CarryModeComponent, MobStateChangedEvent>(OnCarryModeMobStateChanged);
         SubscribeLocalEvent<CarryModeComponent, PlayerDetachedEvent>(OnCarryModePlayerDetached);
         SubscribeLocalEvent<CarryModeComponent, MindRemovedMessage>(OnCarryModeMindRemoved);
@@ -293,9 +301,9 @@ public sealed partial class CarryingSystem : EntitySystem
         var anchorComp = EnsureComp<CarryAnchorComponent>(anchor);
         anchorComp.Carrier = carrier;
         _transform.SetParent(anchor, carrier);
-        // SetParent preserves world rotation. Align the anchor with the
-        // carrier so its buckle offset rotates with the carrier.
-        _transform.SetLocalRotation(anchor, Angle.Zero, Transform(anchor));
+        // The anchor remains world-aligned; the carriage pose itself is
+        // controlled by Buckle/RotationVisuals, not by carrier rotation.
+        _transform.SetWorldRotation(anchor, Angle.Zero);
 
         // Start the anchor where the target already is, then slide it into the
         // carrier's hands. Buckling remains authoritative; only the anchor
@@ -305,7 +313,7 @@ public sealed partial class CarryingSystem : EntitySystem
         if (TryComp<RotationVisualsComponent>(target, out var targetRotations))
             originalHorizontalRotation = targetRotations.HorizontalRotation;
         var buckleOffset = Comp<StrapComponent>(anchor).BuckleOffset;
-        var worldOffset = _transform.GetWorldRotation(carrier).RotateVec(buckleOffset);
+        var worldOffset = _transform.GetWorldRotation(anchor).RotateVec(buckleOffset);
         var startAnchorWorld = oldTargetWorld - worldOffset;
         var startAnchorLocal = Vector2.Transform(startAnchorWorld, _transform.GetInvWorldMatrix(carrier));
         _transform.SetLocalPosition(anchor, startAnchorLocal, Transform(anchor));
@@ -326,11 +334,6 @@ public sealed partial class CarryingSystem : EntitySystem
         carried.Anchor = anchor;
         carried.Ending = false;
         carried.OriginalHorizontalRotation = originalHorizontalRotation;
-        if (TryComp<RotationVisualsComponent>(target, out var rotationVisuals))
-        {
-            rotationVisuals.HorizontalRotation = Angle.FromDegrees(75);
-            Dirty(target, rotationVisuals);
-        }
         carrying.AnchorStartLocal = Transform(anchor).LocalPosition;
         carrying.TransitionStart = _timing.CurTime;
         carrying.TransitionEnd = _timing.CurTime + EntryAnimationTime;
@@ -345,6 +348,7 @@ public sealed partial class CarryingSystem : EntitySystem
         }
 
         DisableCarryMode(carrier);
+        _audio.PlayPvs(PickupSound, carrier);
         _movement.RefreshMovementSpeedModifiers(carrier);
 
         Popup(carrier, "carry-started-source", target);
@@ -362,8 +366,6 @@ public sealed partial class CarryingSystem : EntitySystem
 
         if (HasComp<CarryAttemptComponent>(carrier))
             return false;
-
-        DisableCarryMode(carrier);
 
         // Start the server-side do-after. EventTarget defaults to the user.
         var attempt = EnsureComp<CarryAttemptComponent>(carrier);
@@ -422,17 +424,19 @@ public sealed partial class CarryingSystem : EntitySystem
         if (carried is { } targetForHands)
             _virtual.DeleteInHandsMatching(carrier, targetForHands);
 
-        if (carried is { } targetForRotation && !TerminatingOrDeleted(targetForRotation) &&
-            TryComp<CarriedComponent>(targetForRotation, out var carriedRotation))
-        {
-            RestoreHorizontalRotation(targetForRotation, carriedRotation.OriginalHorizontalRotation);
-        }
-
         if (carried is { } targetToUnbuckle && !TerminatingOrDeleted(targetToUnbuckle) &&
             TryComp<BuckleComponent>(targetToUnbuckle, out var buckle) &&
             anchor is { } anchorUid && buckle.BuckledTo == anchorUid)
         {
             _buckle.Unbuckle(targetToUnbuckle, user ?? carrier);
+        }
+
+        // Buckle's Unbuckle resets HorizontalRotation to the prototype default.
+        // Restore the captured value afterwards, not before.
+        if (carried is { } targetForRotation && !TerminatingOrDeleted(targetForRotation) &&
+            TryComp<CarriedComponent>(targetForRotation, out var carriedRotation))
+        {
+            RestoreHorizontalRotation(targetForRotation, carriedRotation.OriginalHorizontalRotation);
         }
 
         if (removeCarried && carried is { } targetToRemove && !TerminatingOrDeleted(targetToRemove) &&
@@ -473,7 +477,6 @@ public sealed partial class CarryingSystem : EntitySystem
         if (!TerminatingOrDeleted(carrier))
         {
             _movement.RefreshMovementSpeedModifiers(carrier);
-            DisableCarryMode(carrier);
             if (popup != null)
                 Popup(carrier, popup, carried is { } popupTarget && !TerminatingOrDeleted(popupTarget) ? popupTarget : null);
         }
@@ -517,10 +520,10 @@ public sealed partial class CarryingSystem : EntitySystem
 
     private int CountUsableFreeHands(EntityUid carrier, HandsComponent hands)
     {
-        var free = _hands.CountFreeHands((carrier, hands));
-        if (TryComp<CuffableComponent>(carrier, out var cuffs))
-            free -= cuffs.CuffedHandCount;
-        return System.Math.Max(0, free);
+        // Cuffable inserts unremoveable virtual cuff items into free hands, so
+        // CountFreeHands already reflects them. Subtracting CuffedHandCount
+        // again would double-count the occupied hands.
+        return _hands.CountFreeHands((carrier, hands));
     }
 
     private void RestoreHorizontalRotation(EntityUid target, Angle angle)
@@ -598,6 +601,7 @@ public sealed partial class CarryingSystem : EntitySystem
 
     private void OnCarryingInit(Entity<CarryingComponent> ent, ref ComponentInit args)
     {
+        _alerts.ShowAlert(ent.Owner, ent.Comp.Alert);
         _movement.RefreshMovementSpeedModifiers(ent.Owner);
     }
 
@@ -612,9 +616,27 @@ public sealed partial class CarryingSystem : EntitySystem
 
         if (!TerminatingOrDeleted(ent.Owner))
         {
-            DisableCarryMode(ent.Owner);
+            _alerts.ClearAlert(ent.Owner, ent.Comp.Alert);
             _movement.RefreshMovementSpeedModifiers(ent.Owner);
         }
+    }
+
+    private void OnCarryDropAlert(Entity<CarryingComponent> carrier, ref CarryDropAlertEvent args)
+    {
+        if (args.Handled || args.User != carrier.Owner)
+            return;
+
+        args.Handled = true;
+        TryEndCarry(carrier.Owner, carrier.Owner);
+    }
+
+    private void OnCarryDropRequest(CarryDropRequestEvent args, EntitySessionEventArgs eventArgs)
+    {
+        if (eventArgs.SenderSession.AttachedEntity is not { } carrier)
+            return;
+
+        if (HasComp<CarryingComponent>(carrier))
+            TryEndCarry(carrier, carrier);
     }
 
     private void OnCarrierRefreshSpeed(Entity<CarryingComponent> ent, ref RefreshMovementSpeedModifiersEvent args)

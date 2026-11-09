@@ -1,7 +1,7 @@
 carry-verb = Поднять на руки
 carry-verb-drop = Снять с рук
 
-alerts-carry-mode-name = Режим переноски
+alerts-carry-mode-name = Взять
 alerts-carry-mode-desc = ЛКМ по другому персонажу, чтобы поднять его на руки.
 alerts-carried-name = Вас несут
 alerts-carried-desc = Вы находитесь на руках другого персонажа.
@@ -37,3 +37,6 @@ carry-escape-start = Вы пытаетесь вырваться из рук.
 carry-escape-success = Вы вырвались из рук {$user}.
 
 carry-escape-cancelled = Попытка вырваться прервана.
+
+alerts-carry-drop-name = Опустить
+alerts-carry-drop-desc = Нажмите, чтобы опустить переносимого персонажа.
