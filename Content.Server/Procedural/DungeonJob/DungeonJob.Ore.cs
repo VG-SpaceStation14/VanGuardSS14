@@ -123,9 +123,12 @@ public sealed partial class DungeonJob
 
                         var prototype = gen.Entity;
 
-                        if (replaceEntities.TryGetValue(node, out var existingEnt))
+                        // VG-Tweak Start: map initialisation can delete a replacement
+                        // candidate while this job is suspended. Only use live entities.
+                        if (replaceEntities.TryGetValue(node, out var existingEnt) &&
+                            _entManager.TryGetComponent<MetaDataComponent>(existingEnt, out var existingMeta))
                         {
-                            var existingProto = _entManager.GetComponent<MetaDataComponent>(existingEnt).EntityPrototype;
+                            var existingProto = existingMeta.EntityPrototype;
                             _entManager.DeleteEntity(existingEnt);
 
                             if (existingProto != null && remapping.TryGetValue(existingProto.ID, out var remapped))
@@ -133,6 +136,7 @@ public sealed partial class DungeonJob
                                 prototype = remapped;
                             }
                         }
+                        // VG-Tweak End
 
                         // Tile valid salad so add it.
                         _entManager.SpawnAtPosition(prototype, _maps.GridTileToLocal(_gridUid, _grid, node));

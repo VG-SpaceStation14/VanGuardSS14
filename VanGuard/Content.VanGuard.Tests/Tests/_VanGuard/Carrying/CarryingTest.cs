@@ -1381,7 +1381,13 @@ public sealed class CarryingTest : GameTest
         var system = Server.System<CarryingSystem>();
         await StartCarry(carrier, target);
 
-        await Server.WaitPost(() => SEntMan.EnsureComponent<ChasmFallingComponent>(carrier));
+        EntityUid chasm = default;
+        await Server.WaitPost(() =>
+        {
+            chasm = SEntMan.SpawnEntity("FloorChasmEntity", SEntMan.GetComponent<TransformComponent>(carrier).Coordinates);
+            var started = Server.System<ChasmSystem>().StartFalling(chasm, carrier, playSound: false, playEmote: false);
+            Assert.That(started, Is.Not.Null, "the carrier must start falling into a real chasm");
+        });
         await Pair.RunTicksSync(10);
 
         await Server.WaitAssertion(() =>
@@ -1390,7 +1396,11 @@ public sealed class CarryingTest : GameTest
             Assert.That(SEntMan.HasComponent<CarriedComponent>(target), Is.False);
         });
 
-        await Server.WaitPost(() => SEntMan.RemoveComponent<ChasmFallingComponent>(carrier));
+        await Server.WaitPost(() =>
+        {
+            if (SEntMan.EntityExists(chasm))
+                SEntMan.DeleteEntity(chasm);
+        });
         await Pair.RunTicksSync(10);
     }
 
