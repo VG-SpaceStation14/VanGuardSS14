@@ -7,10 +7,10 @@ limit = 25.0
 [infolinks]
 discord = "https://discord.gg/nW73CdBYkg"
 github = "https://github.com/VG-SpaceStation14/VanGuardSS14"
-wiki = "https://vanguardproject.ru"
+wiki = "https://vanguardproject.ru/wiki.html"
 appeal = "https://discord.com/channels/1476194828185239595/1476922279660228682"
 bug_report = "https://discord.com/channels/1476194828185239595/1480344699469300023"
-website = "https://boosty.to/vanguardalbuka"
+website = "https://vanguardproject.ru"
 
 [viewport]
 maximum_width = 29
