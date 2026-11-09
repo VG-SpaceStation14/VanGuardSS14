@@ -17,6 +17,9 @@ namespace Content.Shared.Input
         // VG-Tweak Start: hand item offer key.
         public static readonly BoundKeyFunction OfferItem = "OfferItem";
         // VG-Tweak End
+        // VG-Tweak Start: character carry mode key.
+        public static readonly BoundKeyFunction CarryMode = "CarryMode";
+        // VG-Tweak End
         public static readonly BoundKeyFunction Drop = "Drop";
         public static readonly BoundKeyFunction ExamineEntity = "ExamineEntity";
         public static readonly BoundKeyFunction FocusChat = "FocusChatInputWindow";

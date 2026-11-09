@@ -561,6 +561,11 @@ binds:
   type: State
   key: F
 # VG-Tweak End
+# VG-Tweak Start: character carry mode key
+- function: CarryMode
+  type: State
+  key: Space
+# VG-Tweak End
 - function: OpenAbilitiesMenu
   type: State
   key: K

@@ -1,0 +1,42 @@
+carry-verb = Поднять на руки
+carry-verb-drop = Снять с рук
+
+alerts-carry-mode-name = Взять
+alerts-carry-mode-desc = ЛКМ по другому персонажу, чтобы поднять его на руки.
+alerts-carried-name = Вас несут
+alerts-carried-desc = Вы находитесь на руках другого персонажа.
+ui-options-function-carry-mode = Переключить режим переноски
+
+carry-cannot-self = Нельзя поднять самого себя.
+carry-not-a-person = Это существо нельзя нести на руках.
+carry-carrier-busy = Вы уже несёте кого-то.
+carry-target-busy = {$target} уже находится на руках.
+carry-carrier-is-carried = Нельзя нести кого-то, пока несут вас.
+carry-no-free-hands = Для переноски нужны две свободные руки.
+carry-target-buckled = Сначала отстегните {$target}.
+carry-carrier-buckled = Сначала отстегнитесь.
+carry-carrier-pulling = Сначала перестаньте кого-то тащить.
+carry-target-pulling = {$target} кого-то тащит.
+carry-target-pulled = {$target} уже тащат.
+carry-target-dead = {$target} мёртв.
+carry-not-conscious = Вы не можете сейчас поднимать персонажей.
+carry-too-far = {$target} слишком далеко.
+carry-start-source = Вы начинаете поднимать {$target} на руки.
+carry-start-target = {$user} начинает поднимать вас на руки.
+carry-interrupted = Поднятие прервано.
+carry-failed = Не удалось поднять {$target}.
+carry-started-source = Вы взяли {$target} на руки.
+carry-started-target = {$user} взял вас на руки.
+carry-dropped-source = Вы опустили {$target}.
+carry-dropped-target = {$user} опустил вас.
+carry-dropped-dead = {$target} перестал быть доступен для переноски.
+carry-mode-enabled = Режим переноски включён.
+carry-mode-disabled = Режим переноски выключен.
+carry-mode-busy = Нельзя включить режим переноски во время переноски.
+carry-escape-start = Вы пытаетесь вырваться из рук.
+carry-escape-success = Вы вырвались из рук {$user}.
+
+carry-escape-cancelled = Попытка вырваться прервана.
+
+alerts-carry-drop-name = Опустить
+alerts-carry-drop-desc = Нажмите, чтобы опустить переносимого персонажа.

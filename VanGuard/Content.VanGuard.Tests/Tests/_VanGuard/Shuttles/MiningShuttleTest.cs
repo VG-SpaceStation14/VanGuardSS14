@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Threading;
 using System.Reflection;
 using Content.Client.Shuttles.BUI;
 using Content.Client._VanGuard.Shuttles.UI;
@@ -11,6 +12,7 @@ using Content.Server._VanGuard.Shuttles.Guest;
 using Content.Server._VanGuard.Shuttles.Systems;
 using Content.Server.GameTicking;
 using Content.Server.Power.Components;
+using Content.Server.Procedural;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Systems;
 using Content.Server.Station.Systems;
@@ -29,6 +31,7 @@ using Content.Shared.Shuttles.Systems;
 using Content.Shared.Station.Components;
 using Content.IntegrationTests.Fixtures;
 using Robust.Client.GameObjects;
+using Robust.Shared.CPUJob.JobQueues;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.GameObjects;
@@ -483,11 +486,68 @@ public sealed class MiningShuttleTest : GameTest
         }
         finally
         {
+            // GridFill starts dungeon jobs that touch the current map. Stop new
+            // work, finish the existing batch, and leave the pair in the lobby
+            // rather than restarting the round in the middle of generation.
+            await Server.WaitPost(() => Server.CfgMan.SetCVar(CCVars.GridFill, false));
+            await CancelAndWaitForDungeonJobs();
             await Pair.WaitCommand("golobby");
             await Server.WaitPost(() => ticker.SetGamePreset((GamePresetPrototype?) null));
-            await Pair.WaitClientCommand("toggleready True");
-            await Pair.WaitCommand("startround");
             await Pair.RunUntilSynced();
+        }
+    }
+
+    private async Task CancelAndWaitForDungeonJobs()
+    {
+        var jobsField = typeof(DungeonSystem).GetField(
+            "_dungeonJobs",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.That(jobsField, Is.Not.Null, "DungeonSystem job field was not found");
+
+        var jobs = (System.Collections.IDictionary?)jobsField!.GetValue(Server.System<DungeonSystem>());
+        Assert.That(jobs, Is.Not.Null, "DungeonSystem job dictionary was not found");
+
+        await Server.WaitPost(() =>
+        {
+            foreach (var token in jobs!.Values)
+            {
+                if (token is CancellationTokenSource source)
+                    source.Cancel();
+            }
+        });
+
+        await WaitForDungeonJobs();
+    }
+
+    private async Task WaitForDungeonJobs()
+    {
+        var jobsField = typeof(DungeonSystem).GetField(
+            "_dungeonJobs",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.That(jobsField, Is.Not.Null, "DungeonSystem job field was not found");
+
+        var jobs = (System.Collections.IDictionary?)jobsField!.GetValue(Server.System<DungeonSystem>());
+        Assert.That(jobs, Is.Not.Null, "DungeonSystem job dictionary was not found");
+
+        while (true)
+        {
+            var active = false;
+            await Server.WaitPost(() =>
+            {
+                foreach (var job in jobs!.Keys)
+                {
+                    if (job is IJob { Status: not JobStatus.Finished })
+                    {
+                        active = true;
+                        break;
+                    }
+                }
+            });
+
+            if (!active)
+                return;
+
+            await Pair.RunTicksSync(10);
         }
     }
 
