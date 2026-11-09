@@ -194,6 +194,9 @@ namespace Content.Client.Options.UI.Tabs
             // VG-Tweak Start: hand item offer key
             AddButton(ContentKeyFunctions.OfferItem);
             // VG-Tweak End
+            // VG-Tweak Start: character carry mode key
+            AddButton(ContentKeyFunctions.CarryMode);
+            // VG-Tweak End
             AddButton(ContentKeyFunctions.ExamineEntity);
             AddButton(ContentKeyFunctions.SwapHands);
             AddButton(ContentKeyFunctions.SwapHandsReverse);

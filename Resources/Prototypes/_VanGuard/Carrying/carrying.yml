@@ -1,0 +1,12 @@
+- type: alert
+  id: CarryMode
+  icons: [ /Textures/Interface/Alerts/Buckle/buckled.png ]
+  name: alerts-carry-mode-name
+  description: alerts-carry-mode-desc
+
+- type: alert
+  id: Carried
+  category: Buckled
+  icons: [ /Textures/Interface/Alerts/Buckle/buckled.png ]
+  name: alerts-carried-name
+  description: alerts-carried-desc

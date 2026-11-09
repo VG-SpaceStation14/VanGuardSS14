@@ -1,0 +1,12 @@
+- type: entity
+  id: CarryAnchor
+  categories: [ HideSpawnMenu ]
+  name: carry anchor
+  components:
+  - type: Strap
+    position: Down
+    buckleOffset: 0.25, 0.35
+    buckleOnInteractHand: false
+    size: 1000
+    modifyBuckleDrawDepth: false
+    buckledAlertType: Carried

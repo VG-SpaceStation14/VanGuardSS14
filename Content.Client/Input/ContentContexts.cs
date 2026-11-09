@@ -120,6 +120,9 @@ namespace Content.Client.Input
             human.AddFunction(ContentKeyFunctions.OfferItem);
             human.AddFunction(ContentKeyFunctions.ForceStand);
             // VG-Tweak End
+            // VG-Tweak Start: character carry mode key
+            human.AddFunction(ContentKeyFunctions.CarryMode);
+            // VG-Tweak End
             human.AddFunction(ContentKeyFunctions.OpenEmotesMenu);
             human.AddFunction(ContentKeyFunctions.OpenLanguagesMenu); // VG-Tweak: language system
 
