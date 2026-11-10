@@ -58,7 +58,7 @@ bank-ui-masked-account = Счёт { $account }
 bank-ui-status-loading = Загрузка данных счёта...
 
 bank-name = Центральный банк
-bank-ui-history-starting-payroll = Внести наличные
+bank-ui-history-starting-payroll = Стартовый баланс
 
 bank-tab-overview = Обзор
 bank-tab-transfers = Переводы

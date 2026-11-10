@@ -58,7 +58,7 @@ bank-ui-masked-account = Account { $account }
 bank-ui-status-loading = Loading account data...
 
 bank-name = Central Bank
-bank-ui-history-starting-payroll = Deposit cash
+bank-ui-history-starting-payroll = Opening balance
 
 bank-tab-overview = Overview
 bank-tab-transfers = Transfers
