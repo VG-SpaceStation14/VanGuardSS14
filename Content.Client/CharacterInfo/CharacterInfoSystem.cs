@@ -34,7 +34,7 @@ public sealed partial class CharacterInfoSystem : EntitySystem
     private void OnCharacterInfoEvent(CharacterInfoEvent msg, EntitySessionEventArgs args)
     {
         var entity = GetEntity(msg.NetEntity);
-        var data = new CharacterData(entity, msg.Objectives, msg.Briefing, msg.Job, Name(entity));
+        var data = new CharacterData(entity, msg.Objectives, msg.Briefing, msg.Job, Name(entity), msg.Memory); // VG-Tweak
 
         OnCharacterUpdate?.Invoke(data);
     }
@@ -51,7 +51,8 @@ public sealed partial class CharacterInfoSystem : EntitySystem
         Dictionary<string, List<ObjectiveInfo>> Objectives,
         string? Briefing,
         ProtoId<JobPrototype>? JobId,
-        string EntityName
+        string EntityName,
+        Dictionary<string, string> Memories // VG-Tweak: character memories.
     );
 
     /// <summary>

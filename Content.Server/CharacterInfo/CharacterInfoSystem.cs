@@ -35,6 +35,9 @@ public sealed partial class CharacterInfoSystem : EntitySystem
         var objectives = new Dictionary<string, List<ObjectiveInfo>>();
         string? briefing = null;
         ProtoId<JobPrototype>? job = null;
+        // VG-Tweak Start: character memories for the U-menu.
+        var memories = new Dictionary<string, string>();
+        // VG-Tweak End
         if (_minds.TryGetMind(entity, out var mindId, out var mind))
         {
             // Get objectives
@@ -62,8 +65,15 @@ public sealed partial class CharacterInfoSystem : EntitySystem
 
             // Get briefing
             briefing = _roles.MindGetBriefing(mindId);
+
+            // VG-Tweak Start: character memories.
+            foreach (var memory in mind.AllMemories)
+                memories[memory.Name] = memory.Value;
+            // VG-Tweak End
         }
 
-        RaiseNetworkEvent(new CharacterInfoEvent(GetNetEntity(entity), objectives, briefing, job), args.SenderSession);
+        // VG-Tweak Start: include character memories in the event.
+        RaiseNetworkEvent(new CharacterInfoEvent(GetNetEntity(entity), objectives, briefing, job, memories), args.SenderSession);
+        // VG-Tweak End
     }
 }

@@ -1,3 +1,5 @@
+using System.Linq; // VG-Tweak: character memory projection.
+using Content.Shared._VanGuard.Mind; // VG-Tweak: character memory type.
 using Content.Shared.Mind.Components;
 using Robust.Shared.Containers;
 using Robust.Shared.GameStates;
@@ -72,6 +74,26 @@ public sealed partial class MindComponent : Component
     /// </summary>
     [DataField]
     public TimeSpan? TimeOfDeath { get; set; }
+    // VG-Tweak Start: Added to allow character info window to display memories.
+    /// <summary>
+    ///     Short character memories, for example the bank card PIN.
+    ///     Kept as plain strings so they survive mind serialization.
+    /// </summary>
+    [DataField]
+    public Dictionary<string, string> MemoryEntries = new();
+
+    [ViewVariables]
+    public IEnumerable<Memory> AllMemories =>
+        MemoryEntries.Select(entry => new Memory(entry.Key, entry.Value));
+
+    /// <summary>
+    ///     Adds or replaces a named memory entry.
+    /// </summary>
+    public void AddMemory(Memory memory)
+    {
+        MemoryEntries[memory.Name] = memory.Value;
+    }
+    // VG-Tweak End
 
     /// <summary>
     ///     The entity currently owned by this mind.
