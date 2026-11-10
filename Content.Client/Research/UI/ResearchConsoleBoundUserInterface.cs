@@ -1,4 +1,4 @@
-using Content.Client._VanGuard.Research.UI; // VG-Tweak: custom research console menu.
+using Content.Client._VanGuard.Research.UI; // VG-Tweak: custom research console window.
 using Content.Shared.Research.Components;
 using Content.Shared.Research.Prototypes;
 using JetBrains.Annotations;
@@ -10,9 +10,9 @@ namespace Content.Client.Research.UI;
 [UsedImplicitly]
 public sealed class ResearchConsoleBoundUserInterface : BoundUserInterface
 {
-    // VG-Tweak Start: custom ResearchConsoleMenu from _VanGuard.
+    // VG-Tweak Start: custom ResearchConsoleWindow from _VanGuard.
     [ViewVariables]
-    private VGResearchConsoleMenu? _consoleMenu;
+    private ResearchConsoleWindow? _consoleMenu;
     // VG-Tweak End
 
     public ResearchConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
@@ -25,7 +25,7 @@ public sealed class ResearchConsoleBoundUserInterface : BoundUserInterface
 
         var owner = Owner;
 
-        _consoleMenu = this.CreateWindow<VGResearchConsoleMenu>();
+        _consoleMenu = this.CreateWindow<ResearchConsoleWindow>();
         _consoleMenu.SetEntity(owner);
 
         _consoleMenu.OnTechnologyCardPressed += id =>

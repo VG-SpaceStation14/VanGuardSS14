@@ -1,8 +1,10 @@
 research-discipline-none = Отсутствует
-research-discipline-industrial = Промышленность
-research-discipline-arsenal = Арсенал
-research-discipline-experimental = Экспериментальное
-research-discipline-civilian-services = Обслуживание персонала
+# VG-Tweak Start: VanGuard research discipline names.
+research-discipline-industrial = Инженерия
+research-discipline-arsenal = Безопасность
+research-discipline-experimental = Наука
+research-discipline-civilian-services = Гражданские
+# VG-Tweak End
 
 research-technology-fulton = Фултоны
 research-technology-salvage-equipment = Снаряжение для утилизации

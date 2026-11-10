@@ -1,10 +1,3 @@
-# Medical research tree: medical technologies moved out of CivilianServices
-# into their own discipline, like the original's medical branch.
-# VG-Tweak: expanded with more tiers. Roots: BiochemicalStasis (treatment)
-# and ChemistryDispensing (chem equipment). Cryogenics split into its own tech.
-
-# Tier 1
-
 - type: technology
   id: BiochemicalStasis
   position: 0, 0
@@ -14,7 +7,7 @@
     state: icon
   discipline: Medical
   tier: 1
-  cost: 7500
+  cost: 3500
   recipeUnlocks:
   - StasisBedMachineCircuitboard
   - CryostasisBeaker
@@ -22,25 +15,25 @@
 
 - type: technology
   id: ChemistryDispensing
-  position: 0, 1
+  position: 1, 0
   name: research-technology-chemistry-dispensing
   icon:
     sprite: Structures/Machines/mixer.rsi
     state: mixer_empty
   discipline: Medical
-  tier: 1
-  cost: 10000
+  tier: 2
+  cost: 7000
   recipeUnlocks:
   - ChemDispenserMachineCircuitboard
   - ChemMasterMachineCircuitboard
   - HotplateMachineCircuitboard
   - ReagentGrinderIndustrialMachineCircuitboard
-
-# Tier 2
+  technologyPrerequisites:
+  - BiochemicalStasis
 
 - type: technology
   id: MechanizedTreatment
-  position: 1, 0
+  position: 1, 1
   name: research-technology-mechanized-treatment
   icon:
     sprite: Mobs/Silicon/chassis.rsi
@@ -56,14 +49,14 @@
 
 - type: technology
   id: LauncherSyringe
-  position: 2, 0
+  position: 2, 1
   name: research-technology-launcher-syringe
   icon:
     sprite: Objects/Weapons/Guns/Cannons/syringe_gun.rsi
     state: syringe_gun
   discipline: Medical
-  tier: 2
-  cost: 15000
+  tier: 3
+  cost: 12000
   recipeUnlocks:
   - LauncherSyringe
   - MiniSyringe
@@ -72,14 +65,14 @@
 
 - type: technology
   id: Cryopreservation
-  position: 1, 1
+  position: 1, 2
   name: research-technology-cryopreservation
   icon:
     sprite: Structures/Machines/Medical/cryopod.rsi
     state: pod-open
   discipline: Medical
   tier: 2
-  cost: 10000
+  cost: 6000
   recipeUnlocks:
   - CryoPodMachineCircuitboard
   technologyPrerequisites:
@@ -87,24 +80,22 @@
 
 - type: technology
   id: MedicalEquipment
-  position: 0, 2
+  position: 1, 3
   name: research-technology-medical-equipment
   icon:
     sprite: Structures/Machines/scanner.rsi
     state: closed
   discipline: Medical
   tier: 2
-  cost: 15000
+  cost: 6000
   recipeUnlocks:
   - MedicalScannerMachineCircuitboard
   technologyPrerequisites:
-  - ChemistryDispensing
-
-# Tier 3
+  - BiochemicalStasis
 
 - type: technology
   id: CloningTechnology
-  position: 0, 3
+  position: 2, 3
   name: research-technology-cloning-technology
   icon:
     sprite: Structures/Machines/cloning.rsi
@@ -116,20 +107,22 @@
   - CloningPodMachineCircuitboard
   - CloningConsoleComputerCircuitboard
   technologyPrerequisites:
+  - Cryopreservation
   - MedicalEquipment
 
 - type: technology
   id: BluespaceChemistry
-  position: 1, 2
+  position: 2, 2
   name: research-technology-bluespace-chemistry
   icon:
     sprite: Objects/Specific/Chemistry/beaker_bluespace.rsi
     state: beakerbluespace
   discipline: Medical
-  tier: 2
+  tier: 3
   cost: 10000
   recipeUnlocks:
   - BluespaceBeaker
   - SyringeBluespace
   technologyPrerequisites:
+  - ChemistryDispensing
   - Cryopreservation

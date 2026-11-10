@@ -148,11 +148,20 @@ public sealed partial class ResearchSystem
         if (!Resolve(uid, ref client, ref database, false))
             return false;
 
-        if (!TryGetClientServer(uid, out _, out var serverComp, client))
+        if (!TryGetClientServer(uid, out var serverEnt, out var serverComp, client))
             return false;
 
-        if (!IsTechnologyAvailable(database, technology))
+        // VG-Tweak Start: use the authoritative server database. The client
+        // database can be stale and must not bypass prerequisites/lockout.
+        if (serverEnt is not { } server ||
+            !TryComp<TechnologyDatabaseComponent>(server, out var serverDatabase))
+        {
             return false;
+        }
+
+        if (!IsTechnologyAvailable(serverDatabase, technology))
+            return false;
+        // VG-Tweak End
 
         if (technology.Cost > serverComp.Points)
             return false;
