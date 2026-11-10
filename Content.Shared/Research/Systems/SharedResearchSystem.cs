@@ -72,14 +72,21 @@ public abstract partial class SharedResearchSystem : EntitySystem
         if (!component.SupportedDisciplines.Contains(tech.Discipline))
             return false;
 
-        // VG-Tweak Start: branch-based research progression (like the original).
-        // A technology is unlocked through its prerequisite chain, not through a
-        // global tier percentage - so researching the shown requirement unlocks it.
-        // if (tech.Tier > disciplineTiers[tech.Discipline])
-        //     return false;
-
+        // VG-Tweak Start: branch-based research progression.
+        // Explicit prerequisites are the progression mechanism. Tier is a
+        // classification/cost band; it is not a global percentage gate.
         if (component.UnlockedTechnologies.Contains(tech.ID))
             return false;
+
+        // LockoutTier is a hard restriction after the station commits to a main
+        // discipline. A locked technology must not be available through either
+        // the client preview or the server purchase path.
+        if (component.MainDiscipline is { } mainDiscipline &&
+            tech.Discipline != mainDiscipline &&
+            tech.Tier >= ProtoMan.Index<TechDisciplinePrototype>(tech.Discipline).LockoutTier)
+        {
+            return false;
+        }
 
         foreach (var prereq in tech.TechnologyPrerequisites)
         {
@@ -109,44 +116,20 @@ public abstract partial class SharedResearchSystem : EntitySystem
 
     public int GetHighestDisciplineTier(TechnologyDatabaseComponent component, TechDisciplinePrototype techDiscipline)
     {
-        var allTech = ProtoMan.EnumeratePrototypes<TechnologyPrototype>()
-            .Where(p => p.Discipline == techDiscipline.ID && !p.Hidden).ToList();
-        var allUnlocked = new List<TechnologyPrototype>();
-        foreach (var recipe in component.UnlockedTechnologies)
+        // VG-Tweak Start: do not use TierPrerequisites as a global percentage gate.
+        // Report the highest tier actually unlocked in this discipline instead.
+        var highest = 1;
+        foreach (var unlockedId in component.UnlockedTechnologies)
         {
-            var proto = ProtoMan.Index<TechnologyPrototype>(recipe);
-            if (proto.Discipline != techDiscipline.ID)
+            if (!ProtoMan.TryIndex<TechnologyPrototype>(unlockedId, out var unlocked))
                 continue;
-            allUnlocked.Add(proto);
+
+            if (unlocked.Discipline == techDiscipline.ID)
+                highest = Math.Max(highest, unlocked.Tier);
         }
 
-        var highestTier = techDiscipline.TierPrerequisites.Keys.Max();
-        var tier = 2; //tier 1 is always given
-
-        // todo this might break if you have hidden technologies. i'm not sure
-
-        while (tier <= highestTier)
-        {
-            // we need to get the tech for the tier 1 below because that's
-            // what the percentage in TierPrerequisites is referring to.
-            var unlockedTierTech = allUnlocked.Where(p => p.Tier == tier - 1).ToList();
-            var allTierTech = allTech.Where(p => p.Discipline == techDiscipline.ID && p.Tier == tier - 1).ToList();
-
-            if (allTierTech.Count == 0)
-                break;
-
-            var percent = (float) unlockedTierTech.Count / allTierTech.Count;
-            if (percent < techDiscipline.TierPrerequisites[tier])
-                break;
-
-            if (tier >= techDiscipline.LockoutTier &&
-                component.MainDiscipline != null &&
-                techDiscipline.ID != component.MainDiscipline)
-                break;
-            tier++;
-        }
-
-        return tier - 1;
+        return highest;
+        // VG-Tweak End
     }
 
     public FormattedMessage GetTechnologyDescription(

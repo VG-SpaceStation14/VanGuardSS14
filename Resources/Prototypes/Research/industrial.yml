@@ -1,11 +1,4 @@
 # VG-Tweak Start: research tree layout (position) and prerequisites added for the custom console.
-# PowerGeneration is the common parent; the other branches spread from it.
-# Power generators are split: base (Pacman) -> plasma (SuperPacman) -> uranium (JrPacman)
-# right before the battery progression.
-# CompactTechnologies (RCD) was added after AdvancedToolsTechnology.
-
-# Tier 1
-
 - type: technology
   id: PowerGeneration
   position: 0, 0
@@ -15,7 +8,7 @@
     state: portgen3
   discipline: Industrial
   tier: 1
-  cost: 7500
+  cost: 2500
   recipeUnlocks:
   - PortableGeneratorPacmanMachineCircuitboard
   - SolarControlComputerCircuitboard
@@ -30,8 +23,8 @@
     sprite: Structures/Power/Generation/portable_generator.rsi
     state: portgen0
   discipline: Industrial
-  tier: 1
-  cost: 7500
+  tier: 2
+  cost: 5000
   recipeUnlocks:
   - PortableGeneratorSuperPacmanMachineCircuitboard
   technologyPrerequisites:
@@ -46,7 +39,7 @@
     state: portgen1
   discipline: Industrial
   tier: 2
-  cost: 7500
+  cost: 5000
   recipeUnlocks:
   - PortableGeneratorJrPacmanMachineCircuitboard
   technologyPrerequisites:
@@ -54,38 +47,36 @@
 
 - type: technology
   id: MechanicalCompression
-  position: 1, 1
+  position: 0, 1
   name: research-technology-mechanical-compression
   icon:
     sprite: Structures/Machines/flatpacker.rsi
     state: base
   discipline: Industrial
   tier: 1
-  cost: 10000
+  cost: 2500
   recipeUnlocks:
   - FlatpackerMachineCircuitboard
-  technologyPrerequisites:
-  - PowerGeneration
 
 - type: technology
   id: AdvancedToolsTechnology
-  position: 1, 2
+  position: 1, 1
   name: research-technology-advanced-tools
   icon:
     sprite: Objects/Tools/welder_experimental.rsi
     state: icon
   discipline: Industrial
   tier: 2
-  cost: 10000
+  cost: 6000
   recipeUnlocks:
-    - WelderExperimental
-    - PowerDrill
-    - JawsOfLife
-    - BorgModuleAdvancedTool
-    - Fulton
-    - FultonBeacon
+  - WelderExperimental
+  - PowerDrill
+  - JawsOfLife
+  - BorgModuleAdvancedTool
+  - Fulton
+  - FultonBeacon
   technologyPrerequisites:
-  - PowerGeneration
+  - MechanicalCompression
 
 - type: technology
   id: CompactTechnologies
@@ -96,10 +87,10 @@
     state: icon
   discipline: Industrial
   tier: 2
-  cost: 10000
+  cost: 6000
   recipeUnlocks:
-    - RCD
-    - RCDAmmo
+  - RCD
+  - RCDAmmo
   technologyPrerequisites:
   - AdvancedToolsTechnology
 
@@ -111,10 +102,10 @@
     sprite: _VanGuard/Objects/Tools/rpd.rsi
     state: icon
   discipline: Industrial
-  tier: 2
-  cost: 10000
+  tier: 3
+  cost: 12000
   recipeUnlocks:
-    - RPD
+  - RPD
   technologyPrerequisites:
   - CompactTechnologies
 
@@ -127,7 +118,7 @@
     state: building
   discipline: Industrial
   tier: 3
-  cost: 10000
+  cost: 12000
   recipeUnlocks:
   - AutolatheHyperConvectionMachineCircuitboard
   - ProtolatheHyperConvectionMachineCircuitboard
@@ -138,26 +129,25 @@
 
 - type: technology
   id: SalvageEquipment
-  position: 1, 3
+  position: 0, 4
   name: research-technology-salvage-equipment
   icon:
     sprite: Objects/Tools/handdrill.rsi
     state: handdrill
   discipline: Industrial
   tier: 2
-  cost: 7500
+  cost: 5000
   recipeUnlocks:
   - MiningDrill
   - MineralScannerEmpty
   - OreProcessorIndustrialMachineCircuitboard
   - ClothingMaskWeldingGas
-  - ClothingShoesBootsJump
   technologyPrerequisites:
   - PowerGeneration
 
 - type: technology
   id: MassExcavation
-  position: 3, 3
+  position: 2, 4
   name: research-technology-excavation
   icon:
     sprite: Objects/Tools/handdrilldiamond.rsi
@@ -166,25 +156,25 @@
   tier: 3
   cost: 15000
   recipeUnlocks:
-    - OreBagOfHolding
-    - MiningDrillDiamond
-    - AdvancedMineralScannerEmpty
-    - BorgModuleAdvancedMining
-    - SalvageExpeditionsComputerCircuitboard # Corvax-Cringe
+  - OreBagOfHolding
+  - MiningDrillDiamond
+  - AdvancedMineralScannerEmpty
+  - BorgModuleAdvancedMining
+  - SalvageExpeditionsComputerCircuitboard # Corvax-Cringe
   technologyPrerequisites:
   - SalvageEquipment
   - SmartOreBagTech
 
 - type: technology
   id: AtmosphericTech
-  position: 1, 4
+  position: 0, 3
   name: research-technology-atmospheric-tech
   icon:
     sprite: Structures/Piping/Atmospherics/thermomachine.rsi
     state: freezerOff
   discipline: Industrial
   tier: 2
-  cost: 7500
+  cost: 5000
   recipeUnlocks:
   - ThermomachineFreezerMachineCircuitBoard
   - GasRecyclerMachineCircuitboard
@@ -193,14 +183,14 @@
 
 - type: technology
   id: AdvancedAtmospherics
-  position: 2, 4
+  position: 1, 3
   name: research-technology-advanced-atmospherics
   icon:
     sprite: Objects/Devices/Holoprojectors/atmos.rsi
     state: icon
   discipline: Industrial
-  tier: 2
-  cost: 7500
+  tier: 3
+  cost: 10000
   recipeUnlocks:
   - HellfireFreezerMachineCircuitBoard
   - PortableScrubberMachineCircuitBoard
@@ -210,7 +200,7 @@
 
 - type: technology
   id: SpaceScanning
-  position: 1, 5
+  position: 0, 2
   name: research-technology-space-scanning
   icon:
     sprite: Objects/Tools/handheld_mass_scanner.rsi
@@ -233,7 +223,7 @@
     state: holding
   discipline: Industrial
   tier: 3
-  cost: 15000
+  cost: 18000
   recipeUnlocks:
   - ClothingBackpackHolding
   - ClothingBackpackSatchelHolding
@@ -243,14 +233,14 @@
 
 - type: technology
   id: Shuttlecraft
-  position: 2, 5
+  position: 1, 2
   name: research-technology-shuttlecraft
   icon:
     sprite: Structures/Shuttles/gyroscope.rsi
     state: base
   discipline: Industrial
   tier: 2
-  cost: 10000
+  cost: 7000
   recipeUnlocks:
   - ShuttleConsoleCircuitboard
   - ThrusterMachineCircuitboard
@@ -268,7 +258,7 @@
     state: empty
   discipline: Industrial
   tier: 2
-  cost: 7500
+  cost: 6000
   recipeUnlocks:
   - PowerCellHigh
   - TurboItemRechargerCircuitboard
@@ -285,7 +275,7 @@
     state: hyper
   discipline: Industrial
   tier: 3
-  cost: 7500
+  cost: 12000
   recipeUnlocks:
   - PowerCellHyper
   technologyPrerequisites:
@@ -300,8 +290,48 @@
     state: microreactor
   discipline: Industrial
   tier: 3
-  cost: 10000
+  cost: 13000
   recipeUnlocks:
   - PowerCellMicroreactor
   technologyPrerequisites:
   - HyperCapacityBattery
+
+- type: technology
+  id: PackagedLights
+  position: 4, 1
+  name: research-technology-packaged-lights
+  icon:
+    sprite: Objects/Storage/EntityProvider/packaged_lights.rsi
+    state: base # Doesn't seem to work with sprite layers.
+  discipline: Industrial
+  tier: 2
+  cost: 5000
+  recipeUnlocks:
+  - BoxLighttube
+  - BoxExteriorLighttube
+  - BoxLedLighttube
+  - BoxSodiumLighttube
+  - BoxLightbulb
+  - BoxDimLightbulb
+  - BoxWarmLightbulb
+  - BoxLedLightbulb
+  - BoxLightMixed
+  - BoxLedLightMixed
+  technologyPrerequisites:
+  - MechanicalCompression
+
+- type: technology
+  id: BluespaceCargoTransport
+  position: 4, 2
+  name: research-technology-bluespace-cargo-transport
+  icon:
+    sprite: Structures/cargo_telepad.rsi
+    state: display
+  discipline: Industrial
+  tier: 2
+  cost: 8000
+  recipeUnlocks:
+  - CargoTelepadMachineCircuitboard
+  technologyPrerequisites:
+  - SpaceScanning
+# VG-Tweak End

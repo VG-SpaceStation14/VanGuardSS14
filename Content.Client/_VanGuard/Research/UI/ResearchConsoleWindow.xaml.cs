@@ -29,7 +29,7 @@ namespace Content.Client._VanGuard.Research.UI;
 /// technology tree and a details panel for the selected technology.
 /// </summary>
 [GenerateTypedNameReferences]
-public sealed partial class VGResearchConsoleMenu : FancyWindow
+public sealed partial class ResearchConsoleWindow : FancyWindow
 {
     /// <summary>Fired when the player wants to research a technology.</summary>
     public Action<string>? OnTechnologyCardPressed;
@@ -121,7 +121,7 @@ public sealed partial class VGResearchConsoleMenu : FancyWindow
     private const float FallbackColumnGap = 50f;
     private const float FallbackRowGap = 20f;
 
-    public VGResearchConsoleMenu()
+    public ResearchConsoleWindow()
     {
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
@@ -368,7 +368,7 @@ public sealed partial class VGResearchConsoleMenu : FancyWindow
             foreach (var tech in tierGroup)
             {
                 var state = unlocked.Contains(tech.ID) ? TechState.Unlocked
-                    : IsTechAvailable(tech, unlocked) ? TechState.Available
+                    : IsTechAvailable(tech, unlocked, database) ? TechState.Available
                     : TechState.Locked;
 
                 var researchable = state == TechState.Available
@@ -376,7 +376,7 @@ public sealed partial class VGResearchConsoleMenu : FancyWindow
                     && !WaveInProgress;
                 var chainResearchable = state == TechState.Locked
                     && !WaveInProgress
-                    && TryGetResearchChain(tech.ID, unlocked, optimisticPoints) != null;
+                    && TryGetResearchChain(tech.ID, unlocked, optimisticPoints, database) != null;
 
                 var node = new ResearchTechnologyNode(
                     tech,
@@ -484,7 +484,11 @@ public sealed partial class VGResearchConsoleMenu : FancyWindow
     /// technology itself (prerequisites first), plus their total cost.
     /// Returns null if the chain is empty (nothing to research).
     /// </summary>
-    private List<string>? GetResearchChain(string techId, HashSet<ProtoId<TechnologyPrototype>> unlocked, out float totalCost)
+    private List<string>? GetResearchChain(
+        string techId,
+        HashSet<ProtoId<TechnologyPrototype>> unlocked,
+        out float totalCost,
+        TechnologyDatabaseComponent database)
     {
         totalCost = 0f;
         var visited = new HashSet<string>();
@@ -501,6 +505,14 @@ public sealed partial class VGResearchConsoleMenu : FancyWindow
                 return;
 
             if (!_prototype.TryIndex<TechnologyPrototype>(id, out var tech))
+            {
+                ok = false;
+                return;
+            }
+
+            if (database.MainDiscipline is { } mainDiscipline &&
+                tech.Discipline != mainDiscipline &&
+                tech.Tier >= _prototype.Index<TechDisciplinePrototype>(tech.Discipline).LockoutTier)
             {
                 ok = false;
                 return;
@@ -523,9 +535,13 @@ public sealed partial class VGResearchConsoleMenu : FancyWindow
     /// Returns the research chain to the given technology if its total cost
     /// fits into the available points, otherwise null.
     /// </summary>
-    private List<string>? TryGetResearchChain(string techId, HashSet<ProtoId<TechnologyPrototype>> unlocked, float points)
+    private List<string>? TryGetResearchChain(
+        string techId,
+        HashSet<ProtoId<TechnologyPrototype>> unlocked,
+        float points,
+        TechnologyDatabaseComponent database)
     {
-        var chain = GetResearchChain(techId, unlocked, out var totalCost);
+        var chain = GetResearchChain(techId, unlocked, out var totalCost, database);
         return chain != null && totalCost <= points ? chain : null;
     }
 
@@ -541,7 +557,7 @@ public sealed partial class VGResearchConsoleMenu : FancyWindow
         var unlocked = database.UnlockedTechnologies.ToHashSet();
         unlocked.UnionWith(_pendingUnlocks.Keys.Select(k => new ProtoId<TechnologyPrototype>(k)));
 
-        var chain = TryGetResearchChain(techId, unlocked, GetOptimisticPoints());
+        var chain = TryGetResearchChain(techId, unlocked, GetOptimisticPoints(), database);
         if (chain == null)
             return;
 
@@ -571,13 +587,25 @@ public sealed partial class VGResearchConsoleMenu : FancyWindow
     /// freshly researched technology light up immediately instead of waiting
     /// for the server to push the updated database.
     /// </summary>
-    private bool IsTechAvailable(TechnologyPrototype tech, HashSet<ProtoId<TechnologyPrototype>> unlocked)
+    private bool IsTechAvailable(
+        TechnologyPrototype tech,
+        HashSet<ProtoId<TechnologyPrototype>> unlocked,
+        TechnologyDatabaseComponent database)
     {
-        if (tech.Hidden)
+        if (tech.Hidden || !database.SupportedDisciplines.Any(d => d == tech.Discipline))
             return false;
 
         if (unlocked.Contains(tech.ID))
             return false;
+
+        // LockoutTier is a hard restriction. Keep the client preview in sync with
+        // the authoritative server check.
+        if (database.MainDiscipline is { } mainDiscipline &&
+            tech.Discipline != mainDiscipline &&
+            tech.Tier >= _prototype.Index<TechDisciplinePrototype>(tech.Discipline).LockoutTier)
+        {
+            return false;
+        }
 
         foreach (var prereq in tech.TechnologyPrerequisites)
         {
@@ -677,13 +705,13 @@ public sealed partial class VGResearchConsoleMenu : FancyWindow
             unlockedSet.UnionWith(_pendingUnlocks.Keys.Select(k => new ProtoId<TechnologyPrototype>(k)));
             var optimisticPoints = GetOptimisticPoints();
 
-            var available = !unlocked && IsTechAvailable(tech, unlockedSet);
+            var available = !unlocked && IsTechAvailable(tech, unlockedSet, database);
             var hasAccess = _player.LocalEntity is not { } local ||
                             !_entity.TryGetComponent<AccessReaderComponent>(Entity, out var access) ||
                             _accessReader.IsAllowed(local, Entity, access);
             var canAfford = optimisticPoints >= tech.Cost;
 
-            var chain = GetResearchChain(tech.ID, unlockedSet, out var chainTotalCost);
+            var chain = GetResearchChain(tech.ID, unlockedSet, out var chainTotalCost, database);
             var chainHasBranch = chain is { Count: > 1 };
             var chainResearchable = chainHasBranch && chainTotalCost <= optimisticPoints && !WaveInProgress;
 

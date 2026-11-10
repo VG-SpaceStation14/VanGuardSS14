@@ -1,20 +1,26 @@
-﻿# Mech research tree: mech technologies moved out of Industrial / CivilianServices
-# into their own discipline so the research console shows a dedicated "Mech" tab.
-
-# Tier 1
+- type: technology
+  id: BasicRobotics
+  position: 0, 0
+  name: research-technology-basic-robotics
+  icon:
+    sprite: Structures/Machines/exosuit_fabricator.rsi
+    state: fab-idle
+  discipline: Mech
+  tier: 1
+  cost: 2500
+  recipeUnlocks:
+  - ProximitySensor
 
 - type: technology
   id: CritterMechs
-  position: 0, 1
+  position: 1, 1
   name: research-technology-critter-mechs
   icon:
     sprite: Objects/Specific/Mech/mecha.rsi
     state: hamtr
   discipline: Mech
   tier: 2
-  cost: 7500
-  technologyPrerequisites:
-  - RipleyAPLU
+  cost: 5000
   recipeUnlocks:
   - HamtrHarness
   - HamtrLArm
@@ -25,17 +31,19 @@
   - HamtrPeripheralsElectronics
   - MechEquipmentGrabberSmall
   - VimHarness
+  technologyPrerequisites:
+  - RipleyAPLU
 
 - type: technology
   id: RipleyAPLU
-  position: 0, 0
+  position: 1, 0
   name: research-technology-ripley-aplu
   icon:
     sprite: Objects/Specific/Mech/mecha.rsi
     state: ripley
   discipline: Mech
-  tier: 1
-  cost: 7500
+  tier: 2
+  cost: 5000
   recipeUnlocks:
   - RipleyHarness
   - RipleyLArm
@@ -45,19 +53,19 @@
   - RipleyCentralElectronics
   - RipleyPeripheralsElectronics
   - MechEquipmentGrabber
-
-# Tier 2
+  technologyPrerequisites:
+  - BasicRobotics
 
 - type: technology
   id: HONKMech
-  position: 1, 0
+  position: 2, 1
   name: research-technology-honk-mech
   icon:
     sprite: Objects/Specific/Mech/mecha.rsi
     state: honker
   discipline: Mech
   tier: 2
-  cost: 7500
+  cost: 5000
   recipeUnlocks:
   - HonkerHarness
   - HonkerLArm

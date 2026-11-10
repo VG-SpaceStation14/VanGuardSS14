@@ -1,8 +1,10 @@
 research-discipline-none = None
-research-discipline-industrial = Industrial
-research-discipline-arsenal = Arsenal
-research-discipline-experimental = Experimental
-research-discipline-civilian-services = Civilian Services
+# VG-Tweak Start: VanGuard research discipline names.
+research-discipline-industrial = Engineering
+research-discipline-arsenal = Security
+research-discipline-experimental = Science
+research-discipline-civilian-services = Civilian
+# VG-Tweak End
 
 research-technology-fulton = Fultons
 research-technology-salvage-equipment = Salvage Equipment

@@ -1,6 +1,6 @@
 - type: technology
   id: BluespaceCrystalTech
-  position: 3, 4
+  position: 5, 0
   name: research-technology-bluespace-crystal
   icon:
     sprite: _VanGuard/Objects/Materials/bluespace_crystal.rsi
