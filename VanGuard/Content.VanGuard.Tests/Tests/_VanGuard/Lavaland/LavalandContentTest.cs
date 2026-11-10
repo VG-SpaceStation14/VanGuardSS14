@@ -22,6 +22,7 @@ using Content.Shared.Teleportation.Systems;
 using Content.Shared.Chasm;
 using Robust.Shared.Prototypes;
 using Content.Shared.Pinpointer;
+using Content.Shared._VanGuard.Delivery.Components;
 using Content.Shared._VanGuard.Mining.Shop;
 using Content.Shared._VanGuard.Mining.Shop.Components;
 using Content.Shared._VanGuard.Mining.Points;
@@ -476,8 +477,8 @@ public sealed class LavalandContentTest : GameTest
                 UiKey = MiningShopUI.Key,
             };
             SEntMan.EventBus.RaiseLocalEvent(shop, express);
-            var bagQuery = SEntMan.EntityQueryEnumerator<MiningShopDeliveryBagComponent>();
-            Assert.That(bagQuery.MoveNext(out _, out _), Is.True, "Express delivery did not produce a delivery bag.");
+            var podQuery = SEntMan.EntityQueryEnumerator<DeliveryPodComponent>();
+            Assert.That(podQuery.MoveNext(out _, out _), Is.True, "Express delivery did not produce a delivery pod.");
         });
     }
 

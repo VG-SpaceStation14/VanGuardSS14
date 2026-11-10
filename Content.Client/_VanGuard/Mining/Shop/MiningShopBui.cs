@@ -58,7 +58,7 @@ public sealed partial class MiningShopBui : BoundUserInterface
         _window.Search.OnTextChanged += OnSearch;
 
         // Collecting the order requires a hold to confirm, so the player cannot
-        // accidentally hand out the delivery bag.
+        // accidentally request delivery of the pod.
         _window.Express.HoldDuration = 1.25f;
         _window.Express.FillColor = new Color(201, 162, 39, 150);
         _window.Express.ToolTip = Loc.GetString("mining-shop-hold-to-collect");

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Content.Client._VanGuard.Mining.Shop;
 using Content.IntegrationTests.Tests.Interaction;
+using Content.Shared._VanGuard.Delivery.Components;
 using Content.Shared._VanGuard.Mining.Shop;
+using Content.Shared._VanGuard.Mining.Shop.Components;
 using Content.Shared.Hands.EntitySystems;
-using Content.Shared.Storage;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Prototypes;
 
@@ -69,7 +70,7 @@ public sealed class MiningShopBuiTest : InteractionTest
     }
 
     [Test]
-    public async Task ExpressDeliveryHandsBagAndSpillsOnUse()
+    public async Task ExpressDeliveryCreatesPodWithAllOrderedGoods()
     {
         await SpawnTarget("MiningShop");
         await SpawnEntity("APCBasic", SEntMan.GetCoordinates(TargetCoords));
@@ -79,43 +80,93 @@ public sealed class MiningShopBuiTest : InteractionTest
         Assert.That(IsUiOpen(MiningShopUI.Key), "mining shop BUI failed to open.");
         await RunTicksSync(3);
 
-        // Simulate two purchases by adding them to the vendor's order list.
         await Server.WaitPost(() =>
         {
             var shopSys = SEntMan.System<SharedMiningShopSystem>();
             var vendor = SEntMan.GetEntity(Target)!.Value;
-            shopSys.AddOrder(vendor, new Content.Shared._VanGuard.Mining.Shop.MiningShopEntry { Id = "Flare" });
-            shopSys.AddOrder(vendor, new Content.Shared._VanGuard.Mining.Shop.MiningShopEntry { Id = "Pickaxe" });
+            shopSys.AddOrder(vendor, new MiningShopEntry { Id = "Flare" });
+            shopSys.AddOrder(vendor, new MiningShopEntry { Id = "Pickaxe" });
         });
 
-        // Request express delivery through the open client BUI.
         await SendBui(MiningShopUI.Key, new MiningShopExpressDeliveryBuiMsg());
+        await RunTicks(5);
 
-        // The delivery bag should now be in the player's hands.
-        EntityUid held = default;
+        EntityUid pod = default;
+        var contentIds = new List<string>();
+        var ordersLeft = -1;
         await Server.WaitPost(() =>
         {
-            held = SEntMan.System<SharedHandsSystem>().EnumerateHeld(SPlayer).FirstOrDefault();
+            var query = SEntMan.EntityQueryEnumerator<DeliveryPodComponent>();
+            Assert.That(query.MoveNext(out var uid, out var delivery), Is.True,
+                "express delivery did not create a delivery pod");
+            pod = uid;
+            contentIds = delivery!.Contents.ContainedEntities
+                .Select(e => SEntMan.GetComponent<MetaDataComponent>(e).EntityPrototype?.ID ?? string.Empty)
+                .ToList();
+            ordersLeft = SEntMan.GetComponent<MiningShopComponent>(SEntMan.GetEntity(Target)!.Value).OrderList.Count;
         });
-        Assert.That(held != default, Is.True, "delivery bag should be in the player's hands.");
-        Assert.That(SEntMan.HasComponent<MiningShopDeliveryBagComponent>(held),
-            "held entity should be the delivery bag.");
 
-        // Use the bag in hand: the ordered items spill onto the floor and the bag is deleted.
-        await UseInHand();
-        await RunTicks(3);
+        Assert.That(ordersLeft, Is.EqualTo(0), "successful delivery must clear the order list once");
+        Assert.That(contentIds, Is.EquivalentTo(new[] { "Flare", "Pickaxe" }),
+            "the pod must contain every ordered item exactly once");
 
-        await AssertEntityLookup(
-            new EntitySpecifierCollection(new List<EntitySpecifier>
+        await RunTicks(180);
+
+        await Server.WaitPost(() =>
+        {
+            Assert.That(SEntMan.EntityExists(pod), Is.False,
+                "the falling pod must be replaced by the opened pod after landing");
+            var opened = SEntMan.EntityQueryEnumerator<MetaDataComponent>();
+            var foundOpened = false;
+            while (opened.MoveNext(out _, out var meta))
             {
-                new("Flare", 1),
-                new("Pickaxe", 1)
-            }),
-            failOnMissing: true,
-            failOnExcess: false);
+                if (meta.EntityPrototype?.ID == "DeliveryPodOpened")
+                {
+                    foundOpened = true;
+                    break;
+                }
+            }
+            Assert.That(foundOpened, Is.True, "the opened pod/crater entity must exist after landing");
+        });
 
-        Assert.That(SEntMan.Deleted(held) || !SEntMan.HasComponent<MiningShopDeliveryBagComponent>(held),
-            "delivery bag should be deleted after use.");
+        var flares = 0;
+        var pickaxes = 0;
+        await Server.WaitPost(() =>
+        {
+            var query = SEntMan.EntityQueryEnumerator<MetaDataComponent>();
+            while (query.MoveNext(out _, out var meta))
+            {
+                switch (meta.EntityPrototype?.ID)
+                {
+                    case "Flare":
+                        flares++;
+                        break;
+                    case "Pickaxe":
+                        pickaxes++;
+                        break;
+                }
+            }
+        });
+        Assert.That(flares, Is.EqualTo(1), "the flare must be delivered exactly once");
+        Assert.That(pickaxes, Is.EqualTo(1), "the pickaxe must be delivered exactly once");
+
+        await RunTicks(30);
+        await Server.WaitPost(() =>
+        {
+            var query = SEntMan.EntityQueryEnumerator<MetaDataComponent>();
+            var afterFlares = 0;
+            var afterPickaxes = 0;
+            while (query.MoveNext(out _, out var meta))
+            {
+                if (meta.EntityPrototype?.ID == "Flare")
+                    afterFlares++;
+                else if (meta.EntityPrototype?.ID == "Pickaxe")
+                    afterPickaxes++;
+            }
+
+            Assert.That(afterFlares, Is.EqualTo(1), "landing must not be processed twice for the flare");
+            Assert.That(afterPickaxes, Is.EqualTo(1), "landing must not be processed twice for the pickaxe");
+        });
     }
 
     [Test]
@@ -166,7 +217,7 @@ public sealed class MiningShopBuiTest : InteractionTest
     }
 
     [Test]
-    public async Task ExpressDeliveryBagFitsHardsuit()
+    public async Task ExpressDeliveryPodFitsHardsuit()
     {
         await SpawnTarget("MiningShop");
         await SpawnEntity("APCBasic", SEntMan.GetCoordinates(TargetCoords));
@@ -176,32 +227,55 @@ public sealed class MiningShopBuiTest : InteractionTest
         Assert.That(IsUiOpen(MiningShopUI.Key), "mining shop BUI failed to open.");
         await RunTicksSync(3);
 
-        // Order a hardsuit (item size Ginormous) - it must fit into the delivery bag.
         await Server.WaitPost(() =>
         {
             var shopSys = SEntMan.System<SharedMiningShopSystem>();
             var vendor = SEntMan.GetEntity(Target)!.Value;
-            shopSys.AddOrder(vendor, new Content.Shared._VanGuard.Mining.Shop.MiningShopEntry { Id = "ClothingOuterHardsuitSalvage" });
+            shopSys.AddOrder(vendor, new MiningShopEntry { Id = "ClothingOuterHardsuitSalvage" });
         });
 
         await SendBui(MiningShopUI.Key, new MiningShopExpressDeliveryBuiMsg());
-        await RunTicks(3);
+        await RunTicks(5);
 
-        EntityUid bag = default;
+        var containsHardsuit = false;
         await Server.WaitPost(() =>
         {
-            bag = SEntMan.System<SharedHandsSystem>().EnumerateHeld(SPlayer)
-                .FirstOrDefault(e => SEntMan.HasComponent<MiningShopDeliveryBagComponent>(e));
-        });
-        Assert.That(bag != default, Is.True, "delivery bag should be in the player's hands.");
-
-        bool containsHardsuit = false;
-        await Server.WaitPost(() =>
-        {
-            var storage = SEntMan.GetComponent<StorageComponent>(bag);
-            containsHardsuit = storage.Container.ContainedEntities.Any(e =>
+            var query = SEntMan.EntityQueryEnumerator<DeliveryPodComponent>();
+            Assert.That(query.MoveNext(out _, out var delivery), Is.True,
+                "express delivery did not create a delivery pod");
+            containsHardsuit = delivery!.Contents.ContainedEntities.Any(e =>
                 SEntMan.GetComponent<MetaDataComponent>(e).EntityPrototype?.ID == "ClothingOuterHardsuitSalvage");
         });
-        Assert.That(containsHardsuit, Is.True, "the hardsuit should fit inside the delivery bag.");
+        Assert.That(containsHardsuit, Is.True, "the hardsuit should fit inside the delivery pod.");
     }
+
+    [Test]
+    public async Task ExpressDeliveryFailureKeepsPaidOrders()
+    {
+        await SpawnTarget("MiningShop");
+        await SpawnEntity("APCBasic", SEntMan.GetCoordinates(TargetCoords));
+        await RunTicksSync(1);
+        await Activate();
+        await RunTicksSync(3);
+
+        await Server.WaitPost(() =>
+        {
+            SEntMan.System<SharedMiningShopSystem>().AddOrder(
+                SEntMan.GetEntity(Target)!.Value,
+                new MiningShopEntry { Id = "ThisPrototypeDoesNotExist", Price = 100 });
+        });
+
+        await SendBui(MiningShopUI.Key, new MiningShopExpressDeliveryBuiMsg());
+        await RunTicks(5);
+
+        await Server.WaitAssertion(() =>
+        {
+            var vendor = SEntMan.GetEntity(Target)!.Value;
+            Assert.That(SEntMan.GetComponent<MiningShopComponent>(vendor).OrderList, Has.Count.EqualTo(1),
+                "a failed pod creation must keep the paid order available for retry/refund");
+            var pod = SEntMan.EntityQueryEnumerator<DeliveryPodComponent>();
+            Assert.That(pod.MoveNext(out _, out _), Is.False, "failed creation must not leave a pod");
+        });
+    }
+
 }
