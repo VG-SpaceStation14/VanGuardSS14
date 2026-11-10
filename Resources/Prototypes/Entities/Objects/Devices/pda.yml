@@ -99,6 +99,9 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        # VG-Tweak Start: personal banking cartridge.
+        - id: BankCartridge
+        # VG-Tweak End
         - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
@@ -165,6 +168,9 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        # VG-Tweak Start: personal banking cartridge.
+        - id: BankCartridge
+        # VG-Tweak End
         - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
@@ -181,6 +187,9 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        # VG-Tweak Start: personal banking cartridge.
+        - id: BankCartridge
+        # VG-Tweak End
         - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
@@ -636,6 +645,9 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        # VG-Tweak Start: personal banking cartridge.
+        - id: BankCartridge
+        # VG-Tweak End
         - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NewsReaderCartridge
@@ -732,6 +744,9 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        # VG-Tweak Start: personal banking cartridge.
+        - id: BankCartridge
+        # VG-Tweak End
         - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
@@ -807,6 +822,9 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        # VG-Tweak Start: personal banking cartridge.
+        - id: BankCartridge
+        # VG-Tweak End
         - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
@@ -1424,6 +1442,9 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        # VG-Tweak Start: personal banking cartridge.
+        - id: BankCartridge
+        # VG-Tweak End
         - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
@@ -1543,6 +1564,9 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        # VG-Tweak Start: personal banking cartridge.
+        - id: BankCartridge
+        # VG-Tweak End
         - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
@@ -1572,6 +1596,9 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        # VG-Tweak Start: personal banking cartridge.
+        - id: BankCartridge
+        # VG-Tweak End
         - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
@@ -1774,6 +1801,9 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        # VG-Tweak Start: personal banking cartridge.
+        - id: BankCartridge
+        # VG-Tweak End
         - id: NanoChatCartridge
         - id: NotekeeperCartridge
         - id: NanoTaskCartridge
@@ -1843,6 +1873,9 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        # VG-Tweak Start: personal banking cartridge.
+        - id: BankCartridge
+        # VG-Tweak End
         - id: NanoChatCartridge
         - id: NotekeeperCartridge
         - id: NanoTaskCartridge
@@ -1929,6 +1962,9 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        # VG-Tweak Start: personal banking cartridge.
+        - id: BankCartridge
+        # VG-Tweak End
         - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
@@ -2280,6 +2316,9 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        # VG-Tweak Start: personal banking cartridge.
+        - id: BankCartridge
+        # VG-Tweak End
         - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge
@@ -2328,6 +2367,9 @@
     containers:
       preinstalled-program-container: !type:AllSelector
         children:
+        # VG-Tweak Start: personal banking cartridge.
+        - id: BankCartridge
+        # VG-Tweak End
         - id: NanoChatCartridge
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge

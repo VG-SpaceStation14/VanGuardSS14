@@ -1,0 +1,105 @@
+bank-program-name = Банк
+bank-atm-title = Банкомат
+
+bank-ui-no-account = К этому персонажу не привязан банковский счёт.
+bank-ui-personal-account = Личный счёт
+bank-ui-account = Счёт { $account } · { $owner }
+bank-ui-account-holder = Владелец счёта
+bank-ui-balance = Баланс: { $balance } кр.
+bank-ui-available-balance = Доступный баланс
+bank-ui-balance-amount = { $balance } кр.
+bank-ui-amount = Сумма
+bank-ui-amount-placeholder = Введите сумму
+bank-ui-max = Максимум
+bank-ui-deposit = Внести наличные
+bank-ui-deposit-all = Внести все наличные
+bank-ui-withdraw = Снять наличные
+bank-ui-cash-available = Наличные в руках: { $cash } кр.
+bank-ui-history = Последние операции
+bank-ui-history-count = Операций: { $count }
+bank-ui-history-empty = Операций пока нет.
+bank-ui-history-deposit = Внесение наличных
+bank-ui-history-withdraw = Снятие наличных
+bank-ui-history-payroll = Зарплата
+bank-ui-history-purchase = Покупка
+
+bank-ui-status-success = Операция выполнена.
+bank-ui-status-invalid-amount = Введите положительную сумму.
+bank-ui-status-insufficient-funds = Недостаточно средств на счёте.
+bank-ui-status-no-account = Личный банковский счёт не найден.
+bank-ui-status-no-cash = У вас недостаточно наличных.
+bank-ui-status-cash-too-large = Слишком большая сумма для этой операции.
+bank-ui-status-duplicate = Эта операция уже была обработана.
+bank-ui-status-invalid = Банк отклонил операцию.
+bank-ui-result-deposit = +{ $amount } кр. · Баланс: { $balance } кр.
+bank-ui-result-deposit-all = +{ $amount } кр. · Баланс: { $balance } кр. · Наличные: { $cash } кр.
+bank-ui-result-withdraw = -{ $amount } кр. · Баланс: { $balance } кр.
+bank-atm-insert-card = Вставьте ID-карту.
+bank-atm-card-inserted = Карта: { $owner }
+bank-atm-pin = Пароль банковской карты
+bank-atm-authorize = Авторизоваться
+bank-atm-eject = Извлечь карту
+bank-atm-end-session = Завершить сеанс
+bank-atm-status-wrong-pin = Неверный пароль.
+bank-atm-status-not-authorized = Сеанс не авторизован.
+bank-atm-status-no-card = Сначала вставьте ID-карту.
+bank-atm-status-card-mismatch = Эта карта не принадлежит вашему счёту.
+bank-atm-status-ready = Готово.
+bank-atm-status-enter-pin = Введите пароль карты.
+bank-atm-status-insert-card = Вставьте ID-карту для начала работы.
+
+bank-atm-window-title = Банкомат
+bank-atm-header = Центральный банк
+bank-atm-subtitle = Терминал личных счетов
+bank-tab-accounts = Счета
+bank-tab-operations = Операции
+bank-tab-account-description = Ваша банковская карта привязана к личному счёту ниже.
+bank-ui-masked-account = Счёт { $account }
+bank-ui-status-loading = Загрузка данных счёта...
+
+bank-name = Центральный банк
+bank-ui-history-starting-payroll = Стартовый баланс
+
+bank-tab-overview = Обзор
+bank-tab-transfers = Переводы
+
+bank-ui-history-transfer-out = Исходящий перевод
+bank-ui-history-transfer-in = Входящий перевод
+bank-ui-history-transfer-to = Кому: { $name } · { $account }
+bank-ui-history-transfer-from = От: { $name } · { $account }
+
+bank-ui-transfer-search-title = Найти получателя
+bank-ui-transfer-search-placeholder = Поиск по имени персонажа
+bank-ui-transfer-search-empty = Начните вводить имя персонажа.
+bank-ui-transfer-search-loading = Поиск...
+bank-ui-transfer-search-none = Персонажи не найдены.
+bank-ui-transfer-search-invalid = Поисковый запрос слишком длинный.
+bank-ui-transfer-search-rate-limited = Слишком много запросов. Подождите.
+bank-ui-transfer-search-error = Не удалось найти получателей.
+bank-ui-transfer-select = Выбрать
+bank-ui-transfer-selected = Получатель
+bank-ui-transfer-change = Изменить
+bank-ui-transfer-amount = Сумма
+bank-ui-transfer-available = Доступно: { $balance } кр.
+bank-ui-transfer-send = Отправить перевод
+bank-ui-transfer-confirm = Отправить { $amount } кр. персонажу { $name }?
+bank-ui-transfer-confirm-button = Подтвердить
+bank-ui-transfer-cancel = Отмена
+bank-ui-transfer-sending = Отправка перевода...
+bank-ui-transfer-success = Переведено { $amount } кр. персонажу { $name }.
+bank-ui-transfer-duplicate = Этот перевод уже был обработан.
+bank-ui-transfer-no-account = У вашего персонажа нет банковского счёта.
+bank-ui-transfer-error-recipient = Получатель не найден.
+bank-ui-transfer-error-recipient-account = У получателя нет действующего банковского счёта.
+bank-ui-transfer-error-station = Получатель не находится на вашей станции.
+bank-ui-transfer-error-self = Нельзя перевести деньги самому себе.
+bank-ui-transfer-error-invalid = Некорректный запрос перевода.
+bank-ui-transfer-error-failed = Не удалось выполнить перевод.
+
+bank-transfer-notification-title = Входящий перевод
+bank-transfer-notification-body = Вы получили { $amount } кр. от { $sender }.
+
+ent-BankATM = банкомат
+    .desc = Настенный терминал для личных банковских счетов.
+ent-BankCartridge = банковский картридж
+    .desc = Программа КПК для управления личным банковским счётом.

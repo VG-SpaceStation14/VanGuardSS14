@@ -130,7 +130,7 @@ public sealed partial class CharacterUIController : UIController, IOnStateEntere
             return;
         }
 
-        var (entity, objectives, briefing, jobId, entityName) = data;
+        var (entity, objectives, briefing, jobId, entityName, memories) = data; // VG-Tweak
 
         _window.SpriteView.SetEntity(entity);
 
@@ -140,6 +140,22 @@ public sealed partial class CharacterUIController : UIController, IOnStateEntere
         _window.SubText.Text = job != null ? Loc.GetString(job.Name) : null;
         _window.Objectives.RemoveAllChildren();
         _window.ObjectivesLabel.Visible = objectives.Any();
+        // VG-Tweak Start: Display memories in character info window.
+        _window.Memories.RemoveAllChildren();
+
+        foreach (var (memoryName, memoryValue) in memories)
+        {
+            var text = Loc.TryGetString(memoryName, out var localized, ("value", memoryValue))
+                ? localized
+                : $"{memoryName}: {memoryValue}";
+
+            _window.Memories.AddChild(new Label
+            {
+                Text = text,
+                Modulate = Color.Gray,
+            });
+        }
+        // VG-Tweak End
 
         foreach (var (groupId, conditions) in objectives)
         {

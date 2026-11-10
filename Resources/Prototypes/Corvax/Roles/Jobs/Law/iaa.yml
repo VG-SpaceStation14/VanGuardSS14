@@ -3,6 +3,9 @@
   name: job-name-iaa
   description: job-description-iaa
   playTimeTracker: JobIAA
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 450
+  # VG-Tweak End
   requirements:
   - !type:DepartmentTimeRequirement
     department: Command

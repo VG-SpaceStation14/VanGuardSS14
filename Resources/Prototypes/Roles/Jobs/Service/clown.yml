@@ -3,7 +3,9 @@
   name: job-name-clown
   description: job-description-clown
   playTimeTracker: JobClown
-  salary: 150 # VG-Tweak: economy
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 220
+  # VG-Tweak End
   requirements:
   - !type:OverallPlaytimeRequirement
       time: 3600 #1 hrs # Corvax-RoleTime

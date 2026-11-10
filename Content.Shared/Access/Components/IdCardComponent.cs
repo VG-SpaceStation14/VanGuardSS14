@@ -77,13 +77,14 @@ public sealed partial class IdCardComponent : Component
     [DataField]
     public bool CanMicrowave = true;
 
-    // VG-Tweak Start: economy - ID cards double as bank cards.
+    // VG-Tweak Start: economy - ID cards carry a bank account reference.
     /// <summary>
-    ///     The bank account this card is bound to, shown by the wallet UI.
+    ///     The bank account this card is bound to. The balance lives on the
+    ///     owner's mind; the card is an identifier/authorization token only.
     /// </summary>
     /// <remarks>
     ///     Deliberately not networked: the account id must only be revealed
-    ///     through the owner's bound UI state, never broadcast to clients that
+    ///     through the owner's bank UI state, never broadcast to clients that
     ///     merely see the card.
     /// </remarks>
     [DataField]

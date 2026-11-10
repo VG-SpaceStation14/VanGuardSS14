@@ -3,6 +3,9 @@
   name: job-name-senior-engineer
   description: job-description-senior-engineer
   playTimeTracker: JobSeniorEngineer
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 500
+  # VG-Tweak End
   requirements:
     - !type:RoleTimeRequirement
       role: JobAtmosphericTechnician

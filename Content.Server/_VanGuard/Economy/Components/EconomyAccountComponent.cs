@@ -23,6 +23,13 @@ public sealed partial class EconomyAccountComponent : Component
     public string OwnerName = string.Empty;
 
     /// <summary>
+    ///     Four-digit ATM password. Stored on the account, never on a PDA or
+    ///     client; the character can read it from the U-menu memory section.
+    /// </summary>
+    [DataField]
+    public string Pin = string.Empty;
+
+    /// <summary>
     ///     Current account balance.
     /// </summary>
     [DataField]
@@ -53,7 +60,14 @@ public sealed partial class EconomyAccountComponent : Component
     public List<EconomyTransaction> History = new();
 
     /// <summary>
-    ///     Whether the sign-on payroll bonus was already paid for this round.
+    ///     Whether the one-time starting balance has already been paid.
+    /// </summary>
+    [DataField]
+    public bool StartingBalancePaid;
+
+    /// <summary>
+    ///     Legacy compatibility flag from the previous starting-payroll
+    ///     implementation. It is not used to pay money.
     /// </summary>
     [DataField]
     public bool StartingPayrollReceived;
@@ -66,4 +80,7 @@ public sealed record EconomyTransaction(
     int ResultBalance,
     string Reason,
     string? ReasonData,
-    NetEntity? Counterparty);
+    NetEntity? Counterparty,
+    string? CounterpartyName = null,
+    string? CounterpartyAccount = null,
+    long? TransferId = null);

@@ -23,12 +23,14 @@ public sealed class CharacterInfoEvent : EntityEventArgs
     public readonly ProtoId<JobPrototype>? Job;
     public readonly Dictionary<string, List<ObjectiveInfo>> Objectives;
     public readonly string? Briefing;
+    public readonly Dictionary<string, string> Memory; // VG-Tweak: Added to allow character info window to display memories.
 
-    public CharacterInfoEvent(NetEntity netEntity, Dictionary<string, List<ObjectiveInfo>> objectives, string? briefing, ProtoId<JobPrototype>? job)
+    public CharacterInfoEvent(NetEntity netEntity, Dictionary<string, List<ObjectiveInfo>> objectives, string? briefing, ProtoId<JobPrototype>? job, Dictionary<string, string> memory) // VG-Tweak: character memories.
     {
         NetEntity = netEntity;
         Objectives = objectives;
         Briefing = briefing;
         Job = job;
+        Memory = memory; // VG-Tweak: Added to allow character info window to display memories.
     }
 }

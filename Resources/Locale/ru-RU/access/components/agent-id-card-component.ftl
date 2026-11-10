@@ -19,4 +19,6 @@ agent-id-ui-os-flavor = Когда возникают сомнения, никт
 # Get your mind out of the gutter.
 agent-id-ui-footer-flavor-left = Просто обычная ID карта, тут не на что смотреть
 agent-id-ui-footer-flavor-right = v2.0
-agent-id-ui-open-wallet = Кошелёк
+
+# VG-Tweak Start: ID-card wallet locale keys removed; banking is PDA/ATM-only.
+# VG-Tweak End

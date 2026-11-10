@@ -3,7 +3,9 @@
   name: job-name-cburn
   description: job-description-cburn
   playTimeTracker: JobCBURN
-  salary: 400 # VG-Tweak: economy
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 0
+  # VG-Tweak End
   setPreference: false
   startingGear: CBURNGear
   icon: "JobIconCBURN"

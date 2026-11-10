@@ -5,6 +5,9 @@
   name: job-name-station-ai
   description: job-description-station-ai
   playTimeTracker: JobStationAi
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 0
+  # VG-Tweak End
   requirements:
   - !type:RoleTimeRequirement
     role: JobBorg
@@ -20,6 +23,9 @@
   name: job-name-borg
   description: job-description-borg
   playTimeTracker: JobBorg
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 0
+  # VG-Tweak End
   requirements:
     - !type:OverallPlaytimeRequirement
       time: 10h

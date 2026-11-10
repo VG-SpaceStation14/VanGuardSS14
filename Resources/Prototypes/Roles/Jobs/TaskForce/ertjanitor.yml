@@ -3,6 +3,9 @@
   name: job-name-ertjanitor
   description: job-description-ertjanitor
   playTimeTracker: JobERTJanitor
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 0
+  # VG-Tweak End
   setPreference: false
   startingGear: ERTJanitorGearEVA
   icon: "JobIconERTJanitor"

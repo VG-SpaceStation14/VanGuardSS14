@@ -3,6 +3,9 @@
   name: job-name-ertchaplain
   description: job-description-ertchaplain
   playTimeTracker: JobERTChaplain
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 0
+  # VG-Tweak End
   setPreference: false
   startingGear: ERTChaplainGear
   icon: "JobIconERTChaplain"

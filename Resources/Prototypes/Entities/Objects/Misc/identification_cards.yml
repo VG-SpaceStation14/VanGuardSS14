@@ -58,19 +58,14 @@
   - type: MiningPoints
   # VG-Tweak End
 
-# VG-Tweak Start: economy - regular ID cards double as bank cards (wallet UI).
-# Only cards inheriting this get the wallet; prison/Cluwne/syndicate cards do not.
+# VG-Tweak Start: economy - regular ID cards carry a bank account reference.
+# The card identifies/authorizes the account; the balance lives on the mind and
+# all banking UI is provided by the PDA cartridge or an ATM.
 - type: entity
   parent: IDCardStandard
   id: BaseBankIDCard
   abstract: true
   components:
-  - type: ActivatableUI
-    key: enum.EconomyAccountUiKey.Key
-  - type: UserInterface
-    interfaces:
-      enum.EconomyAccountUiKey.Key:
-        type: EconomyWalletBoundUserInterface
   - type: NanoChatCard # VG-Tweak: Наночат
 # VG-Tweak End
 

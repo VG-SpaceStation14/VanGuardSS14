@@ -1,0 +1,19 @@
+- type: entity
+  parent: BasePDACartridge
+  id: BankCartridge
+  name: bank cartridge
+  description: A PDA program for managing a personal bank account.
+  components:
+  - type: Sprite
+    state: cart-y
+  - type: UIFragment
+    ui: !type:BankCartridgeUi
+  - type: Cartridge
+    programName: bank-program-name
+    icon:
+      sprite: _VanGuard/Structures/Machines/atm.rsi
+      state: atm_off
+    screenState:
+      sprite: _VanGuard/Objects/Devices/pda.rsi
+      state: id
+  - type: BankCartridge

@@ -3,6 +3,9 @@
   name: job-name-pilot
   description: job-description-pilot
   playTimeTracker: JobPilot
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 400
+  # VG-Tweak End
   requirements:
   - !type:DepartmentTimeRequirement
     department: Security

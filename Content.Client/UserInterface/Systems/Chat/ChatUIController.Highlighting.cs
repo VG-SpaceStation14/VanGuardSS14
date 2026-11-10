@@ -165,7 +165,7 @@ public sealed partial class ChatUIController : IOnSystemChanged<CharacterInfoSys
         if (!_charInfoIsAttach)
             return;
 
-        var (_, _, _, job, entityName) = data;
+        var (_, _, _, job, entityName, _) = data; // VG-Tweak
 
         // Mark this entity's name as our character name for the "UpdateHighlights" function.
         var newHighlights = "@" + entityName;

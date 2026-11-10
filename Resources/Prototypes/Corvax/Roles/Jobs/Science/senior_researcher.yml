@@ -3,6 +3,9 @@
   name: job-name-senior-researcher
   description: job-description-senior-researcher
   playTimeTracker: JobSeniorResearcher
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 500
+  # VG-Tweak End
   requirements:
     - !type:DepartmentTimeRequirement
       department: Science

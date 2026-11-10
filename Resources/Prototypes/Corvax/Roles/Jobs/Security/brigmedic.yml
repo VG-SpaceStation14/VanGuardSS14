@@ -3,6 +3,9 @@
   name: job-name-brigmedic
   description: job-description-brigmedic
   playTimeTracker: JobBrigmedic
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 420
+  # VG-Tweak End
   requirements:
   - !type:DepartmentTimeRequirement
     department: Medical

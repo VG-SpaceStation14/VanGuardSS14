@@ -3,6 +3,9 @@
   name: job-name-ertleader
   description: job-description-ertleader
   playTimeTracker: JobERTLeader
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 0
+  # VG-Tweak End
   setPreference: false
   startingGear: ERTLeaderGearEVA
   icon: "JobIconERTLeader"

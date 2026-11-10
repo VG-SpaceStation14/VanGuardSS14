@@ -3,7 +3,9 @@
   name: job-name-centcommoff
   description: job-description-centcommoff
   playTimeTracker: JobCentralCommandOfficial
-  salary: 500 # VG-Tweak: economy
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 0
+  # VG-Tweak End
   setPreference: false
   startingGear: CentcommGear
   icon: "JobIconNanotrasen"

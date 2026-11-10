@@ -3,7 +3,9 @@
   name: job-name-doctor
   description: job-description-doctor
   playTimeTracker: JobMedicalDoctor
-  salary: 300 # VG-Tweak: economy
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 400
+  # VG-Tweak End
   requirements:
     - !type:DepartmentTimeRequirement
       department: Medical

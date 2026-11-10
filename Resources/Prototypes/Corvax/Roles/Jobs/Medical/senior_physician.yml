@@ -3,6 +3,9 @@
   name: job-name-senior-physician
   description: job-description-senior-physician
   playTimeTracker: JobSeniorPhysician
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 500
+  # VG-Tweak End
   requirements:
     - !type:RoleTimeRequirement
       role: JobChemist

@@ -3,7 +3,7 @@
   name: job-name-miner
   description: job-description-miner
   playTimeTracker: JobMiner
-  salary: 350
+  salary: 400
   requirements:
   - !type:DepartmentTimeRequirement
     department: Cargo

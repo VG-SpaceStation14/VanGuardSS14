@@ -3,7 +3,9 @@
   name: job-name-hos
   description: job-description-hos
   playTimeTracker: JobHeadOfSecurity
-  salary: 400 # VG-Tweak: economy
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 550
+  # VG-Tweak End
   requirements:
     - !type:RoleTimeRequirement
       role: JobWarden

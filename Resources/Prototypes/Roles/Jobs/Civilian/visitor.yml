@@ -3,6 +3,9 @@
   name: job-name-visitor
   description: job-description-visitor
   playTimeTracker: JobVisitor
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 0
+  # VG-Tweak End
   icon: JobIconVisitor
   setPreference: false
   overrideConsoleVisibility: true
