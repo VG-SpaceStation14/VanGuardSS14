@@ -5,7 +5,9 @@
   name: job-name-cmo
   description: job-description-cmo
   playTimeTracker: JobChiefMedicalOfficer
-  salary: 400 # VG-Tweak: economy
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 550
+  # VG-Tweak End
   requirements:
     - !type:RoleTimeRequirement
       role: JobChemist

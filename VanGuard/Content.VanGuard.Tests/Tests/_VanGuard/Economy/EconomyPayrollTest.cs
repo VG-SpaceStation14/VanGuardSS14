@@ -1,3 +1,4 @@
+using System.Linq;
 #nullable enable
 using System.Collections.Generic;
 using Content.IntegrationTests.Fixtures;
@@ -64,7 +65,7 @@ public sealed class EconomyPayrollTest : GameTest
 ";
 
     [Test]
-    public async Task StartingPayroll_DepositedOnJobAdd()
+    public async Task StartingBalance_IsPaidOnceOnJobAdd()
     {
         var server = Server;
         var entMan = server.ResolveDependency<IEntityManager>();
@@ -74,10 +75,22 @@ public sealed class EconomyPayrollTest : GameTest
 
         var (mind, _) = await SpawnEmployee(server, entMan, coords, "EconomyTestPaidJob");
 
+        // Repeated account lookups must not mint the opening balance again.
+        await server.WaitPost(() =>
+        {
+            var bank = entMan.System<EconomyBankSystem>();
+            bank.EnsureAccount(mind);
+            bank.EnsureAccount(mind);
+        });
+        await server.WaitRunTicks(2);
+
         var account = entMan.GetComponent<EconomyAccountComponent>(mind);
         Assert.That(account.Balance, Is.EqualTo(1000),
-            "Adding a job with a salary must pay the starting payroll into the account.");
-        Assert.That(account.JobId, Is.EqualTo("EconomyTestPaidJob"));
+            "The opening balance must equal one full job salary.");
+        Assert.That(account.StartingBalancePaid, Is.True);
+        Assert.That(account.StartingPayrollReceived, Is.True);
+        Assert.That(account.History.Count(x => x.Reason == "starting-payroll"), Is.EqualTo(1),
+            "the opening balance must be recorded exactly once in history");
     }
 
     [Test]

@@ -3,7 +3,9 @@
   name: job-name-reporter
   description: job-description-reporter
   playTimeTracker: JobReporter
-  salary: 200 # VG-Tweak: economy
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 260
+  # VG-Tweak End
   startingGear: ReporterGear
   icon: "JobIconReporter"
   supervisors: job-supervisors-hop

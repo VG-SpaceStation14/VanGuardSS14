@@ -3,7 +3,9 @@
   name: job-name-chemist
   description: job-description-chemist
   playTimeTracker: JobChemist
-  salary: 300 # VG-Tweak: economy
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 400
+  # VG-Tweak End
   requirements:
     - !type:DepartmentTimeRequirement
       department: Medical

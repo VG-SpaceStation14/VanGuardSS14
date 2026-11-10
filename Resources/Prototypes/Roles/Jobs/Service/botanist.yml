@@ -3,7 +3,9 @@
   name: job-name-botanist
   description: job-description-botanist
   playTimeTracker: JobBotanist
-  salary: 200 # VG-Tweak: economy
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 300
+  # VG-Tweak End
   startingGear: BotanistGear
   icon: "JobIconBotanist"
   supervisors: job-supervisors-hop

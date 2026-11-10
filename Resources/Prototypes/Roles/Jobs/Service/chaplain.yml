@@ -3,7 +3,9 @@
   name: job-name-chaplain
   description: job-description-chaplain
   playTimeTracker: JobChaplain
-  salary: 200 # VG-Tweak: economy
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 280
+  # VG-Tweak End
   startingGear: ChaplainGear
   icon: "JobIconChaplain"
   supervisors: job-supervisors-hop

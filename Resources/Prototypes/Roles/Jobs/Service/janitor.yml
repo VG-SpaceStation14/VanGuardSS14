@@ -3,7 +3,9 @@
   name: job-name-janitor
   description: job-description-janitor
   playTimeTracker: JobJanitor
-  salary: 200 # VG-Tweak: economy
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 280
+  # VG-Tweak End
   startingGear: JanitorGear
   icon: "JobIconJanitor"
   supervisors: job-supervisors-hop

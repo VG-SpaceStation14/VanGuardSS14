@@ -3,7 +3,9 @@
   name: job-name-hop
   description: job-description-hop
   playTimeTracker: JobHeadOfPersonnel
-  salary: 400 # VG-Tweak: economy
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 550
+  # VG-Tweak End
   requirements:
     - !type:DepartmentTimeRequirement
       department: Engineering

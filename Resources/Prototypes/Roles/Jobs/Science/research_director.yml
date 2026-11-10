@@ -3,7 +3,9 @@
   name: job-name-rd
   description: job-description-rd
   playTimeTracker: JobResearchDirector
-  salary: 400 # VG-Tweak: economy
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 550
+  # VG-Tweak End
   requirements:
     #- !type:RoleTimeRequirement
     #  role: JobScientist

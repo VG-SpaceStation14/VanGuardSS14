@@ -3,7 +3,9 @@
   name: job-name-captain
   description: job-description-captain
   playTimeTracker: JobCaptain
-  salary: 500 # VG-Tweak: economy
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 700
+  # VG-Tweak End
   requirements:
     - !type:DepartmentTimeRequirement
       department: Engineering

@@ -3,7 +3,9 @@
   name: job-name-lawyer
   description: job-description-lawyer
   playTimeTracker: JobLawyer
-  salary: 250 # VG-Tweak: economy
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 380
+  # VG-Tweak End
   requirements:
     - !type:OverallPlaytimeRequirement
       time: 2.5h

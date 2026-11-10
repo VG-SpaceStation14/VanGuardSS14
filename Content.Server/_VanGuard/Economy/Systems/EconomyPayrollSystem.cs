@@ -5,6 +5,7 @@ using Content.Server.Station.Systems;
 using Content.Shared.Access.Systems;
 using Content.Shared.Cargo.Components;
 using Content.Shared.Mind;
+using Content.Shared.Mobs.Systems;
 using Content.Shared.Roles.Jobs;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
@@ -25,6 +26,7 @@ public sealed partial class EconomyPayrollSystem : EntitySystem
     [Dependency] private PopupSystem _popup = default!;
     [Dependency] private SharedIdCardSystem _idCard = default!;
     [Dependency] private SharedJobSystem _jobs = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
     private readonly ISawmill _sawmill = Logger.GetSawmill("economy-payroll");
 
     private static readonly SoundSpecifier PayrollSound = new SoundPathSpecifier("/Audio/Machines/beep.ogg");
@@ -37,6 +39,11 @@ public sealed partial class EconomyPayrollSystem : EntitySystem
             if (mindComp.UserId == null || mindComp.OwnedEntity is not { } owned)
                 continue;
 
+            // Do not pay dead or missing crew members; the salary is for active
+            // employees, not a passive stipend for an abandoned body.
+            if (!_mobState.IsAlive(owned))
+                continue;
+
             var account = _bank.EnsureAccount(mindUid, mindComp);
             if (!_jobs.MindTryGetJob(mindUid, out var job) || job == null || job.Salary is not > 0)
                 continue;
@@ -44,9 +51,9 @@ public sealed partial class EconomyPayrollSystem : EntitySystem
             var paid = job.Salary.Value;
             var stationUid = _station.GetOwningStation(owned);
 
-            // VG-Tweak: budget-funded jobs must have a resolvable station bank
-            // account; never mint money when the station or its funding account
-            // cannot be found.
+            // Budget-funded jobs must have a resolvable station bank account;
+            // never mint money when the station or its funding account cannot
+            // be found.
             if (job.PayrollFromStationBudget)
             {
                 if (stationUid == null || !TryComp<StationBankAccountComponent>(stationUid, out var stationBank))
@@ -69,6 +76,14 @@ public sealed partial class EconomyPayrollSystem : EntitySystem
 
             if (!deposited)
             {
+                // Never keep the station deduction when the personal deposit
+                // could not be applied.
+                if (job.PayrollFromStationBudget && stationUid != null &&
+                    TryComp<StationBankAccountComponent>(stationUid.Value, out var rollbackBank))
+                {
+                    _cargo.UpdateBankAccount((stationUid.Value, rollbackBank), paid, rollbackBank.PrimaryAccount);
+                }
+
                 _sawmill.Error($"Payroll deposit failed for job {job.ID} recipient {mindUid} amount {paid}.");
                 continue;
             }

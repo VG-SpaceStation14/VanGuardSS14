@@ -3,7 +3,9 @@
   name: job-name-detective
   description: job-description-detective
   playTimeTracker: JobDetective
-  salary: 300 # VG-Tweak: economy
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 420
+  # VG-Tweak End
   requirements:
     - !type:DepartmentTimeRequirement
       department: Security

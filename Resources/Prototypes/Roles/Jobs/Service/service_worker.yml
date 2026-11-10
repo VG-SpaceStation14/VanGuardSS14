@@ -3,7 +3,9 @@
   name: job-name-serviceworker
   description: job-description-serviceworker
   playTimeTracker: JobServiceWorker
-  salary: 200 # VG-Tweak: economy
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 260
+  # VG-Tweak End
   requirements:
   - !type:DepartmentTimeRequirement
     department: Service

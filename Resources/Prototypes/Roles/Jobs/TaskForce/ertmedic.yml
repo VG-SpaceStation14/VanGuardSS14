@@ -3,6 +3,9 @@
   name: job-name-ertmedic
   description: job-description-ertmedic
   playTimeTracker: JobERTMedical
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 0
+  # VG-Tweak End
   setPreference: false
   startingGear: ERTMedicalGearEVA
   icon: "JobIconERTMedic"

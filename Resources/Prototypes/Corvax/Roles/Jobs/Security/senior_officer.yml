@@ -3,6 +3,9 @@
   name: job-name-senior-officer
   description: job-description-senior-officer
   playTimeTracker: JobSeniorOfficer
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 500
+  # VG-Tweak End
   requirements:
     - !type:RoleTimeRequirement
       role: JobWarden

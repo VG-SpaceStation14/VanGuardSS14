@@ -3,7 +3,9 @@
   name: job-name-psychologist
   description: job-description-psychologist
   playTimeTracker: JobPsychologist
-  salary: 250 # VG-Tweak: economy
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 320
+  # VG-Tweak End
   startingGear: PsychologistGear
   icon: "JobIconPsychologist"
   supervisors: job-supervisors-cmo

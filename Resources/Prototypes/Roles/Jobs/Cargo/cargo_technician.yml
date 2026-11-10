@@ -3,7 +3,9 @@
   name: job-name-cargotech
   description: job-description-cargotech
   playTimeTracker: JobCargoTechnician
-  salary: 300 # VG-Tweak: economy
+  # VG-Tweak Start: economy salary rebalance.
+  salary: 350
+  # VG-Tweak End
   startingGear: CargoTechGear
   icon: "JobIconCargoTechnician"
   supervisors: job-supervisors-qm

@@ -9,7 +9,7 @@ namespace Content.Server._VanGuard.Economy.Rules.Components;
 public sealed partial class EconomyPaydayRuleComponent : Component
 {
     [DataField]
-    public TimeSpan Interval = TimeSpan.FromMinutes(5);
+    public TimeSpan Interval = TimeSpan.FromMinutes(10);
 
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     public TimeSpan NextPayday;
