@@ -36,9 +36,6 @@ ent-ActionToggleMesonVision = toggle meson vision
 ent-ClothingEyesGlassesMesonScanner = optical meson scanner
     .desc = Green-tinted goggles using a proprietary polymer. While worn, they let you see through walls.
 
-# Express delivery from the MinerMagnet
-ent-MiningShopDeliveryBag = delivery bag
-    .desc = A one-use bag with your ordered goods. Use it to spill the contents.
 
 # Ore bags
 ent-OreBag = ore bag

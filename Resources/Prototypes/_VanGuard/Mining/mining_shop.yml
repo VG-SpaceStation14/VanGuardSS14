@@ -139,29 +139,3 @@
     price: 300
   - id: CigarGoldCase
     price: 1000
-
-# One-use delivery bag used for express delivery: handed to the buyer, using it
-# dumps the ordered goods onto the floor and deletes the bag. It is Ginormous
-# itself so that it can carry other Ginormous goods (e.g. hardsuits, crushers).
-- type: entity
-  parent: BaseItem
-  id: MiningShopDeliveryBag
-  categories: [ HideSpawnMenu ]
-  components:
-  - type: Sprite
-    sprite: Objects/Specific/Cargo/mail_bag.rsi
-    state: icon
-  - type: Item
-    sprite: Objects/Specific/Cargo/mail_bag.rsi
-    size: Ginormous
-  - type: Storage
-    maxItemSize: Ginormous
-    grid:
-    - 0,0,8,6
-    quickInsert: true
-    areaInsert: true
-  - type: ContainerContainer
-    containers:
-      storagebase: !type:Container
-        ents: []
-  - type: MiningShopDeliveryBag

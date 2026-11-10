@@ -1,0 +1,29 @@
+- type: entity
+  id: DeliveryPod
+  name: delivery pod
+  description: A disposable supply pod. It lands hard and opens on impact.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: _VanGuard/Structures/Storage/Droppods/droppod.rsi
+    state: dropping
+  - type: ContainerContainer
+    containers:
+      delivery: !type:Container
+  - type: DeliveryPod
+
+- type: entity
+  id: DeliveryPodOpened
+  name: delivery pod
+  description: An opened supply pod surrounded by its impact crater.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: _VanGuard/Structures/Storage/Droppods/droppod_open.rsi
+    state: droppod_opened
+  - type: TimedDespawn
+    lifetime: 16
