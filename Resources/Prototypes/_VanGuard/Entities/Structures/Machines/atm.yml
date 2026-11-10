@@ -1,0 +1,55 @@
+- type: entity
+  parent: BaseWallmountMachine
+  id: BankATM
+  name: bank ATM
+  description: A wall-mounted terminal for personal bank accounts.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Structures/Machines/atm.rsi
+    snapCardinals: false
+    drawdepth: WallMountedItems
+    offset: 0, -0.25
+    layers:
+    - state: atm_off
+      map: ["enum.BankAtmVisualLayers.Base"]
+    - state: atm
+      map: ["enum.BankAtmVisualLayers.Unshaded"]
+      shader: unshaded
+      visible: false
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.PowerDeviceVisuals.Powered:
+        enum.BankAtmVisualLayers.Base:
+          True: { visible: true }
+          False: { visible: true }
+        enum.BankAtmVisualLayers.Unshaded:
+          True: { visible: true }
+          False: { visible: false }
+  - type: BankAtm
+    cardSlot:
+      whitelist:
+        components:
+        - IdCard
+      ejectOnBreak: true
+      swap: false
+  - type: ItemSlots
+  - type: ContainerContainer
+    containers:
+      IdCardSlot: !type:ContainerSlot
+  - type: ActivatableUI
+    key: enum.BankAtmUiKey.Key
+    singleUser: true
+  - type: ActivatableUIRequiresPower
+  - type: UserInterface
+    interfaces:
+      enum.BankAtmUiKey.Key:
+        type: BankAtmBoundUserInterface
+  - type: PointLight
+    enabled: false
+    castShadows: false
+    radius: 1.5
+  - type: LitOnPowered
+  - type: EmitSoundOnUIOpen
+    sound:
+      collection: Keyboard

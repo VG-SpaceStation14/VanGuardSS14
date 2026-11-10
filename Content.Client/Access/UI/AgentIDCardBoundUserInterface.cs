@@ -25,7 +25,6 @@ public sealed class AgentIDCardBoundUserInterface(EntityUid owner, Enum uiKey) :
         _window.OnNameChanged += OnNameChanged;
         _window.OnJobChanged += OnJobChanged;
         _window.OnJobIconChanged += OnJobIconChanged;
-        _window.OnOpenWallet += OnOpenWallet;
 
         ProtoId<JobIconPrototype> currentIcon = default;
         if (EntMan.TryGetComponent<IdCardComponent>(Owner, out var card))
@@ -63,8 +62,6 @@ public sealed class AgentIDCardBoundUserInterface(EntityUid owner, Enum uiKey) :
         SendPredictedMessage(new AgentIDCardJobIconChangedMessage(newJobIconId));
     }
 
-    private void OnOpenWallet()
-    {
-        SendPredictedMessage(new AgentIDCardOpenWalletMessage());
-    }
+    // VG-Tweak Start: ID-card wallet UI removed; banking is PDA/ATM-only.
+    // VG-Tweak End
 }

@@ -4,6 +4,8 @@ using Content.Server._VanGuard.Economy.Components;
 using Content.Server.Mind;
 using Content.Shared.Database;
 using Content.Shared.Mind;
+using Content.Shared._VanGuard.Economy;
+using Content.Shared._VanGuard.Mind;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
@@ -44,19 +46,38 @@ public sealed partial class EconomyBankSystem : EntitySystem
         if (!IsValidAccountId(account.AccountId))
             account.AccountId = GenerateUniqueAccountId();
 
+        if (string.IsNullOrWhiteSpace(account.Pin) || !account.Pin.All(char.IsDigit) || account.Pin.Length != 4)
+            account.Pin = GeneratePin();
+
+        // Accounts created by the previous implementation may already have
+        // received a starting payment. Do not mint that payment again.
+        if (account.StartingPayrollReceived)
+            account.StartingBalancePaid = true;
+
         if (Resolve(mindUid, ref mind, false) && !string.IsNullOrWhiteSpace(mind.CharacterName)
             && account.OwnerName != mind.CharacterName)
             account.OwnerName = mind.CharacterName;
 
+        if (Resolve(mindUid, ref mind, false))
+        {
+            mind.AddMemory(new Memory("character-info-memory-pin", account.Pin));
+            mind.AddMemory(new Memory("character-info-memory-account", account.AccountId));
+        }
+
         return account;
     }
 
-    private static bool IsValidAccountId(string? accountId)
+    public static bool IsValidAccountId(string? accountId)
     {
         if (string.IsNullOrWhiteSpace(accountId) || accountId.Length != 12)
             return false;
 
         return accountId.All(char.IsDigit);
+    }
+
+    private string GeneratePin()
+    {
+        return _random.Next(1000, 10000).ToString();
     }
 
     private string GenerateUniqueAccountId()
@@ -132,18 +153,78 @@ public sealed partial class EconomyBankSystem : EntitySystem
 
     public bool Transfer(Entity<EconomyAccountComponent> from, Entity<EconomyAccountComponent> to, int amount, string reason)
     {
-        if (!Withdraw(from, amount, reason, GetNetEntity(to.Owner)))
+        return TransferAtomic(from, to, amount, reason, reason);
+    }
+
+    /// <summary>
+    ///     Moves money between two accounts as one operation. Both resulting
+    ///     balances are computed before either balance or history is touched, so
+    ///     a failure cannot leave a half-completed transfer behind.
+    /// </summary>
+    public bool TransferAtomic(
+        Entity<EconomyAccountComponent> from,
+        Entity<EconomyAccountComponent> to,
+        int amount,
+        string reasonOut,
+        string reasonIn,
+        long transferId = 0,
+        string? fromName = null,
+        string? toName = null)
+    {
+        if (amount <= 0
+            || from.Owner == to.Owner
+            || string.Equals(from.Comp.AccountId, to.Comp.AccountId, StringComparison.Ordinal)
+            || from.Comp.Balance < amount)
+        {
             return false;
+        }
 
-        if (Deposit(to, amount, reason, GetNetEntity(from.Owner)))
-            return true;
+        int newFromBalance;
+        int newToBalance;
+        try
+        {
+            checked
+            {
+                newFromBalance = from.Comp.Balance - amount;
+                newToBalance = to.Comp.Balance + amount;
+            }
+        }
+        catch (OverflowException)
+        {
+            _sawmill.Warning($"Transfer overflow from {from.Comp.AccountId} to {to.Comp.AccountId}. Amount: {amount}.");
+            return false;
+        }
 
-        _sawmill.Error($"Transfer deposit failed. Attempting rollback from {to.Comp.AccountId} to {from.Comp.AccountId}. Amount: {amount}. Reason: {reason}");
+        from.Comp.Balance = newFromBalance;
+        to.Comp.Balance = newToBalance;
 
-        if (!Deposit(from, amount, $"rollback: {reason}", GetNetEntity(to.Owner)))
-            _sawmill.Error($"Transfer rollback failed for account {from.Comp.AccountId}. Manual intervention may be required.");
+        fromName = string.IsNullOrWhiteSpace(fromName) ? GetAccountOwnerName(from) : fromName;
+        toName = string.IsNullOrWhiteSpace(toName) ? GetAccountOwnerName(to) : toName;
+        var fromAccount = BankAccountFormat.Mask(from.Comp.AccountId);
+        var toAccount = BankAccountFormat.Mask(to.Comp.AccountId);
+        var linkedTransferId = transferId == 0 ? (long?) null : transferId;
 
-        return false;
+        AddTransaction(from, -amount, reasonOut, null, GetNetEntity(to.Owner), toName, toAccount, linkedTransferId);
+        AddTransaction(to, amount, reasonIn, null, GetNetEntity(from.Owner), fromName, fromAccount, linkedTransferId);
+
+        _adminLog.Add(LogType.Action, LogImpact.Low,
+            $"Account {from.Comp.AccountId} sent {amount} to {to.Comp.AccountId}. Transfer id: {transferId}. New balance: {from.Comp.Balance}");
+        _adminLog.Add(LogType.Action, LogImpact.Low,
+            $"Account {to.Comp.AccountId} received {amount} from {from.Comp.AccountId}. Transfer id: {transferId}. New balance: {to.Comp.Balance}");
+
+        var fromChanged = new BankAccountChangedEvent(from.Owner);
+        RaiseLocalEvent(ref fromChanged);
+        var toChanged = new BankAccountChangedEvent(to.Owner);
+        RaiseLocalEvent(ref toChanged);
+        return true;
+    }
+
+    private string GetAccountOwnerName(Entity<EconomyAccountComponent> account)
+    {
+        if (TryComp<MindComponent>(account.Owner, out var mind) && !string.IsNullOrWhiteSpace(mind.CharacterName))
+            return mind.CharacterName!;
+
+        return account.Comp.OwnerName;
     }
 
     private bool AdjustBalance(Entity<EconomyAccountComponent> account, int delta, string reason, NetEntity? counterparty = null, string? reasonData = null)
@@ -162,6 +243,11 @@ public sealed partial class EconomyBankSystem : EntitySystem
 
             _adminLog.Add(LogType.Action, LogImpact.Low,
                 $"Account {account.Comp.AccountId} ({account.Comp.OwnerName}) adjusted by {delta}. Reason: {reason}. New balance: {account.Comp.Balance}");
+
+            // Notify every open account view (PDA, ATM, multiple PDAs) and
+            // every payroll/ATM operation through the same event.
+            var changed = new BankAccountChangedEvent(account.Owner);
+            RaiseLocalEvent(ref changed);
             return true;
         }
         catch (OverflowException)
@@ -171,9 +257,26 @@ public sealed partial class EconomyBankSystem : EntitySystem
         }
     }
 
-    private void AddTransaction(Entity<EconomyAccountComponent> account, int delta, string reason, string? reasonData, NetEntity? counterparty)
+    private void AddTransaction(
+        Entity<EconomyAccountComponent> account,
+        int delta,
+        string reason,
+        string? reasonData,
+        NetEntity? counterparty,
+        string? counterpartyName = null,
+        string? counterpartyAccount = null,
+        long? transferId = null)
     {
-        account.Comp.History.Add(new EconomyTransaction(_timing.CurTime, delta, account.Comp.Balance, reason, reasonData, counterparty));
+        account.Comp.History.Add(new EconomyTransaction(
+            _timing.CurTime,
+            delta,
+            account.Comp.Balance,
+            reason,
+            reasonData,
+            counterparty,
+            counterpartyName,
+            counterpartyAccount,
+            transferId));
         if (account.Comp.History.Count <= account.Comp.MaxHistory)
             return;
 

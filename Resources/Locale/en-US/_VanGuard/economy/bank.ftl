@@ -1,0 +1,105 @@
+bank-program-name = Bank
+bank-atm-title = Bank ATM
+
+bank-ui-no-account = No bank account linked to this character.
+bank-ui-personal-account = Personal account
+bank-ui-account = Account { $account } · { $owner }
+bank-ui-account-holder = Account holder
+bank-ui-balance = Balance: { $balance } cr
+bank-ui-available-balance = Available balance
+bank-ui-balance-amount = { $balance } cr
+bank-ui-amount = Amount
+bank-ui-amount-placeholder = Enter amount
+bank-ui-max = Max
+bank-ui-deposit = Deposit cash
+bank-ui-deposit-all = Deposit all cash
+bank-ui-withdraw = Withdraw cash
+bank-ui-cash-available = Cash in hand: { $cash } cr
+bank-ui-history = Recent transactions
+bank-ui-history-count = Transactions: { $count }
+bank-ui-history-empty = No transactions yet.
+bank-ui-history-deposit = Cash deposit
+bank-ui-history-withdraw = Cash withdrawal
+bank-ui-history-payroll = Salary
+bank-ui-history-purchase = Purchase
+
+bank-ui-status-success = Operation completed.
+bank-ui-status-invalid-amount = Enter a positive amount.
+bank-ui-status-insufficient-funds = Insufficient account balance.
+bank-ui-status-no-account = No personal bank account found.
+bank-ui-status-no-cash = You are not holding enough cash.
+bank-ui-status-cash-too-large = That cash stack is too large for this operation.
+bank-ui-status-duplicate = This operation was already handled.
+bank-ui-status-invalid = The bank rejected the operation.
+bank-ui-result-deposit = +{ $amount } cr · Balance: { $balance } cr
+bank-ui-result-deposit-all = +{ $amount } cr · Balance: { $balance } cr · Cash left: { $cash } cr
+bank-ui-result-withdraw = -{ $amount } cr · Balance: { $balance } cr
+bank-atm-insert-card = Insert your ID card.
+bank-atm-card-inserted = Card: { $owner }
+bank-atm-pin = Bank card PIN
+bank-atm-authorize = Authorize
+bank-atm-eject = Eject card
+bank-atm-end-session = End session
+bank-atm-status-wrong-pin = Incorrect PIN.
+bank-atm-status-not-authorized = The session is not authorized.
+bank-atm-status-no-card = Insert your ID card first.
+bank-atm-status-card-mismatch = This card does not belong to your account.
+bank-atm-status-ready = Ready.
+bank-atm-status-enter-pin = Enter your card PIN.
+bank-atm-status-insert-card = Insert your ID card to begin.
+
+bank-atm-window-title = Bank ATM
+bank-atm-header = Central Bank
+bank-atm-subtitle = Personal accounts terminal
+bank-tab-accounts = Accounts
+bank-tab-operations = Operations
+bank-tab-account-description = Your bank card is linked to the personal account below.
+bank-ui-masked-account = Account { $account }
+bank-ui-status-loading = Loading account data...
+
+bank-name = Central Bank
+bank-ui-history-starting-payroll = Deposit cash
+
+bank-tab-overview = Overview
+bank-tab-transfers = Transfers
+
+bank-ui-history-transfer-out = Outgoing transfer
+bank-ui-history-transfer-in = Incoming transfer
+bank-ui-history-transfer-to = To: { $name } · { $account }
+bank-ui-history-transfer-from = From: { $name } · { $account }
+
+bank-ui-transfer-search-title = Find recipient
+bank-ui-transfer-search-placeholder = Search by character name
+bank-ui-transfer-search-empty = Start typing a character name.
+bank-ui-transfer-search-loading = Searching...
+bank-ui-transfer-search-none = No characters found.
+bank-ui-transfer-search-invalid = The search query is too long.
+bank-ui-transfer-search-rate-limited = Too many searches. Wait a moment.
+bank-ui-transfer-search-error = Could not search for recipients.
+bank-ui-transfer-select = Select
+bank-ui-transfer-selected = Recipient
+bank-ui-transfer-change = Change
+bank-ui-transfer-amount = Amount
+bank-ui-transfer-available = Available: { $balance } cr
+bank-ui-transfer-send = Send transfer
+bank-ui-transfer-confirm = Send { $amount } cr to { $name }?
+bank-ui-transfer-confirm-button = Confirm
+bank-ui-transfer-cancel = Cancel
+bank-ui-transfer-sending = Sending transfer...
+bank-ui-transfer-success = Transferred { $amount } cr to { $name }.
+bank-ui-transfer-duplicate = This transfer was already processed.
+bank-ui-transfer-no-account = Your character has no bank account.
+bank-ui-transfer-error-recipient = Recipient not found.
+bank-ui-transfer-error-recipient-account = Recipient has no active bank account.
+bank-ui-transfer-error-station = Recipient is not on your station.
+bank-ui-transfer-error-self = You cannot transfer money to yourself.
+bank-ui-transfer-error-invalid = The transfer request is invalid.
+bank-ui-transfer-error-failed = The transfer could not be completed.
+
+bank-transfer-notification-title = Incoming transfer
+bank-transfer-notification-body = You received { $amount } cr from { $sender }.
+
+ent-BankATM = bank ATM
+    .desc = A wall-mounted terminal for personal bank accounts.
+ent-BankCartridge = bank cartridge
+    .desc = A PDA program for managing a personal bank account.

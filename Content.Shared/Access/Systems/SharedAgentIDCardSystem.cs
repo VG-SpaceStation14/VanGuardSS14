@@ -16,7 +16,9 @@ public abstract partial class SharedAgentIdCardSystem : EntitySystem
     [Dependency] private SharedIdCardSystem _card = default!;
     [Dependency] private SharedJobSystem _job = default!;
     [Dependency] private SharedJobStatusSystem _jobStatus = default!;
-    [Dependency] private SharedUserInterfaceSystem _ui = default!;
+
+    // VG-Tweak Start: ID-card wallet UI removed; banking is PDA/ATM-only.
+    // VG-Tweak End
 
     [SubscribeLocalEvent]
     private void OnVoiceMaskNameChanged(Entity<AgentIDCardComponent> ent,
@@ -63,20 +65,8 @@ public abstract partial class SharedAgentIdCardSystem : EntitySystem
         UpdateUi(ent);
     }
 
-    [SubscribeLocalEvent]
-    private void OnOpenWallet(Entity<AgentIDCardComponent> ent, ref AgentIDCardOpenWalletMessage args)
-    {
-        // The agent card's own ActivatableUI key is taken by the agent window,
-        // so the wallet BUI is opened explicitly through the UI system. The
-        // economy wallet system binds the owner by the card's bank account.
-        if (!TryComp<IdCardComponent>(ent, out _))
-            return;
-
-        if (args.Actor is not { Valid: true } user)
-            return;
-
-        _ui.OpenUi((ent.Owner, null), Content.Shared._VanGuard.Economy.EconomyAccountUiKey.Key, user);
-    }
+    // VG-Tweak Start: ID-card wallet UI removed; banking is PDA/ATM-only.
+    // VG-Tweak End
 
     /// <summary>
     /// Update the agent id UI with new component info.
@@ -124,12 +114,5 @@ public sealed class AgentIDCardJobIconChangedMessage(ProtoId<JobIconPrototype> i
     public ProtoId<JobIconPrototype> JobIconId { get; } = icon;
 }
 
-/// <summary>
-/// Sent from the agent ID UI to open the card's bank wallet. The agent card's
-/// own ActivatableUI key is used for the agent window, so the wallet needs an
-/// explicit activation path of its own.
-/// </summary>
-[Serializable, NetSerializable]
-public sealed class AgentIDCardOpenWalletMessage : BoundUserInterfaceMessage
-{
-}
+// VG-Tweak Start: ID-card wallet UI removed; banking is PDA/ATM-only.
+// VG-Tweak End

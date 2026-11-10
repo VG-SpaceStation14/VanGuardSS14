@@ -168,7 +168,7 @@ public record struct CartridgeDeactivatedEvent(Entity<CartridgeLoaderComponent> 
 /// This is used for the initial ui state update because updating the ui in the activate event doesn't work.
 /// </remarks>
 [ByRefEvent]
-public record struct CartridgeUiReadyEvent(Entity<CartridgeLoaderComponent> Loader);
+public record struct CartridgeUiReadyEvent(Entity<CartridgeLoaderComponent> Loader, EntityUid Actor); // VG-Tweak
 
 /// <summary>
 /// Gets sent by the cartridge loader system to the cartridge loader entity so another system.

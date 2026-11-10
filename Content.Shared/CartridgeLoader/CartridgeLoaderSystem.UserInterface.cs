@@ -25,7 +25,7 @@ public sealed partial class CartridgeLoaderSystem
             case CartridgeUiMessageAction.UIReady:
                 if (ent.Comp.ActiveProgram is { } foreground)
                 {
-                    var evt = new CartridgeUiReadyEvent(ent);
+                    var evt = new CartridgeUiReadyEvent(ent, message.Actor); // VG-Tweak: Added to allow programs to know when their UI is ready.
                     RaiseLocalEvent(foreground, ref evt);
                 }
                 break;

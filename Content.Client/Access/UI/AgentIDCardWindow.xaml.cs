@@ -27,7 +27,8 @@ public sealed partial class AgentIDCardWindow : FancyWindow
 
     public event Action<ProtoId<JobIconPrototype>>? OnJobIconChanged;
 
-    public event Action? OnOpenWallet;
+    // VG-Tweak Start: ID-card wallet UI removed; banking is PDA/ATM-only.
+    // VG-Tweak End
 
     public AgentIDCardWindow()
     {
@@ -47,7 +48,8 @@ public sealed partial class AgentIDCardWindow : FancyWindow
         AgentTabs.SetTabTitle(0, Loc.GetString("agent-id-ui-tab-settings"));
         AgentTabs.SetTabTitle(1, Loc.GetString("agent-id-ui-tab-job-icons"));
 
-        OpenWalletButton.OnPressed += _ => OnOpenWallet?.Invoke();
+        // VG-Tweak Start: ID-card wallet UI removed; banking is PDA/ATM-only.
+        // VG-Tweak End
     }
 
     /// <summary>
