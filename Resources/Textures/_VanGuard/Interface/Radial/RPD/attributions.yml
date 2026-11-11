@@ -1,0 +1,51 @@
+- files:
+  - AirAlarm.png
+  - AtmosDeviceFanTiny.png
+  - deconstruct.png
+  - Devices.png
+  - DisposalBend.png
+  - DisposalJunctionFlipped.png
+  - DisposalJunction.png
+  - DisposalPipe.png
+  - DisposalRouterFlipped.png
+  - DisposalRouter.png
+  - DisposalSignalRouterFlipped.png
+  - DisposalSignalRouter.png
+  - DisposalTagger.png
+  - DisposalTrunk.png
+  - DisposalUnit.png
+  - DisposalYJunction.png
+  - FireAlarm.png
+  - FloorDrain.png
+  - GasDualPortVentPump.png
+  - GasFilterFlipped.png
+  - GasFilter.png
+  - GasMixerFlipped.png
+  - GasMixer.png
+  - GasOutletInjector.png
+  - GasPassiveGate.png
+  - GasPassiveVent.png
+  - GasPipeBend.png
+  - GasPipeFourway.png
+  - GasPipeHalf.png
+  - Gaspipes.png
+  - GasPipeStraight.png
+  - GasPipeTJunction.png
+  - GasPort.png
+  - GasPressurePump.png
+  - GasValve.png
+  - GasVentPump.png
+  - GasVentScrubber.png
+  - GasVolumePump.png
+  - HeatExchanger.png
+  - MailingUnit.png
+  - PressureControlledValve.png
+  - SignalControlledValve.png
+  license: "CC-BY-SA-3.0"
+  copyright: "AdventureTimeSS14/space_station_ADT, Resources/Textures/ADT/Interface/Radial/RPD; original author unknown"
+  source: "https://github.com/AdventureTimeSS14/space_station_ADT"
+
+- files: ["AirSensor.png"]
+  license: "CC-BY-SA-3.0"
+  copyright: "Taken from /tg/station on commit https://github.com/tgstation/tgstation/commit/1dd5021b2c5b64e954935bdf77bc973c34016a04"
+  source: "https://github.com/tgstation/tgstation/commit/1dd5021b2c5b64e954935bdf77bc973c34016a04"
