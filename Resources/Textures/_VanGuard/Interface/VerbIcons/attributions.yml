@@ -1,0 +1,9 @@
+- files: ["bell.svg.png"]
+  license: "CC-BY-4.0"
+  copyright: "bell.svg taken from https://coreui.io/icons/; licensed under CC BY 4.0; converted to PNG"
+  source: "https://coreui.io/icons/"
+
+- files: ["hamburger_icon.svg.png"]
+  license: "Custom"
+  copyright: "Public domain: Released into the public domain"
+  source: "https://github.com/AdventureTimeSS14/space_station_ADT"
