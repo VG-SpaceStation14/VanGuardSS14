@@ -6,6 +6,7 @@ using Content.Client._VanGuard.Discord;
 using Content.Shared.Preferences.Loadouts;
 using Content.Shared.Preferences.Loadouts.Effects;
 using Content.Shared.Humanoid.Prototypes;
+using Content.Shared.Humanoid.Markings;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
 using Robust.Shared.Maths;
@@ -51,6 +52,12 @@ public sealed partial class ClientSponsorManager : ISharedSponsorsManager
                 if (species.SponsorOnly)
                     result.Add(species.ID);
             }
+
+            foreach (var marking in _protoManager.EnumeratePrototypes<MarkingPrototype>())
+            {
+                if (marking.SponsorOnly)
+                    result.Add(marking.ID);
+            }
         }
 
         return result;
@@ -87,6 +94,12 @@ public sealed partial class ClientSponsorManager : ISharedSponsorsManager
         }
 
         if (_protoManager.TryIndex<SpeciesPrototype>(prototypeId, out var species) && species.SponsorOnly)
+        {
+            tierName = Loc.GetString("discord-tier-3");
+            return true;
+        }
+
+        if (_protoManager.TryIndex<MarkingPrototype>(prototypeId, out var marking) && marking.SponsorOnly)
         {
             tierName = Loc.GetString("discord-tier-3");
             return true;

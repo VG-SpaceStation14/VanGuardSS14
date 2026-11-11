@@ -10,6 +10,7 @@ using Content.Server._VanGuard.Discord;
 using Content.Shared.Preferences.Loadouts;
 using Content.Shared.Preferences.Loadouts.Effects;
 using Content.Shared.Humanoid.Prototypes;
+using Content.Shared.Humanoid.Markings;
 using Npgsql;
 using Robust.Server.Player;
 using Robust.Shared.Enums;
@@ -129,6 +130,12 @@ public sealed partial class DiscordSponsorManager : ISharedSponsorsManager
                 if (species.SponsorOnly)
                     result.Add(species.ID);
             }
+
+            foreach (var marking in _protoManager.EnumeratePrototypes<MarkingPrototype>())
+            {
+                if (marking.SponsorOnly)
+                    result.Add(marking.ID);
+            }
         }
 
         return result;
@@ -154,6 +161,12 @@ public sealed partial class DiscordSponsorManager : ISharedSponsorsManager
             return true;
         }
 
+        if (_protoManager.TryIndex<MarkingPrototype>(prototypeId, out var marking) && marking.SponsorOnly)
+        {
+            tierName = Loc.GetString("discord-tier-3");
+            return true;
+        }
+
         tierName = null;
         return false;
     }
@@ -171,7 +184,8 @@ public sealed partial class DiscordSponsorManager : ISharedSponsorsManager
         var tier = CurrentTier(userId);
         if (tier <= 0) { color = null; return false; }
 
-        color = tier switch{
+        color = tier switch
+        {
             3 => Color.FromHex("#00ffaa"),
             2 => Color.FromHex("#00a6b2"),
             _ => Color.FromHex("#cc0000")
