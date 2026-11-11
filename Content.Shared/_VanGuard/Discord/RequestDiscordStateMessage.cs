@@ -4,7 +4,6 @@ using Robust.Shared.Serialization;
 
 namespace Content.Shared._VanGuard.Discord;
 
-[Serializable, NetSerializable]
 public sealed class RequestDiscordStateMessage : NetMessage
 {
     public override MsgGroups MsgGroup => MsgGroups.Command;
@@ -12,7 +11,6 @@ public sealed class RequestDiscordStateMessage : NetMessage
     public override void WriteToBuffer(NetOutgoingMessage buffer, IRobustSerializer serializer) { }
 }
 
-[Serializable, NetSerializable]
 public sealed class RequestDiscordCodeMessage : NetMessage
 {
     public override MsgGroups MsgGroup => MsgGroups.Command;
@@ -21,7 +19,6 @@ public sealed class RequestDiscordCodeMessage : NetMessage
     public override void WriteToBuffer(NetOutgoingMessage buffer, IRobustSerializer serializer) { }
 }
 
-[Serializable, NetSerializable]
 public sealed class DiscordLinkCodeMessage : NetMessage
 {
     public string Code = string.Empty;
@@ -35,7 +32,6 @@ public sealed class DiscordLinkCodeMessage : NetMessage
         => buffer.Write(Code);
 }
 
-[Serializable, NetSerializable]
 public sealed class DiscordLinkStateMessage : NetMessage
 {
     public bool IsLinked;

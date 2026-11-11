@@ -77,13 +77,13 @@ public sealed partial class DiscordSponsorManager : ISharedSponsorsManager
                 _cache.Remove(userId, out _);
             }
         }
-        catch { /* Игнорируем ошибки БД */ }
+        catch { /* Ignore database errors */ }
     }
 
     private int CurrentTier(NetUserId userId)
     {
         if (!_cache.TryGetValue(userId, out var entry)) return 0;
-        return entry.Until > DateTime.UtcNow ? entry.Tier : 0;
+        return IsSubscriptionActive(entry.Until) ? entry.Tier : 0;
     }
 
     public int GetServerTier(NetUserId userId) => CurrentTier(userId);
@@ -181,9 +181,23 @@ public sealed partial class DiscordSponsorManager : ISharedSponsorsManager
 
     public int GetServerExtraCharSlots(NetUserId userId)
     {
-        var tier = CurrentTier(userId);
-        return tier switch { 3 => 10, 2 => 5, 1 => 2, _ => 0 };
+        return GetExtraSlotsForTier(CurrentTier(userId));
     }
 
-    public bool HaveServerPriorityJoin(NetUserId userId) => CurrentTier(userId) >= 2;
+    public bool HaveServerPriorityJoin(NetUserId userId)
+    {
+        return HasPriorityJoinForTier(CurrentTier(userId));
+    }
+
+    public static bool IsSubscriptionActive(DateTime until) => until > DateTime.UtcNow;
+
+    public static int GetExtraSlotsForTier(int tier) => tier switch
+    {
+        3 => 10,
+        2 => 5,
+        1 => 2,
+        _ => 0
+    };
+
+    public static bool HasPriorityJoinForTier(int tier) => tier >= 2;
 }
