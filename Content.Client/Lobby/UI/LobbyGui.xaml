@@ -86,6 +86,9 @@
                                     <Button Name="ReadyButton" Access="Public" ToggleMode="True" Text="ПРИСОЕДИНИТЬСЯ" HorizontalExpand="True" MinHeight="40" StyleClasses="ButtonBig" />
                                     <cc:UICommandButton Command="observe" Name="ObserveButton" Access="Public" Text="Наблюдать" HorizontalExpand="True" MinHeight="32" WindowType="{x:Type lobbyUi:ObserveWarningWindow}" />
                                     <controls:Separator Thickness="1" Margin="2 4" Modulate="#FFFFFF30" />
+                                    <!-- VG-Tweak: Sponsor Button -->
+                                    <Button Name="SponsorInfoButton" Access="Public" StyleClasses="Caution" HorizontalExpand="True" MinHeight="32" />
+                                    <!-- VG-Tweak end -->
                                     <Button Name="CharacterSetup" Access="Public" Text="Персонаж" HorizontalExpand="True" MinHeight="32" />
                                     <!-- VG-Tweak: Admin buttons -->
                                     <BoxContainer Name="AdminButtons" Orientation="Vertical" SeparationOverride="4" Visible="False">
@@ -97,6 +100,7 @@
                                     </BoxContainer>
                                     <!-- VG-Tweak end -->
                                     <controls:Separator Thickness="1" Margin="2 4" Modulate="#FFFFFF30" />
+                                    <!-- VG-Tweak: Discord Button -->
                                     <Button Name="DiscordButton" Access="Public" Text="Привязка Discord" HorizontalExpand="True" MinHeight="32" />
                                     <!-- VG-Tweak end -->
                                     <Button Name="OptionsButton" Access="Public" Text="Настройки" HorizontalExpand="True" MinHeight="32" />
