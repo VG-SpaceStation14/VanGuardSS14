@@ -62,12 +62,6 @@ public sealed class VGCCVars
         CVarDef.Create("vg.lavaland_roundstart", false, CVar.SERVERONLY);
 
     /// <summary>
-    /// Link to the Discord server for binding.
-    /// </summary>
-    public static readonly CVarDef<string> DiscordInviteUrl =
-        CVarDef.Create("vg.discord.invite_url", "https://discord.gg/nW73CdBYkg", CVar.SERVER | CVar.CLIENT | CVar.REPLICATED | CVar.ARCHIVE);
-
-    /// <summary>
     /// Secret token for communication with the Python bot.
     /// </summary>
     public static readonly CVarDef<string> DiscordBotSecret =
