@@ -29,7 +29,9 @@ public sealed partial class VgDiscordAuthManager
     {
         _log = Logger.GetSawmill("vg_discord_auth");
 
-        _net.RegisterNetMessage<RequestDiscordLinkMessage>(OnRequestLink);
+        _net.RegisterNetMessage<RequestDiscordStateMessage>(OnRequestState);
+        _net.RegisterNetMessage<RequestDiscordCodeMessage>(OnRequestCode);
+
         _net.RegisterNetMessage<DiscordLinkCodeMessage>();
         _net.RegisterNetMessage<DiscordLinkStateMessage>();
 
@@ -39,19 +41,20 @@ public sealed partial class VgDiscordAuthManager
 
     private void OnPlayerStatusChanged(object? sender, SessionStatusEventArgs e)
     {
-        // Нас интересует момент, когда игрок подключился к серверу
         if (e.NewStatus == SessionStatus.Connected)
-        {
             _ = SendCurrentState(e.Session);
-        }
     }
 
-    private async void OnRequestLink(RequestDiscordLinkMessage msg)
+    private void OnRequestState(RequestDiscordStateMessage msg)
+    {
+        var session = _player.GetSessionByChannel(msg.MsgChannel);
+        if (session != null) _ = SendCurrentState(session);
+    }
+
+    private async void OnRequestCode(RequestDiscordCodeMessage msg)
     {
         var session = _player.GetSessionByChannel(msg.MsgChannel);
         if (session == null || _db.DataSource == null) return;
-
-        await SendCurrentState(session);
 
         await using var conn = await _db.DataSource.OpenConnectionAsync();
         await using (var cmd = new NpgsqlCommand("""
@@ -116,11 +119,11 @@ public sealed partial class VgDiscordAuthManager
                 _ => "Нет"
             };
 
-            var timeLeft = isActive ? $"Активна до {until:dd.MM.yyyy HH:mm} UTC" : "Истекла";
+            var timeLeft = isActive ? "Активна" : "Истекла";
 
-            _net.ServerSendMessage(new DiscordLinkStateMessage
-            {
-                IsLinked = true,
+            _net.ServerSendMessage(new DiscordLinkStateMessage 
+            { 
+                IsLinked = true, 
                 Tier = isActive ? tier : 0,
                 TierName = isActive ? tierName : "Нет",
                 TimeLeft = timeLeft

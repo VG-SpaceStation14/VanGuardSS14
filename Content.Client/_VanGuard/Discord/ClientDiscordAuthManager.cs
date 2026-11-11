@@ -15,16 +15,17 @@ public sealed partial class ClientDiscordAuthManager
 
     public void Initialize()
     {
-        _net.RegisterNetMessage<RequestDiscordLinkMessage>();
+        _net.RegisterNetMessage<RequestDiscordStateMessage>();
+        _net.RegisterNetMessage<RequestDiscordCodeMessage>();
         _net.RegisterNetMessage<DiscordLinkCodeMessage>(OnCode);
         _net.RegisterNetMessage<DiscordLinkStateMessage>(OnState);
     }
 
-    public void RequestLink() => _net.ClientSendMessage(new RequestDiscordLinkMessage());
+    public void RequestState() => _net.ClientSendMessage(new RequestDiscordStateMessage());
+    public void RequestCode() => _net.ClientSendMessage(new RequestDiscordCodeMessage());
 
     private void OnCode(DiscordLinkCodeMessage msg) => OnCodeReceived?.Invoke(msg.Code);
-
-    private void OnState(DiscordLinkStateMessage msg)
+    private void OnState(DiscordLinkStateMessage msg) 
     {
         CurrentTier = msg.Tier;
         OnStateReceived?.Invoke(msg.IsLinked, msg.Tier, msg.TierName, msg.TimeLeft);

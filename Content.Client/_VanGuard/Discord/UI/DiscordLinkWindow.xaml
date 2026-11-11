@@ -17,6 +17,7 @@
         <BoxContainer Name="CodeState" Orientation="Vertical" SeparationOverride="10" Visible="False">
             <Label Text="Ваш код для ввода в Discord:" HorizontalAlignment="Center"/>
             <Label Name="CodeLabel" StyleClasses="LabelHeadingBigger" HorizontalAlignment="Center" FontColorOverride="#4CAF50"/>
+            <Button Name="CopyButton" Text="Скопировать код" />
             <Button Name="OpenDiscordButton" Text="Открыть Discord" StyleClasses="ButtonBig" Margin="0 10 0 0"/>
         </BoxContainer>
 

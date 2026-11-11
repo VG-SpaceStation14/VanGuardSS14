@@ -5,10 +5,17 @@ using Robust.Shared.Serialization;
 namespace Content.Shared._VanGuard.Discord;
 
 [Serializable, NetSerializable]
-public sealed class RequestDiscordLinkMessage : NetMessage
+public sealed class RequestDiscordStateMessage : NetMessage
 {
     public override MsgGroups MsgGroup => MsgGroups.Command;
+    public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer) { }
+    public override void WriteToBuffer(NetOutgoingMessage buffer, IRobustSerializer serializer) { }
+}
 
+[Serializable, NetSerializable]
+public sealed class RequestDiscordCodeMessage : NetMessage
+{
+    public override MsgGroups MsgGroup => MsgGroups.Command;
     public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer) { }
 
     public override void WriteToBuffer(NetOutgoingMessage buffer, IRobustSerializer serializer) { }
