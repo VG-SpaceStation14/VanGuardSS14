@@ -30,6 +30,12 @@ using Content.Shared.FeedbackSystem;
 using Content.Shared.IoC;
 using Content.Shared.Players.PlayTimeTracking;
 using Content.Shared.Players.RateLimiting;
+// VG-Tweak Start: Discord & Sponsors
+using Content.Corvax.Interfaces.Client;
+using Content.Corvax.Interfaces.Shared;
+using Content.Client._VanGuard.Discord;
+using Content.Client._VanGuard.Sponsors;
+// VG-Tweak End
 
 namespace Content.Client.IoC
 {
@@ -71,6 +77,11 @@ namespace Content.Client.IoC
             collection.Register<ClientFeedbackManager>();
             collection.Register<ISharedFeedbackManager, ClientFeedbackManager>();
             collection.Register<MidiFileCollectionManager>();
+            // VG-Tweak Start: Discord & Sponsors
+            collection.Register<ClientDiscordAuthManager>();
+            collection.Register<ISharedSponsorsManager, ClientSponsorManager>();
+            collection.Register<ISponsorWindowCreator, ClientSponsorWindowCreator>();
+            // VG-Tweak End
         }
     }
 }

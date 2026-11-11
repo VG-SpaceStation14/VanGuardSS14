@@ -6,6 +6,8 @@ using Robust.Client.Graphics;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Maths; // VG-Tweak
+using Content.Shared._VanGuard.Sponsors; // VG-Tweak: Sponsors
 
 namespace Content.Client.Administration.UI.Tabs.PlayerTab;
 
@@ -98,6 +100,19 @@ public sealed partial class PlayerTabEntry : PanelContainer
 
         if (colorRoles)
             RoleTypeLabel.FontColorOverride = rolePrototype?.Color ?? RoleTypePrototype.FallbackColor;
+        // VG-Tweak Start: Sponsor Tier Column
+        if (player.SponsorTier > 0)
+        {
+            SponsorLabel.Text = $"Tier {player.SponsorTier}";
+            SponsorLabel.FontColorOverride = SponsorVisuals.GetColor(player.SponsorTier);
+        }
+        else
+        {
+            SponsorLabel.Text = "—";
+            SponsorLabel.FontColorOverride = Color.Gray;
+        }
+        // VG-Tweak End
+
         BackgroundColorPanel.PanelOverride = styleBoxFlat;
         OverallPlaytimeLabel.Text = player.PlaytimeString;
     }

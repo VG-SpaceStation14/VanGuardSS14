@@ -33,6 +33,10 @@ using Content.Shared.FeedbackSystem;
 using Content.Shared.IoC;
 using Content.Shared.Players.PlayTimeTracking;
 using Content.Shared.Players.RateLimiting;
+// VG-Tweak Start
+using Content.Corvax.Interfaces.Shared;
+using Content.Server._VanGuard.Sponsors;
+// VG-Tweak End
 
 namespace Content.Server.IoC;
 
@@ -87,5 +91,10 @@ internal static class ServerContentIoC
         deps.Register<WhitelistManager>();
         IoCManager.Register<TTSManager>(); // Corvax-TTS
         IoCManager.Register<VgBanWebhookSender>(); // VG-Tweak
+        // VG-Tweak Start: Discord Auth & Sponsors
+        deps.Register<DiscordDb>();
+        deps.Register<VgDiscordAuthManager>();
+        deps.Register<ISharedSponsorsManager, DiscordSponsorManager>();
+        // VG-Tweak End
     }
 }

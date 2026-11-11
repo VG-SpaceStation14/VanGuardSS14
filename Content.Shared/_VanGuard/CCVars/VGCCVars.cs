@@ -16,7 +16,7 @@ public sealed class VGCCVars
     /// </summary>
     public static readonly CVarDef<string> DiscordBanWebhook =
         CVarDef.Create("vg.discord.ban_webhook", string.Empty, CVar.SERVERONLY);
-    
+
     /// <summary>
     ///     Discord ban webhook enable
     /// </summary>
@@ -60,4 +60,10 @@ public sealed class VGCCVars
     /// </summary>
     public static readonly CVarDef<bool> LavalandRoundstart =
         CVarDef.Create("vg.lavaland_roundstart", false, CVar.SERVERONLY);
+
+    /// <summary>
+    /// Secret token for communication with the Python bot.
+    /// </summary>
+    public static readonly CVarDef<string> DiscordBotSecret =
+        CVarDef.Create("vg.discord.bot_secret", "CHANGE_THIS_TO_A_RANDOM_SECRET_STRING", CVar.SERVERONLY | CVar.CONFIDENTIAL);
 }

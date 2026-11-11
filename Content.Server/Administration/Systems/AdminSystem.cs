@@ -33,6 +33,7 @@ using Robust.Shared.Configuration;
 using Robust.Shared.Enums;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
+using Content.Corvax.Interfaces.Shared; // VG-Tweak: Sponsor Tier
 
 namespace Content.Server.Administration.Systems;
 
@@ -54,6 +55,7 @@ public sealed partial class AdminSystem : EntitySystem
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private StationRecordsSystem _stationRecords = default!;
     [Dependency] private TransformSystem _transform = default!;
+    [Dependency] private ISharedSponsorsManager _sponsorsManager = default!; // VG-Tweak: Sponsor Tier
 
     private readonly Dictionary<NetUserId, PlayerInfo> _playerList = new();
 
@@ -264,7 +266,8 @@ public sealed partial class AdminSystem : EntitySystem
             overallPlaytime = playTime;
         }
 
-        return new PlayerInfo(
+        // VG-Tweak Start: Sponsor Tier
+        var info = new PlayerInfo(
             name,
             entityName,
             identityName,
@@ -278,6 +281,10 @@ public sealed partial class AdminSystem : EntitySystem
             connected,
             _roundActivePlayers.Contains(data.UserId),
             overallPlaytime);
+
+        info.SponsorTier = _sponsorsManager.GetServerTier(data.UserId);
+        return info;
+        // VG-Tweak End
     }
 
     private void OnPanicBunkerChanged(bool enabled)

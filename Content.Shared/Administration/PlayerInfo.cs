@@ -24,6 +24,9 @@ public sealed record PlayerInfo(
     private string? _playtimeString;
 
     public bool IsPinned { get; set; }
+    // VG-Tweak Start: Sponsor Tier
+    public int SponsorTier { get; set; }
+    // VG-Tweak End
 
     public string PlaytimeString => _playtimeString ??=
         OverallPlaytime?.ToString("%d':'hh':'mm") ?? Loc.GetString("generic-unknown-title");

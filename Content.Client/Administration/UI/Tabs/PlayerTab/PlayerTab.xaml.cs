@@ -248,6 +248,9 @@ public sealed partial class PlayerTab : Control
             Header.RoleType => y.SortWeight != x.SortWeight
                 ? y.SortWeight - x.SortWeight
                 : string.Compare(x.RoleProto?.Id ?? "", y.RoleProto?.Id ?? "", StringComparison.Ordinal),
+            // VG-Tweak Start: Sponsor column sorting
+            Header.Sponsor => y.SponsorTier.CompareTo(x.SponsorTier),
+            // VG-Tweak End
             Header.Playtime => TimeSpan.Compare(x.OverallPlaytime ?? default, y.OverallPlaytime ?? default),
             _ => 1
         };
