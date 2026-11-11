@@ -25,6 +25,7 @@
   - type: Icon
     sprite: Structures/Storage/Crates/plastic.rsi
   - type: Sprite
+    offset: "0.0,0" # VG-Tweak: Fixes the crate being slightly off-center when placed on the ground.
     sprite: Structures/Storage/Crates/plastic.rsi
   - type: Construction
     graph: CratePlastic
