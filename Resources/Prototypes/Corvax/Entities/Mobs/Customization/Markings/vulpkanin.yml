@@ -22,7 +22,11 @@
   id: FoxEar
   bodyPart: HeadTop
   groupWhitelist: [Vulpkanin]
-  sponsorOnly: true # Corvax-Sponsors
+  # VG-Tweak Start: FoxEar is the default head-top marking of the Vulpkanin group, so it cannot be
+  # sponsor-only. Otherwise profile sanitization strips it on save and the default marking is
+  # re-added with the default skin color, resetting a manually picked ear color.
+  sponsorOnly: false
+  # VG-Tweak End
   sprites:
     - sprite: Corvax/Mobs/Customization/vulpkanin.rsi
       state: vulp_ear
