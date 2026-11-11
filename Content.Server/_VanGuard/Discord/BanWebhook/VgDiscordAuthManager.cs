@@ -9,6 +9,7 @@ using Robust.Server.Player;
 using Robust.Shared.Configuration;
 using Robust.Shared.Enums;
 using Robust.Shared.IoC;
+using Robust.Shared.Localization;
 using Robust.Shared.Log;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
@@ -34,7 +35,6 @@ public sealed partial class VgDiscordAuthManager
 
         _net.RegisterNetMessage<DiscordLinkCodeMessage>();
         _net.RegisterNetMessage<DiscordLinkStateMessage>();
-
 
         _player.PlayerStatusChanged += OnPlayerStatusChanged;
     }
@@ -113,19 +113,19 @@ public sealed partial class VgDiscordAuthManager
             var isActive = until > DateTime.UtcNow;
 
             var tierName = tier switch {
-                3 => "Космический ниндзя",
-                2 => "Революционер",
-                1 => "Агент Синдиката",
-                _ => "Нет"
+                3 => Loc.GetString("discord-tier-3"),
+                2 => Loc.GetString("discord-tier-2"),
+                1 => Loc.GetString("discord-tier-1"),
+                _ => Loc.GetString("discord-tier-none")
             };
 
             var timeLeft = isActive ? "Активна" : "Истекла";
 
-            _net.ServerSendMessage(new DiscordLinkStateMessage 
-            { 
+            _net.ServerSendMessage(new DiscordLinkStateMessage
+            {
                 IsLinked = true, 
                 Tier = isActive ? tier : 0,
-                TierName = isActive ? tierName : "Нет",
+                TierName = isActive ? tierName : Loc.GetString("discord-tier-none"),
                 TimeLeft = timeLeft
             }, session.Channel);
             return;

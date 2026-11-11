@@ -7,6 +7,7 @@ using Content.Shared.Preferences.Loadouts;
 using Content.Shared.Preferences.Loadouts.Effects;
 using Content.Shared.Humanoid.Prototypes;
 using Robust.Shared.IoC;
+using Robust.Shared.Localization;
 using Robust.Shared.Maths;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
@@ -87,7 +88,7 @@ public sealed partial class ClientSponsorManager : ISharedSponsorsManager
 
         if (_protoManager.TryIndex<SpeciesPrototype>(prototypeId, out var species) && species.SponsorOnly)
         {
-            tierName = "Космический ниндзя";
+            tierName = Loc.GetString("discord-tier-3");
             return true;
         }
 
@@ -97,9 +98,9 @@ public sealed partial class ClientSponsorManager : ISharedSponsorsManager
 
     private string? GetTierName(int tier) => tier switch
     {
-        3 => "Космический ниндзя",
-        2 => "Революционер",
-        1 => "Агент Синдиката",
+        3 => Loc.GetString("discord-tier-3"),
+        2 => Loc.GetString("discord-tier-2"),
+        1 => Loc.GetString("discord-tier-1"),
         _ => null
     };
 }

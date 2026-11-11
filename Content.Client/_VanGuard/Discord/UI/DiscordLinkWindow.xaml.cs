@@ -93,12 +93,12 @@ public sealed partial class DiscordLinkWindow : DefaultWindow
 
             if (tier > 0)
             {
-                TierLabel.Text = $"Уровень спонсора: {tierName}";
+                TierLabel.Text = Loc.GetString("discord-link-tier-info", ("tierName", tierName));
                 TimeLeftLabel.Text = timeLeft;
             }
             else
             {
-                TierLabel.Text = "Активной спонсорской подписки нет.";
+                TierLabel.Text = Loc.GetString("discord-link-no-subscription");
                 TimeLeftLabel.Text = string.Empty;
             }
         }

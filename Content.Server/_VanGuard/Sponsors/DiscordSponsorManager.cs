@@ -14,6 +14,7 @@ using Npgsql;
 using Robust.Server.Player;
 using Robust.Shared.Enums;
 using Robust.Shared.IoC;
+using Robust.Shared.Localization;
 using Robust.Shared.Maths;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
@@ -149,7 +150,7 @@ public sealed partial class DiscordSponsorManager : ISharedSponsorsManager
 
         if (_protoManager.TryIndex<SpeciesPrototype>(prototypeId, out var species) && species.SponsorOnly)
         {
-            tierName = "Космический ниндзя";
+            tierName = Loc.GetString("discord-tier-3");
             return true;
         }
 
@@ -159,9 +160,9 @@ public sealed partial class DiscordSponsorManager : ISharedSponsorsManager
 
     private string? GetTierName(int tier) => tier switch
     {
-        3 => "Космический ниндзя",
-        2 => "Революционер",
-        1 => "Агент Синдиката",
+        3 => Loc.GetString("discord-tier-3"),
+        2 => Loc.GetString("discord-tier-2"),
+        1 => Loc.GetString("discord-tier-1"),
         _ => null
     };
 
