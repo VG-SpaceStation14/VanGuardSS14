@@ -31,6 +31,15 @@
                ClipText="True"
                Text="{Loc player-tab-roletype}"
                MouseFilter="Pass"/>
+        <!-- VG-Tweak Start: Sponsor column -->
+        <controls:Separator StyleClasses="LowDivider" Orientation="Vertical" MinHeight="5"/>
+        <Label Name="SponsorLabel"
+               SizeFlagsStretchRatio="1"
+               HorizontalExpand="True"
+               ClipText="True"
+               Text="{Loc player-tab-sponsor}"
+               MouseFilter="Pass"/>
+        <!-- VG-Tweak End -->
         <controls:Separator StyleClasses="LowDivider" Orientation="Vertical" MinHeight="5"/>
         <Label Name="PlaytimeLabel"
                SizeFlagsStretchRatio="1"
