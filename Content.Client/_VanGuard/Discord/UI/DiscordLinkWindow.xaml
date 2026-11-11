@@ -6,7 +6,11 @@
                 Resizable="False">
     <BoxContainer Orientation="Vertical" SeparationOverride="15" Margin="15">
 
-        <BoxContainer Name="UnlinkedState" Orientation="Vertical" SeparationOverride="15">
+        <BoxContainer Name="LoadingState" Orientation="Vertical" SeparationOverride="15">
+            <Label Text="{Loc 'discord-link-loading'}" StyleClasses="LabelHeading" HorizontalAlignment="Center" Margin="0 20 0 0"/>
+        </BoxContainer>
+
+        <BoxContainer Name="UnlinkedState" Orientation="Vertical" SeparationOverride="15" Visible="False">
             <Label Text="{Loc 'discord-link-unlinked-title'}" StyleClasses="LabelHeading" HorizontalAlignment="Center" Margin="0 10 0 0"/>
             <Label Text="{Loc 'discord-link-unlinked-desc'}" HorizontalAlignment="Center" StyleClasses="LabelSubText" Align="Center" Margin="10 0"/>
             <Button Name="GetCodeButton" Text="{Loc 'discord-link-get-code'}" StyleClasses="ButtonBig" HorizontalExpand="True" Margin="10 0" MinHeight="40"/>

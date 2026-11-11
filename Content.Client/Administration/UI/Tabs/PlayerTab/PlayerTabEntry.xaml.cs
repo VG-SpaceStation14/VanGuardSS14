@@ -7,6 +7,7 @@ using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Maths; // VG-Tweak
+using Content.Shared._VanGuard.Sponsors; // VG-Tweak: Sponsors
 
 namespace Content.Client.Administration.UI.Tabs.PlayerTab;
 
@@ -103,12 +104,7 @@ public sealed partial class PlayerTabEntry : PanelContainer
         if (player.SponsorTier > 0)
         {
             SponsorLabel.Text = $"Tier {player.SponsorTier}";
-            SponsorLabel.FontColorOverride = player.SponsorTier switch
-            {
-                3 => Color.FromHex("#00ffaa"),
-                2 => Color.FromHex("#00a6b2"),
-                _ => Color.FromHex("#cc0000"),
-            };
+            SponsorLabel.FontColorOverride = SponsorVisuals.GetColor(player.SponsorTier);
         }
         else
         {

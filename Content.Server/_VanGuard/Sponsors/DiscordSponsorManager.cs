@@ -11,6 +11,7 @@ using Content.Shared.Preferences.Loadouts;
 using Content.Shared.Preferences.Loadouts.Effects;
 using Content.Shared.Humanoid.Prototypes;
 using Content.Shared.Humanoid.Markings;
+using Content.Shared._VanGuard.Sponsors;
 using Npgsql;
 using Robust.Server.Player;
 using Robust.Shared.Enums;
@@ -184,12 +185,7 @@ public sealed partial class DiscordSponsorManager : ISharedSponsorsManager
         var tier = CurrentTier(userId);
         if (tier <= 0) { color = null; return false; }
 
-        color = tier switch
-        {
-            3 => Color.FromHex("#00ffaa"),
-            2 => Color.FromHex("#00a6b2"),
-            _ => Color.FromHex("#cc0000")
-        };
+        color = SponsorVisuals.GetColor(tier);
         return true;
     }
 

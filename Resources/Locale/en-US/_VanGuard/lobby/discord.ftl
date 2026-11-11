@@ -10,6 +10,7 @@ discord-link-success-title = Discord successfully linked!
 discord-link-unlink-desc = To unlink your account, type /unlink in the Discord bot.
 discord-link-tier-info = Sponsor level: { $tierName }
 discord-link-no-subscription = No active sponsor subscription.
+discord-link-loading = Loading...
 
 discord-tier-1 = Syndicate Agent
 discord-tier-2 = Revolutionary

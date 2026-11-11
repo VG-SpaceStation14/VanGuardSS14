@@ -12,6 +12,7 @@ using Robust.Client.UserInterface.XAML;
 using Robust.Shared.IoC; // VG-Tweak
 using Robust.Shared.Maths; // VG-Tweak
 using Robust.Shared.Player; // VG-Tweak
+using Content.Shared._VanGuard.Sponsors; // VG-Tweak: Sponsors
 using Robust.Shared.Timing;
 
 namespace Content.Client.Lobby.UI
@@ -108,13 +109,9 @@ namespace Content.Client.Lobby.UI
             if (tier > 0)
             {
                 SponsorInfoButton.Text = Loc.GetString("ui-lobby-sponsor-button-level", ("sponsorTier", tier));
-
-                SponsorInfoButton.ModulateSelfOverride = tier switch
-                {
-                    3 => Color.FromHex("#00ffaa"),
-                    2 => Color.FromHex("#00a6b2"),
-                    _ => Color.FromHex("#cc0000")
-                };
+                // VG-Tweak Start
+                SponsorInfoButton.ModulateSelfOverride = SponsorVisuals.GetColor(tier);
+                // VG-Tweak End
             }
             else
             {

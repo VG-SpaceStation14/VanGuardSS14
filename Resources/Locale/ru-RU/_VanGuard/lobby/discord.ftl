@@ -10,6 +10,7 @@ discord-link-success-title = Discord успешно привязан!
 discord-link-unlink-desc = Чтобы отвязать аккаунт, введите /unlink в Discord-боте.
 discord-link-tier-info = Уровень спонсора: { $tierName }
 discord-link-no-subscription = Активной спонсорской подписки нет.
+discord-link-loading = Загрузка...
 
 discord-tier-1 = Агент Синдиката
 discord-tier-2 = Революционер
