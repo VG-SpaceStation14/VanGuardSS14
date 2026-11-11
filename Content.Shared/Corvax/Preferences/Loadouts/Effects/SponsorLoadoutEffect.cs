@@ -11,6 +11,10 @@ namespace Content.Shared.Preferences.Loadouts.Effects;
 /// </summary>
 public sealed partial class SponsorLoadoutEffect : LoadoutEffect
 {
+    // VG-Twea Start
+    [DataField]
+    public int Tier { get; set; } = 1;
+    // VG-Tweak End
     public override bool Validate(HumanoidCharacterProfile profile,
         RoleLoadout loadout,
         LoadoutPrototype proto, // Corvax-Sponsors
@@ -26,34 +30,24 @@ public sealed partial class SponsorLoadoutEffect : LoadoutEffect
         if (!collection.TryResolveType<ISharedSponsorsManager>(out var sponsorsManager))
             return true;
 
-        var sponsorProtos = GetPrototypes(session, collection, sponsorsManager);
-        if (!sponsorProtos.Contains(proto.ID))
-        {
-            if (sponsorsManager.TryGetTierNameForPrototype(proto.ID, out var tierName) && !string.IsNullOrEmpty(tierName))
-            {
-                reason = FormattedMessage.FromMarkupOrThrow(
-                    Loc.GetString("loadout-sponsor-only-tier", ("tierName", tierName)));
-            }
-            else
-            {
-                reason = FormattedMessage.FromMarkupOrThrow(
-                    Loc.GetString("loadout-sponsor-only"));
-            }
+        // VG-Tweak Start: Get the player's tier from the sponsors manager
+        var playerTier = sponsorsManager.GetServerTier(session.UserId);
 
-            return false;
+        if (playerTier >= Tier)
+            return true;
+
+        if (sponsorsManager.TryGetTierNameForPrototype(proto.ID, out var tierName) && !string.IsNullOrEmpty(tierName))
+        {
+            reason = FormattedMessage.FromMarkupOrThrow(
+                Loc.GetString("loadout-sponsor-only-tier", ("tierName", tierName)));
+        }
+        else
+        {
+            reason = FormattedMessage.FromMarkupOrThrow(
+                Loc.GetString("loadout-sponsor-only"));
         }
 
-        return true;
-    }
-
-    private List<string> GetPrototypes(ICommonSession session, IDependencyCollection collection, ISharedSponsorsManager sponsorsManager)
-    {
-        var net = collection.Resolve<INetManager>();
-
-        if (net.IsClient)
-            return sponsorsManager.GetClientPrototypes();
-
-        sponsorsManager.TryGetServerPrototypes(session.UserId, out var props);
-        return props ?? [];
+        return false;
+        // VG-Tweak End
     }
 }

@@ -42,6 +42,10 @@ using Robust.Shared.ContentPack;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Replays;
 using Robust.Shared.Timing;
+// VG-Tweak Start
+using Content.Corvax.Interfaces.Shared;
+using Content.Client._VanGuard.Discord;
+// VG-Tweak End
 
 namespace Content.Client.Entry
 {
@@ -82,6 +86,10 @@ namespace Content.Client.Entry
         [Dependency] private ClientsidePlaytimeTrackingManager _clientsidePlaytimeManager = default!;
         [Dependency] private ClientFeedbackManager _feedbackManager = null!;
         [Dependency] private EntityScreenshotGenerator _entityScreenshotGenerator = default!; // Corvax-Wiki
+        // VG-Tweak Start
+        [Dependency] private ClientDiscordAuthManager _discordAuthManager = default!;
+        [Dependency] private ISharedSponsorsManager _sponsorsManager = default!;
+        // VG-Tweak End
 
         public override void PreInit()
         {
@@ -176,6 +184,10 @@ namespace Content.Client.Entry
             _documentParsingManager.Initialize();
             _titleWindowManager.Initialize();
             _feedbackManager.Initialize();
+            // VG-Tweak Start
+            _discordAuthManager.Initialize();
+            _sponsorsManager.Initialize();
+            // VG-Tweak End
 
             _baseClient.RunLevelChanged += (_, args) =>
             {

@@ -97,6 +97,8 @@
                                     </BoxContainer>
                                     <!-- VG-Tweak end -->
                                     <controls:Separator Thickness="1" Margin="2 4" Modulate="#FFFFFF30" />
+                                    <Button Name="DiscordButton" Access="Public" Text="Привязка Discord" HorizontalExpand="True" MinHeight="32" />
+                                    <!-- VG-Tweak end -->
                                     <Button Name="OptionsButton" Access="Public" Text="Настройки" HorizontalExpand="True" MinHeight="32" />
                                     <Button Name="LeaveButton" Access="Public" Text="Выйти" HorizontalExpand="True" MinHeight="32" StyleClasses="Caution" />
                                 </BoxContainer>

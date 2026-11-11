@@ -19,4 +19,5 @@ public interface ISharedSponsorsManager
 
     // Shared
     public bool TryGetTierNameForPrototype(string prototypeId, [NotNullWhen(true)] out string? tierName);
+    public int GetServerTier(NetUserId userId); // VG-Tweak: Added method to get the server tier for a user
 }
