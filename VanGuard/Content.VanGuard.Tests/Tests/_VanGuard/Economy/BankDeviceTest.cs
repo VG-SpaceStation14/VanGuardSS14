@@ -31,18 +31,29 @@ public sealed class BankDeviceTest : InteractionTest
     [Test]
     public async Task AtmAndIdCardAreOrdinaryWorldEntities()
     {
+        EntityUid atm = default;
+
         await Server.WaitPost(() =>
         {
             var coords = SEntMan.GetCoordinates(TargetCoords);
-            var atm = SEntMan.SpawnEntity("BankATM", coords);
+            atm = SEntMan.SpawnEntity("BankATM", coords);
             var card = SEntMan.SpawnEntity("PassengerIDCard", coords);
 
             Assert.That(SEntMan.HasComponent<BankAtmComponent>(atm), Is.True);
             Assert.That(SEntMan.HasComponent<ActivatableUIComponent>(card), Is.False,
                 "an ID card must not open the legacy bank wallet UI");
-            Assert.That(SEntMan.System<UserInterfaceSystem>().TryOpenUi((atm, null), BankAtmUiKey.Key, SPlayer), Is.True,
-                "the ATM must expose its bound user interface");
         });
+
+        // Let map initialization and the UserInterface component finish before
+        // opening; upstream now initializes UI state on a later tick.
         await RunTicks(2);
+
+        await Server.WaitPost(() =>
+        {
+            // Opening is power-gated by ActivatableUIRequiresPower. This test
+            // only needs to prove that the ATM advertises its BUI key.
+            Assert.That(SEntMan.System<UserInterfaceSystem>().HasUi(atm, BankAtmUiKey.Key), Is.True,
+                "the ATM must expose its bound user interface key");
+        });
     }
 }

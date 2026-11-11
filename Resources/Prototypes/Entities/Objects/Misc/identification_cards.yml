@@ -1413,6 +1413,7 @@
     - MiscIconGroup
     - BlankIconGroup
   - type: IdCard
+    jobTitle: job-name-passenger
     jobIcon: JobIconPassenger
   - type: UIRequiresLock
   - type: ActivatableUI
