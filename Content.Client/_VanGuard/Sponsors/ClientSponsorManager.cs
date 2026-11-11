@@ -13,8 +13,7 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Client._VanGuard.Sponsors;
 
-public sealed partial
-class ClientSponsorManager : ISharedSponsorsManager
+public sealed partial class ClientSponsorManager : ISharedSponsorsManager
 {
     [Dependency] private IPrototypeManager _protoManager = default!;
     [Dependency] private ClientDiscordAuthManager _auth = default!;
@@ -80,13 +79,7 @@ class ClientSponsorManager : ISharedSponsorsManager
             {
                 if (effect is SponsorLoadoutEffect sponsorEffect)
                 {
-                    tierName = sponsorEffect.Tier switch
-                    {
-                        3 => "Космический ниндзя",
-                        2 => "Революционер",
-                        1 => "Агент Синдиката",
-                        _ => null
-                    };
+                    tierName = GetTierName(sponsorEffect.Tier);
                     return tierName != null;
                 }
             }
@@ -101,4 +94,12 @@ class ClientSponsorManager : ISharedSponsorsManager
         tierName = null;
         return false;
     }
+
+    private string? GetTierName(int tier) => tier switch
+    {
+        3 => "Космический ниндзя",
+        2 => "Революционер",
+        1 => "Агент Синдиката",
+        _ => null
+    };
 }

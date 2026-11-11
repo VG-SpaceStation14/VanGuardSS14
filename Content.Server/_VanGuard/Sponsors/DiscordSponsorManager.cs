@@ -109,7 +109,6 @@ public sealed partial class DiscordSponsorManager : ISharedSponsorsManager
     {
         var result = new List<string>();
 
-        // Ищем лоадауты с эффектом SponsorLoadoutEffect
         foreach (var loadout in _protoManager.EnumeratePrototypes<LoadoutPrototype>())
         {
             foreach (var effect in loadout.Effects)
@@ -122,7 +121,6 @@ public sealed partial class DiscordSponsorManager : ISharedSponsorsManager
             }
         }
 
-        // Ищем спонсорские расы
         if (maxTier >= 1)
         {
             foreach (var species in _protoManager.EnumeratePrototypes<SpeciesPrototype>())
@@ -143,13 +141,7 @@ public sealed partial class DiscordSponsorManager : ISharedSponsorsManager
             {
                 if (effect is SponsorLoadoutEffect sponsorEffect)
                 {
-                    tierName = sponsorEffect.Tier switch
-                    {
-                        3 => "Космический ниндзя",
-                        2 => "Революционер",
-                        1 => "Агент Синдиката",
-                        _ => null
-                    };
+                    tierName = GetTierName(sponsorEffect.Tier);
                     return tierName != null;
                 }
             }
@@ -165,15 +157,23 @@ public sealed partial class DiscordSponsorManager : ISharedSponsorsManager
         return false;
     }
 
+    private string? GetTierName(int tier) => tier switch
+    {
+        3 => "Космический ниндзя",
+        2 => "Революционер",
+        1 => "Агент Синдиката",
+        _ => null
+    };
+
     public bool TryGetServerOocColor(NetUserId userId, [NotNullWhen(true)] out Color? color)
     {
         var tier = CurrentTier(userId);
         if (tier <= 0) { color = null; return false; }
 
         color = tier switch{
-            3 => Color.FromHex("#FF0000"),
-            2 => Color.FromHex("#FFA500"),
-            _ => Color.FromHex("#FFFF00")
+            3 => Color.FromHex("#00ffaa"),
+            2 => Color.FromHex("#00a6b2"),
+            _ => Color.FromHex("#cc0000")
         };
         return true;
     }
@@ -181,7 +181,7 @@ public sealed partial class DiscordSponsorManager : ISharedSponsorsManager
     public int GetServerExtraCharSlots(NetUserId userId)
     {
         var tier = CurrentTier(userId);
-        return tier switch { 3 => 5, 2 => 3, 1 => 1, _ => 0 };
+        return tier switch { 3 => 10, 2 => 5, 1 => 2, _ => 0 };
     }
 
     public bool HaveServerPriorityJoin(NetUserId userId) => CurrentTier(userId) >= 2;
