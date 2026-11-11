@@ -1,33 +1,70 @@
-<DefaultWindow xmlns="https://spacestation14.io"
-               Title="{Loc 'discord-link-window-title'}"
-               MinSize="400 300"
-               Resizable="False">
-    <BoxContainer Orientation="Vertical" SeparationOverride="10" Margin="10">
-        
-        <BoxContainer Name="UnlinkedState" Orientation="Vertical" SeparationOverride="10">
-            <Label Text="{Loc 'discord-link-unlinked-title'}" StyleClasses="LabelHeading" HorizontalAlignment="Center"/>
-            <Label Text="{Loc 'discord-link-unlinked-desc'}" HorizontalAlignment="Center"/>
-            <Button Name="GetCodeButton" Text="{Loc 'discord-link-get-code'}" StyleClasses="ButtonBig" Margin="0 10 0 0"/>
+<ui:FancyWindow xmlns="https://spacestation14.io"
+                xmlns:ui="clr-namespace:Content.Client.UserInterface.Controls"
+                xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+                Title="{Loc 'discord-link-window-title'}"
+                MinSize="420 320"
+                Resizable="False">
+    <BoxContainer Orientation="Vertical" SeparationOverride="15" Margin="15">
+
+        <BoxContainer Name="UnlinkedState" Orientation="Vertical" SeparationOverride="15">
+            <Label Text="{Loc 'discord-link-unlinked-title'}" StyleClasses="LabelHeading" HorizontalAlignment="Center" Margin="0 10 0 0"/>
+            <Label Text="{Loc 'discord-link-unlinked-desc'}" HorizontalAlignment="Center" StyleClasses="LabelSubText" Align="Center" Margin="10 0"/>
+            <Button Name="GetCodeButton" Text="{Loc 'discord-link-get-code'}" StyleClasses="ButtonBig" HorizontalExpand="True" Margin="10 0" MinHeight="40"/>
         </BoxContainer>
 
-        <BoxContainer Name="WaitingState" Orientation="Vertical" Visible="False">
-            <Label Text="{Loc 'discord-link-waiting'}" StyleClasses="LabelHeading" HorizontalAlignment="Center"/>
+        <BoxContainer Name="WaitingState" Orientation="Vertical" Visible="False" SeparationOverride="15">
+            <Label Text="{Loc 'discord-link-waiting'}" StyleClasses="LabelHeading" HorizontalAlignment="Center" Margin="0 20 0 0"/>
         </BoxContainer>
 
-        <BoxContainer Name="CodeState" Orientation="Vertical" SeparationOverride="10" Visible="False">
-            <Label Text="{Loc 'discord-link-code-desc'}" HorizontalAlignment="Center"/>
-            <Label Name="CodeLabel" StyleClasses="LabelHeadingBigger" HorizontalAlignment="Center" FontColorOverride="#4CAF50"/>
-            <Button Name="CopyButton" Text="{Loc 'discord-link-copy-code'}" />
-            <Button Name="OpenDiscordButton" Text="{Loc 'discord-link-open-discord'}" StyleClasses="ButtonBig" Margin="0 10 0 0"/>
+        <BoxContainer Name="CodeState" Orientation="Vertical" SeparationOverride="15" Visible="False">
+            <Label Text="{Loc 'discord-link-code-desc'}" HorizontalAlignment="Center" StyleClasses="LabelSubText" Margin="0 5"/>
+            
+            <PanelContainer Margin="10 0">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#151515" 
+                                      BorderColor="#4CAF50" 
+                                      BorderThickness="2" 
+                                      ContentMarginLeftOverride="20" 
+                                      ContentMarginRightOverride="20" 
+                                      ContentMarginTopOverride="15" 
+                                      ContentMarginBottomOverride="15" />
+                </PanelContainer.PanelOverride>
+                <RichTextLabel Name="CodeLabel" StyleClasses="LabelHeadingBigger" HorizontalAlignment="Center"/>
+            </PanelContainer>
+            
+            <Button Name="CopyButton" Text="{Loc 'discord-link-copy-code'}" HorizontalExpand="True" Margin="10 0" MinHeight="35"/>
+            <Button Name="OpenDiscordButton" Text="{Loc 'discord-link-open-discord'}" StyleClasses="ButtonBig" HorizontalExpand="True" Margin="10 0" MinHeight="40"/>
         </BoxContainer>
 
-        <BoxContainer Name="LinkedState" Orientation="Vertical" SeparationOverride="10" Visible="False">
-            <Label Text="{Loc 'discord-link-success-title'}" StyleClasses="LabelHeading" HorizontalAlignment="Center" FontColorOverride="#4CAF50"/>
-            <Label Name="TierLabel" StyleClasses="LabelBig" HorizontalAlignment="Center"/>
-            <Label Name="TimeLeftLabel" StyleClasses="LabelSubText" HorizontalAlignment="Center"/>
-            <Button Name="OpenDiscordLinkedButton" Text="{Loc 'discord-link-open-discord'}" Margin="0 10 0 0"/>
-            <Label Text="{Loc 'discord-link-unlink-desc'}" StyleClasses="LabelSubText" HorizontalAlignment="Center" Margin="0 10 0 0"/>
+        <BoxContainer Name="LinkedState" Orientation="Vertical" SeparationOverride="15" Visible="False">
+            <Label Text="{Loc 'discord-link-success-title'}" StyleClasses="LabelHeading" HorizontalAlignment="Center" FontColorOverride="#4CAF50" Margin="0 10 0 0"/>
+            
+            <PanelContainer Margin="10 0">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#1E1E1E" 
+                                      BorderColor="#333333" 
+                                      BorderThickness="2" 
+                                      ContentMarginLeftOverride="15" 
+                                      ContentMarginRightOverride="15" 
+                                      ContentMarginTopOverride="15" 
+                                      ContentMarginBottomOverride="15" />
+                </PanelContainer.PanelOverride>
+                <BoxContainer Orientation="Vertical" SeparationOverride="5">
+                    <RichTextLabel Name="TierLabel" StyleClasses="LabelBig" HorizontalAlignment="Center"/>
+                    <Label Name="TimeLeftLabel" StyleClasses="LabelSubText" HorizontalAlignment="Center"/>
+                </BoxContainer>
+            </PanelContainer>
+            
+            <Button Name="OpenDiscordLinkedButton" Text="{Loc 'discord-link-open-discord'}" StyleClasses="ButtonBig" HorizontalExpand="True" Margin="10 0" MinHeight="40"/>
+            
+            <PanelContainer MinHeight="2" Margin="10 5" HorizontalExpand="True">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#333333" />
+                </PanelContainer.PanelOverride>
+            </PanelContainer>
+            
+            <Label Text="{Loc 'discord-link-unlink-desc'}" StyleClasses="LabelSubText" HorizontalAlignment="Center" Align="Center" Margin="10 0"/>
         </BoxContainer>
 
     </BoxContainer>
-</DefaultWindow>
+</ui:FancyWindow>
