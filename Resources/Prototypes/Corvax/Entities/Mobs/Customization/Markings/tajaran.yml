@@ -344,7 +344,11 @@
   id: TajaranOutears
   bodyPart: HeadTop
   groupWhitelist: [Tajaran]
-  sponsorOnly: true # Corvax-Sponsors
+  # VG-Tweak Start: TajaranOutears is the default head-top marking of the Tajaran group, so it
+  # cannot be sponsor-only. Otherwise profile sanitization strips it on save and the default
+  # marking is re-added with the default color, losing a manually picked color.
+  sponsorOnly: false
+  # VG-Tweak End
   sprites:
     - sprite: Corvax/Mobs/Customization/Tajaran/tajaran_head.rsi
       state: outears

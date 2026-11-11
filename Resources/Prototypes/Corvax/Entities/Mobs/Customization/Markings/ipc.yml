@@ -263,7 +263,11 @@
   id: IpcOrangeS
   bodyPart: Snout
   groupWhitelist: [Ipc]
-  sponsorOnly: true # Corvax-Sponsors
+  # VG-Tweak Start: IpcOrangeS is the default snout marking of the Ipc group, so it cannot be
+  # sponsor-only. Otherwise profile sanitization strips it on save and the default marking is
+  # re-added with the default color, losing a manually picked color.
+  sponsorOnly: false
+  # VG-Tweak End
   sprites:
     - sprite: Corvax/Mobs/Customization/Ipc/ips_face.rsi
       state: orange_s
