@@ -70,7 +70,7 @@
 
 - type: entity
   id: WeaponProtoKineticPistol
-  parent: [WeaponProtoKineticAcceleratorBase, BaseCargoContraband]
+  parent: [WeaponProtoKineticPistolBase, BaseCargoContraband] 
   components:
   - type: Sprite
     sprite: _VanGuard/Objects/Weapons/Guns/PKAs/kinetic_pistol.rsi
@@ -244,4 +244,3 @@
     - suitStorage
     - Belt
 
-    - Belt

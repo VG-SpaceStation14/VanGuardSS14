@@ -1209,7 +1209,7 @@ entities:
     - type: Transform
       parent: 1
       pos: 3.5,0.5
-- proto: WeaponProtoKineticPistol
+- proto: WeaponProtoKineticAccelerator
   entities:
   - uid: 119
     components:
