@@ -10,8 +10,12 @@ namespace Content.Corvax.Tests.Syndicate.TTS;
 [TestFixture]
 public sealed class TtsVoicePrototypeTest : GameTest
 {
-    public static readonly ProtoId<TTSVoicePrototype> DefaultVoice = "Taskmaster";
-    private static readonly ProtoId<TTSVoicePrototype> AnnouncementVoice = "Glados";
+    // VG-Tweak Start
+    public static readonly ProtoId<TTSVoicePrototype> DefaultVoice = "RuAlexandr";
+    private static readonly ProtoId<TTSVoicePrototype> AnnouncementVoice = "RuEkaterina";
+    // VG-Tweak End
+    // public static readonly ProtoId<TTSVoicePrototype> DefaultVoice = "Taskmaster"; // VG-Tweak
+    // private static readonly ProtoId<TTSVoicePrototype> AnnouncementVoice = "Glados"; // VG-Tweak
 
     [Test]
     public async Task PrototypesAreValid()
@@ -42,7 +46,10 @@ public sealed class TtsVoicePrototypeTest : GameTest
 
         await server.WaitPost(() =>
         {
-            Assert.That(protoManager.HasIndex(DefaultVoice), Is.True, "Default voice 'Taskmaster' must exist.");
+            // VG-Tweak Start
+            Assert.That(protoManager.HasIndex(DefaultVoice), Is.True, "Default voice 'RuAlexandr' must exist.");
+            // VG-Tweak End
+            // Assert.That(protoManager.HasIndex(DefaultVoice), Is.True, "Default voice 'Taskmaster' must exist."); // VG-Tweak
         });
     }
 
@@ -54,7 +61,10 @@ public sealed class TtsVoicePrototypeTest : GameTest
 
         await server.WaitPost(() =>
         {
-            Assert.That(protoManager.HasIndex(AnnouncementVoice), Is.True, "Announcement speaker 'Glados' must exist.");
+            // VG-Tweak Start
+            Assert.That(protoManager.HasIndex(AnnouncementVoice), Is.True, "Announcement speaker 'RuEkaterina' must exist.");
+            // VG-Tweak End
+            // Assert.That(protoManager.HasIndex(AnnouncementVoice), Is.True, "Announcement speaker 'Glados' must exist."); // VG-Tweak
         });
     }
 }

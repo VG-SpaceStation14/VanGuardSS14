@@ -9,11 +9,17 @@ namespace Content.Corvax.Tests.Syndicate.TTS;
 public sealed class TtsComponentTest
 {
     [Test]
-    public void DefaultVoiceIsTaskmaster()
+    // VG-Tweak Start
+    public void DefaultVoiceIsRuAlexandr()
+    // VG-Tweak End
+    // public void DefaultVoiceIsTaskmaster() // VG-Tweak
     {
         var comp = new TTSComponent();
         Assert.That(comp.VoicePrototypeId, Is.Not.Null);
-        Assert.That(comp.VoicePrototypeId!.Value.Id, Is.EqualTo("Taskmaster"));
+        // VG-Tweak Start
+        Assert.That(comp.VoicePrototypeId!.Value.Id, Is.EqualTo("RuAlexandr"));
+        // VG-Tweak End
+        // Assert.That(comp.VoicePrototypeId!.Value.Id, Is.EqualTo("Taskmaster")); // VG-Tweak
     }
 
     [Test]
