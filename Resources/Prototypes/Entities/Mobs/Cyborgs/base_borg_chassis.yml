@@ -230,7 +230,8 @@
     - Critical
     - Dead
   - type: TTS # Corvax-TTS
-    voice: TrainingRobot
+    voice: RuAlexandr
+    effect: Robot
 
 - type: entity
   abstract: true

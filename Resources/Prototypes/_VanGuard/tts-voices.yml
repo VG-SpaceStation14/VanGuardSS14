@@ -1,0 +1,175 @@
+# Женские голоса
+- type: ttsVoice
+  id: RuAigul
+  name: tts-voice-name-aigul
+  sex: Female
+  speaker: ru_aigul
+
+- type: ttsVoice
+  id: RuAlbina
+  name: tts-voice-name-albina
+  sex: Female
+  speaker: ru_albina
+
+- type: ttsVoice
+  id: RuAlfia
+  name: tts-voice-name-alfia
+  sex: Female
+  speaker: ru_alfia
+
+- type: ttsVoice
+  id: RuAlfia2
+  name: tts-voice-name-alfia2
+  sex: Female
+  speaker: ru_alfia2
+
+- type: ttsVoice
+  id: RuEkaterina
+  name: tts-voice-name-ekaterina
+  sex: Female
+  speaker: ru_ekaterina
+
+- type: ttsVoice
+  id: RuVika
+  name: tts-voice-name-vika
+  sex: Female
+  speaker: ru_vika
+
+- type: ttsVoice
+  id: RuKarina
+  name: tts-voice-name-karina
+  sex: Female
+  speaker: ru_karina
+
+- type: ttsVoice
+  id: RuKejilgan
+  name: tts-voice-name-kejilgan
+  sex: Female
+  speaker: ru_kejilgan
+
+- type: ttsVoice
+  id: RuKermen
+  name: tts-voice-name-kermen
+  sex: Female
+  speaker: ru_kermen
+
+- type: ttsVoice
+  id: RuMiyau
+  name: tts-voice-name-miyau
+  sex: Female
+  speaker: ru_miyau
+
+- type: ttsVoice
+  id: RuNurgul
+  name: tts-voice-name-nurgul
+  sex: Female
+  speaker: ru_nurgul
+
+- type: ttsVoice
+  id: RuOksana
+  name: tts-voice-name-oksana
+  sex: Female
+  speaker: ru_oksana
+
+- type: ttsVoice
+  id: RuOnaoy
+  name: tts-voice-name-onaoy
+  sex: Female
+  speaker: ru_onaoy
+
+- type: ttsVoice
+  id: RuRamilia
+  name: tts-voice-name-ramilia
+  sex: Female
+  speaker: ru_ramilia
+
+- type: ttsVoice
+  id: RuSaida
+  name: tts-voice-name-saida
+  sex: Female
+  speaker: ru_saida
+
+- type: ttsVoice
+  id: RuSibday
+  name: tts-voice-name-sibday
+  sex: Female
+  speaker: ru_sibday
+
+- type: ttsVoice
+  id: RuZara
+  name: tts-voice-name-zara
+  sex: Female
+  speaker: ru_zara
+
+- type: ttsVoice
+  id: RuZhadyra
+  name: tts-voice-name-zhadyra
+  sex: Female
+  speaker: ru_zhadyra
+
+- type: ttsVoice
+  id: RuZhazira
+  name: tts-voice-name-zhazira
+  sex: Female
+  speaker: ru_zhazira
+
+- type: ttsVoice
+  id: RuZinaida
+  name: tts-voice-name-zinaida
+  sex: Female
+  speaker: ru_zinaida
+
+# Мужские голоса
+- type: ttsVoice
+  id: RuAlexandr
+  name: tts-voice-name-alexandr
+  sex: Male
+  speaker: ru_alexandr
+
+- type: ttsVoice
+  id: RuBogdan
+  name: tts-voice-name-bogdan
+  sex: Male
+  speaker: ru_bogdan
+
+- type: ttsVoice
+  id: RuDmitriy
+  name: tts-voice-name-dmitriy
+  sex: Male
+  speaker: ru_dmitriy
+
+- type: ttsVoice
+  id: RuGamat
+  name: tts-voice-name-gamat
+  sex: Male
+  speaker: ru_gamat
+
+- type: ttsVoice
+  id: RuIgor
+  name: tts-voice-name-igor
+  sex: Male
+  speaker: ru_igor
+
+- type: ttsVoice
+  id: RuMarat
+  name: tts-voice-name-marat
+  sex: Male
+  speaker: ru_marat
+
+- type: ttsVoice
+  id: RuRoman
+  name: tts-voice-name-roman
+  sex: Male
+  speaker: ru_roman
+
+- type: ttsVoice
+  id: RuSafarhuja
+  name: tts-voice-name-safarhuja
+  sex: Male
+  speaker: ru_safarhuja
+
+- type: ttsVoice
+  id: RuEduard
+  name: tts-voice-name-eduard
+  sex: Male
+  speaker: ru_eduard

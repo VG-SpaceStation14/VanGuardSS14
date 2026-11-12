@@ -294,7 +294,9 @@ public sealed partial class TTSSystem : EntitySystem
         if (audioResult == null)
             return;
 
-        ApplyRadioEffect(audioResult.Value);
+        // VG-Tweak Start
+        // ApplyRadioEffect(audioResult.Value);
+        // VG-Tweak End
 
         var secondParams = audioParams
             .WithPitchScale(audioParams.Pitch * (1 + _ran.NextFloat(0.02f, 0.05f)))

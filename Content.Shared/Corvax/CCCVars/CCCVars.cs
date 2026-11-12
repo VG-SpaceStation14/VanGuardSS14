@@ -93,8 +93,12 @@ public sealed class CCCVars
     /// <summary>
     /// Bitmask of enabled radio channels for TTS. <see cref="RadioChannelFlag"/>
     /// </summary>
+    // VG-Tweak Start
     public static readonly CVarDef<int> TTSRadioFilter =
-        CVarDef.Create("tts.radio_filter", (int)RadioChannelFlag.AllExceptCommon, CVar.CLIENT | CVar.REPLICATED | CVar.ARCHIVE);
+        CVarDef.Create("tts.radio_filter", (int)RadioChannelFlag.All, CVar.CLIENT | CVar.REPLICATED | CVar.ARCHIVE);
+    // VG-Tweak End
+    // public static readonly CVarDef<int> TTSRadioFilter =
+    //     CVarDef.Create("tts.radio_filter", (int)RadioChannelFlag.AllExceptCommon, CVar.CLIENT | CVar.REPLICATED | CVar.ARCHIVE); // VG-Tweak
 
     /// <summary>
     /// Count of in-memory cached tts voice lines.

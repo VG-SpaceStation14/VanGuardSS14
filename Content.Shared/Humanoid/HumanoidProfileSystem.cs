@@ -13,13 +13,22 @@ public sealed partial class HumanoidProfileSystem : EntitySystem
     [Dependency] private GrammarSystem _grammar = default!;
 
     // Corvax-TTS-Start
-    public const string DefaultVoice = "Garithos";
+    // VG-Tweak Start
+    public const string DefaultVoice = "RuAlexandr";
     public static readonly Dictionary<Sex, string> DefaultSexVoice = new()
     {
-        {Sex.Male, "Garithos"},
-        {Sex.Female, "Maiev"},
-        {Sex.Unsexed, "Myron"},
+        {Sex.Male, "RuAlexandr"},
+        {Sex.Female, "RuEkaterina"},
+        {Sex.Unsexed, "RuMiyau"},
     };
+    // VG-Tweak End
+    // public const string DefaultVoice = "Garithos"; // VG-Tweak
+    // public static readonly Dictionary<Sex, string> DefaultSexVoice = new() // VG-Tweak
+    // { // VG-Tweak
+    //     {Sex.Male, "Garithos"}, // VG-Tweak
+    //     {Sex.Female, "Maiev"}, // VG-Tweak
+    //     {Sex.Unsexed, "Myron"}, // VG-Tweak
+    // }; // VG-Tweak
     // Corvax-TTS-End
 
     public override void Initialize()
@@ -41,7 +50,10 @@ public sealed partial class HumanoidProfileSystem : EntitySystem
         ent.Comp.Sex = profile.Sex;
         // Corvax-TTS-start
         ent.Comp.TTSVoice = profile.TTSVoice;
-        if (TryComp<TTSComponent>(ent, out var _TTSComponent) && _TTSComponent.VoicePrototypeId == "Taskmaster")
+        // VG-Tweak Start
+        if (TryComp<TTSComponent>(ent, out var _TTSComponent) && _TTSComponent.VoicePrototypeId == "RuAlexandr")
+        // VG-Tweak End
+        // if (TryComp<TTSComponent>(ent, out var _TTSComponent) && _TTSComponent.VoicePrototypeId == "Taskmaster") // VG-Tweak
         {
             _TTSComponent.VoicePrototypeId = profile.TTSVoice;
         }

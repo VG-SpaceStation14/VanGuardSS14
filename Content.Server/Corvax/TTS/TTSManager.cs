@@ -61,10 +61,16 @@ public sealed partial class TTSManager
     /// <param name="speaker">Identifier of speaker</param>
     /// <param name="text">SSML formatted text</param>
     /// <returns>OGG audio bytes or null if failed</returns>
-    public async Task<byte[]?> ConvertTextToSpeech(string speaker, string text)
+    // VG-Tweak Start
+    public async Task<byte[]?> ConvertTextToSpeech(string speaker, string text, string effect = "")
+    // VG-Tweak End
+    // public async Task<byte[]?> ConvertTextToSpeech(string speaker, string text) // VG-Tweak
     {
         WantedCount.Inc();
-        var cacheKey = GenerateCacheKey(speaker, text);
+        // VG-Tweak Start
+        var cacheKey = GenerateCacheKey(speaker, text, effect);
+        // VG-Tweak End
+        // var cacheKey = GenerateCacheKey(speaker, text); // VG-Tweak
         if (_cache.TryGetValue(cacheKey, out var data))
         {
             ReusedCount.Inc();
@@ -79,6 +85,9 @@ public sealed partial class TTSManager
             ApiToken = _apiToken,
             Text = text,
             Speaker = speaker,
+            // VG-Tweak Start
+            Effect = effect
+            // VG-Tweak End
         };
 
         var reqTime = DateTime.UtcNow;
@@ -150,9 +159,15 @@ public sealed partial class TTSManager
         _cacheKeysSeq.Clear();
     }
 
-    private string GenerateCacheKey(string speaker, string text)
+    // VG-Tweak Start
+    private string GenerateCacheKey(string speaker, string text, string effect = "")
+    // VG-Tweak End
+    // private string GenerateCacheKey(string speaker, string text) // VG-Tweak
     {
-        var rawKey = $"{speaker}/{text.ToLowerInvariant()}";
+        // VG-Tweak Start
+        var rawKey = $"{speaker}/{effect}/{text.ToLowerInvariant()}";
+        // VG-Tweak End
+        // var rawKey = $"{speaker}/{text.ToLowerInvariant()}"; // VG-Tweak
         if (rawKey.Length <= 32)
             return rawKey;
 
@@ -174,6 +189,11 @@ public sealed partial class TTSManager
 
         [JsonPropertyName("speaker")]
         public string Speaker { get; set; } = "";
+
+        // VG-Tweak Start
+        [JsonPropertyName("effect")]
+        public string Effect { get; set; } = "";
+        // VG-Tweak End
 
         [JsonPropertyName("ssml")]
         public bool SSML { get; private set; } = true;

@@ -328,10 +328,21 @@ namespace Content.Shared.Preferences
             var prototypeManager = IoCManager.Resolve<IPrototypeManager>();
             var random = IoCManager.Resolve<IRobustRandom>();
 
-            var voiceId = random.Pick(prototypeManager
+            // VG-Tweak Start
+            var voices = prototypeManager
                 .EnumeratePrototypes<TTSVoicePrototype>()
-                .Where(o => CanHaveVoice(o, voicePrototype)).ToArray()
-            ).ID;
+                .Where(o => CanHaveVoice(o, voicePrototype))
+                .ToList();
+
+            if (voices.Count == 0)
+                return "RuAlexandr";
+
+            var voiceId = random.Pick(voices).ID;
+            // VG-Tweak End
+            // var voiceId = random.Pick(prototypeManager // VG-Tweak
+            //     .EnumeratePrototypes<TTSVoicePrototype>() // VG-Tweak
+            //     .Where(o => CanHaveVoice(o, voicePrototype)).ToArray() // VG-Tweak
+            // ).ID; // VG-Tweak
             return voiceId;
         }
         // Corvax-TTS-End
