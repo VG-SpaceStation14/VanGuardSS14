@@ -27,7 +27,8 @@
     damageContainer: ManifestedSpirit
   - type: NoSlip
   - type: TTS # Corvax-TTS
-    voice: Kelthuzad
+    voice: RuBogdan
+    effect: Echo
   - type: Eye
     drawFov: false
     visMask:

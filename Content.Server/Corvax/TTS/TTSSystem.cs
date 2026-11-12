@@ -87,7 +87,11 @@ public sealed partial class TTSSystem : EntitySystem
         // Да я подписал все на английском и чо? Вчіть мову
     };
 
-    private static readonly ProtoId<TTSVoicePrototype> AnnouncementSpeaker = "Glados";
+    // VG-Tweak Start
+    private static readonly ProtoId<TTSVoicePrototype> AnnouncementSpeaker = "RuZhazira";
+    // VG-Tweak End
+    // private static readonly ProtoId<TTSVoicePrototype> AnnouncementSpeaker = "Glados"; // VG-Tweak
+
     private const int MaxMessageChars = 100 * 2; // same as SingleBubbleCharLimit * 2
     private const float AnnouncementDelay = 2.25f;
     private const float TTSRange = SharedChatSystem.VoiceRange * 1.5f;
@@ -138,12 +142,20 @@ public sealed partial class TTSSystem : EntitySystem
             return;
 
         TTSVoicePrototype? voicePrototype = null;
+
+        // VG-Tweak Start
+        string effect = "";
+        // VG-Tweak End
+
         if (TryComp<TTSComponent>(ev.Sender, out var ttsComp) && !HasComp<MutedStatusEffectComponent>(ev.Sender))
         {
             if (!string.IsNullOrEmpty(ttsComp.VoicePrototypeId))
             {
                 ProtoMan.TryIndex(ttsComp.VoicePrototypeId, out voicePrototype);
             }
+            // VG-Tweak Start
+            effect = ttsComp.Effect;
+            // VG-Tweak End
         }
 
         if (voicePrototype == null)
@@ -152,14 +164,25 @@ public sealed partial class TTSSystem : EntitySystem
                 return;
         }
 
-        HandleConsoleAnnouncement(ev.Text, voicePrototype.Speaker, ev.Component.Sound, station.Value);
+        // VG-Tweak Start
+        HandleConsoleAnnouncement(ev.Text, voicePrototype.Speaker, ev.Component.Sound, station.Value, effect);
+        // VG-Tweak End
+        // HandleConsoleAnnouncement(ev.Text, voicePrototype.Speaker, ev.Component.Sound, station.Value); // VG-Tweak
     }
 
+    // VG-Tweak Start
     private async void HandleConsoleAnnouncement(
         string text,
         string speaker,
         SoundSpecifier sound,
-        EntityUid station)
+        EntityUid station,
+        string effect = "")
+    // VG-Tweak End
+    // private async void HandleConsoleAnnouncement(
+    //     string text,
+    //     string speaker,
+    //     SoundSpecifier sound,
+    //     EntityUid station) // VG-Tweak
     {
         var textSanitized = Sanitize(text);
         if (string.IsNullOrEmpty(textSanitized))
@@ -171,7 +194,11 @@ public sealed partial class TTSSystem : EntitySystem
         var ssmlTraits = SoundTraits.RateFast | SoundTraits.PitchMedium;
         var textSsml = ToSsmlText(textSanitized, ssmlTraits);
 
-        var soundData = await _ttsManager.ConvertTextToSpeech(speaker, textSsml);
+        // VG-Tweak Start
+        var soundData = await _ttsManager.ConvertTextToSpeech(speaker, textSsml, effect);
+        // VG-Tweak End
+        // var soundData = await _ttsManager.ConvertTextToSpeech(speaker, textSsml); // VG-Tweak
+
         if (soundData is null)
             return;
 
@@ -223,7 +250,14 @@ public sealed partial class TTSSystem : EntitySystem
 
     private async void HandleSay(EntityUid uid, string message, string speaker, RadioChannelPrototype? channel)
     {
-        var soundData = await GenerateTTS(message, speaker);
+        // VG-Tweak Start
+        string effect = "";
+        if (TryComp<TTSComponent>(uid, out var ttsComp))
+            effect = ttsComp.Effect;
+
+        var soundData = await GenerateTTS(message, speaker, false, effect);
+        // VG-Tweak End
+        // var soundData = await GenerateTTS(message, speaker); // VG-Tweak
 
         if (soundData is null)
             return;
@@ -237,7 +271,16 @@ public sealed partial class TTSSystem : EntitySystem
 
         if (channel != null)
         {
-            SendTTSToRadio(soundData, uid, channel, false);
+            // VG-Tweak Start
+            string radioEffect = "Radio";
+            if (!string.IsNullOrEmpty(effect))
+                radioEffect = $"{effect},{radioEffect}";
+
+            var radioSoundData = await GenerateTTS(message, speaker, false, radioEffect);
+            if (radioSoundData != null)
+                SendTTSToRadio(radioSoundData, uid, channel, false);
+            // VG-Tweak End
+            // SendTTSToRadio(soundData, uid, channel, false); // VG-Tweak
         }
     }
 
@@ -247,7 +290,15 @@ public sealed partial class TTSSystem : EntitySystem
         string speaker,
         RadioChannelPrototype? channel)
     {
-        var fullSoundData = await GenerateTTS(message, speaker, true);
+        // VG-Tweak Start
+        string effect = "";
+        if (TryComp<TTSComponent>(uid, out var ttsComp))
+            effect = ttsComp.Effect;
+
+        var fullSoundData = await GenerateTTS(message, speaker, true, effect);
+        // VG-Tweak End
+        // var fullSoundData = await GenerateTTS(message, speaker, true); // VG-Tweak
+
         if (fullSoundData is null)
             return;
 
@@ -262,7 +313,16 @@ public sealed partial class TTSSystem : EntitySystem
 
         if (channel != null)
         {
-            SendTTSToRadio(fullSoundData, uid, channel);
+            // VG-Tweak Start
+            string radioEffect = "Radio";
+            if (!string.IsNullOrEmpty(effect))
+                radioEffect = $"{effect},{radioEffect}";
+
+            var radioSoundData = await GenerateTTS(message, speaker, true, radioEffect);
+            if (radioSoundData != null)
+                SendTTSToRadio(radioSoundData, uid, channel);
+            // VG-Tweak End
+            // SendTTSToRadio(fullSoundData, uid, channel); // VG-Tweak
         }
     }
 
@@ -423,7 +483,10 @@ public sealed partial class TTSSystem : EntitySystem
     }
 
     // ReSharper disable once InconsistentNaming
-    private async Task<byte[]?> GenerateTTS(string text, string speaker, bool isWhisper = false)
+    // VG-Tweak Start
+    private async Task<byte[]?> GenerateTTS(string text, string speaker, bool isWhisper = false, string effect = "")
+    // VG-Tweak End
+    // private async Task<byte[]?> GenerateTTS(string text, string speaker, bool isWhisper = false) // VG-Tweak
     {
         var textSanitized = Sanitize(text);
 
@@ -444,6 +507,9 @@ public sealed partial class TTSSystem : EntitySystem
         }
 
         var textSsml = ToSsmlText(textSanitized, ssmlTraits);
-        return await _ttsManager.ConvertTextToSpeech(speaker, textSsml);
+        // VG-Tweak Start
+        return await _ttsManager.ConvertTextToSpeech(speaker, textSsml, effect);
+        // VG-Tweak End
+        // return await _ttsManager.ConvertTextToSpeech(speaker, textSsml); // VG-Tweak
     }
 }

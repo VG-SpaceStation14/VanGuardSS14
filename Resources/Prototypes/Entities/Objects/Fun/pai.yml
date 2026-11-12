@@ -74,7 +74,8 @@
   - type: TypingIndicator
     proto: robot
   - type: TTS # Corvax-TTS
-    voice: TrainingRobot
+    voice: RuAlexandr
+    effect: Robot
   - type: Speech
     speechVerb: Robotic
     speechSounds: Pai

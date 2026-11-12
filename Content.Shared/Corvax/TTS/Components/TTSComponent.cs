@@ -14,5 +14,16 @@ public sealed partial class TTSComponent : Component
     /// Prototype of used voice for TTS.
     /// </summary>
     [DataField("voice")]
-    public ProtoId<TTSVoicePrototype>? VoicePrototypeId { get; set; } = "Taskmaster";
+    // VG-Tweak Start
+    public ProtoId<TTSVoicePrototype>? VoicePrototypeId { get; set; } = "RuAlexandr";
+    // VG-Tweak End
+    // public ProtoId<TTSVoicePrototype>? VoicePrototypeId { get; set; } = "Taskmaster"; // VG-Tweak
+
+    // VG-Tweak Start
+    /// <summary>
+    /// Effect applied to the voice (e.g., "Robot", "Echo").
+    /// </summary>
+    [DataField("effect")]
+    public string Effect { get; set; } = string.Empty;
+    // VG-Tweak End
 }
