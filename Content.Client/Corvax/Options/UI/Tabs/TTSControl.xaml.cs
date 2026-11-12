@@ -165,7 +165,10 @@ public sealed partial class TTSControl : Control
 
     private void ResetRadioFilter()
     {
-        var defaultFilter = RadioChannelFlag.AllExceptCommon;
+        // VG-Tweak Start
+        var defaultFilter = (RadioChannelFlag)CCCVars.TTSRadioFilter.DefaultValue;
+        // VG-Tweak End
+
         _cfg.SetCVar(CCCVars.TTSRadioFilter, (ushort)defaultFilter);
         _cfg.SaveToFile();
 
