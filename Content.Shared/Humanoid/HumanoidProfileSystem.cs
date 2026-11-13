@@ -14,12 +14,12 @@ public sealed partial class HumanoidProfileSystem : EntitySystem
 
     // Corvax-TTS-Start
     // VG-Tweak Start
-    public const string DefaultVoice = "RuAlexandr";
+    public const string DefaultVoice = "Aidar";
     public static readonly Dictionary<Sex, string> DefaultSexVoice = new()
     {
-        {Sex.Male, "RuAlexandr"},
-        {Sex.Female, "RuEkaterina"},
-        {Sex.Unsexed, "RuMiyau"},
+        {Sex.Male, "Aidar"},
+        {Sex.Female, "Baya"},
+        {Sex.Unsexed, "Baya"},
     };
     // VG-Tweak End
     // public const string DefaultVoice = "Garithos"; // VG-Tweak
@@ -51,7 +51,7 @@ public sealed partial class HumanoidProfileSystem : EntitySystem
         // Corvax-TTS-start
         ent.Comp.TTSVoice = profile.TTSVoice;
         // VG-Tweak Start
-        if (TryComp<TTSComponent>(ent, out var _TTSComponent) && _TTSComponent.VoicePrototypeId == "RuAlexandr")
+        if (TryComp<TTSComponent>(ent, out var _TTSComponent) && _TTSComponent.VoicePrototypeId == "Aidar")
         // VG-Tweak End
         // if (TryComp<TTSComponent>(ent, out var _TTSComponent) && _TTSComponent.VoicePrototypeId == "Taskmaster") // VG-Tweak
         {

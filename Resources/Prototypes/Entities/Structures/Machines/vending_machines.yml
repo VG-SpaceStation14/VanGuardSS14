@@ -71,7 +71,7 @@
   - type: TypingIndicator
     proto: robot
   - type: TTS # Corvax-TTS
-    voice: RuIgor
+    voice: Eugene
     effect: Robot
   - type: Speech
     speechVerb: Robotic

@@ -91,7 +91,7 @@
   - type: Machine
     board: HydroponicsTrayMachineCircuitboard
   - type: TTS # Corvax-TTS
-    voice: RuAlexandr
+    voice: Aidar
     effect: Robot
   - type: WiresPanel
   - type: AmbientSound

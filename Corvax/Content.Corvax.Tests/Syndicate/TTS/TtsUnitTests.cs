@@ -10,14 +10,14 @@ public sealed class TtsComponentTest
 {
     [Test]
     // VG-Tweak Start
-    public void DefaultVoiceIsRuAlexandr()
+    public void DefaultVoiceIsAidar()
     // VG-Tweak End
     // public void DefaultVoiceIsTaskmaster() // VG-Tweak
     {
         var comp = new TTSComponent();
         Assert.That(comp.VoicePrototypeId, Is.Not.Null);
         // VG-Tweak Start
-        Assert.That(comp.VoicePrototypeId!.Value.Id, Is.EqualTo("RuAlexandr"));
+        Assert.That(comp.VoicePrototypeId!.Value.Id, Is.EqualTo("Aidar"));
         // VG-Tweak End
         // Assert.That(comp.VoicePrototypeId!.Value.Id, Is.EqualTo("Taskmaster")); // VG-Tweak
     }

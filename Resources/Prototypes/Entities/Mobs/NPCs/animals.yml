@@ -1661,7 +1661,7 @@
     popupText: diona-reform-attempt
     reformPrototype: MobDionaReformed
   - type: TTS # Corvax-TTS
-    voice: RuAlbina
+    voice: Kseniya
 
 - type: entity
   parent: MobDionaNymph
