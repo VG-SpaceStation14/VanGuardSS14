@@ -311,6 +311,17 @@ public sealed partial class BankCartridgeUi : UIFragment
             ClipText = true,
             FontColorOverride = Color.FromHex("#F2F4F8"),
         });
+
+        var delta = transaction.Delta >= 0
+            ? $"+{transaction.Delta:N0}"
+            : $"{transaction.Delta:N0}";
+        details.AddChild(new Label
+        {
+            Text = delta,
+            FontColorOverride = accent,
+            ClipText = true,
+            HorizontalAlignment = Control.HAlignment.Right,
+        });
         details.AddChild(new Label
         {
             Text = FormatTime(transaction.Time),
@@ -334,19 +345,10 @@ public sealed partial class BankCartridgeUi : UIFragment
                 FontColorOverride = Color.FromHex("#8BA0B0"),
             });
         }
+        // Keep the delta inside the details column. A separate trailing column
+        // can be squeezed to zero width by long counterparty text in a narrow
+        // cartridge window, which made outgoing amounts disappear.
         rowBox.AddChild(details);
-
-        var delta = transaction.Delta >= 0
-            ? $"+{transaction.Delta:N0}"
-            : $"{transaction.Delta:N0}";
-        rowBox.AddChild(new Label
-        {
-            Text = delta,
-            FontColorOverride = accent,
-            HorizontalAlignment = Control.HAlignment.Right,
-            VerticalAlignment = Control.VAlignment.Center,
-            ClipText = true,
-        });
 
         row.AddChild(rowBox);
         return row;

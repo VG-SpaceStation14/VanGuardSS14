@@ -574,6 +574,54 @@ public sealed class BankUiTest : InteractionTest
     }
 
     [Test]
+    public async Task CartridgeHistoryShowsIncomingAndOutgoingAmounts()
+    {
+        await Client.WaitPost(() =>
+        {
+            var cartridge = new BankCartridgeUi();
+            cartridge.Setup(null!, null);
+
+            var root = cartridge.GetUIFragmentRoot();
+            UiMan.RootControl.AddChild(root);
+            root.Arrange(new UIBox2(0, 0, 520, 720));
+
+            var transactions = new List<BankUiTransaction>
+            {
+                new(TimeSpan.FromMinutes(1), -250, "bank-transfer-out", null,
+                    "Bob", "•••• •••• •••• 5678", 1),
+                new(TimeSpan.FromMinutes(2), -50, "vending-purchase", null),
+                new(TimeSpan.FromMinutes(3), 100, "bank-transfer-in", null,
+                    "Bob", "•••• •••• •••• 5678", 2),
+            };
+            var account = new BankAccountUiState(
+                "123456789012",
+                "Alice",
+                800,
+                transactions,
+                authorized: true,
+                hasCard: true);
+
+            cartridge.UpdateState(new BankCartridgeUiState(
+                account,
+                new BankTransferUiState(BankTransferSearchStatus.Idle, string.Empty,
+                    new List<BankTransferRecipient>(), BankTransferStatus.None, 0, 0)));
+            root.InvalidateMeasure();
+            root.InvalidateArrange();
+            root.Arrange(new UIBox2(0, 0, 520, 720));
+
+            var labels = Labels(root).ToList();
+            foreach (var expected in new[] { "-250", "-50", "+100" })
+            {
+                var label = labels.SingleOrDefault(candidate => candidate.Text == expected);
+                Assert.That(label, Is.Not.Null, $"history must show amount {expected}");
+                Assert.That(label!.VisibleInTree, Is.True);
+            }
+
+            UiMan.RootControl.RemoveChild(root);
+        });
+    }
+
+    [Test]
     public async Task CartridgeHasOverviewAndTransfersTabs()
     {
         await Client.WaitPost(() =>
