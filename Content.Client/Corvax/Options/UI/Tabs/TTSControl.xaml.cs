@@ -22,7 +22,8 @@ public sealed partial class TTSControl : Control
     private readonly Dictionary<Button, RadioChannelFlag> _radioButtons = new();
     private OptionsTabControlRow _controlRow = default!;
 
-    public const float TtsMultiplier = 3f;
+    //public const float TtsMultiplier = 3f; // VG-Tweak
+    public const float TtsMultiplier = 5f; // VG-Tweak
 
     public TTSControl()
     {

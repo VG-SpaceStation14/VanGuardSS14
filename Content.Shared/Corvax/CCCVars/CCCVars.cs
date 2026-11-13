@@ -76,13 +76,13 @@ public sealed class CCCVars
     /// Volume of TTS radio messages
     /// </summary>
     public static readonly CVarDef<float> TTSRadioVolume =
-        CVarDef.Create("tts.radio_volume", 1.2f, CVar.CLIENTONLY | CVar.ARCHIVE);
+        CVarDef.Create("tts.radio_volume", 3.5f, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     /// <summary>
     /// Default volume setting of TTS sound
     /// </summary>
     public static readonly CVarDef<float> TTSVolume =
-        CVarDef.Create("tts.volume", 1.2f, CVar.CLIENTONLY | CVar.ARCHIVE);
+        CVarDef.Create("tts.volume", 3.5f, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     /// <summary>
     /// TTS voice effect preset. 0 = None.
