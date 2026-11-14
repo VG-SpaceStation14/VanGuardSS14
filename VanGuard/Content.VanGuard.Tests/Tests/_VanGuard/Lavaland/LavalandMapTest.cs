@@ -505,52 +505,69 @@ public sealed class LavalandMapTest : GameTest
                         $"Dungeon grid {uid} rotated after initialization.");
                 }
             });
-            Assert.That(faxCount, Is.GreaterThanOrEqualTo(1), "No fax was found on Lavaland.");
+            Assert.That(faxCount, Is.GreaterThanOrEqualTo(2),
+                "Both outpost faxes must be present on Lavaland.");
 
-            var faxText = string.Empty;
+            // Collect every survey report on the planet. Each successful fax
+            // delivery creates exactly one paper that contains the "X=..., Y=..."
+            // survey lines, so we verify (a) the number of reports matches the
+            // number of faxes and (b) each report has the full expected content.
+            // This is independent of how FaxSystem parents the paper (container,
+            // child, or standalone on the map), which makes the check robust.
+            var reports = new List<(EntityUid Paper, string Content)>();
             var paperQuery = SEntMan.EntityQueryEnumerator<PaperComponent, TransformComponent>();
-            while (paperQuery.MoveNext(out _, out var paper, out var paperXform))
+            while (paperQuery.MoveNext(out var paperUid, out var paper, out var paperXform))
             {
-                if (paperXform.MapID == mapId)
-                    faxText += paper.Content;
+                if (paperXform.MapID != mapId)
+                    continue;
+                if (!paper.Content.Contains("X=", StringComparison.Ordinal))
+                    continue;
+                reports.Add((paperUid, paper.Content));
             }
+
+            Assert.That(reports.Count, Is.EqualTo(faxCount),
+                "Every fax on the planet must receive its own copy of the survey report.");
 
             var expectedTendrils = 0;
             var poiSpawnerQuery = SEntMan.EntityQueryEnumerator<LavalandPoiSpawnerComponent>();
             if (poiSpawnerQuery.MoveNext(out _, out var poiSpawner))
                 expectedTendrils = poiSpawner.Prototypes.Count;
 
-            var faxLines = faxText
-                .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                .Where(line => line.Contains("X=", StringComparison.Ordinal))
-                .ToList();
-            Assert.That(faxLines, Has.Count.EqualTo(dungeonCount + expectedTendrils),
-                "The POI fax must contain one coordinate for every dungeon, arena, base and configured tendril.");
-            foreach (var line in faxLines)
-                Assert.That(line, Does.Match(@"X=-?\d+, Y=-?\d+"),
-                    $"POI fax coordinate is not rounded to integers: {line}");
-
-            Assert.That(faxText, Does.Contain(localization.GetString("lavaland-fax-object-arena")),
-                "The POI fax is missing the Blood Miner arena.");
-            Assert.That(faxText, Does.Contain(localization.GetString("lavaland-fax-object-legion-base")),
-                "The POI fax is missing the Legion base.");
-            foreach (var dungeonLabel in new[]
-                     {
-                         "lavaland-fax-object-monument",
-                         "lavaland-fax-object-lake-village",
-                         "lavaland-fax-object-cave",
-                         "lavaland-fax-object-bright-room",
-                         "lavaland-fax-object-green-dome",
-                         "lavaland-fax-object-lava-river",
-                         "lavaland-fax-object-mineshaft",
-                         "lavaland-fax-object-cold-dome",
-                     })
+            foreach (var (paperUid, faxText) in reports)
             {
-                Assert.That(faxText, Does.Contain(localization.GetString(dungeonLabel)),
-                    $"The POI fax is missing dungeon label {dungeonLabel}.");
+                var faxLines = faxText
+                    .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                    .Where(line => line.Contains("X=", StringComparison.Ordinal))
+                    .ToList();
+
+                Assert.That(faxLines, Has.Count.EqualTo(dungeonCount + expectedTendrils),
+                    $"Paper {paperUid} must contain one coordinate for every dungeon, arena, base and configured tendril.");
+                foreach (var line in faxLines)
+                    Assert.That(line, Does.Match(@"X=-?\d+, Y=-?\d+"),
+                        $"Paper {paperUid}: POI fax coordinate is not rounded to integers: {line}");
+
+                Assert.That(faxText, Does.Contain(localization.GetString("lavaland-fax-object-arena")),
+                    $"Paper {paperUid} is missing the Blood Miner arena.");
+                Assert.That(faxText, Does.Contain(localization.GetString("lavaland-fax-object-legion-base")),
+                    $"Paper {paperUid} is missing the Legion base.");
+                foreach (var dungeonLabel in new[]
+                         {
+                             "lavaland-fax-object-monument",
+                             "lavaland-fax-object-lake-village",
+                             "lavaland-fax-object-cave",
+                             "lavaland-fax-object-bright-room",
+                             "lavaland-fax-object-green-dome",
+                             "lavaland-fax-object-lava-river",
+                             "lavaland-fax-object-mineshaft",
+                             "lavaland-fax-object-cold-dome",
+                         })
+                {
+                    Assert.That(faxText, Does.Contain(localization.GetString(dungeonLabel)),
+                        $"Paper {paperUid} is missing dungeon label {dungeonLabel}.");
+                }
+                Assert.That(faxText, Does.Not.Contain(localization.GetString("lavaland-dungeon-temple")),
+                    $"Paper {paperUid} must use vague survey labels, not exact dungeon names.");
             }
-            Assert.That(faxText, Does.Not.Contain(localization.GetString("lavaland-dungeon-temple")),
-                "The POI fax must use vague survey labels, not exact dungeon names.");
 
             var weatherScheduler = SEntMan.GetComponent<LavalandWeatherSchedulerComponent>(mapUid);
             weatherScheduler.Stage = 2;
@@ -585,11 +602,14 @@ public sealed class LavalandMapTest : GameTest
         {
             await Server.WaitPost(() =>
             {
-                if (player is { } p && SEntMan.EntityExists(p))
-                    SEntMan.DeleteEntity(p);
-
+                // Detach the client *before* deleting the player entity, otherwise
+                // the mind system cannot find an observer spawn point on Lavaland
+                // and spews "Found no observer spawn points!" during teardown.
                 if (ServerSession != null)
                     Server.PlayerMan.SetAttachedEntity(ServerSession, null);
+
+                if (player is { } p && SEntMan.EntityExists(p))
+                    SEntMan.DeleteEntity(p);
 
                 if (rule is { } r && SEntMan.EntityExists(r.Owner))
                     ticker.EndGameRule((r.Owner, (GameRuleComponent?) r.Comp));
