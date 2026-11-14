@@ -92,6 +92,10 @@
   - MinerEmeraldCape
   - MinerDiamondCape
   - MinerRubieCape
+  # VG-Tweak Start: sponsor-exclusive cargo accessories.
+  - SponsorNeckCargoMedalLoadout
+  - SponsorNeckLogistikaPinLoadout
+  # VG-Tweak End
 
 - type: loadoutEffectGroup
   id: MinerCape15

@@ -1,0 +1,56 @@
+# Sponsor-only professional loadout groups.
+#
+# These groups contain only sponsor-exclusive items. They are attached to the
+# corresponding jobs instead of being injected into the personal Inventory
+# group, so a sponsor sees a professional item exactly where the job expects it.
+# Existing job groups keep all of their regular options; sponsor items are only
+# appended to them or placed in these sponsor-only groups.
+
+- type: loadoutGroup
+  id: CargoTechnicianNeck
+  name: loadout-group-cargo-technician-neck
+  minLimit: 0
+  loadouts:
+  - SponsorNeckCargoMedalLoadout
+  - SponsorNeckLogistikaPinLoadout
+
+- type: loadoutGroup
+  id: MedicalSponsorNeck
+  name: loadout-group-medical-sponsor-neck
+  minLimit: 0
+  loadouts:
+  - SponsorNeckMedicalMedalLoadout
+  - SponsorNeckDeForestPinLoadout
+
+- type: loadoutGroup
+  id: ScienceSponsorNeck
+  name: loadout-group-science-sponsor-neck
+  minLimit: 0
+  loadouts:
+  - SponsorNeckScienceMedalLoadout
+
+- type: loadoutGroup
+  id: EngineeringSponsorNeck
+  name: loadout-group-engineering-sponsor-neck
+  minLimit: 0
+  loadouts:
+  - SponsorNeckEngineerMedalLoadout
+  - SponsorNeckNakamuraPinLoadout
+
+- type: loadoutGroup
+  id: SecuritySponsorNeck
+  name: loadout-group-security-sponsor-neck
+  minLimit: 0
+  loadouts:
+  - SponsorNeckSecurityMedalLoadout
+  - SponsorNeckVitezstviPinLoadout
+
+- type: loadoutGroup
+  id: PilotNeck
+  name: loadout-group-pilot-neck
+  minLimit: 0
+  loadouts:
+  - SponsorNeckAceCloakLoadout
+  - SponsorNeckAroaceCloakLoadout
+  - SponsorNeckSecurityMedalLoadout
+  - SponsorNeckVitezstviPinLoadout

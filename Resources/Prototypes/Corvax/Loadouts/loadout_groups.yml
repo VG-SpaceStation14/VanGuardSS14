@@ -3,7 +3,37 @@
   name: loadout-group-inventory
   minLimit: 0
   maxLimit: 5
-  loadouts: []
+  # VG-Tweak Start: universal sponsor loadouts live in the personal Inventory group
+  # and are explicitly listed here instead of being injected by C#.
+  loadouts:
+  # Tier 1
+  - SponsorNeckNanoTrasenPinLoadout
+  - SponsorNeckDonkPinLoadout
+  - SponsorNeckEarthPinLoadout
+  - SponsorNeckUSSPPinLoadout
+  - SponsorHeadHetmanHatLoadout
+  - SponsorHeadWehcellentCapLoadout
+  - SponsorHeadBrownCatHatLoadout
+  - SponsorEyesBinoclardLensesLoadout
+  # Tier 2
+  - SponsorOuterExpensiveCoatLoadout
+  - SponsorUniformCossackLoadout
+  - SponsorUniformGladiatorLoadout
+  - SponsorHeadGladiatorHelmetLoadout
+  - SponsorUniformSchoolSkirtLoadout
+  - SponsorShoesSchoolBlackLoadout
+  - SponsorShoesSchoolWhiteLoadout
+  # Tier 3
+  - SponsorNeckVoidCloakLoadout
+  - SponsorNeckHeraldCloakLoadout
+  - SponsorShoesAerostaticBootsLoadout
+  - SponsorOuterDiscoBlazerLoadout
+  - SponsorUniformSuperstarCopLoadout
+  - SponsorShoesGreenLizardskinLoadout
+  - SponsorHeadIceSingerWigLoadout
+  - SponsorShoesIceSingerBootsLoadout
+  - SponsorNeckIceSingerScarfLoadout
+  # VG-Tweak End
 
 #Law
 

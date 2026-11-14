@@ -29,6 +29,9 @@
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
   - MedicalDoctorHead
+  # VG-Tweak Start: sponsor-exclusive medical medal group.
+  - MedicalSponsorNeck
+  # VG-Tweak End
   - MedicalMask
   - MedicalDoctorJumpsuit
   - MedicalBackpack
@@ -58,6 +61,9 @@
   # VG-Tweak End
   # VG-Tweak End
   - MedicalInternJumpsuit
+  # VG-Tweak Start: sponsor-exclusive medical medal group.
+  - MedicalSponsorNeck
+  # VG-Tweak End
   - MedicalBackpack
   - Glasses
   - AssistiveItems
@@ -78,6 +84,9 @@
   # VG-Tweak End
   - MedicalMask
   - ChemistJumpsuit
+  # VG-Tweak Start: sponsor-exclusive medical medal group.
+  - MedicalSponsorNeck
+  # VG-Tweak End
   - ChemistBackpack
   - ChemistOuterClothing
   - MedicalShoes
@@ -101,6 +110,9 @@
   - ParamedicHead
   - MedicalMask
   - ParamedicJumpsuit
+  # VG-Tweak Start: sponsor-exclusive medical medal group.
+  - MedicalSponsorNeck
+  # VG-Tweak End
   - MedicalBackpack
   - ParamedicOuterClothing
   - ParamedicShoes

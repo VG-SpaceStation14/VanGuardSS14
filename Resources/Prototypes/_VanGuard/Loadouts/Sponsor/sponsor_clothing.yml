@@ -1,0 +1,462 @@
+# Sponsor-exclusive clothing.
+#
+# Professional items are listed directly in the loadout groups of their job
+# (for example CaptainNeck, SalvageSpecialistNeck or the department medal
+# groups). Universal items are listed in the personal "Inventory" group.
+# Nothing is injected automatically: every loadout below has an explicit group.
+# A loadout only becomes selectable when the player's sponsor tier is at least
+# the tier declared below, so tiers are naturally cumulative.
+#
+# Role gates use the existing GroupLoadoutEffect / loadoutEffectGroup mechanism.
+# No new items, sprites or gameplay mechanics are introduced here.
+
+# A dedicated time gate for the security pilot, whose role timer is not covered
+# by any of the existing department/role effect groups.
+- type: loadoutEffectGroup
+  id: PilotVeteran
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobPilot
+      time: 20h
+
+# Simple department gates for the sponsor medals, matching the existing
+# CargoVeteran gate. The regular "Senior*" groups require several roles at once
+# and are intentionally reserved for the master-tier department clothing.
+- type: loadoutEffectGroup
+  id: MedicalVeteran
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:DepartmentTimeRequirement
+      department: Medical
+      time: 15h
+
+- type: loadoutEffectGroup
+  id: ScienceVeteran
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:DepartmentTimeRequirement
+      department: Science
+      time: 15h
+
+- type: loadoutEffectGroup
+  id: EngineeringVeteran
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:DepartmentTimeRequirement
+      department: Engineering
+      time: 15h
+
+- type: loadoutEffectGroup
+  id: SecurityVeteran
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:DepartmentTimeRequirement
+      department: Security
+      time: 15h
+
+# region Tier 1 - small but noticeable cosmetics
+
+# Corporate and faction pins. They are tiny neck accessories and make a good
+# entry-level sponsor reward.
+- type: loadout
+  id: SponsorNeckNanoTrasenPinLoadout
+  groupBy: sponsor-pins
+  equipment:
+    neck: ClothingNeckNanoTrasenPin
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 1
+
+- type: loadout
+  id: SponsorNeckDonkPinLoadout
+  groupBy: sponsor-pins
+  equipment:
+    neck: ClothingNeckDonkPin
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 1
+
+- type: loadout
+  id: SponsorNeckEarthPinLoadout
+  groupBy: sponsor-pins
+  equipment:
+    neck: ClothingNeckEarthPin
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 1
+
+- type: loadout
+  id: SponsorNeckUSSPPinLoadout
+  groupBy: sponsor-pins
+  equipment:
+    neck: ClothingNeckUSSPPin
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 1
+
+- type: loadout
+  id: SponsorNeckLogistikaPinLoadout
+  groupBy: sponsor-pins
+  equipment:
+    neck: ClothingNeckLogistikaPin
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 1
+
+- type: loadout
+  id: SponsorNeckDeForestPinLoadout
+  groupBy: sponsor-pins
+  equipment:
+    neck: ClothingNeckDeForestPin
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 1
+
+- type: loadout
+  id: SponsorNeckNakamuraPinLoadout
+  groupBy: sponsor-pins
+  equipment:
+    neck: ClothingNeckNakamuraPin
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 1
+
+- type: loadout
+  id: SponsorNeckVitezstviPinLoadout
+  groupBy: sponsor-pins
+  equipment:
+    neck: ClothingNeckVitezstviPin
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 1
+
+# Department medals. The time gates are the same ones already used by the
+# regular department rewards, so a medal still represents real service.
+- type: loadout
+  id: SponsorNeckCargoMedalLoadout
+  groupBy: sponsor-medals
+  equipment:
+    neck: ClothingNeckCargomedal
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: CargoVeteran
+  - !type:SponsorLoadoutEffect
+    tier: 1
+
+- type: loadout
+  id: SponsorNeckMedicalMedalLoadout
+  groupBy: sponsor-medals
+  equipment:
+    neck: ClothingNeckMedicalmedal
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MedicalVeteran
+  - !type:SponsorLoadoutEffect
+    tier: 1
+
+- type: loadout
+  id: SponsorNeckScienceMedalLoadout
+  groupBy: sponsor-medals
+  equipment:
+    neck: ClothingNeckSciencemedal
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: ScienceVeteran
+  - !type:SponsorLoadoutEffect
+    tier: 1
+
+- type: loadout
+  id: SponsorNeckEngineerMedalLoadout
+  groupBy: sponsor-medals
+  equipment:
+    neck: ClothingNeckEngineermedal
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: EngineeringVeteran
+  - !type:SponsorLoadoutEffect
+    tier: 1
+
+- type: loadout
+  id: SponsorNeckSecurityMedalLoadout
+  groupBy: sponsor-medals
+  equipment:
+    neck: ClothingNeckSecuritymedal
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: SecurityVeteran
+  - !type:SponsorLoadoutEffect
+    tier: 1
+
+# Unusual headwear and eyewear.
+- type: loadout
+  id: SponsorHeadHetmanHatLoadout
+  groupBy: sponsor-headwear
+  equipment:
+    head: ClothingHeadHatHetmanHat
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 1
+
+- type: loadout
+  id: SponsorHeadWehcellentCapLoadout
+  groupBy: sponsor-headwear
+  equipment:
+    head: ClothingHeadWehcellentCap
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 1
+
+- type: loadout
+  id: SponsorHeadBrownCatHatLoadout
+  groupBy: sponsor-headwear
+  equipment:
+    head: ClothingHeadHatAnimalCatBrown
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 1
+
+- type: loadout
+  id: SponsorEyesBinoclardLensesLoadout
+  groupBy: sponsor-eyewear
+  equipment:
+    eyes: ClothingEyesBinoclardLenses
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 1
+
+# endregion
+
+# region Tier 2 - expressive clothing and role exclusives
+
+# Salvage: the goliath hide cloak is the iconic Lavaland trophy.
+- type: loadout
+  id: SponsorNeckGoliathCloakLoadout
+  groupBy: sponsor-cloaks
+  equipment:
+    neck: ClothingNeckCloakGoliathCloak
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: SalvageElite
+  - !type:SponsorLoadoutEffect
+    tier: 2
+
+# Pilot: both pilot cloaks are gated by pilot service time.
+- type: loadout
+  id: SponsorNeckAceCloakLoadout
+  groupBy: sponsor-cloaks
+  equipment:
+    neck: ClothingNeckCloakAce
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: PilotVeteran
+  - !type:SponsorLoadoutEffect
+    tier: 2
+
+- type: loadout
+  id: SponsorNeckAroaceCloakLoadout
+  groupBy: sponsor-cloaks
+  equipment:
+    neck: ClothingNeckCloakAroace
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: PilotVeteran
+  - !type:SponsorLoadoutEffect
+    tier: 2
+
+# Thematic outfits.
+- type: loadout
+  id: SponsorUniformCossackLoadout
+  groupBy: sponsor-uniforms
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCossack
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 2
+
+- type: loadout
+  id: SponsorUniformSchoolSkirtLoadout
+  groupBy: sponsor-uniforms
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtSchool
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 2
+
+- type: loadout
+  id: SponsorShoesSchoolBlackLoadout
+  groupBy: sponsor-shoes
+  equipment:
+    shoes: ClothingShoesSchoolBlack
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 2
+
+- type: loadout
+  id: SponsorShoesSchoolWhiteLoadout
+  groupBy: sponsor-shoes
+  equipment:
+    shoes: ClothingShoesSchoolWhite
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 2
+
+- type: loadout
+  id: SponsorOuterExpensiveCoatLoadout
+  groupBy: sponsor-outerwear
+  equipment:
+    outerClothing: ClothingOuterCoatExpensive
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 2
+
+- type: loadout
+  id: SponsorUniformGladiatorLoadout
+  groupBy: sponsor-uniforms
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitGladiator
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 2
+
+- type: loadout
+  id: SponsorHeadGladiatorHelmetLoadout
+  groupBy: sponsor-headwear
+  equipment:
+    head: ClothingHeadHatGladiator
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 2
+
+# endregion
+
+# region Tier 3 - rarest and most spectacular items
+
+# Statement cloaks.
+- type: loadout
+  id: SponsorNeckVoidCloakLoadout
+  groupBy: sponsor-cloaks
+  equipment:
+    neck: ClothingNeckCloakVoid
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 3
+
+- type: loadout
+  id: SponsorNeckHeraldCloakLoadout
+  groupBy: sponsor-cloaks
+  equipment:
+    neck: ClothingNeckCloakHerald
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 3
+
+# Aerostatic set.
+- type: loadout
+  id: SponsorOuterAerostaticJacketLoadout
+  groupBy: sponsor-aerostatic
+  equipment:
+    outerClothing: ClothingOuterAerostaticBomberJacket
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 3
+
+- type: loadout
+  id: SponsorUniformAerostaticSuitLoadout
+  groupBy: sponsor-aerostatic
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitAerostatic
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 3
+
+- type: loadout
+  id: SponsorShoesAerostaticBootsLoadout
+  groupBy: sponsor-aerostatic
+  equipment:
+    shoes: ClothingShoesAerostatic
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 3
+
+# Disco Elysium-inspired set.
+- type: loadout
+  id: SponsorOuterDiscoBlazerLoadout
+  groupBy: sponsor-disco
+  equipment:
+    outerClothing: ClothingOuterDiscoAssBlazer
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 3
+
+- type: loadout
+  id: SponsorUniformSuperstarCopLoadout
+  groupBy: sponsor-disco
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitSuperstarCop
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 3
+
+- type: loadout
+  id: SponsorShoesGreenLizardskinLoadout
+  groupBy: sponsor-disco
+  equipment:
+    shoes: ClothingShoesGreenLizardskin
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 3
+
+# Ice singer set. It fills all five equipment slots and is the showcase Tier 3
+# costume set.
+- type: loadout
+  id: SponsorHeadIceSingerWigLoadout
+  groupBy: sponsor-ice-singer
+  equipment:
+    head: ClothingHeadVirtualIceWig
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 3
+
+- type: loadout
+  id: SponsorOuterIceSingerCoatLoadout
+  groupBy: sponsor-ice-singer
+  equipment:
+    outerClothing: ClothingOuterCoatVirtualIce
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 3
+
+- type: loadout
+  id: SponsorUniformIceSingerSuitLoadout
+  groupBy: sponsor-ice-singer
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitVirtualIce
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 3
+
+- type: loadout
+  id: SponsorShoesIceSingerBootsLoadout
+  groupBy: sponsor-ice-singer
+  equipment:
+    shoes: ClothingShoesBootsVirtualIce
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 3
+
+- type: loadout
+  id: SponsorNeckIceSingerScarfLoadout
+  groupBy: sponsor-ice-singer
+  equipment:
+    neck: ClothingNeckScarfVirtualIce
+  effects:
+  - !type:SponsorLoadoutEffect
+    tier: 3
+
+# endregion

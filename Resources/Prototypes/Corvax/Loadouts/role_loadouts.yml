@@ -45,6 +45,9 @@
   - PdaPen
   # VG-Tweak End
   - SeniorEngineerHead
+  # VG-Tweak Start: sponsor-exclusive engineering medal group.
+  - EngineeringSponsorNeck
+  # VG-Tweak End
   - SeniorEngineerJumpsuit
   - SeniorEngineerBackpack
   - SeniorEngineerOuterClothing
@@ -65,6 +68,9 @@
   - PdaPen
   # VG-Tweak End
   - SeniorResearcherHead
+  # VG-Tweak Start: sponsor-exclusive science medal group.
+  - ScienceSponsorNeck
+  # VG-Tweak End
   - SeniorResearcherJumpsuit
   - SeniorResearcherBackpack
   - SeniorResearcherOuterClothing
@@ -86,6 +92,9 @@
   - PdaPen
   # VG-Tweak End # Corvax-Loadouts
   - PilotHead
+  # VG-Tweak Start: sponsor-exclusive pilot neckwear group.
+  - PilotNeck
+  # VG-Tweak End
   - PilotJumpsuit
   - SecurityBackpack
   - PilotOuterClothing
@@ -107,6 +116,9 @@
   # VG-Tweak End
   # VG-Tweak End
   - BrigmedicHead
+  # VG-Tweak Start: sponsor-exclusive security medal group.
+  - SecuritySponsorNeck
+  # VG-Tweak End
   - BrigmedicMask
   - BrigmedicJumpsuit
   - BrigmedicGloves
@@ -127,6 +139,9 @@
   - PdaPen
   # VG-Tweak End # Corvax-Loadouts
   - SeniorOfficerHead
+  # VG-Tweak Start: sponsor-exclusive security medal group.
+  - SecuritySponsorNeck
+  # VG-Tweak End
   - SeniorOfficerJumpsuit
   - SeniorOfficerBackpack
   - SeniorOfficerOuterClothing
@@ -148,6 +163,9 @@
   - PdaPen
   # VG-Tweak End
   - SeniorPhysicianHead
+  # VG-Tweak Start: sponsor-exclusive medical medal group.
+  - MedicalSponsorNeck
+  # VG-Tweak End
   - MedicalMask
   - SeniorPhysicianJumpsuit
   - SeniorPhysicianBackpack

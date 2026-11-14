@@ -65,7 +65,9 @@ public sealed partial class RoleLoadout : IEquatable<RoleLoadout>
         var groupRemove = new ValueList<string>();
         var protoManager = collection.Resolve<IPrototypeManager>();
         var configManager = collection.Resolve<IConfigurationManager>();
-        var netManager = collection.Resolve<INetManager>(); // Corvax-Loadouts
+        // VG-Tweak Start: sponsor loadouts are explicit group entries now, so the
+        // client/server sponsor prototype injection into Inventory is removed.
+        // VG-Tweak End
 
         if (!protoManager.TryIndex(Role, out var roleProto))
         {
@@ -127,22 +129,9 @@ public sealed partial class RoleLoadout : IEquatable<RoleLoadout>
                 continue;
             }
 
-            // Corvax-Loadouts-Start
-            if (collection.TryResolveType<ISharedLoadoutsManager>(out var loadoutsManager) && group.Id == "Inventory")
-            {
-                var prototypes = new List<string>();
-                if (netManager.IsClient)
-                {
-                    prototypes = loadoutsManager.GetClientPrototypes();
-                }
-                else if (loadoutsManager.TryGetServerPrototypes(session.UserId, out var protos))
-                {
-                    prototypes = protos;
-                }
-
-                groupProto.Loadouts.AddRange(prototypes.Select(id => (ProtoId<LoadoutPrototype>)id));
-            }
-            // Corvax-Loadouts-End
+            // VG-Tweak Start: sponsor loadouts are explicit group entries now; do not
+            // inject every sponsor loadout into the personal Inventory group.
+            // VG-Tweak End
 
             var loadouts = groupProto.MaxLimit > 0 ? groupLoadouts[..Math.Min(groupLoadouts.Count, groupProto.MaxLimit)] : groupLoadouts;
 

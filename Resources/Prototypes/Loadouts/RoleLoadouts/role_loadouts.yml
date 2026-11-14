@@ -357,6 +357,9 @@
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
   - CargoTechnicianHead
+  # VG-Tweak Start: sponsor-exclusive cargo medal group.
+  - CargoTechnicianNeck
+  # VG-Tweak End
   - CargoTechnicianJumpsuit
   - CargoTechnicianBackpack
   - CargoTechnicianOuterClothing
@@ -426,6 +429,9 @@
   - PdaPen
   # VG-Tweak End
   - TechnicalAssistantJumpsuit
+  # VG-Tweak Start: sponsor-exclusive engineering medal group.
+  - EngineeringSponsorNeck
+  # VG-Tweak End
   - StationEngineerBackpack
   - AssistiveItems
   - SurvivalExtended
@@ -440,6 +446,9 @@
   - Inventory # Corvax-Loadouts
   - GroupTankHarness
   - StationEngineerHead
+  # VG-Tweak Start: sponsor-exclusive engineering medal group.
+  - EngineeringSponsorNeck
+  # VG-Tweak End
   - StationEngineerJumpsuit
   - StationEngineerBackpack
   - StationEngineerOuterClothing
@@ -538,6 +547,9 @@
   - PdaPen
   # VG-Tweak End
   - ResearchAssistantJumpsuit
+  # VG-Tweak Start: sponsor-exclusive science medal group.
+  - ScienceSponsorNeck
+  # VG-Tweak End
   - ScientistBackpack
   - Glasses
   - AssistiveItems
@@ -575,6 +587,9 @@
   - PdaPen
   # VG-Tweak End # Corvax-Loadouts
   - WardenHead
+  # VG-Tweak Start: sponsor-exclusive security medal group.
+  - SecuritySponsorNeck
+  # VG-Tweak End
   - WardenJumpsuit
   - SecurityBackpack
   - SecurityBelt
@@ -592,6 +607,9 @@
   groups:
   - Inventory # Corvax-Loadouts
   - SecurityHead
+  # VG-Tweak Start: sponsor-exclusive security medal group.
+  - SecuritySponsorNeck
+  # VG-Tweak End
   - SecurityJumpsuit
   - SecurityBackpack
   - SecurityOuterClothing
@@ -640,6 +658,9 @@
   - PdaPen
   # VG-Tweak End # Corvax-Loadouts
   - SecurityCadetJumpsuit
+  # VG-Tweak Start: sponsor-exclusive security medal group.
+  - SecuritySponsorNeck
+  # VG-Tweak End
   - SecurityBackpack
   - AssistiveItems
   - SurvivalSecurity
