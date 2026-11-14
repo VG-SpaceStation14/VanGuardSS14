@@ -123,7 +123,7 @@
     hungerPerArmyUse: 25
     hungerPerDomainUse: 50
   - type: TTS # Corvax-TTS
-    voice: RuEduard
+    voice: Eugene
 
 - type: entity
   parent: MobRatKing

@@ -73,7 +73,7 @@
   - type: BorgSwitchableType
     selectedBorgType: medical
   - type: TTS # Corvax-TTS
-    voice: RuAlexandr
+    voice: Aidar
     effect: Robot
 
 - type: entity

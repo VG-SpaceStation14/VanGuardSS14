@@ -15,7 +15,7 @@ public sealed partial class TTSComponent : Component
     /// </summary>
     [DataField("voice")]
     // VG-Tweak Start
-    public ProtoId<TTSVoicePrototype>? VoicePrototypeId { get; set; } = "RuAlexandr";
+    public ProtoId<TTSVoicePrototype>? VoicePrototypeId { get; set; } = "Aidar";
     // VG-Tweak End
     // public ProtoId<TTSVoicePrototype>? VoicePrototypeId { get; set; } = "Taskmaster"; // VG-Tweak
 

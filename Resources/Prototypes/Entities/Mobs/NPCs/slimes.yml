@@ -133,7 +133,7 @@
   - type: NPCRetaliation
     attackMemoryLength: 10
   - type: TTS # Corvax-TTS
-    voice: RuRoman
+    voice: Eugene
 
 - type: entity
   abstract: true

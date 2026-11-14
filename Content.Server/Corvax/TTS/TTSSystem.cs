@@ -88,7 +88,7 @@ public sealed partial class TTSSystem : EntitySystem
     };
 
     // VG-Tweak Start
-    private static readonly ProtoId<TTSVoicePrototype> AnnouncementSpeaker = "RuZhazira";
+    private static readonly ProtoId<TTSVoicePrototype> AnnouncementSpeaker = "Baya";
     // VG-Tweak End
     // private static readonly ProtoId<TTSVoicePrototype> AnnouncementSpeaker = "Glados"; // VG-Tweak
 

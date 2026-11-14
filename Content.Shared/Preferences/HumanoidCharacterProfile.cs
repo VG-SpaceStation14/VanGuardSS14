@@ -335,7 +335,7 @@ namespace Content.Shared.Preferences
                 .ToList();
 
             if (voices.Count == 0)
-                return "RuAlexandr";
+                return "Aidar";
 
             var voiceId = random.Pick(voices).ID;
             // VG-Tweak End
