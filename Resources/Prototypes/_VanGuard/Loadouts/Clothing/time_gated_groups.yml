@@ -5,6 +5,11 @@
   loadouts:
   - SalvageSpecialistSupremeCloak
   - SalvageSpecialistGloomyCloak
+  # VG-Tweak Start: sponsor-exclusive salvager and cargo accessories.
+  - SponsorNeckGoliathCloakLoadout
+  - SponsorNeckCargoMedalLoadout
+  - SponsorNeckLogistikaPinLoadout
+  # VG-Tweak End
 
 - type: loadoutGroup
   id: SalvageSpecialistJumpsuit
@@ -19,3 +24,7 @@
   minLimit: 0
   loadouts:
   - AtmosphericTechnicianCloak
+  # VG-Tweak Start: sponsor-exclusive engineering accessories.
+  - SponsorNeckEngineerMedalLoadout
+  - SponsorNeckNakamuraPinLoadout
+  # VG-Tweak End

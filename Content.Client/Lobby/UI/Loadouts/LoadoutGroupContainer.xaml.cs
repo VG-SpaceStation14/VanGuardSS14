@@ -74,13 +74,10 @@ public sealed partial class LoadoutGroupContainer : BoxContainer
 
         LoadoutsContainer.RemoveAllChildren();
 
-        // Corvax-Loadouts-Start
+        // VG-Tweak Start: the Inventory group is a normal YAML-defined group now;
+        // do not replace it with every sponsor prototype.
         var groupLoadouts = _groupProto.Loadouts;
-        if (collection.TryResolveType<ISharedLoadoutsManager>(out var loadoutsManager) && _groupProto.ID == "Inventory")
-        {
-            groupLoadouts = loadoutsManager.GetClientPrototypes().Select(id => (ProtoId<LoadoutPrototype>)id).ToList();
-        }
-        // Corvax-Loadouts-End
+        // VG-Tweak End
 
         // Get all loadout prototypes for this group.
         var validProtos = groupLoadouts.Select(id => protoMan.Index(id)); // Corvax-Loadouts-Edit

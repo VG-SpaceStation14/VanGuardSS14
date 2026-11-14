@@ -17,6 +17,8 @@
   effects:
   - !type:GroupLoadoutEffect
     proto: MasterCap
+  - !type:SponsorLoadoutEffect
+    tier: 3
 
 - type: loadout
   id: ClothingNeckCaptainWideLoadout
@@ -27,11 +29,21 @@
   id: ClothingNeckMantleCaptainAltLoadout
   equipment:
     neck: ClothingNeckMantleCaptainAlt
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterCap
+  - !type:SponsorLoadoutEffect
+    tier: 2
 
 - type: loadout
   id: ClothingNeckMantleCaptainWhiteLoadout
   equipment:
     neck: ClothingNeckMantleCaptainWhite
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterCap
+  - !type:SponsorLoadoutEffect
+    tier: 3
 
 - type: loadout
   id: ClothingNeckCloakHopAltLoadout
@@ -45,6 +57,8 @@
   effects:
   - !type:GroupLoadoutEffect
     proto: MasterHoP
+  - !type:SponsorLoadoutEffect
+    tier: 3
 
 - type: loadout
   id: ClothingNeckCloakHosOriginalLoadout
@@ -61,6 +75,8 @@
   effects:
   - !type:GroupLoadoutEffect
     proto: MasterHoS
+  - !type:SponsorLoadoutEffect
+    tier: 3
 
 - type: loadout
   id: ClothingNeckLongCloakHOSLoadout
@@ -92,6 +108,11 @@
   id: ClothingNeckMantleCEOriginalLoadout
   equipment:
     neck: ClothingNeckMantleCEOriginal
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterCE
+  - !type:SponsorLoadoutEffect
+    tier: 2
 
 - type: loadout
   id: ClothingNeckCloakCmoAltLoadout
@@ -108,6 +129,8 @@
   effects:
   - !type:GroupLoadoutEffect
     proto: MasterCMO
+  - !type:SponsorLoadoutEffect
+    tier: 2
 
 - type: loadout
   id: ClothingNeckLongCloakCMOLoadout
@@ -147,6 +170,11 @@
   id: ClothingNeckMantleRDOriginalLoadout
   equipment:
     neck: ClothingNeckMantleRDOriginal
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: MasterRD
+  - !type:SponsorLoadoutEffect
+    tier: 3
 
 - type: loadout
   id: ClothingNeckCloakQmAltLoadout
@@ -163,6 +191,8 @@
   effects:
   - !type:GroupLoadoutEffect
     proto: MasterQM
+  - !type:SponsorLoadoutEffect
+    tier: 2
 
 - type: loadout
   id: ClothingHeadHatBeretCaptainWhiteLoadout

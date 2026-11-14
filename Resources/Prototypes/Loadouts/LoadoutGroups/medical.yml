@@ -75,6 +75,10 @@
   - ClothingNeckLongCloakCMOLoadout
   - ClothingNeckMantleCMOOriginalLoadout
   # VG-Tweak End
+  # VG-Tweak Start: sponsor-exclusive medical accessories.
+  - SponsorNeckMedicalMedalLoadout
+  - SponsorNeckDeForestPinLoadout
+  # VG-Tweak End
 
 - type: loadoutGroup
   id: ChiefMedicalOfficerShoes

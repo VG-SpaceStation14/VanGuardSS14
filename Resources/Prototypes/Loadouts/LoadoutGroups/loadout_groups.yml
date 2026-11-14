@@ -687,6 +687,9 @@
   loadouts:
   - MusicianJumpsuit
   - MusicianJumpskirt
+  # VG-Tweak Start: sponsor-exclusive performer outfit.
+  - SponsorUniformIceSingerSuitLoadout
+  # VG-Tweak End
 
 - type: loadoutGroup
   id: MusicianOuterClothing
@@ -694,6 +697,9 @@
   minLimit: 0
   loadouts:
   - MusicianWintercoat
+  # VG-Tweak Start: sponsor-exclusive performer outerwear.
+  - SponsorOuterIceSingerCoatLoadout
+  # VG-Tweak End
 
 - type: loadoutGroup
   id: Instruments
@@ -766,6 +772,10 @@
   # VG-Tweak Start: restored wardrobe options
   - ClothingNeckCloakQmAltLoadout
   - ClothingNeckLongCloakQMLoadout
+  # VG-Tweak End
+  # VG-Tweak Start: sponsor-exclusive cargo accessories.
+  - SponsorNeckCargoMedalLoadout
+  - SponsorNeckLogistikaPinLoadout
   # VG-Tweak End
 
 - type: loadoutGroup
@@ -914,6 +924,10 @@
   - ClothingNeckCloakCeAltLoadout
   - ClothingNeckLongCloakCELoadout
   - ClothingNeckMantleCEOriginalLoadout
+  # VG-Tweak End
+  # VG-Tweak Start: sponsor-exclusive engineering accessories.
+  - SponsorNeckEngineerMedalLoadout
+  - SponsorNeckNakamuraPinLoadout
   # VG-Tweak End
 
 - type: loadoutGroup
@@ -1079,6 +1093,9 @@
   - ClothingNeckLongCloakRDLoadout
   - ClothingNeckMantleRDOriginalLoadout
   # VG-Tweak End
+  # VG-Tweak Start: sponsor-exclusive science medal.
+  - SponsorNeckScienceMedalLoadout
+  # VG-Tweak End
 
 - type: loadoutGroup
   id: ResearchDirectorJumpsuit
@@ -1129,6 +1146,9 @@
   - ScientistTie
   # VG-Tweak Start: senior researcher cloak.
   - SeniorResearcherCloak
+  # VG-Tweak End
+  # VG-Tweak Start: sponsor-exclusive science medal.
+  - SponsorNeckScienceMedalLoadout
   # VG-Tweak End
 
 - type: loadoutGroup
@@ -1256,6 +1276,10 @@
   - ClothingNeckCloakHosOriginalLoadout
   - ClothingNeckCloakHosAltLoadout
   - ClothingNeckLongCloakHOSLoadout
+  # VG-Tweak End
+  # VG-Tweak Start: sponsor-exclusive security accessories.
+  - SponsorNeckSecurityMedalLoadout
+  - SponsorNeckVitezstviPinLoadout
   # VG-Tweak End
 
 - type: loadoutGroup
@@ -1389,6 +1413,10 @@
   minLimit: 0
   loadouts:
   - DetectiveTie
+  # VG-Tweak Start: sponsor-exclusive security accessories.
+  - SponsorNeckSecurityMedalLoadout
+  - SponsorNeckVitezstviPinLoadout
+  # VG-Tweak End
 
 - type: loadoutGroup
   id: DetectiveJumpsuit
@@ -1398,6 +1426,9 @@
   - DetectiveJumpskirt
   - NoirJumpsuit
   - NoirJumpskirt
+  # VG-Tweak Start: sponsor-exclusive detective outfit.
+  - SponsorUniformAerostaticSuitLoadout
+  # VG-Tweak End
 
 - type: loadoutGroup
   id: DetectiveOuterClothing
@@ -1407,6 +1438,9 @@
   - DetectiveCoat
   - DetectiveCoatGrey
   - SecurityOfficerWintercoat
+  # VG-Tweak Start: sponsor-exclusive detective outerwear.
+  - SponsorOuterAerostaticJacketLoadout
+  # VG-Tweak End
 
 - type: loadoutGroup
   id: DetectiveJobTrinkets
