@@ -6,14 +6,16 @@
   # VG-Tweak Start: economy salary rebalance.
   salary: 420
   # VG-Tweak End
+  # VG-Tweak Start: rebalanced job requirements.
   requirements:
     - !type:DepartmentTimeRequirement
       department: Security
-      time: 20h # Corvax-RoleTime
-    - !type:TraitsRequirement #Corvax-TraitsRequirement
+      time: 15h
+    - !type:TraitsRequirement
       inverted: true
       traits:
       - Muted
+  # VG-Tweak End
   startingGear: DetectiveGear
   icon: "JobIconDetective"
   supervisors: job-supervisors-hos

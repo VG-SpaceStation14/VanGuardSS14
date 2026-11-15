@@ -6,9 +6,11 @@
   # VG-Tweak Start: economy salary rebalance.
   salary: 220
   # VG-Tweak End
+  # VG-Tweak Start: rebalanced job requirements.
   requirements:
   - !type:OverallPlaytimeRequirement
-      time: 3600 #1 hrs # Corvax-RoleTime
+    time: 1h
+  # VG-Tweak End
   startingGear: ClownGear
   icon: "JobIconClown"
   supervisors: job-supervisors-hop

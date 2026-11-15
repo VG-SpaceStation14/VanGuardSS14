@@ -6,28 +6,30 @@
   # VG-Tweak Start: economy salary rebalance.
   salary: 550
   # VG-Tweak End
+  # VG-Tweak Start: rebalanced job requirements.
   requirements:
+    - !type:OverallPlaytimeRequirement
+      time: 50h
+    - !type:DepartmentTimeRequirement
+      department: Service
+      time: 10h
     - !type:DepartmentTimeRequirement
       department: Engineering
-      time: 5h # Corvax-RoleTime 2.5h
+      time: 5h
     - !type:DepartmentTimeRequirement
       department: Medical
-      time: 5h # Corvax-RoleTime 2.5h
+      time: 5h
     - !type:DepartmentTimeRequirement
       department: Science
       time: 2.5h
     - !type:DepartmentTimeRequirement
       department: Security
-      time: 5h # Corvax-RoleTime 2.5h
-#    - !type:DepartmentTimeRequirement
-#      department: Command
-#      time: 2.5h
-    - !type:OverallPlaytimeRequirement
-      time: 50h # Corvax-RoleTime
-    - !type:TraitsRequirement #Corvax-TraitsRequirement
+      time: 5h
+    - !type:TraitsRequirement
       inverted: true
       traits:
       - Muted
+  # VG-Tweak End
   startingGear: HoPGear
   icon: "JobIconHeadOfPersonnel"
   supervisors: job-supervisors-captain

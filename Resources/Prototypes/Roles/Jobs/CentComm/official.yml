@@ -7,6 +7,12 @@
   salary: 0
   # VG-Tweak End
   setPreference: false
+  # VG-Tweak Start: rebalanced job requirements.
+  requirements:
+  - !type:DepartmentTimeRequirement
+    department: Command
+    time: 25h
+  # VG-Tweak End
   startingGear: CentcommGear
   icon: "JobIconNanotrasen"
   supervisors: job-supervisors-centcom # Corvax-JobSupervisors

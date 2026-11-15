@@ -6,10 +6,12 @@
   # VG-Tweak Start: economy salary rebalance.
   salary: 500
   # VG-Tweak End
+  # VG-Tweak Start: rebalanced job requirements.
   requirements:
     - !type:DepartmentTimeRequirement
       department: Science
-      time: 60h
+      time: 40h
+  # VG-Tweak End
   startingGear: SeniorResearcherGear
   icon: "JobIconSeniorResearcher"
   supervisors: job-supervisors-rd

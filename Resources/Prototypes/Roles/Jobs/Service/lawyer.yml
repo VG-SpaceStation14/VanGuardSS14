@@ -6,9 +6,11 @@
   # VG-Tweak Start: economy salary rebalance.
   salary: 380
   # VG-Tweak End
+  # VG-Tweak Start: rebalanced job requirements.
   requirements:
     - !type:OverallPlaytimeRequirement
-      time: 2.5h
+      time: 5h
+  # VG-Tweak End
   startingGear: LawyerGear
   setPreference: false # Corvax-IAA
   icon: "JobIconLawyer"

@@ -8,22 +8,24 @@
   # VG-Tweak Start: economy salary rebalance.
   salary: 550
   # VG-Tweak End
+  # VG-Tweak Start: rebalanced job requirements.
   requirements:
-    - !type:RoleTimeRequirement
-      role: JobChemist
-      time: 5h # Corvax-RoleTime 2.5h
-#    - !type:RoleTimeRequirement
-#      role: JobMedicalDoctor
-#      time: 5h
+    - !type:OverallPlaytimeRequirement
+      time: 40h
     - !type:DepartmentTimeRequirement
       department: Medical
-      time: 15h # Corvax-RoleTime 10h
-#    - !type:OverallPlaytimeRequirement
-#      time: 144000 #40 hrs
-    - !type:TraitsRequirement #Corvax-TraitsRequirement
+      time: 20h
+    - !type:RoleTimeRequirement
+      role: JobChemist
+      time: 5h
+    - !type:RoleTimeRequirement
+      role: JobMedicalDoctor
+      time: 5h
+    - !type:TraitsRequirement
       inverted: true
       traits:
       - Muted
+  # VG-Tweak End
   startingGear: CMOGear
   icon: "JobIconChiefMedicalOfficer"
   supervisors: job-supervisors-captain

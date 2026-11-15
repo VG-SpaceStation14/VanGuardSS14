@@ -6,17 +6,21 @@
   # VG-Tweak Start: economy salary rebalance.
   salary: 550
   # VG-Tweak End
+  # VG-Tweak Start: rebalanced job requirements.
   requirements:
-    #- !type:RoleTimeRequirement
-    #  role: JobScientist
-    #  time: 5h
+    - !type:OverallPlaytimeRequirement
+      time: 40h
     - !type:DepartmentTimeRequirement
       department: Science
-      time: 15h # Corvax-RoleTime 10
-    - !type:TraitsRequirement #Corvax-TraitsRequirement
+      time: 20h
+    - !type:RoleTimeRequirement
+      role: JobScientist
+      time: 5h
+    - !type:TraitsRequirement
       inverted: true
       traits:
       - Muted
+  # VG-Tweak End
   startingGear: ResearchDirectorGear
   icon: "JobIconResearchDirector"
   supervisors: job-supervisors-captain

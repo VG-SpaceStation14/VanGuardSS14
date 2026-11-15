@@ -6,16 +6,18 @@
   # VG-Tweak Start: economy salary rebalance.
   salary: 500
   # VG-Tweak End
+  # VG-Tweak Start: rebalanced job requirements.
   requirements:
-    - !type:RoleTimeRequirement
-      role: JobChemist
-      time: 6h
-    - !type:RoleTimeRequirement
-      role: JobMedicalDoctor
-      time: 6h
     - !type:DepartmentTimeRequirement
       department: Medical
-      time: 60h
+      time: 40h
+    - !type:RoleTimeRequirement
+      role: JobChemist
+      time: 5h
+    - !type:RoleTimeRequirement
+      role: JobMedicalDoctor
+      time: 5h
+  # VG-Tweak End
   startingGear: SeniorPhysicianGear
   icon: "JobIconSeniorPhysician"
   supervisors: job-supervisors-cmo

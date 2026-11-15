@@ -6,6 +6,11 @@
   # VG-Tweak Start: economy salary rebalance.
   salary: 320
   # VG-Tweak End
+  # VG-Tweak Start: rebalanced job requirements.
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 1h
+  # VG-Tweak End
   startingGear: PsychologistGear
   icon: "JobIconPsychologist"
   supervisors: job-supervisors-cmo
