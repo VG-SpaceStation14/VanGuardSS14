@@ -42,6 +42,7 @@ lavaland-dungeon-grassland-dome = Луг под куполом
 lavaland-dungeon-lava-river = Лавовая река
 lavaland-dungeon-mineshaft = Заброшенная шахта
 lavaland-dungeon-snowy-dome = Снежный купол
+book-of-babel-used = Древние знания наполняют ваш разум. Книга рассыпается в пыль.
 
 ent-LavalandLoader = загрузчик Лаваленда
 ent-LavalandFTLPoint = маяк аванпоста Лаваленда
@@ -106,6 +107,9 @@ ent-LavalandWeaponStaffHealing = посох исцеления
     .desc = Редкий посох, стреляющий исцеляющими зарядами. Заряды медленно восстанавливаются со временем.
 
 ent-LavalandRareMobSpawner = редкий спавнер фауны Лаваленда
+
+ent-LavalandBookOfBabel = книга Вавилона
+    .desc = Старинный том, испещрённый письменами сотни языков. Прочтение наполняет разум знанием всех наречий, после чего книга рассыпается в пыль.
 
 construction-graph-tag-lavaland-stabilizing-serum = стабилизирующая сыворотка
 

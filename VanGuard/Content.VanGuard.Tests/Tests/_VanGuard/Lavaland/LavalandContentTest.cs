@@ -23,6 +23,7 @@ using Content.Shared.Chasm;
 using Robust.Shared.Prototypes;
 using Content.Shared.Pinpointer;
 using Content.Shared._VanGuard.Delivery.Components;
+using Content.Shared._VanGuard.Language;
 using Content.Shared._VanGuard.Mining.Shop;
 using Content.Shared._VanGuard.Mining.Shop.Components;
 using Content.Shared._VanGuard.Mining.Points;
@@ -113,6 +114,8 @@ public sealed class LavalandContentTest : GameTest
             Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("LavalandSpawnMobBloodMiner")), Is.True);
             Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("LavalandCleavingSaw")), Is.True);
             Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("ActionBloodMinerShoot")), Is.True);
+            Assert.That(SProtoMan.HasIndex(new ProtoId<EntityPrototype>("LavalandBookOfBabel")), Is.True,
+                "Missing LavalandBookOfBabel prototype.");
             foreach (var id in new[]
                      {
                          "MobAncientGoliath",
@@ -133,6 +136,138 @@ public sealed class LavalandContentTest : GameTest
             }
             Assert.That(SProtoMan.HasIndex(new ProtoId<ConstructionGraphPrototype>("LavalandLegionCoreStable")), Is.True);
         });
+    }
+
+    [Test]
+    public async Task NecropolisCratesIncludeBookOfBabel()
+    {
+        var grid = GetStationGrid();
+        var containers = Server.System<SharedContainerSystem>();
+        var crateIds = new[]
+        {
+            "LavalandNecropolisCrate",
+            "LavalandNecropolisCrateGoliath",
+            "LavalandNecropolisCrateWatcher",
+        };
+        var found = crateIds.ToDictionary(id => id, _ => false);
+        var spawned = new List<EntityUid>();
+
+        try
+        {
+            // 150 rolls per crate at prob: 0.05 gives a false-negative chance of 0.95^150 ≈ 4.6e-4.
+            await Server.WaitPost(() =>
+            {
+                foreach (var crateId in crateIds)
+                {
+                    for (var i = 0; i < 150; i++)
+                    {
+                        spawned.Add(SEntMan.SpawnEntity(crateId,
+                            new EntityCoordinates(grid, i, 0)));
+                    }
+                }
+            });
+            await Pair.RunTicksSync(10);
+
+            await Server.WaitPost(() =>
+            {
+                foreach (var crate in spawned)
+                {
+                    var meta = SEntMan.GetComponent<MetaDataComponent>(crate);
+                    var crateId = meta.EntityPrototype!.ID;
+                    if (found[crateId])
+                        continue;
+
+                    if (!containers.TryGetContainer(crate, "entity_storage", out var container))
+                        continue;
+
+                    foreach (var item in container.ContainedEntities)
+                    {
+                        if (SEntMan.GetComponent<MetaDataComponent>(item).EntityPrototype?.ID == "LavalandBookOfBabel")
+                        {
+                            found[crateId] = true;
+                            break;
+                        }
+                    }
+                }
+
+                foreach (var (crateId, ok) in found)
+                    Assert.That(ok, Is.True, $"{crateId} never rolled LavalandBookOfBabel in 150 tries.");
+            });
+        }
+        finally
+        {
+            await Server.WaitPost(() =>
+            {
+                foreach (var crate in spawned)
+                    if (SEntMan.EntityExists(crate))
+                        SEntMan.DeleteEntity(crate);
+            });
+        }
+    }
+
+    [Test]
+    public async Task BookOfBabelGrantsAllLanguagesAndBecomesAsh()
+    {
+        var grid = GetStationGrid();
+        EntityUid player = default;
+        EntityUid book = default;
+        var beforeLanguages = 0;
+
+        try
+        {
+            await Server.WaitPost(() =>
+            {
+                player = SEntMan.SpawnEntity("MobHuman", new EntityCoordinates(grid, 4000, 4000));
+                if (!SEntMan.HasComponent<LanguageSpeakerComponent>(player))
+                    SEntMan.AddComponent<LanguageSpeakerComponent>(player);
+                var speaker = SEntMan.GetComponent<LanguageSpeakerComponent>(player);
+                speaker.CurrentLanguage = SharedLanguageSystem.CommonLanguageId;
+                speaker.Languages[SharedLanguageSystem.CommonLanguageId] = LanguageKnowledge.Speak;
+                beforeLanguages = speaker.Languages.Count;
+
+                book = SEntMan.SpawnEntity("LavalandBookOfBabel",
+                    SEntMan.GetComponent<TransformComponent>(player).Coordinates);
+                Assert.That(SEntMan.System<SharedHandsSystem>().TryPickupAnyHand(player, book), Is.True,
+                    "Could not put the book of babel into the player's hand.");
+            });
+            await Pair.RunTicksSync(2);
+
+            await Server.WaitPost(() =>
+            {
+                SEntMan.EventBus.RaiseLocalEvent(book, new UseInHandEvent(player));
+            });
+            await Pair.RunTicksSync(4);
+
+            await Server.WaitPost(() =>
+            {
+                Assert.That(SEntMan.EntityExists(book), Is.False,
+                    "The book of babel was not consumed after use.");
+
+                var speaker = SEntMan.GetComponent<LanguageSpeakerComponent>(player);
+                var expectedCount = SProtoMan.EnumeratePrototypes<LanguagePrototype>()
+                    .Count(p => !p.Abstract && p.ID != SharedLanguageSystem.UniversalLanguageId);
+                Assert.That(speaker.Languages.Count, Is.GreaterThan(beforeLanguages),
+                    "The book of babel did not grant any languages.");
+                Assert.That(speaker.Languages.Count, Is.EqualTo(expectedCount),
+                    "The book did not grant every available language.");
+                Assert.That(speaker.Languages.Values.All(k => k >= LanguageKnowledge.Speak), Is.True,
+                    "Some languages were granted below fluent level.");
+
+                var hands = SEntMan.System<SharedHandsSystem>();
+                Assert.That(hands.TryGetActiveItem(player, out var active), Is.True,
+                    "The user's hand is empty after the book turned into ash.");
+                Assert.That(SEntMan.GetComponent<MetaDataComponent>(active!.Value).EntityPrototype?.ID,
+                    Is.EqualTo("Ash"), "The book did not become ash in the user's hand.");
+            });
+        }
+        finally
+        {
+            await Server.WaitPost(() =>
+            {
+                if (SEntMan.EntityExists(player))
+                    SEntMan.DeleteEntity(player);
+            });
+        }
     }
 
     [Test]

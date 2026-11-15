@@ -1,0 +1,14 @@
+- type: entity
+  parent: BaseItem
+  id: LavalandBookOfBabel
+  name: book of babel
+  description: A weathered tome covered in symbols from a hundred tongues. Reading it fills your mind with the knowledge of every spoken language, though the book crumbles to dust.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Objects/Specific/Lavaland/loot.rsi
+    state: vavilon_book
+  - type: Item
+    size: Small
+  - type: BookOfBabel
+  - type: StaticPrice
+    price: 500
