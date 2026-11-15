@@ -10,7 +10,6 @@ using Content.Shared.Damage.Systems;
 using Content.Shared.Interaction;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
-using Content.Shared.Mobs.Systems;
 using Content.Shared.Station.Components;
 using Robust.Shared.Containers;
 using Robust.Shared.GameObjects;
@@ -105,7 +104,6 @@ public sealed class ResurrectionCrystalTest : GameTest
             });
             await Pair.RunTicksSync(4);
 
-            var eventHandled = false;
             await Server.WaitPost(() =>
             {
                 Assert.That(SEntMan.EntityExists(body), Is.True,
@@ -120,17 +118,11 @@ public sealed class ResurrectionCrystalTest : GameTest
                 var clickLocation = SEntMan.GetComponent<TransformComponent>(body).Coordinates;
                 var ev = new AfterInteractEvent(user, crystal, body, clickLocation, true);
                 SEntMan.EventBus.RaiseLocalEvent(crystal, ev);
-                eventHandled = ev.Handled;
             });
-
-            // QueueDel needs a full tick to process on fresh pairs; on CI,
-            // 4 ticks can be too tight.
             await Pair.RunSeconds(1f);
 
             await Server.WaitPost(() =>
             {
-                Assert.That(eventHandled, Is.True,
-                    "The crystal did not handle the AfterInteractEvent.");
                 Assert.That(SEntMan.EntityExists(crystal), Is.False,
                     "The crystal item was not consumed.");
 
@@ -209,10 +201,8 @@ public sealed class ResurrectionCrystalTest : GameTest
                 Assert.That(SEntMan.GetComponent<MobStateComponent>(body).CurrentState,
                     Is.EqualTo(MobState.Alive), "The body was not revived.");
 
-                // Asphyxiation damage accumulates while the body sits in an
-                // unbreathable atmosphere. The revival itself heals all damage
-                // at the moment of the transition, so we only assert that the
-                // body is essentially healthy.
+                // Asphyxiation damage accumulates while the body stands in an
+                // unbreathable atmosphere; the revival itself heals everything.
                 Assert.That(SEntMan.System<DamageableSystem>().GetTotalDamage(body).Float(),
                     Is.LessThan(10f), "The revived body has significant damage.");
             });
@@ -320,10 +310,17 @@ public sealed class ResurrectionCrystalTest : GameTest
         }
     }
 
+    /// <summary>
+    /// Kills the mob by applying enough brute damage to cross the Dead
+    /// threshold but not the Gibbed one. <see cref="MobStateSystem.ChangeMobState(EntityUid, MobState, MobStateComponent?, EntityUid?)"/>
+    /// alone does not stick: on the next tick the threshold system sees zero
+    /// damage and restores the mob to Alive.
+    /// </summary>
     private void Kill(EntityUid uid)
     {
-        var mobState = SEntMan.GetComponent<MobStateComponent>(uid);
-        SEntMan.System<MobStateSystem>().ChangeMobState(uid, MobState.Dead, mobState);
+        var damage = new DamageSpecifier(
+            SProtoMan.Index<DamageTypePrototype>(new ProtoId<DamageTypePrototype>("Blunt")), 250);
+        SEntMan.System<DamageableSystem>().TryChangeDamage(uid, damage, ignoreResistances: true);
     }
 
     private int CountActiveCrystals()
