@@ -82,6 +82,7 @@ public sealed class ResurrectionCrystalTest : GameTest
                 DeleteIfExists(user);
                 DeleteIfExists(target);
                 DeleteIfExists(crystal);
+                RemoveAllActiveCrystals();
             });
         }
     }
@@ -144,6 +145,7 @@ public sealed class ResurrectionCrystalTest : GameTest
                 DeleteIfExists(user);
                 DeleteIfExists(body);
                 DeleteIfExists(crystal);
+                RemoveAllActiveCrystals();
             });
         }
     }
@@ -207,6 +209,7 @@ public sealed class ResurrectionCrystalTest : GameTest
             {
                 DeleteIfExists(body);
                 DeleteIfExists(crystal);
+                RemoveAllActiveCrystals();
             });
         }
     }
@@ -275,7 +278,18 @@ public sealed class ResurrectionCrystalTest : GameTest
             {
                 DeleteIfExists(body);
                 DeleteIfExists(crystal);
+                RemoveAllActiveCrystals();
             });
+        }
+    }
+
+    private void RemoveAllActiveCrystals()
+    {
+        var query = SEntMan.EntityQueryEnumerator<ActiveResurrectionCrystalComponent>();
+        while (query.MoveNext(out var uid, out _))
+        {
+            if (SEntMan.EntityExists(uid))
+                SEntMan.DeleteEntity(uid);
         }
     }
 
