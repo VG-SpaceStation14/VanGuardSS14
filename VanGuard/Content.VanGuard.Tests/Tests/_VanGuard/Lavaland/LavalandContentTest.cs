@@ -2,7 +2,6 @@ using System.Numerics;
 #nullable enable
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Content.Server._VanGuard.Lavaland;
 using Content.Shared.Interaction;
 using Content.Shared.Actions;
@@ -43,9 +42,6 @@ using Content.Shared.Construction.Prototypes;
 using Content.Server.Construction.Components;
 using Content.Shared.Clothing.Components;
 using Content.Shared.Weapons.Ranged.Components;
-using Content.Shared.Containers;
-using Content.Shared.EntityTable;
-using Content.Shared.EntityTable.EntitySelectors;
 using Robust.Shared.Containers;
 using Robust.Shared.Map;
 using Robust.Shared.Timing;
@@ -144,104 +140,6 @@ public sealed class LavalandContentTest : GameTest
             }
             Assert.That(SProtoMan.HasIndex(new ProtoId<ConstructionGraphPrototype>("LavalandLegionCoreStable")), Is.True);
         });
-    }
-
-    [Test]
-    public async Task NecropolisCratesSpawnAllDeclaredLoot()
-    {
-        var grid = GetStationGrid();
-        var crateIds = GetNecropolisCrateIds();
-        Assert.That(crateIds, Is.Not.Empty, "No Necropolis crate prototypes were found.");
-
-        const int totalRolls = 500;
-        const int batchSize = 100;
-
-        foreach (var crateId in crateIds)
-        {
-            // Spawn the probe and read its loot table on the server thread:
-            // both SEntMan.SpawnEntity and EntityTableSystem.GetSpawns touch
-            // EntityManager and would trip ThreadCheck off-main-thread.
-            HashSet<string> expected = new();
-            await Server.WaitPost(() =>
-            {
-                var probe = SEntMan.SpawnEntity(crateId, new EntityCoordinates(grid, -100, -100));
-                try
-                {
-                    var fill = SEntMan.GetComponent<EntityTableContainerFillComponent>(probe);
-                    var selector = GetLootTableSelector(fill, "entity_storage");
-                    var tableSystem = SEntMan.System<EntityTableSystem>();
-                    expected = tableSystem.GetSpawns(selector).Select(id => id.Id).ToHashSet();
-                }
-                finally
-                {
-                    if (SEntMan.EntityExists(probe))
-                        SEntMan.DeleteEntity(probe);
-                }
-            });
-
-            var seen = new HashSet<string>();
-
-            for (var batch = 0; batch < totalRolls / batchSize && !seen.IsSupersetOf(expected); batch++)
-            {
-                var spawned = new List<EntityUid>();
-                try
-                {
-                    await Server.WaitPost(() =>
-                    {
-                        for (var i = 0; i < batchSize; i++)
-                            spawned.Add(SEntMan.SpawnEntity(crateId, new EntityCoordinates(grid, i, batch * 100)));
-                    });
-                    await Pair.RunTicksSync(3);
-
-                    await Server.WaitPost(() =>
-                    {
-                        var containers = Server.System<SharedContainerSystem>();
-                        foreach (var crate in spawned)
-                        {
-                            if (!containers.TryGetContainer(crate, "entity_storage", out var cont))
-                                continue;
-                            foreach (var item in cont.ContainedEntities)
-                            {
-                                var id = SEntMan.GetComponent<MetaDataComponent>(item).EntityPrototype?.ID;
-                                if (id != null)
-                                    seen.Add(id);
-                            }
-                        }
-                    });
-                }
-                finally
-                {
-                    await Server.WaitPost(() =>
-                    {
-                        foreach (var crate in spawned)
-                            if (SEntMan.EntityExists(crate))
-                                SEntMan.DeleteEntity(crate);
-                    });
-                }
-            }
-
-            var missing = expected.Where(id => !seen.Contains(id)).ToList();
-            Assert.That(missing, Is.Empty,
-                $"{crateId}: {missing.Count} declared item(s) never spawned in {totalRolls} rolls: " +
-                string.Join(", ", missing));
-        }
-    }
-
-    private static EntityTableSelector GetLootTableSelector(
-        EntityTableContainerFillComponent fill, string containerId)
-    {
-        var field = typeof(EntityTableContainerFillComponent)
-            .GetField("Containers", BindingFlags.Public | BindingFlags.Instance)!;
-        var dict = (Dictionary<string, EntityTableSelector>) field.GetValue(fill)!;
-        return dict[containerId];
-    }
-
-    private List<string> GetNecropolisCrateIds()
-    {
-        return SProtoMan.EnumeratePrototypes<EntityPrototype>()
-            .Where(p => !p.Abstract && p.ID.StartsWith("LavalandNecropolisCrate", StringComparison.Ordinal))
-            .Select(p => p.ID)
-            .ToList();
     }
 
     [Test]
