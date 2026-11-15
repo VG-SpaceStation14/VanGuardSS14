@@ -111,6 +111,18 @@ ent-LavalandRareMobSpawner = редкий спавнер фауны Лавале
 ent-LavalandBookOfBabel = книга Вавилона
     .desc = Старинный том, испещрённый письменами сотни языков. Прочтение наполняет разум знанием всех наречий, после чего книга рассыпается в пыль.
 
+ent-LavalandResurrectionCrystal = кристалл воскрешения
+    .desc = Пульсирующий красный кристалл, способный вернуть павшего товарища к жизни. Процесс можно прервать, разбив кристалл.
+
+ent-LavalandResurrectionCrystalActive = кристалл воскрешения
+    .desc = Внутри запечатано тело. Разбейте кристалл, чтобы прервать воскрешение.
+
+resurrection-crystal-alive = Цель ещё жива.
+resurrection-crystal-no-floor = Здесь нет твёрдой земли.
+resurrection-crystal-begin = Кристалл заключает тело и начинает исцеление.
+resurrection-crystal-complete = Тело возвращается к жизни!
+resurrection-crystal-broken = Кристалл разбит! Тело внутри потеряно.
+
 construction-graph-tag-lavaland-stabilizing-serum = стабилизирующая сыворотка
 
 lavaland-poi-legion-base = База легиона

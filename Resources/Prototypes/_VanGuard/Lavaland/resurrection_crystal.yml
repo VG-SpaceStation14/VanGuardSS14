@@ -1,0 +1,75 @@
+- type: entity
+  parent: BaseItem
+  id: LavalandResurrectionCrystal
+  name: resurrection crystal
+  description: A pulsing red crystal that can revive a fallen comrade.
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Objects/Specific/Lavaland/loot.rsi
+    state: crystal
+  - type: Item
+    size: Small
+  - type: ResurrectionCrystal
+  - type: StaticPrice
+    price: 500
+
+- type: entity
+  id: LavalandResurrectionCrystalActive
+  name: resurrection crystal
+  description: A body is encased within. Break the crystal to stop the revival.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _VanGuard/Objects/Specific/Lavaland/loot.rsi
+    state: crystal
+    drawdepth: Mobs
+  - type: ActiveResurrectionCrystal
+    reviveTime: 30
+  - type: Injurable
+    damageContainer: StructuralInorganic
+  - type: Damageable
+    damageContainer: StructuralInorganic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 50
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          ShardGlass:
+            min: 1
+            max: 3
+      - !type:PlaySoundBehavior
+        sound:
+          collection: GlassBreak
+          params:
+            volume: -4
+  - type: ContainerContainer
+    containers:
+      body_slot: !type:Container
+  - type: PointLight
+    enabled: true
+    radius: 4
+    energy: 2
+    color: "#ff2222"
+  - type: AmbientSound
+    sound:
+      path: /Audio/Ambience/anomaly_drone.ogg
+    range: 6
+    volume: -8
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.3,-0.3,0.3,0.3"
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        density: 500

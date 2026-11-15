@@ -84,6 +84,8 @@
             weight: 0.03
         - id: LavalandBookOfBabel
           prob: 0.05
+        - id: LavalandResurrectionCrystal
+          prob: 0.05
 
 - type: entity
   parent: LavalandTendril
@@ -174,6 +176,8 @@
           prob: 0.35
         - id: LavalandBookOfBabel
           prob: 0.05
+        - id: LavalandResurrectionCrystal
+          prob: 0.05
 
 - type: entity
   parent: CrateGenericSteel
@@ -221,6 +225,8 @@
         - id: SpaceCash100
           prob: 0.4
         - id: LavalandBookOfBabel
+          prob: 0.05
+        - id: LavalandResurrectionCrystal
           prob: 0.05
 
 - type: entity
