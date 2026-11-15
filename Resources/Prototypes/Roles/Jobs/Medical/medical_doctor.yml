@@ -6,10 +6,12 @@
   # VG-Tweak Start: economy salary rebalance.
   salary: 400
   # VG-Tweak End
+  # VG-Tweak Start: rebalanced job requirements.
   requirements:
     - !type:DepartmentTimeRequirement
       department: Medical
-      time: 2h # Corvax-RoleTime
+      time: 5h
+  # VG-Tweak End
   startingGear: DoctorGear
   icon: "JobIconMedicalDoctor"
   supervisors: job-supervisors-cmo

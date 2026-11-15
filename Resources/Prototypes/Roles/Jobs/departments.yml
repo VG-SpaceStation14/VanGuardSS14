@@ -112,7 +112,8 @@
   - Chaplain
   - Chef
   - Clown
-  - HeadOfPersonnel
+  # VG-Tweak Start: HoP belongs to Command; his playtime must not count toward Service requirements.
+  # VG-Tweak End
   - Janitor
   - Lawyer
   - Librarian

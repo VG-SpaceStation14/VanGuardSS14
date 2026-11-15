@@ -6,10 +6,11 @@
   # VG-Tweak Start: economy salary rebalance.
   salary: 450
   # VG-Tweak End
+  # VG-Tweak Start: rebalanced job requirements.
   requirements:
   - !type:DepartmentTimeRequirement
     department: Command
-    time: 20h
+    time: 15h
   - !type:DepartmentTimeRequirement
     department: Security
     time: 10h
@@ -17,6 +18,7 @@
     inverted: true
     traits:
     - Muted
+  # VG-Tweak End
   startingGear: IAAGear
   icon: "JobIconIAA"
   supervisors: job-supervisors-centcom

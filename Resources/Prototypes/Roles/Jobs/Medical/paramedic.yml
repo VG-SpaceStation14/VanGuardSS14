@@ -6,10 +6,12 @@
   # VG-Tweak Start: economy salary rebalance.
   salary: 420
   # VG-Tweak End
+  # VG-Tweak Start: rebalanced job requirements.
   requirements:
   - !type:DepartmentTimeRequirement
     department: Medical
-    time: 2.5h
+    time: 5h
+  # VG-Tweak End
   startingGear: ParamedicGear
   icon: "JobIconParamedic"
   supervisors: job-supervisors-cmo

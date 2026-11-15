@@ -6,10 +6,11 @@
   # VG-Tweak Start: economy salary rebalance.
   salary: 420
   # VG-Tweak End
+  # VG-Tweak Start: rebalanced job requirements.
   requirements:
   - !type:DepartmentTimeRequirement
     department: Medical
-    time: 15h
+    time: 10h
   - !type:DepartmentTimeRequirement
     department: Security
     time: 5h
@@ -17,6 +18,7 @@
     inverted: true
     traits:
     - Muted
+  # VG-Tweak End
   startingGear: BrigmedicGear
   icon: "JobIconBrigmedic"
   supervisors: job-supervisors-cmo

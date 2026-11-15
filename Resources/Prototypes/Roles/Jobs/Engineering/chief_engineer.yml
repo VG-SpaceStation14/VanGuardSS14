@@ -6,22 +6,24 @@
   # VG-Tweak Start: economy salary rebalance.
   salary: 550
   # VG-Tweak End
+  # VG-Tweak Start: rebalanced job requirements.
   requirements:
-    - !type:RoleTimeRequirement
-      role: JobAtmosphericTechnician
-      time: 10h # Corvax-RoleTime 2.5h
-#    - !type:RoleTimeRequirement
-#      role: JobStationEngineer
-#      time: 21600 #6 hrs
+    - !type:OverallPlaytimeRequirement
+      time: 40h
     - !type:DepartmentTimeRequirement
       department: Engineering
-      time: 15h # Corvax-RoleTime 5h
-#    - !type:OverallPlaytimeRequirement
-#      time: 144000 #40 hrs
-    - !type:TraitsRequirement #Corvax-TraitsRequirement
+      time: 20h
+    - !type:RoleTimeRequirement
+      role: JobAtmosphericTechnician
+      time: 10h
+    - !type:RoleTimeRequirement
+      role: JobStationEngineer
+      time: 5h
+    - !type:TraitsRequirement
       inverted: true
       traits:
       - Muted
+  # VG-Tweak End
   startingGear: ChiefEngineerGear
   icon: "JobIconChiefEngineer"
   supervisors: job-supervisors-captain

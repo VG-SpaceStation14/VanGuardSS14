@@ -6,19 +6,21 @@
   # VG-Tweak Start: economy salary rebalance.
   salary: 500
   # VG-Tweak End
+  # VG-Tweak Start: rebalanced job requirements.
   requirements:
+    - !type:DepartmentTimeRequirement
+      department: Security
+      time: 40h
     - !type:RoleTimeRequirement
       role: JobWarden
-      time: 6h
+      time: 5h
     - !type:RoleTimeRequirement
       role: JobDetective
       time: 2h
     - !type:RoleTimeRequirement
       role: JobSecurityOfficer
-      time: 6h
-    - !type:DepartmentTimeRequirement
-      department: Security
-      time: 60h
+      time: 5h
+  # VG-Tweak End
   startingGear: SeniorOfficerGear
   icon: "JobIconSeniorOfficer"
   supervisors: job-supervisors-hos
