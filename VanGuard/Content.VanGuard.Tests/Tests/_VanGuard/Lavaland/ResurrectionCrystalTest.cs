@@ -31,6 +31,7 @@ public sealed class ResurrectionCrystalTest : GameTest
     {
         Connected = true,
         Dirty = true,
+        Fresh = true,
         DummyTicker = false,
     };
 
