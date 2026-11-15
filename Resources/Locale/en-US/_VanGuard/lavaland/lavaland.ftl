@@ -42,6 +42,7 @@ lavaland-dungeon-grassland-dome = Grassland Dome
 lavaland-dungeon-lava-river = Lava River
 lavaland-dungeon-mineshaft = Abandoned Mineshaft
 lavaland-dungeon-snowy-dome = Snowy Dome
+book-of-babel-used = Ancient knowledge floods your mind. The book crumbles to dust.
 
 ent-LavalandLoader = Lavaland loader
 ent-LavalandFTLPoint = Lavaland Outpost Beacon
@@ -106,6 +107,21 @@ ent-LavalandWeaponStaffHealing = staff of healing
     .desc = A rare staff that fires healing bolts. Its charges slowly replenish over time.
 
 ent-LavalandRareMobSpawner = rare lavaland mob spawner
+
+ent-LavalandBookOfBabel = book of Babel
+    .desc = A weathered tome covered in symbols from a hundred tongues. Reading it fills your mind with the knowledge of every spoken language, though the book crumbles to dust.
+
+ent-LavalandResurrectionCrystal = resurrection crystal
+    .desc = A pulsing red crystal that can revive a fallen comrade. Break the crystal to interrupt the process.
+
+ent-LavalandResurrectionCrystalActive = resurrection crystal
+    .desc = A body is encased within. Break the crystal to stop the revival.
+
+resurrection-crystal-alive = The target is still alive.
+resurrection-crystal-no-floor = There is no solid ground here.
+resurrection-crystal-begin = The crystal encases the body and begins to heal it.
+resurrection-crystal-complete = The body is restored to life!
+resurrection-crystal-broken = The crystal shatters! The body within is lost.
 
 construction-graph-tag-lavaland-stabilizing-serum = stabilizing serum
 
