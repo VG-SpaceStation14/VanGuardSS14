@@ -111,6 +111,11 @@ public sealed class ResurrectionCrystalTest : GameTest
                 Assert.That(SEntMan.GetComponent<MobStateComponent>(body).CurrentState,
                     Is.EqualTo(MobState.Dead), "Test setup failed to kill the mob.");
 
+                // The test grid may not contain a tile at the spawn point, so
+                // spawning can leave the body parented to the map.
+                // The crystal rejects bodies that are not on a grid.
+                SEntMan.System<SharedTransformSystem>().SetParent(body, grid);
+
                 user = SEntMan.SpawnEntity("MobHuman", new EntityCoordinates(grid, 5100, 5101));
                 crystal = SEntMan.SpawnEntity("LavalandResurrectionCrystal",
                     new EntityCoordinates(grid, 5101, 5101));
