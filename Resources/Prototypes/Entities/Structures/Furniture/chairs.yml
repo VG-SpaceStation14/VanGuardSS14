@@ -164,6 +164,10 @@
     damageModifierSet: SteelMod
   - type: Destructible
     thresholds: *ThresholdsFurnitureNormalSteel
+  - type: Strap
+    modifyBuckleDrawDepth: false
+    position: Stand
+    buckleOffset: "0,-0.05"
 
 - type: entity
   parent: [ StoolBase, StructureHealthFurniture ]
