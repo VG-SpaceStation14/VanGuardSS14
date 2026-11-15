@@ -25,6 +25,8 @@ namespace Content.IntegrationTests.Tests._VanGuard.Lavaland;
 [TestFixture]
 public sealed class ResurrectionCrystalTest : GameTest
 {
+    private static readonly EntProtoId ActiveCrystalProto = "LavalandResurrectionCrystalActive";
+
     public override PoolSettings PoolSettings => new()
     {
         Connected = true,
@@ -35,7 +37,7 @@ public sealed class ResurrectionCrystalTest : GameTest
     [Test]
     public void ActiveCrystalIsHiddenFromSpawnMenu()
     {
-        var proto = SProtoMan.Index<EntityPrototype>("LavalandResurrectionCrystalActive");
+        var proto = SProtoMan.Index<EntityPrototype>(ActiveCrystalProto);
         Assert.That(proto.HideSpawnMenu, Is.True,
             "The active resurrection crystal must be hidden from the spawn menu.");
     }
@@ -169,7 +171,7 @@ public sealed class ResurrectionCrystalTest : GameTest
                 Assert.That(SEntMan.GetComponent<MobStateComponent>(body).CurrentState,
                     Is.EqualTo(MobState.Dead));
 
-                crystal = SEntMan.SpawnEntity("LavalandResurrectionCrystalActive",
+                crystal = SEntMan.SpawnEntity(ActiveCrystalProto,
                     SEntMan.GetComponent<TransformComponent>(body).Coordinates);
 
                 var activeComp = SEntMan.GetComponent<ActiveResurrectionCrystalComponent>(crystal);
@@ -232,7 +234,7 @@ public sealed class ResurrectionCrystalTest : GameTest
                 Assert.That(SEntMan.GetComponent<MobStateComponent>(body).CurrentState,
                     Is.EqualTo(MobState.Dead));
 
-                crystal = SEntMan.SpawnEntity("LavalandResurrectionCrystalActive",
+                crystal = SEntMan.SpawnEntity(ActiveCrystalProto,
                     SEntMan.GetComponent<TransformComponent>(body).Coordinates);
 
                 var activeComp = SEntMan.GetComponent<ActiveResurrectionCrystalComponent>(crystal);

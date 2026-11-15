@@ -28,7 +28,6 @@
   - type: Injurable
     damageContainer: StructuralInorganic
   - type: Damageable
-    damageContainer: StructuralInorganic
   - type: Destructible
     thresholds:
     - trigger:
