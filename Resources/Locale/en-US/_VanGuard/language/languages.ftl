@@ -93,3 +93,9 @@ language-CodeSpeak-description = Syndicate operatives use a series of codewords 
 
 language-Dev-name = Dev
 language-Dev-description = Sounds more like swearing covered in code than a language.
+
+language-SolCommon-name = Sol Common
+language-SolCommon-description = The primary official language of the TSF, spoken by the inhabitants of the Sol system.
+
+language-NeoRusskiya-name = Neo-Russkiya
+language-NeoRusskiya-description = One of the official languages of the USSP, the language of the descendants of Russian-speaking cosmonauts. It reeks of communism and vodka.
