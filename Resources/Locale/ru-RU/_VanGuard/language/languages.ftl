@@ -93,3 +93,9 @@ language-CodeSpeak-description = Оперативники синдиката и�
 
 language-Dev-name = Разработческий
 language-Dev-description = Больше звучит как ругань, покрытая кодом, чем язык.
+
+language-SolCommon-name = Солнечный
+language-SolCommon-description = Основной официальный язык ТСФ, на котором говорят обитатели солнечной системы.
+
+language-NeoRusskiya-name = Нео-русский
+language-NeoRusskiya-description = Один из официальных языков СССП, язык потомков русскоязычных космонавтов. Отдаёт коммунизмом и водкой.
