@@ -28,13 +28,10 @@
     # id: SalvagePDA
     # VG-Tweak End
     ears: ClothingHeadsetCargo
-    # VG-Tweak Start
-    pocket1: AppraisalTool
-    pocket2: OreBag  
-  storage:
-    back:
-    - MineralScanner
-    # VG-Tweak End
+    pocket1: AppraisalTool # VG-Tweak
+  # storage:
+    # back:
+    # - Staff
 
 - type: chameleonOutfit
   id: SalvageSpecialistChameleonOutfit

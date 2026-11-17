@@ -22,14 +22,9 @@
   id: MinerGear
   equipment:
     pocket1: AppraisalTool
-    pocket2: OreBag
   storage:
     back:
-    - MineralScanner
     - FlashlightSeclite
-    - SurvivalKnife
-    - HandheldGPSBasic
-    - RadioHandheld
 
 - type: chameleonOutfit
   id: MinerChameleonOutfit
