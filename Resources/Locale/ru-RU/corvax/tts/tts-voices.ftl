@@ -1,8 +1,8 @@
-tts-voice-name-aidar = Аидар
-tts-voice-name-baya = Байя
-tts-voice-name-kseniya = Ксения
-tts-voice-name-xenia = Кзениа
-tts-voice-name-eugene = Юджин
+# tts-voice-name-aidar = Аидар
+# tts-voice-name-baya = Байя
+# tts-voice-name-kseniya = Ксения
+# tts-voice-name-xenia = Кзениа
+# tts-voice-name-eugene = Юджин
 tts-voice-name-arthas = Артас (Warcraft 3)
 tts-voice-name-thrall = Тралл (Warcraft 3)
 tts-voice-name-kael = Кель (Warcraft 3)
