@@ -23,14 +23,18 @@
 - type: startingGear
   id: SalvageSpecialistGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitSalvageSpecialist
+    #jumpsuit: ClothingUniformJumpsuitSalvageSpecialist # VG-Tweak
     # VG-Tweak Start: the PDA is handed out by the SalvageSpecialistID loadout group so pen choices can replace the pen.
     # id: SalvagePDA
     # VG-Tweak End
     ears: ClothingHeadsetCargo
-  #storage:
-    #back:
-    #- Stuff
+    # VG-Tweak Start
+    pocket1: AppraisalTool
+    pocket2: OreBag  
+  storage:
+    back:
+    - MineralScanner
+    # VG-Tweak End
 
 - type: chameleonOutfit
   id: SalvageSpecialistChameleonOutfit
