@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Server._VanGuard.Lavaland.Components;
 using Content.Server.NPC.HTN;
 using Content.Shared.Chasm;
 using Content.Shared.Interaction;
@@ -7,7 +8,7 @@ using Robust.Shared.Audio.Systems;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
-namespace Content.Server._VanGuard.Lavaland;
+namespace Content.Server._VanGuard.Lavaland.Systems;
 
 /// <summary>
 /// Handles the Blood Miner's second-phase teleport behaviour. The boss keeps

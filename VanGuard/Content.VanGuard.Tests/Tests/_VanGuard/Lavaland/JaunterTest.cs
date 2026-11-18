@@ -1,6 +1,6 @@
 #nullable enable
 using System.Numerics;
-using Content.Server._VanGuard.Lavaland;
+using Content.Server._VanGuard.Lavaland.Components;
 using Content.Shared.Chasm;
 using Content.Shared.Damage.Components;
 using Content.Shared.Parallax.Biomes;

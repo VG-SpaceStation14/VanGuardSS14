@@ -1,4 +1,4 @@
-namespace Content.Server._VanGuard.Lavaland;
+namespace Content.Server._VanGuard.Lavaland.Components;
 
 /// <summary>
 /// Marks a wormhole created by the jaunter. The wormhole collapses shortly

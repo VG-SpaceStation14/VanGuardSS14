@@ -1,5 +1,5 @@
 using System.Linq;
-using Content.Server._VanGuard.Lavaland;
+using Content.Server._VanGuard.Lavaland.Components;
 using Content.Server._VanGuard.Shuttles.Guest;
 using Content.Server._VanGuard.Shuttles.Components;
 using Content.Server.Shuttles.Components;

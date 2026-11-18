@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Server._VanGuard.Lavaland.Components;
 using System.Numerics;
 using Content.Server.Parallax;
 using Content.Shared.Chasm;
@@ -15,7 +16,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Robust.Shared.Random;
 
-namespace Content.Server._VanGuard.Lavaland;
+namespace Content.Server._VanGuard.Lavaland.Systems;
 
 /// <summary>
 /// Places guaranteed unique structures (currently the Blood Miner arena) on

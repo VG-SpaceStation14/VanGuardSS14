@@ -1,4 +1,5 @@
 using Content.Shared.FixedPoint;
+using Content.Server._VanGuard.Lavaland.Components;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Destructible;
@@ -13,7 +14,7 @@ using Robust.Shared.Containers;
 using Robust.Shared.Timing;
 using Robust.Shared.Log;
 
-namespace Content.Server._VanGuard.Lavaland;
+namespace Content.Server._VanGuard.Lavaland.Systems;
 
 public sealed partial class ResurrectionCrystalSystem : EntitySystem
 {

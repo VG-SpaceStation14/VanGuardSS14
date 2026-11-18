@@ -1,6 +1,6 @@
 using Robust.Shared.Prototypes;
 
-namespace Content.Server._VanGuard.Lavaland;
+namespace Content.Server._VanGuard.Lavaland.Components;
 
 /// <summary>
 ///     Item component. Activating on a dead mob spawns the active crystal and consumes the item.

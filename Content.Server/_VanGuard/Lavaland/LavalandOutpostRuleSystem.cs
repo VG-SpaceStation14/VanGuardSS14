@@ -1,4 +1,6 @@
 using System.Numerics;
+using Content.Server._VanGuard.Lavaland.Systems;
+using Content.Server._VanGuard.Lavaland.Components;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server._VanGuard.Shuttles.Components;
 using Content.Server.Maps;

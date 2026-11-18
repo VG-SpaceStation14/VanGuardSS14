@@ -2,7 +2,7 @@ using Robust.Shared.Localization;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
-namespace Content.Server._VanGuard.Lavaland;
+namespace Content.Server._VanGuard.Lavaland.Components;
 
 /// <summary>
 /// Spawns a guaranteed set of unique structures on the Lavaland map. Every

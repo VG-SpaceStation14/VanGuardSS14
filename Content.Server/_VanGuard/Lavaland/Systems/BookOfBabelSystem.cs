@@ -1,11 +1,12 @@
 using Content.Server._VanGuard.Language;
+using Content.Server._VanGuard.Lavaland.Components;
 using Content.Shared._VanGuard.Language;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Popups;
 using Robust.Shared.Prototypes;
 
-namespace Content.Server._VanGuard.Lavaland;
+namespace Content.Server._VanGuard.Lavaland.Systems;
 
 public sealed partial class BookOfBabelSystem : EntitySystem
 {
