@@ -1,4 +1,5 @@
 using Content.Shared.Chasm;
+using Content.Server._VanGuard.Lavaland.Components;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Interaction;
@@ -17,7 +18,7 @@ using Robust.Shared.Physics.Events;
 using Robust.Shared.Random;
 using Robust.Shared.Spawners;
 
-namespace Content.Server._VanGuard.Lavaland;
+namespace Content.Server._VanGuard.Lavaland.Systems;
 
 /// <summary>
 /// Emergency Lavaland escape device.

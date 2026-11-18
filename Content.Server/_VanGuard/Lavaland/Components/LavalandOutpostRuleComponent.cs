@@ -5,7 +5,7 @@ using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
-namespace Content.Server._VanGuard.Lavaland;
+namespace Content.Server._VanGuard.Lavaland.Components;
 
 /// <summary>
 /// Sets up the Lavaland planet after <see cref="Content.Server.GameTicking.Rules.Components.LoadMapRuleComponent"/>

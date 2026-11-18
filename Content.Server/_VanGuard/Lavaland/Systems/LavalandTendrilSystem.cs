@@ -1,4 +1,6 @@
 using Content.Shared.Destructible;
+using Content.Server._VanGuard.Lavaland.Systems;
+using Content.Server._VanGuard.Lavaland.Components;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Mobs;
 using Robust.Shared.Audio;
@@ -8,7 +10,7 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
-namespace Content.Server._VanGuard.Lavaland;
+namespace Content.Server._VanGuard.Lavaland.Systems;
 
 public sealed partial class LavalandTendrilSystem : EntitySystem
 {

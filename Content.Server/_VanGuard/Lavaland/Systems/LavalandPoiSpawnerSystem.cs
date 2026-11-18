@@ -1,4 +1,6 @@
 using System.Linq;
+using Content.Server._VanGuard.Lavaland.Systems;
+using Content.Server._VanGuard.Lavaland.Components;
 using System.Numerics;
 using Content.Server.Fax;
 using Robust.Shared.EntitySerialization;
@@ -18,7 +20,7 @@ using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 using Robust.Shared.Localization;
 
-namespace Content.Server._VanGuard.Lavaland;
+namespace Content.Server._VanGuard.Lavaland.Systems;
 
 /// <summary>
 /// Places a small set of Lavaland POIs away from the outpost and prints their

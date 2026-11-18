@@ -1,4 +1,4 @@
-namespace Content.Server._VanGuard.Lavaland;
+namespace Content.Server._VanGuard.Lavaland.Components;
 
 /// <summary>
 /// Second-phase Blood Miner behaviour that is not covered by the generic HTN

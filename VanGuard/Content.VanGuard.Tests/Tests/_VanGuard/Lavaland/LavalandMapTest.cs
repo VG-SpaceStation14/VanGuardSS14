@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Content.Server._VanGuard.Lavaland;
+using Content.Server._VanGuard.Lavaland.Components;
+using Content.Server._VanGuard.Lavaland.Systems;
 using Content.Server._VanGuard.Weather;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.GameTicking;

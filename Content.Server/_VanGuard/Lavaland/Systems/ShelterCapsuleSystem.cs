@@ -1,4 +1,5 @@
 using Content.Shared.Interaction.Events;
+using Content.Server._VanGuard.Lavaland.Components;
 using Content.Shared.Popups;
 using Content.Server.Fluids.EntitySystems;
 using Content.Shared.Chemistry.Components;
@@ -13,7 +14,7 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
-namespace Content.Server._VanGuard.Lavaland;
+namespace Content.Server._VanGuard.Lavaland.Systems;
 
 /// <summary>
 /// Loads a prepared grid as a shelter after a countdown. If the load fails the

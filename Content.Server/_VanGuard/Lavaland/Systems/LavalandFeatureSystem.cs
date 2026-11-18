@@ -1,4 +1,5 @@
 using Content.Server._VanGuard.Weather;
+using Content.Server._VanGuard.Lavaland.Components;
 using Content.Server.Parallax;
 using Content.Shared.Chasm;
 using Content.Shared.Maps;
@@ -11,7 +12,7 @@ using Robust.Shared.Physics.Components;
 using Robust.Shared.Random;
 using Robust.Shared.Utility;
 
-namespace Content.Server._VanGuard.Lavaland;
+namespace Content.Server._VanGuard.Lavaland.Systems;
 
 /// <summary>
 /// Handles biome feature markers (ore deposits, tendrils and similar cave

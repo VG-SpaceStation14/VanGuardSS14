@@ -1,4 +1,4 @@
-namespace Content.Server._VanGuard.Lavaland;
+namespace Content.Server._VanGuard.Lavaland.Components;
 
 /// <summary>
 /// Adjusts a weapon's attack speed when its item toggle changes state.

@@ -2,7 +2,7 @@ using System.Numerics;
 #nullable enable
 using System.Collections.Generic;
 using System.Linq;
-using Content.Server._VanGuard.Lavaland;
+using Content.Server._VanGuard.Lavaland.Components;
 using Content.Shared.Interaction;
 using Content.Shared.Actions;
 using Content.Server.Atmos.EntitySystems;

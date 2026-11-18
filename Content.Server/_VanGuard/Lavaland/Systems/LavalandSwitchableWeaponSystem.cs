@@ -1,7 +1,8 @@
 using Content.Shared.Item.ItemToggle.Components;
+using Content.Server._VanGuard.Lavaland.Components;
 using Content.Shared.Weapons.Melee;
 
-namespace Content.Server._VanGuard.Lavaland;
+namespace Content.Server._VanGuard.Lavaland.Systems;
 
 public sealed partial class LavalandSwitchableWeaponSystem : EntitySystem
 {

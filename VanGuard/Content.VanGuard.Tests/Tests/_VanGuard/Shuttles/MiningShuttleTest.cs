@@ -6,7 +6,7 @@ using System.Threading;
 using System.Reflection;
 using Content.Client.Shuttles.BUI;
 using Content.Client._VanGuard.Shuttles.UI;
-using Content.Server._VanGuard.Lavaland;
+using Content.Server._VanGuard.Lavaland.Components;
 using Content.Server._VanGuard.Shuttles.Components;
 using Content.Server._VanGuard.Shuttles.Guest;
 using Content.Server._VanGuard.Shuttles.Systems;
