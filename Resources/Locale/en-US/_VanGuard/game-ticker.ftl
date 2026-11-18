@@ -3,4 +3,5 @@ player-new-join-message = Attention! New player {$name} has joined
         [true] {TOSTRING($firstSeen, "d")}
         *[false] unknown
     }
+    Account created: {$accountCreated}
     Administration should be attentive, this player has less than 10 hours on the server.

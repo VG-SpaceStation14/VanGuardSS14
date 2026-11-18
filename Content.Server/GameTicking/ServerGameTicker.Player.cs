@@ -1,4 +1,6 @@
 using Content.Server._Corvax.Events;
+using Content.Server._VanGuard.Administration; // VG-Tweak
+using System.Globalization; // VG-Tweak
 using Content.Corvax.Interfaces.Server;
 using Content.Server.Database;
 using Content.Shared.Administration;
@@ -85,14 +87,25 @@ namespace Content.Server.GameTicking
 
                     if (firstConnection)
                     {
+                        // VG-Tweak Start
+                        var accountCreatedDate = await AuthApiHelper.GetAccountCreationDateAsync(
+                            args.Session.UserId.ToString());
+
+                        var accountCreated = accountCreatedDate?.ToString(
+                            "dd.MM.yyyy",
+                            CultureInfo.InvariantCulture) ?? "неизвестно";
+
+
                         _chatManager.SendAdminAnnouncement(
                             Loc.GetString("player-new-join-message",
                                 ("name", args.Session.Name),
                                 ("hasSeen", record != null),
-                                ("firstSeen", record?.FirstSeenTime.DateTime ?? DateTime.MinValue)),
+                                ("firstSeen", record?.FirstSeenTime.DateTime ?? DateTime.MinValue),
+                                ("accountCreated", accountCreated)),
                             flagBlacklist: null,
                             flagWhitelist: null
                         );
+                        // VG-Tweak End
 
                         var clients = _adminManager.ActiveAdmins
                             .Where(admin => _adminManager.GetAdminData(admin)?.Flags.HasFlag(AdminFlags.Adminchat) == true)
