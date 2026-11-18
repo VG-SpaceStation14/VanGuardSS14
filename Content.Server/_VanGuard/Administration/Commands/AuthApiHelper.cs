@@ -1,4 +1,3 @@
-
 using System;
 using System.Globalization;
 using System.Net.Http;
@@ -10,6 +9,7 @@ namespace Content.Server._VanGuard.Administration;
 
 /// <summary>
 /// Retrieves account registration metadata from the SS14 authentication service.
+/// Failures are intentionally non-fatal: account metadata must never block a player connection.
 /// </summary>
 public static class AuthApiHelper
 {
@@ -29,24 +29,20 @@ public static class AuthApiHelper
         if (string.IsNullOrWhiteSpace(userId))
             return null;
 
-        var requestUri = $"{ApiEndpoint}?userid={Uri.EscapeDataString(userId)}";
-
         try
         {
-            using var response = await HttpClient.GetAsync(
-                requestUri,
-                HttpCompletionOption.ResponseHeadersRead);
+            var requestUri = $"{ApiEndpoint}?userid={Uri.EscapeDataString(userId)}";
+
+            using var response = await HttpClient.GetAsync(requestUri);
 
             if (!response.IsSuccessStatusCode)
             {
                 Sawmill.Warning(
                     $"Account lookup failed for {userId}: HTTP {(int) response.StatusCode}.");
-
                 return null;
             }
 
             var responseBody = await response.Content.ReadAsStringAsync();
-
             using var document = JsonDocument.Parse(responseBody);
             var root = document.RootElement;
 
@@ -59,7 +55,6 @@ public static class AuthApiHelper
             }
 
             var timestamp = createdTime.GetString();
-
             if (string.IsNullOrWhiteSpace(timestamp) ||
                 !DateTimeOffset.TryParse(
                     timestamp,
@@ -73,17 +68,21 @@ public static class AuthApiHelper
 
             return creationDate;
         }
+        catch (OperationCanceledException e)
+        {
+            Sawmill.Warning($"Account lookup timed out or was canceled for {userId}: {e.Message}");
+        }
         catch (HttpRequestException e)
         {
             Sawmill.Warning($"Account lookup HTTP error for {userId}: {e.Message}");
         }
-        catch (TaskCanceledException e)
-        {
-            Sawmill.Warning($"Account lookup timed out for {userId}: {e.Message}");
-        }
         catch (JsonException e)
         {
             Sawmill.Warning($"Account lookup returned invalid JSON for {userId}: {e.Message}");
+        }
+        catch (Exception e)
+        {
+            Sawmill.Error($"Unexpected account lookup failure for {userId}: {e}");
         }
 
         return null;

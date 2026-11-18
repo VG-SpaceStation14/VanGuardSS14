@@ -91,6 +91,13 @@ namespace Content.Server.GameTicking
                         var accountCreatedDate = await AuthApiHelper.GetAccountCreationDateAsync(
                             args.Session.UserId.ToString());
 
+                        if (args.Session.Status == SessionStatus.Disconnected
+                            || !_playerManager.TryGetSessionById(args.Session.UserId, out var sessionAfterApi)
+                            || sessionAfterApi != args.Session)
+                        {
+                            break;
+                        }
+
                         var accountCreated = accountCreatedDate?.ToString(
                             "dd.MM.yyyy",
                             CultureInfo.InvariantCulture) ?? "неизвестно";
