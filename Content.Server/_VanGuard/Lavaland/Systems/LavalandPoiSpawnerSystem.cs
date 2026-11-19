@@ -109,6 +109,21 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
                     continue;
                 }
 
+                // Take the dungeon out of the broadphase and physics simulation while
+                // it is still at the authored YAML position. Large dungeon maps such
+                // as lava_river.yml overlap the outpost in their authored coordinates,
+                // so leaving them as Dynamic canCollide bodies allows the next
+                // physics tick to push outpost entities onto the dungeon's grid
+                // before the placement check below has a chance to reject the
+                // dungeon. Switching the body to Static and disabling collisions
+                // silences that transient state without changing the chosen
+                // placement or the existing collision-vs-outpost logic.
+                if (TryComp<PhysicsComponent>(grid.Value.Owner, out var prePhysics))
+                {
+                    _physics.SetCanCollide(grid.Value.Owner, false, body: prePhysics);
+                    _physics.SetBodyType(grid.Value.Owner, BodyType.Static, body: prePhysics);
+                }
+
                 var bounds = dungeonGrid.LocalAABB.Translated(origin + offset);
                 var placementBounds = bounds.Enlarged(4f);
                 if (occupied.Any(existing => existing.Intersects(placementBounds)))
@@ -129,6 +144,7 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
                 RemComp<ShuttleComponent>(grid.Value.Owner);
                 if (TryComp<PhysicsComponent>(grid.Value.Owner, out var physics))
                 {
+                    _physics.SetCanCollide(grid.Value.Owner, true, body: physics);
                     _physics.SetBodyType(grid.Value.Owner, BodyType.Static, body: physics);
                     _physics.SetAngularVelocity(grid.Value.Owner, 0f, body: physics);
                 }
