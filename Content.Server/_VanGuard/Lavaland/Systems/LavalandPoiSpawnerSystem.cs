@@ -41,16 +41,11 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
     [Dependency] private LavalandFeatureSystem _features = default!;
     [Dependency] private LavalandUniqueStructureSystem _unique = default!;
 
-    public void SpawnPois(Entity<LavalandPoiSpawnerComponent> spawner, EntityUid mapUid, EntityUid outpost)
+    public void SpawnPois(Entity<LavalandPoiSpawnerComponent> spawner, EntityUid mapUid, Vector2 origin, Box2 outpostBounds)
     {
         if (spawner.Comp.Prototypes.Count == 0 || !TryComp<MapGridComponent>(mapUid, out var mapGrid))
             return;
 
-        var origin = Transform(outpost).WorldPosition;
-        var outpostGrid = Comp<MapGridComponent>(outpost);
-        var outpostBounds = outpostGrid.LocalAABB
-            .Translated(Transform(outpost).WorldPosition)
-            .Enlarged(spawner.Comp.ClearRadius);
         var positions = new List<LavalandPoi>();
 
         // A tendril is only created on a tile that the biome will actually
@@ -146,7 +141,7 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
         }
 
         if (TryComp<LavalandUniqueStructureSpawnerComponent>(spawner.Owner, out var unique))
-            _unique.SpawnStructures((spawner.Owner, unique), mapUid, outpost, positions, occupied);
+            _unique.SpawnStructures((spawner.Owner, unique), mapUid, origin, positions, occupied);
 
         // Authored dungeon maps can load more than one root grid. Sweep the
         // planet once so every grid, including child and sibling grids, becomes

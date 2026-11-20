@@ -40,7 +40,7 @@ public sealed partial class LavalandUniqueStructureSystem : EntitySystem
     public void SpawnStructures(
         Entity<LavalandUniqueStructureSpawnerComponent> spawner,
         EntityUid mapUid,
-        EntityUid outpost,
+        Vector2 origin,
         List<LavalandPoi> pois,
         List<Box2> occupied)
     {
@@ -48,7 +48,6 @@ public sealed partial class LavalandUniqueStructureSystem : EntitySystem
             return;
 
         var mapId = Transform(mapUid).MapID;
-        var origin = Transform(outpost).WorldPosition;
 
         foreach (var structure in spawner.Comp.Structures)
         {

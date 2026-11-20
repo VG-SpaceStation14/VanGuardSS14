@@ -263,9 +263,12 @@ public sealed class MiningShuttleTest : GameTest
             Assert.That(lavalandRule, Is.Not.Null);
             var lavaland = SEntMan.GetComponent<LavalandOutpostRuleComponent>(lavalandRule!.Value.Owner);
             Assert.That(lavaland.MapId, Is.Not.Null);
-            Assert.That(lavaland.OutpostGrid, Is.Not.Null);
+            // The outpost grid is loaded on the tick after the POI generation has
+            // finished, so it cannot be read straight after the rule was added.
+            // Wait for the outpost to actually exist instead of assuming it is
+            // there already.
+            var outpostGrid = await WaitForLavalandOutpost(lavalandRule!.Value.Owner);
             var lavalandMap = lavaland.MapId!.Value;
-            var outpostGrid = lavaland.OutpostGrid!.Value;
             // The outpost map has two airlocks (mining + guest). Give the test
             // an unambiguous open mining dock so it does not depend on which
             // authored dock the FTL config picks.
@@ -692,6 +695,32 @@ public sealed class MiningShuttleTest : GameTest
 
         Assert.That(bui, Is.Not.Null);
         return bui!;
+    }
+
+    /// <summary>
+    /// Waits until the Lavaland outpost grid has been created.
+    /// The outpost is deliberately loaded one tick after the POI generation has
+    /// finished, so it does not exist yet at the moment the game rule is added.
+    /// </summary>
+    private async Task<EntityUid> WaitForLavalandOutpost(EntityUid ruleUid)
+    {
+        for (var i = 0; i < 1800; i++)
+        {
+            EntityUid? outpost = null;
+            await Server.WaitPost(() =>
+            {
+                var rule = SEntMan.GetComponent<LavalandOutpostRuleComponent>(ruleUid);
+                outpost = rule.OutpostGrid;
+            });
+
+            if (outpost is { Valid: true })
+                return outpost.Value;
+
+            await Pair.RunTicksSync(1);
+        }
+
+        Assert.Fail("Timed out waiting for the Lavaland outpost grid to be created.");
+        return EntityUid.Invalid;
     }
 
     private async Task WaitForFtlReady(EntityUid shuttle)
