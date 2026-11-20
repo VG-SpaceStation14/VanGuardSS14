@@ -26,6 +26,12 @@ public sealed class LavalandGridOriginTest : GameTest
 {
     private static readonly string[] Seeds = { "13", "100", "424242" };
 
+    /// <summary>
+    /// Collected re-parenting failures across all seeds, so the test reports
+    /// every seed instead of stopping at the first one.
+    /// </summary>
+    private readonly List<string> Failures = new();
+
     public override PoolSettings PoolSettings => new()
     {
         Connected = true,
@@ -43,6 +49,10 @@ public sealed class LavalandGridOriginTest : GameTest
 
         await File.WriteAllTextAsync("/tmp/lavaland-gridorigin.log", report.ToString());
         TestContext.Out.WriteLine(report.ToString());
+
+        Assert.That(Failures, Is.Empty,
+            "Outpost items were re-parented onto a foreign grid:\n" +
+            string.Join("\n", Failures));
     }
 
     private async Task RunSeed(string seed, System.Text.StringBuilder report)
@@ -77,6 +87,7 @@ public sealed class LavalandGridOriginTest : GameTest
                 await Server.WaitPost(() =>
                 {
                     LavalandGridOriginSystem.SampleTick(currentTick);
+                    LavalandGridOriginSystem.CaptureTrackedOrigins();
                 });
             }
 
@@ -124,10 +135,89 @@ public sealed class LavalandGridOriginTest : GameTest
             {
                 await Pair.RunTicksSync(1);
                 var currentTick = tick;
-                await Server.WaitPost(() => LavalandGridOriginSystem.SampleTick(currentTick));
+                await Server.WaitPost(() =>
+                {
+                    LavalandGridOriginSystem.SampleTick(currentTick);
+                    LavalandGridOriginSystem.CaptureTrackedOrigins();
+                });
             }
 
             await Server.WaitPost(() => LavalandGridOriginSystem.Snapshot("after-10-ticks"));
+
+            // --- VERIFICATION ---
+            // Only three outpost item prototypes matter for this bug: the O2
+            // locker (ClosetEmergencyFilledRandom), the pickaxe (Pickaxe) and
+            // the miner's locker (LockerMinerFilled). Only the ones that were
+            // *born on the outpost grid* are relevant — a pickaxe that belongs
+            // to a mineshaft is not an outpost item.
+            await Server.WaitPost(() =>
+            {
+                var entMan = SEntMan;
+                var outpost = LavalandGridOriginSystem.OutpostGrid;
+
+                Assert.That(outpost, Is.Not.EqualTo(EntityUid.Invalid),
+                    "The Lavaland outpost grid was never registered — the rule did not complete.");
+
+                var origins = LavalandGridOriginSystem.TrackedOriginGrid;
+                var currents = LavalandGridOriginSystem.TrackedCurrentGrid;
+                var deleted = LavalandGridOriginSystem.TrackedDeleted;
+
+                // Every tracked item that was ever born on the outpost grid,
+                // including the ones that no longer exist. Deleted entities are
+                // not returned by the entity query, so the origin dictionary is
+                // the authoritative list.
+                var outpostItems = new List<(EntityUid uid, string proto, EntityUid origin, EntityUid current, bool gone)>();
+
+                foreach (var (uid, origin) in origins)
+                {
+                    if (origin != outpost)
+                        continue;
+
+                    var proto = "?";
+
+                    if (entMan.TryGetComponent<MetaDataComponent>(uid, out var meta) &&
+                        meta.EntityPrototype?.ID is { } protoId)
+                    {
+                        proto = protoId;
+                    }
+
+                    var gone = deleted.ContainsKey(uid);
+                    var current = gone
+                        ? EntityUid.Invalid
+                        : currents.TryGetValue(uid, out var cur) ? cur : EntityUid.Invalid;
+
+                    outpostItems.Add((uid, proto, origin, current, gone));
+                }
+
+                report.AppendLine($"  --- OUTPOST-BORN TRACKED ITEMS ({outpostItems.Count}) ---");
+                foreach (var (uid, proto, origin, current, gone) in outpostItems)
+                {
+                    var status = gone ? "DELETED" : current == origin ? "OK" : "REBOUND";
+                    report.AppendLine($"      uid={uid.Id} proto={proto} origin={origin.Id} current={current.Id} {status}");
+                }
+
+                var rebound = outpostItems.Where(t => !t.gone && t.current != t.origin).ToList();
+                var vanished = outpostItems.Where(t => t.gone).ToList();
+
+                report.AppendLine($"  --- OUTPOST TRACKED REBOUND COUNT: {rebound.Count} ---");
+                report.AppendLine($"  --- OUTPOST TRACKED DELETED COUNT: {vanished.Count} ---");
+
+                // Collect instead of asserting immediately so that all three
+                // seeds get reported before the test fails.
+                foreach (var r in rebound)
+                {
+                    Failures.Add(
+                        $"seed {seed}: REBOUND uid={r.uid.Id} proto={r.proto} " +
+                        $"origin={r.origin.Id} current={r.current.Id} (expected {r.origin.Id})");
+                }
+
+                foreach (var v in vanished)
+                {
+                    Failures.Add(
+                        $"seed {seed}: DELETED uid={v.uid.Id} proto={v.proto} " +
+                        $"origin={v.origin.Id} — the item vanished together with its grid");
+                }
+            });
 
             List<string> lines = new();
             await Server.WaitPost(() => lines = LavalandGridOriginSystem.Log.ToList());
@@ -144,6 +234,8 @@ public sealed class LavalandGridOriginTest : GameTest
 
             if (rule.Valid)
                 await Server.WaitPost(() => ticker.EndGameRule(rule));
+
+            await File.WriteAllTextAsync("/tmp/lavaland-gridorigin.log", report.ToString());
         }
     }
 }

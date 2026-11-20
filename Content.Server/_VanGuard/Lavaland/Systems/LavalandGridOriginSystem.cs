@@ -44,6 +44,7 @@ public sealed partial class LavalandGridOriginSystem : EntitySystem
         SubscribeLocalEvent<MapGridComponent, MapInitEvent>(OnGridInit);
         SubscribeLocalEvent<EntParentChangedMessage>(OnParentChanged);
         SubscribeLocalEvent<AnchorStateChangedEvent>(OnAnchorChanged);
+        SubscribeLocalEvent<EntityTerminatingEvent>(OnEntityTerminating);
 
         // MoveEvent is broadcast globally — there is no component-type for it
         // on the entity, so we hook the global broadcast handler instead.
@@ -140,15 +141,17 @@ public sealed partial class LavalandGridOriginSystem : EntitySystem
                $"oldWorld=({ev.Component.WorldPosition.X:F4},{ev.Component.WorldPosition.Y:F4})");
     }
 
-    private static readonly HashSet<string> TrackedPrototypes = new()
+    /// <summary>
+    /// The only outpost item prototypes this bug is about: the O2 locker
+    /// (ClosetEmergencyFilledRandom), the pickaxe (Pickaxe) and the miner's
+    /// locker (LockerMinerFilled). Re-parenting of any other entity is a
+    /// normal part of loading the outpost and is deliberately not tracked.
+    /// </summary>
+    public static readonly HashSet<string> TrackedPrototypes = new()
     {
-        "LockerMinerFilled",
         "ClosetEmergencyFilledRandom",
-        "OxygenCanister",
         "Pickaxe",
-        "SpaceHeater",
-        "RadioHandheld",
-        "EmergencyOxygenTankFilled",
+        "LockerMinerFilled",
     };
 
     private bool IsTrackedEntity(EntityUid uid)
@@ -158,6 +161,74 @@ public sealed partial class LavalandGridOriginSystem : EntitySystem
 
         var proto = meta.EntityPrototype?.ID;
         return proto is not null && TrackedPrototypes.Contains(proto);
+    }
+
+    /// <summary>
+    /// The grid a tracked outpost item was born on. Only items that were born
+    /// on <see cref="OutpostGrid"/> are relevant for this bug — a pickaxe that
+    /// legitimately belongs to a mineshaft is not an outpost item.
+    /// </summary>
+    public static readonly Dictionary<EntityUid, EntityUid> TrackedOriginGrid = new();
+
+    /// <summary>
+    /// The grid a tracked outpost item is currently on, updated on every
+    /// re-parent.
+    /// </summary>
+    public static readonly Dictionary<EntityUid, EntityUid> TrackedCurrentGrid = new();
+
+    /// <summary>
+    /// Tracked items that were deleted while the diagnostic was running.
+    /// An outpost item that vanishes together with a rejected dungeon grid is
+    /// the actual symptom of this bug, so deletion has to be tracked
+    /// separately from re-parenting.
+    /// </summary>
+    public static readonly Dictionary<EntityUid, string> TrackedDeleted = new();
+
+    /// <summary>
+    /// Called every tick while the diagnostic is enabled so that the origin
+    /// grid of every tracked item can be captured before any re-parenting
+    /// happens.
+    /// </summary>
+    public static void CaptureTrackedOrigins()
+    {
+        if (!Enabled)
+            return;
+
+        var entMan = IoCManager.Resolve<IEntityManager>();
+
+        var query = entMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out var meta, out var xform))
+        {
+            var proto = meta.EntityPrototype?.ID;
+            if (proto is null || !TrackedPrototypes.Contains(proto))
+                continue;
+
+            var grid = xform.GridUid ?? EntityUid.Invalid;
+
+            // Only capture the origin once. The origin is the grid the item was
+            // born on and must never be overwritten by a later re-parent.
+            if (!TrackedOriginGrid.ContainsKey(uid))
+                TrackedOriginGrid[uid] = grid;
+
+            TrackedCurrentGrid[uid] = grid;
+        }
+    }
+
+    private void OnEntityTerminating(ref EntityTerminatingEvent args)
+    {
+        if (!IsTrackedEntity(args.Entity))
+            return;
+
+        var meta = Comp<MetaDataComponent>(args.Entity);
+        var grid = Transform(args.Entity).GridUid;
+
+        // A tracked outpost item that is terminating is being deleted. When
+        // that happens to an outpost item it vanished together with the grid
+        // it was dragged onto — the actual symptom of this bug.
+        TrackedDeleted[args.Entity] = meta.EntityPrototype?.ID ?? "?";
+        Record($"[tracked-deleted] uid={args.Entity} " +
+               $"proto={meta.EntityPrototype?.ID ?? "?"} " +
+               $"grid={grid?.Id.ToString() ?? "null"}");
     }
 
     private void OnParentChanged(ref EntParentChangedMessage args)
@@ -171,6 +242,24 @@ public sealed partial class LavalandGridOriginSystem : EntitySystem
         {
             var xform0 = args.Transform;
             var meta0 = Comp<MetaDataComponent>(args.Entity);
+
+            // Keep the current grid of every tracked item up to date so the
+            // test can tell whether an outpost item ended up on a foreign grid.
+            if (IsTrackedEntity(args.Entity))
+            {
+                TrackedCurrentGrid[args.Entity] = xform0.GridUid ?? EntityUid.Invalid;
+
+                // A brand new entity is being attached to its parent. Record the
+                // grid it was born on — that is the grid it must stay on. This
+                // has to happen here because an item can be created and
+                // deleted again within a single tick, which the per-tick
+                // sampling would miss.
+                if (args.OldParent == EntityUid.Invalid &&
+                    !TrackedOriginGrid.ContainsKey(args.Entity))
+                {
+                    TrackedOriginGrid[args.Entity] = xform0.GridUid ?? EntityUid.Invalid;
+                }
+            }
 
             Record($"[entity-parent] uid={args.Entity.Id} " +
                    $"proto={meta0.EntityPrototype?.ID ?? "?"} " +
@@ -320,6 +409,9 @@ public sealed partial class LavalandGridOriginSystem : EntitySystem
     {
         Log.Clear();
         SampledGrids.Clear();
+        TrackedOriginGrid.Clear();
+        TrackedCurrentGrid.Clear();
+        TrackedDeleted.Clear();
         PlanetMap = EntityUid.Invalid;
         OutpostGrid = EntityUid.Invalid;
     }

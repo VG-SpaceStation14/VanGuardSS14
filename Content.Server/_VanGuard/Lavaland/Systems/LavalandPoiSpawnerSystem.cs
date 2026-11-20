@@ -41,16 +41,11 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
     [Dependency] private LavalandFeatureSystem _features = default!;
     [Dependency] private LavalandUniqueStructureSystem _unique = default!;
 
-    public void SpawnPois(Entity<LavalandPoiSpawnerComponent> spawner, EntityUid mapUid, EntityUid outpost)
+    public void SpawnPois(Entity<LavalandPoiSpawnerComponent> spawner, EntityUid mapUid, Vector2 origin, Box2 outpostBounds)
     {
         if (spawner.Comp.Prototypes.Count == 0 || !TryComp<MapGridComponent>(mapUid, out var mapGrid))
             return;
 
-        var origin = Transform(outpost).WorldPosition;
-        var outpostGrid = Comp<MapGridComponent>(outpost);
-        var outpostBounds = outpostGrid.LocalAABB
-            .Translated(Transform(outpost).WorldPosition)
-            .Enlarged(spawner.Comp.ClearRadius);
         var positions = new List<LavalandPoi>();
 
         // A tendril is only created on a tile that the biome will actually
@@ -109,21 +104,6 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
                     continue;
                 }
 
-                // Take the dungeon out of the broadphase and physics simulation while
-                // it is still at the authored YAML position. Large dungeon maps such
-                // as lava_river.yml overlap the outpost in their authored coordinates,
-                // so leaving them as Dynamic canCollide bodies allows the next
-                // physics tick to push outpost entities onto the dungeon's grid
-                // before the placement check below has a chance to reject the
-                // dungeon. Switching the body to Static and disabling collisions
-                // silences that transient state without changing the chosen
-                // placement or the existing collision-vs-outpost logic.
-                if (TryComp<PhysicsComponent>(grid.Value.Owner, out var prePhysics))
-                {
-                    _physics.SetCanCollide(grid.Value.Owner, false, body: prePhysics);
-                    _physics.SetBodyType(grid.Value.Owner, BodyType.Static, body: prePhysics);
-                }
-
                 var bounds = dungeonGrid.LocalAABB.Translated(origin + offset);
                 var placementBounds = bounds.Enlarged(4f);
                 if (occupied.Any(existing => existing.Intersects(placementBounds)))
@@ -144,7 +124,6 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
                 RemComp<ShuttleComponent>(grid.Value.Owner);
                 if (TryComp<PhysicsComponent>(grid.Value.Owner, out var physics))
                 {
-                    _physics.SetCanCollide(grid.Value.Owner, true, body: physics);
                     _physics.SetBodyType(grid.Value.Owner, BodyType.Static, body: physics);
                     _physics.SetAngularVelocity(grid.Value.Owner, 0f, body: physics);
                 }
@@ -162,7 +141,7 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
         }
 
         if (TryComp<LavalandUniqueStructureSpawnerComponent>(spawner.Owner, out var unique))
-            _unique.SpawnStructures((spawner.Owner, unique), mapUid, outpost, positions, occupied);
+            _unique.SpawnStructures((spawner.Owner, unique), mapUid, origin, positions, occupied);
 
         // Authored dungeon maps can load more than one root grid. Sweep the
         // planet once so every grid, including child and sibling grids, becomes

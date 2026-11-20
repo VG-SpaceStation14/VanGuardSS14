@@ -47,12 +47,20 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
     private bool _automaticLavalandLoaded;
     private MapId? _automaticLavalandMap;
 
+    /// <summary>
+    /// Local AABB of the Lavaland mining outpost grid, measured once at startup
+    /// by loading it into a throwaway map. The map is then deleted so the
+    /// outpost never actually exists in the world before its real placement.
+    /// </summary>
+    private Box2? _outpostLocalAabb;
+
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<LavalandOutpostRuleComponent, RuleLoadedGridsEvent>(OnRuleLoadedGrids);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => _automaticLavalandLoaded = false);
+        SubscribeLocalEvent<LavalandOutpostSpawnerFinishedEvent>(OnOutpostSpawnerFinished);
     }
 
     private void OnRuleLoadedGrids(Entity<LavalandOutpostRuleComponent> ent, ref RuleLoadedGridsEvent args)
@@ -111,11 +119,106 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
         EnsureComp<LavalandWeatherSchedulerComponent>(mapUid);
         ApplyMarkerLayers(mapUid, ent.Comp);
 
-        // Load the outpost after EnsurePlanet. EnsurePlanet disables shuttle physics
-        // on every grid that already exists; loading afterwards keeps the outpost
-        // untouched by that side effect.
+        // Phase A — reserve the outpost's future footprint *without* loading
+        // the outpost grid itself. We need its LocalAABB to compute world
+        // bounds; the grid is measured once on first use by loading it into a
+        // throwaway map that is deleted immediately afterwards.
+        var localAabb = EnsureOutpostLocalAabb(ent);
+        var origin = Vector2.Zero;
+        var outpostBounds = localAabb.Translated(origin).Enlarged(ent.Comp.ClearRadius);
+        _biome.ReserveTiles(mapUid, outpostBounds, new List<(Vector2i, Tile)>());
+
+        // Phase B — run the existing POI generator. POI candidates will see
+        // the reserved outpost bounds in the occupancy list and steer away
+        // from them. The outpost grid does not yet exist, so no transient
+        // dungeon grid can ever overlap real outpost entities.
+        if (TryComp<LavalandPoiSpawnerComponent>(ent.Owner, out var poi))
+            _poi.SpawnPois((ent.Owner, poi), mapUid, origin, outpostBounds);
+
+        // Phase C — defer outpost loading until the next tick. By then
+        // EntityManager.ProcessQueueudDeletions has already removed every
+        // dungeon grid that the spawner rejected, and PhysicsSystem.TickUpdate
+        // has already run for the current tick. The outpost will then be the
+        // only grid in its area, so there is no possibility of physical
+        // contact between it and a discarded dungeon grid.
+        EntityManager.EventBus.QueueEvent(EventSource.Local, new LavalandOutpostSpawnerFinishedEvent(
+            mapUid,
+            args.Map,
+            origin,
+            outpostBounds));
+
+        var destination = EnsureComp<FTLDestinationComponent>(mapUid);
+        destination.Enabled = true;
+        destination.BeaconsOnly = false;
+        destination.RequireCoordinateDisk = false;
+        destination.Whitelist = null;
+        Dirty(mapUid, destination);
+
+        var restriction = EnsureComp<RestrictedRangeComponent>(mapUid);
+        restriction.Range = ent.Comp.MapBorderRadius;
+        restriction.BoundaryEntity = _restricted.CreateBoundary(new EntityCoordinates(mapUid, 0, 0), ent.Comp.MapBorderRadius);
+    }
+
+    private Box2 EnsureOutpostLocalAabb(Entity<LavalandOutpostRuleComponent> ent)
+    {
+        if (_outpostLocalAabb is { } cached)
+            return cached;
+
+        // Measure the outpost's LocalAABB by loading it into a throwaway map
+        // that is deleted before the function returns. The grid never exists
+        // in any visible map.
+        var measureMapUid = _map.CreateMap(out _);
+        try
+        {
+            if (!_loader.TryLoadGrid(
+                    Transform(measureMapUid).MapID,
+                    ent.Comp.GridPath,
+                    out var loaded,
+                    new DeserializationOptions { InitializeMaps = false }))
+            {
+                Log.Error($"Failed to measure Lavaland outpost grid {ent.Comp.GridPath}.");
+                return Box2.Empty;
+            }
+
+            if (loaded is not { } outpost ||
+                !TryComp<MapGridComponent>(outpost.Owner, out var grid))
+            {
+                Log.Error("Lavaland outpost measurement grid loaded without a MapGridComponent.");
+                return Box2.Empty;
+            }
+
+            _outpostLocalAabb = grid.LocalAABB;
+            return grid.LocalAABB;
+        }
+        finally
+        {
+            _map.QueueDeleteMap(Transform(measureMapUid).MapID);
+        }
+    }
+
+    private void OnOutpostSpawnerFinished(LavalandOutpostSpawnerFinishedEvent ev)
+    {
+        var query = EntityQueryEnumerator<LavalandOutpostRuleComponent>();
+        while (query.MoveNext(out var ruleEnt, out var rule))
+        {
+            if (rule.Map != ev.MapUid)
+                continue;
+
+            LoadOutpostGrid((ruleEnt, rule), ev.MapUid, ev.Origin, ev.OutpostBounds);
+        }
+    }
+
+    private void LoadOutpostGrid(
+        Entity<LavalandOutpostRuleComponent> ent,
+        EntityUid mapUid,
+        Vector2 origin,
+        Box2 outpostBounds)
+    {
+        // Phase D — load the outpost grid for real. By now every rejected
+        // dungeon grid has been deleted and the next physics tick has not yet
+        // had a chance to interact with the outpost.
         if (!_loader.TryLoadGrid(
-                args.Map,
+                ent.Comp.MapId ?? Transform(mapUid).MapID,
                 ent.Comp.GridPath,
                 out var loadedGrid,
                 new DeserializationOptions { InitializeMaps = true }))
@@ -144,8 +247,6 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
         }
 
         // Give the outpost dock a stable, localized name for the shuttle console.
-        // This is code-side because the map itself is only allowed a prototype id
-        // replacement in this iteration.
         var dockLabel = EnsureComp<DockLabelComponent>(outpost.Owner);
         dockLabel.Label = "lavaland-outpost-dock-label";
 
@@ -157,32 +258,20 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
         _transform.SetLocalPosition(outpost.Owner, outpostXform.LocalPosition - correction, outpostXform);
         _transform.SetLocalRotation(outpost.Owner, Angle.Zero, outpostXform);
 
+        // Re-reserve the actual outpost footprint now that we know the real
+        // AABB after clearing any structure-side additions.
         ReserveOutpostArea(mapUid, outpost, outpostXform, ent.Comp.ClearRadius);
-
-        var destination = EnsureComp<FTLDestinationComponent>(mapUid);
-        destination.Enabled = true;
-        destination.BeaconsOnly = false;
-        destination.RequireCoordinateDisk = false;
-        destination.Whitelist = null;
-        Dirty(mapUid, destination);
 
         // The beacon is parented to the outpost so it travels with the outpost if
         // the outpost is ever moved during an admin event.
         var ftlPoint = Spawn(ent.Comp.FtlPointProto, new EntityCoordinates(outpost.Owner, Vector2.Zero));
         _meta.SetEntityName(ftlPoint, Loc.GetString("lavaland-ftl-point"));
 
-        if (TryComp<LavalandPoiSpawnerComponent>(ent.Owner, out var poi))
-            _poi.SpawnPois((ent.Owner, poi), mapUid, outpost.Owner);
-
         // Structure loading can materialize additional outpost tiles. Correct
         // the centre once more and reserve the final footprint.
         var finalCorrection = outpostXform.LocalPosition + outpost.Comp.LocalAABB.Center;
         _transform.SetLocalPosition(outpost.Owner, outpostXform.LocalPosition - finalCorrection, outpostXform);
         ReserveOutpostArea(mapUid, outpost, outpostXform, ent.Comp.ClearRadius);
-
-        var restriction = EnsureComp<RestrictedRangeComponent>(mapUid);
-        restriction.Range = ent.Comp.MapBorderRadius;
-        restriction.BoundaryEntity = _restricted.CreateBoundary(new EntityCoordinates(mapUid, 0, 0), ent.Comp.MapBorderRadius);
     }
 
     private void ApplyMarkerLayers(EntityUid mapUid, LavalandOutpostRuleComponent component)

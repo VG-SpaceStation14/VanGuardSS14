@@ -138,9 +138,13 @@ public sealed class LavalandProductionChainTest : GameTest
                 ReserveOutpostArea(report, mapUid, outpost, outpostXform, ruleComp.ClearRadius);
                 Snapshot(report, "6 ReserveOutpostArea#1", mapId);
 
-                // ---- Stage 7: SpawnPois.
+                // ---- Stage 7: SpawnPois (new signature takes origin + bounds
+                // rather than an EntityUid, since the outpost may not exist yet
+                // when the spawner runs in production).
                 var poiComp = new LavalandPoiSpawnerComponent();
-                poi.SpawnPois((EntityUid.Invalid, poiComp), mapUid, outpost.Owner);
+                var origin = outpostXform.WorldPosition;
+                var outpostBounds = outpost.Comp.LocalAABB.Translated(origin);
+                poi.SpawnPois((EntityUid.Invalid, poiComp), mapUid, origin, outpostBounds);
                 Snapshot(report, "7 SpawnPois", mapId);
 
                 // ---- Stage 8: second ReserveOutpostArea.
