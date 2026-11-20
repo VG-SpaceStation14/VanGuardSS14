@@ -220,7 +220,7 @@ public sealed class LavalandGridOriginTest : GameTest
             });
 
             List<string> lines = new();
-            await Server.WaitPost(() => lines = LavalandGridOriginSystem.Log.ToList());
+            await Server.WaitPost(() => lines = LavalandGridOriginSystem.Journal.ToList());
 
             report.AppendLine($"  outpostGrid={LavalandGridOriginSystem.OutpostGrid.Id} " +
                               $"planetMap={LavalandGridOriginSystem.PlanetMap.Id}");

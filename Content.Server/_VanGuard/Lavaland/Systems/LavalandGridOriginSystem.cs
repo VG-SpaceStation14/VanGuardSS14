@@ -25,7 +25,7 @@ public sealed partial class LavalandGridOriginSystem : EntitySystem
     /// <summary>
     /// Recorded lines, in chronological order.
     /// </summary>
-    public static readonly List<string> Log = new();
+    public static readonly List<string> Journal = new();
 
     /// <summary>
     /// The map that hosts the Lavaland planet.
@@ -156,7 +156,7 @@ public sealed partial class LavalandGridOriginSystem : EntitySystem
 
     private bool IsTrackedEntity(EntityUid uid)
     {
-        if (!TryComp<MetaDataComponent>(uid, out var meta))
+        if (!TryComp(uid, out MetaDataComponent? meta))
             return false;
 
         var proto = meta.EntityPrototype?.ID;
@@ -332,7 +332,7 @@ public sealed partial class LavalandGridOriginSystem : EntitySystem
 
     private static void Record(string line)
     {
-        Log.Add(line);
+        Journal.Add(line);
     }
 
     /// <summary>
@@ -407,7 +407,7 @@ public sealed partial class LavalandGridOriginSystem : EntitySystem
 
     public static void Clear()
     {
-        Log.Clear();
+        Journal.Clear();
         SampledGrids.Clear();
         TrackedOriginGrid.Clear();
         TrackedCurrentGrid.Clear();
