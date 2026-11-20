@@ -34,6 +34,7 @@ public sealed partial class LavalandUniqueStructureSystem : EntitySystem
     [Dependency] private MetaDataSystem _meta = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private ITileDefinitionManager _tiles = default!;
+    [Dependency] private LavalandPoiGridIntegrationSystem _integration = default!;
 
     private readonly HashSet<(MapId Map, string Id)> _spawned = new();
 
@@ -159,12 +160,21 @@ public sealed partial class LavalandUniqueStructureSystem : EntitySystem
                 // never ends up embedded in rock.
                 ClearArea(mapUid, mapGrid, bounds);
 
-                var spawnedGrid = grid.Value.Owner;
-                Timer.Spawn(TimeSpan.Zero, () =>
+                // Guaranteed spawns have to be placed while the structure is
+                // still a grid of its own: the lookup matches entities by
+                // GridUid, which the merge below rewrites.
+                EnsureGuaranteedSpawns(grid.Value.Owner, structure.GuaranteedSpawns);
+
+                // Fold the structure into the planet's surface grid. Everything
+                // above (init, hole sealing, footprint clearing) has to happen
+                // while the structure is still a grid of its own.
+                if (!_integration.Integrate(mapUid, grid.Value.Owner, structure.Name, structure.FaxName, true))
                 {
-                    if (Exists(spawnedGrid))
-                        EnsureGuaranteedSpawns(spawnedGrid, structure.GuaranteedSpawns);
-                });
+                    Log.Warning($"Could not integrate Lavaland structure {structure.Id} into the planet grid.");
+                    DeleteGridTree(grid.Value.Owner);
+                    return false;
+                }
+
                 occupied.Add(placementBounds);
                 pois.Add(new LavalandPoi(offset, structure.Name, structure.FaxName, true, false));
                 return true;

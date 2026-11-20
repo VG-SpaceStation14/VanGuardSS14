@@ -331,56 +331,69 @@ public sealed class LavalandMapTest : GameTest
             Assert.That(chasmCount, Is.LessThan(512), "Too many chasm tiles were generated; Lavaland is not traversable.");
             Assert.That(oreCount, Is.GreaterThan(0), "No ore was generated in the sampled area.");
             Assert.That(chasmCount, Is.GreaterThan(0), "No chasms were generated in the sampled area.");
-            var dungeonCount = 0;
+
+            // Every POI is folded into the planet's surface grid, so no POI
+            // may keep a grid of its own any more. The outpost and its own
+            // child grids are the only grids left, because the outpost is a
+            // docking structure.
+            var outpostChildren = new HashSet<EntityUid>();
+            var childQuery = SEntMan.EntityQueryEnumerator<TransformComponent>();
+            while (childQuery.MoveNext(out var childUid, out var childXform))
+            {
+                if (childXform.MapID != mapId)
+                    continue;
+
+                if (childXform.ParentUid == outpostUid)
+                    outpostChildren.Add(childUid);
+            }
+            var separateGridCount = 0;
             var gridQuery = SEntMan.EntityQueryEnumerator<MapGridComponent, TransformComponent>();
             while (gridQuery.MoveNext(out var gridUid, out _, out var gridXform))
             {
                 if (gridXform.MapID != mapId || gridUid == mapUid || gridUid == outpostUid)
                     continue;
 
-                // Some authored POIs (the Blood Miner arena) contain child
-                // grids. Count only named root POIs, not their internal grids.
-                var gridMeta = SEntMan.GetComponent<MetaDataComponent>(gridUid);
-                if (gridMeta.EntityName == "grid")
+                // The outpost is authored as a set of nested grids. They are
+                // part of the outpost and stay separate. Merged POIs sit
+                // somewhere below the planet map, which is a normal part of
+                // the planet now.
+                if (IsUnderOutpost(gridXform.ParentUid, outpostUid, mapUid))
                     continue;
 
-                dungeonCount++;
+                separateGridCount++;
             }
+            Assert.That(separateGridCount, Is.Zero,
+                $"POIs must be merged into the planet grid, but {separateGridCount} separate POI grids are left.");
+
+            // The POIs are tracked by their markers instead. The marker keeps
+            // the POI's localization key, so it can be matched against the
+            // prototype's name key.
+            var poiMarkers = new List<(EntityUid Uid, string Name, Box2 Bounds, bool Unique)>();
+            var markerQuery = SEntMan.EntityQueryEnumerator<LavalandPoiMarkerComponent, TransformComponent>();
+            while (markerQuery.MoveNext(out var markerUid, out var marker, out var markerXform))
+            {
+                if (markerXform.MapID != mapId)
+                    continue;
+
+                poiMarkers.Add((markerUid, marker.Name, marker.Bounds, marker.Unique));
+            }
+
+            var dungeonCount = poiMarkers.Count;
             Assert.That(dungeonCount, Is.EqualTo(10), "Expected eight dungeons, the Blood Miner arena and the Legion base.");
 
             // Exactly one Blood Miner arena must be generated on the planet.
-            var arenaName = localization.GetString("lavaland-poi-blood-miner-arena");
-            EntityUid? arenaGrid = null;
-            var arenaCount = 0;
-            var arenaQuery = SEntMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
-            while (arenaQuery.MoveNext(out var arenaUid, out var arenaMeta, out var arenaXform))
-            {
-                if (arenaXform.MapID != mapId || arenaMeta.EntityName != arenaName)
-                    continue;
-
-                arenaCount++;
-                arenaGrid = arenaUid;
-            }
+            var arenaName = "lavaland-poi-blood-miner-arena";
+            var arenaCount = poiMarkers.Count(m => m.Name == arenaName);
             Assert.That(arenaCount, Is.EqualTo(1), "Exactly one Blood Miner arena must be generated.");
 
-            var legionBaseName = localization.GetString("lavaland-poi-legion-base");
-            EntityUid? legionBaseGrid = null;
-            var legionBaseCount = 0;
-            var legionBaseQuery = SEntMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
-            while (legionBaseQuery.MoveNext(out var legionUid, out var legionMeta, out var legionXform))
-            {
-                if (legionXform.MapID != mapId || legionMeta.EntityName != legionBaseName)
-                    continue;
-
-                legionBaseCount++;
-                legionBaseGrid = legionUid;
-            }
+            var legionBaseName = "lavaland-poi-legion-base";
+            var legionBaseCount = poiMarkers.Count(m => m.Name == legionBaseName);
             Assert.That(legionBaseCount, Is.EqualTo(1), "Exactly one Legion base must be generated.");
-            Assert.That(legionBaseGrid, Is.Not.Null);
 
-            var legionGridComp = SEntMan.GetComponent<MapGridComponent>(legionBaseGrid!.Value);
-            var legionWorldBounds = legionGridComp.LocalAABB.Translated(
-                SEntMan.System<SharedTransformSystem>().GetWorldPosition(legionBaseGrid.Value));
+            // The Legion base's footprint now comes from its marker, because
+            // the POI no longer has a grid of its own.
+            var legionMarker = poiMarkers.First(m => m.Name == legionBaseName);
+            var legionWorldBounds = legionMarker.Bounds;
             var legionRockCount = 0;
             var legionRockQuery = SEntMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
             while (legionRockQuery.MoveNext(out _, out var legionRockMeta, out var legionRockXform))
@@ -451,61 +464,32 @@ public sealed class LavalandMapTest : GameTest
             }
             Assert.That(bossSpawnerCount, Is.Zero, "The arena boss spawner was not consumed.");
 
-            Assert.That(arenaGrid, Is.Not.Null);
+            // The arena's distance from the outpost comes from its marker
+            // now: the POI no longer has a grid of its own.
+            var arenaMarker = poiMarkers.First(m => m.Name == arenaName);
             var xformSystem = SEntMan.System<SharedTransformSystem>();
-            var arenaDistance = (xformSystem.GetWorldPosition(arenaGrid!.Value) - xformSystem.GetWorldPosition(outpostUid)).Length();
+            var arenaDistance = (arenaMarker.Bounds.Center - xformSystem.GetWorldPosition(outpostUid)).Length();
             Assert.That(arenaDistance, Is.InRange(90f, 230f), "The arena was not placed within the configured player-reach ring.");
 
-            var dungeonGrids = new List<(EntityUid Uid, Angle Rotation)>();
-            var stableQuery = SEntMan.EntityQueryEnumerator<MapGridComponent, TransformComponent>();
-            while (stableQuery.MoveNext(out var stableUid, out _, out var stableXform))
+            // The POI footprints come from the markers. They must not overlap
+            // the outpost clearance and they must not overlap each other.
+            foreach (var (markerUid, markerName, markerBounds, _) in poiMarkers)
             {
-                if (stableXform.MapID != mapId || stableUid == mapUid || stableUid == outpostUid)
-                    continue;
-
-                // Internal child grids of a POI can legitimately overlap each
-                // other. Only named root POIs participate in the placement checks.
-                var stableMeta = SEntMan.GetComponent<MetaDataComponent>(stableUid);
-                if (stableMeta.EntityName != "grid")
-                    dungeonGrids.Add((stableUid, stableXform.LocalRotation));
-
-                Assert.That(SEntMan.HasComponent<Content.Shared.Shuttles.Components.ShuttleComponent>(stableUid), Is.False,
-                    $"Dungeon grid {stableUid} still has Shuttle physics.");
+                Assert.That(markerBounds.Intersects(clearBounds), Is.False,
+                    $"POI {markerName} overlaps the outpost clearance.");
             }
 
-            foreach (var (dungeonGridUid, _) in dungeonGrids)
+            for (var i = 0; i < poiMarkers.Count; i++)
             {
-                var dungeonGrid = SEntMan.GetComponent<MapGridComponent>(dungeonGridUid);
-                var dungeonBounds = dungeonGrid.LocalAABB.Translated(xformSystem.GetWorldPosition(dungeonGridUid));
-                Assert.That(dungeonBounds.Intersects(clearBounds), Is.False,
-                    $"POI {dungeonGridUid} overlaps the outpost clearance.");
-            }
-
-            for (var i = 0; i < dungeonGrids.Count; i++)
-            {
-                var first = dungeonGrids[i].Uid;
-                var firstGrid = SEntMan.GetComponent<MapGridComponent>(first);
-                var firstBounds = firstGrid.LocalAABB.Translated(xformSystem.GetWorldPosition(first));
-                for (var j = i + 1; j < dungeonGrids.Count; j++)
+                var first = poiMarkers[i];
+                for (var j = i + 1; j < poiMarkers.Count; j++)
                 {
-                    var second = dungeonGrids[j].Uid;
-                    var secondGrid = SEntMan.GetComponent<MapGridComponent>(second);
-                    var secondBounds = secondGrid.LocalAABB.Translated(xformSystem.GetWorldPosition(second));
-                    Assert.That(firstBounds.Intersects(secondBounds), Is.False,
-                        $"Dungeon grids {first} {firstBounds} and {second} {secondBounds} overlap.");
+                    var second = poiMarkers[j];
+                    Assert.That(first.Bounds.Intersects(second.Bounds), Is.False,
+                        $"POIs {first.Name} {first.Bounds} and {second.Name} {second.Bounds} overlap.");
                 }
             }
 
-            await Pair.RunTicksSync(120);
-            await Server.WaitPost(() =>
-            {
-                foreach (var (uid, rotation) in dungeonGrids)
-                {
-                    var xform = SEntMan.GetComponent<TransformComponent>(uid);
-                    Assert.That(xform.LocalRotation, Is.EqualTo(rotation),
-                        $"Dungeon grid {uid} rotated after initialization.");
-                }
-            });
             Assert.That(faxCount, Is.GreaterThanOrEqualTo(2),
                 "Both outpost faxes must be present on Lavaland.");
 
@@ -625,6 +609,30 @@ public sealed class LavalandMapTest : GameTest
             });
             await Pair.RunUntilSynced();
         }
+    }
+
+    /// <summary>
+    /// Checks whether an entity sits somewhere below the outpost or the
+    /// planet map in the transform hierarchy. The outpost is authored as a
+    /// set of nested grids, and those stay separate because the outpost is a
+    /// docking structure. Merged POIs sit somewhere below the planet map.
+    /// </summary>
+    private bool IsUnderOutpost(EntityUid uid, EntityUid outpostUid, EntityUid mapUid)
+    {
+        var depth = 0;
+        while (uid != EntityUid.Invalid && depth < 16)
+        {
+            if (uid == outpostUid || uid == mapUid)
+                return true;
+
+            if (!SEntMan.TryGetComponent<TransformComponent>(uid, out var xform))
+                return false;
+
+            uid = xform.ParentUid;
+            depth++;
+        }
+
+        return false;
     }
 
     private static List<int> ChasmComponentSizes(Robust.Shared.GameObjects.IEntityManager entMan, MapId mapId)
