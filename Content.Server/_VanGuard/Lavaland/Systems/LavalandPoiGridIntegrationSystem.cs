@@ -1,0 +1,588 @@
+using System.Linq;
+using System.Numerics;
+using Content.Server._VanGuard.Lavaland.Components;
+using Content.Server.NodeContainer;
+using Content.Server.NodeContainer.EntitySystems;
+using Content.Server.Parallax;
+using Content.Shared.NodeContainer;
+using Content.Shared.Parallax;
+using Content.Shared.Parallax.Biomes;
+using Content.Shared.Power.Components;
+using Content.Shared.Shuttles.Components;
+using Robust.Server.Physics;
+using Robust.Shared.GameObjects;
+using Robust.Shared.Map;
+using Robust.Shared.Map.Components;
+using Robust.Shared.Maths;
+using Robust.Shared.Physics;
+using Robust.Shared.Physics.Components;
+using Robust.Shared.Physics.Systems;
+
+namespace Content.Server._VanGuard.Lavaland.Systems;
+
+/// <summary>
+/// Folds a freshly loaded Lavaland POI grid into the planet's surface grid so
+/// that the whole planet ends up as a single <see cref="MapGridComponent"/>.
+///
+/// Lavaland POIs are authored as standalone map files that the loader turns
+/// into their own grid entity. That leaves every POI floating above the
+/// planet surface: the POI's tiles and entities live in a separate grid, so
+/// the surface keeps its own tiles underneath and the two never share a tile
+/// space. NPCs therefore cannot walk between the surface and a POI, because
+/// <c>SharedGridTraversalSystem</c> only reparents an entity onto a grid that
+/// actually owns the tile underneath it, and the pathfinder builds its
+/// navmesh per grid.
+///
+/// The engine already ships a mechanism for exactly this:
+/// <see cref="GridFixtureSystem.Merge"/>. It transfers the tiles of grid B
+/// into grid A under a matrix transform, re-anchors anchored entities onto
+/// the matching tile of grid A, moves unanchored entities over while keeping
+/// their world position, and finally deletes grid B. This system works out
+/// the transform and clears the surface tiles that the POI takes over.
+/// </summary>
+public sealed partial class LavalandPoiGridIntegrationSystem : EntitySystem
+{
+    [Dependency] private SharedMapSystem _map = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private GridFixtureSystem _fixtures = default!;
+    [Dependency] private SharedPhysicsSystem _physics = default!;
+    [Dependency] private BiomeSystem _biome = default!;
+    [Dependency] private NodeGroupSystem _nodeGroupSystem = default!;
+
+    /// <summary>
+    /// Integrates <paramref name="poiGrid"/> into the planet surface grid of
+    /// <paramref name="mapUid"/>.
+    /// </summary>
+    /// <param name="mapUid">The planet map entity. Its own
+    /// <see cref="MapGridComponent"/> is the surface grid.</param>
+    /// <param name="poiGrid">The temporary grid entity of the loaded POI.</param>
+    /// <param name="name">Localization key of the POI's name.</param>
+    /// <param name="faxName">Localization key of the POI's survey fax
+    /// designation.</param>
+    /// <param name="unique">True for unique structures rather than ordinary
+    /// dungeons.</param>
+    /// <returns>True if the POI was integrated.</returns>
+    public bool Integrate(
+        EntityUid mapUid,
+        EntityUid poiGrid,
+        string name = "",
+        string faxName = "",
+        bool unique = false)
+    {
+        if (!Exists(mapUid) || !Exists(poiGrid))
+            return false;
+
+        if (!TryComp<MapGridComponent>(mapUid, out var surfaceGrid))
+            return false;
+
+        if (!TryComp<MapGridComponent>(poiGrid, out var poiGridComp))
+            return false;
+
+        if (!TryComp(mapUid, out TransformComponent? surfaceXform))
+            return false;
+
+        if (!TryComp(poiGrid, out TransformComponent? poiXform))
+            return false;
+
+        if (surfaceXform.MapID != poiXform.MapID)
+            return false;
+
+        // Any child grids parented to the POI grid have to be folded in first,
+        // otherwise their tile contents stay stranded when the POI grid is
+        // deleted by the merge. Merging nested grids first preserves their
+        // anchoring and transform hierarchy.
+        var childGrids = new List<Entity<MapGridComponent>>();
+        var gridQuery = EntityQueryEnumerator<MapGridComponent, TransformComponent>();
+        while (gridQuery.MoveNext(out var childUid, out var childGridComp, out var childXform))
+        {
+            if (childUid == poiGrid || childUid == mapUid)
+                continue;
+
+            if (childXform.ParentUid != poiGrid)
+                continue;
+
+            childGrids.Add(new Entity<MapGridComponent>(childUid, childGridComp));
+        }
+
+        foreach (var child in childGrids)
+        {
+            if (!IntegrateChild(mapUid, child, poiGrid))
+            {
+                Log.Warning(
+                    $"Could not integrate nested Lavaland grid {child} into its parent before the POI merge.");
+            }
+        }
+
+        // The surface grid is the map entity's own grid, so its tile indices
+        // are world tile indices and its origin sits in world space.
+        var surfaceOrigin = surfaceXform.WorldPosition;
+        var surfaceRotation = surfaceXform.WorldRotation;
+
+        // The POI grid is a child of the map entity, so its world position
+        // already includes the map's own transform. Everything below is
+        // computed in the surface grid's local tile space.
+        var poiOrigin = poiXform.WorldPosition;
+
+        // Work out where the POI's local tile (0, 0) lands in the surface
+        // grid's tile space. The relative position is rotated into the
+        // surface frame first so the surface's own rotation cancels out.
+        var poiRotation = poiXform.WorldRotation;
+        var relative = poiOrigin - surfaceOrigin;
+        var inSurfaceFrame = (-surfaceRotation).RotateVec(relative);
+
+        // The merge matrix maps grid B's tile indices into grid A's tile index
+        // space and quantises the result to whole tiles. For the POI's tiles
+        // to land on the surface's tile lattice one-to-one, the POI's origin
+        // has to sit on a lattice point of the surface grid.
+        //
+        // Snapping the POI onto that lattice is what makes the merge exact:
+        // the tile indices map one-to-one and the POI keeps the geometry it
+        // was authored with, instead of being shifted by up to a whole tile.
+        var snappedFrame = new Vector2(
+            (float) MathF.Floor(inSurfaceFrame.X),
+            (float) MathF.Floor(inSurfaceFrame.Y));
+
+        // Move the POI grid onto the snapped position. The snapped offset is
+        // expressed in the surface frame and rotated back into world space.
+        var snappedWorld = surfaceRotation.RotateVec(snappedFrame) + surfaceOrigin;
+        var correction = snappedWorld - poiOrigin;
+
+        if (correction != Vector2.Zero)
+        {
+            _transform.SetLocalPosition(poiXform, poiXform.LocalPosition + correction);
+            poiOrigin = snappedWorld;
+        }
+
+        // The merge matrix rotates grid B around its origin and then
+        // translates it. Grid B's rotation is the difference between the POI
+        // and the surface, which is what we hand to the merge.
+        var mergeRotation = poiRotation - surfaceRotation;
+
+        // The tile index the POI's origin lands on in the surface grid.
+        var offsetTile = snappedFrame.Floored();
+
+        // Clear the surface tiles that the POI is about to occupy. Without
+        // this the planet would keep its own tiles underneath the POI and
+        // both tile sets would collide in the same space.
+        ClearSurfaceTiles(surfaceGrid, poiGridComp, offsetTile, mergeRotation);
+
+        // Remember where the POI ended up. The grid entity is about to
+        // disappear, so this is the only way left to find the POI again.
+        var poiBounds = poiGridComp.LocalAABB.Translated(offsetTile);
+
+        // Sweep the planet's own scenery out of the POI's footprint. The
+        // planet generates rocks, lava and flora on its surface tiles, and
+        // those would end up embedded in the POI's walls.
+        ClearSurfaceEntities(mapUid, poiBounds);
+
+        // The engine's merge reparents entities that fall inside any tile of
+        // grid B (via GetLocalEntitiesIntersecting) or any anchor on a tile
+        // (via ReAnchor). Children whose local position lies outside the
+        // grid's tile AABB are unreachable through that lookup, so they
+        // would stay parented to grid B and trip the [Conditional("DEBUG")]
+        // assert on xformB.ChildCount inside GridFixtureSystem.Merge under
+        // DebugOpt. Re-anchor those leftovers only, leaving the engine to
+        // handle anchoring and in-bounds placement as it normally would.
+        //
+        // The set of children has to be materialised before any of them are
+        // reparented, because SetCoordinates mutates the parent's child list
+        // and would invalidate the enumerator mid-loop.
+        var leftoverTargets = new List<(EntityUid Uid, Vector2 WorldPos, Angle WorldRot)>();
+        var leftoverQuery = EntityQueryEnumerator<TransformComponent>();
+        while (leftoverQuery.MoveNext(out var childUid, out var childXform))
+        {
+            if (childUid == poiGrid || childUid == mapUid)
+                continue;
+
+            if (childXform.ParentUid != poiGrid)
+                continue;
+
+            // Skip nested grids; those are folded by IntegrateChild above so
+            // that their tile contents land on the surface grid, not lost.
+            if (HasComp<MapGridComponent>(childUid))
+                continue;
+
+            // The engine's own loop iterates the tiles of grid B and asks the
+            // broadphase for entities intersecting each tile's bounds. A
+            // child whose local position lies outside every tile's bounds
+            // (i.e. outside the grid's local AABB) is invisible to that
+            // lookup and would remain parented to grid B after Merge.
+            if (poiGridComp.LocalAABB.Contains(childXform.LocalPosition))
+                continue;
+
+            // Anchored children outside the AABB belong to the snapgrid of
+            // grid B's surrounding tiles. The engine's merge does not detach
+            // them either, but they are rare in practice (cables placed near
+            // the grid edge, etc.) and reparenting them via SetCoordinates
+            // would strip their anchoring, leaving them floating. Leave them
+            // alone for now: the dirty-dispose path this whole loop exists to
+            // fix is only triggered by unanchored leftovers.
+            if (childXform.Anchored)
+                continue;
+
+            leftoverTargets.Add((childUid, childXform.WorldPosition, childXform.WorldRotation));
+        }
+
+        var reparented = 0;
+        foreach (var target in leftoverTargets)
+        {
+            _transform.SetCoordinates(
+                target.Uid,
+                new EntityCoordinates(mapUid, target.WorldPos));
+            _transform.SetWorldRotation(target.Uid, target.WorldRot);
+            reparented++;
+        }
+
+        if (reparented > 0)
+            Log.Debug($"Reparented {reparented} POI children outside the tile AABB onto the surface grid before merge.");
+
+        // GridFixtureSystem.Merge re-anchors anchored entities by calling
+        // Unanchor first and AnchorEntityResolved second. CableSystem reacts
+        // to the brief unanchoring by deleting the cable entity and
+        // spawning a cable item in its place, so any cable that the merge
+        // would touch would be turned into a loose item the moment the
+        // merge starts.
+        //
+        // Move the cables onto the surface grid ourselves before the merge
+        // runs and finish registering them on the surface's snapgrid after
+        // the merge has set the POI's tiles, then queue a NodeGroup reflood
+        // so each CableNode recomputes its reachable neighbours against the
+        // new grid. Without the reflood the cached ReachableNodes still
+        // point at the POI's neighbours and the cables draw as isolated
+        // dots instead of connected lines.
+        var preservedCables = PreserveCableNodes(poiGrid, poiGridComp, mapUid, surfaceGrid, offsetTile, mergeRotation);
+
+        if (preservedCables.Count > 0)
+            Log.Debug($"Moved {preservedCables.Count} cable nodes off the POI before merge.");
+
+        // Now fold the POI in. The engine transfers the tiles, re-anchors the
+        // anchored entities onto the matching surface tile, moves the
+        // unanchored ones while keeping their world position, and deletes the
+        // temporary grid.
+        _fixtures.Merge(
+            mapUid,
+            poiGrid,
+            offsetTile,
+            mergeRotation,
+            surfaceGrid,
+            poiGridComp,
+            surfaceXform,
+            poiXform);
+
+        // The merge's first loop has now written the POI's tiles onto the
+        // surface, so the target tiles the cables are sitting on are
+        // non-empty and AddToSnapGridCell can register the cables. Queuing a
+        // reflood on each CableNode then makes NodeGroupSystem rebuild the
+        // power network against the new grid in the very next tick, instead
+        // of leaving the cables with the stale ReachableNodes that were
+        // computed against their POI neighbours.
+        if (preservedCables.Count > 0)
+            ReanchorCableSnapshots(preservedCables);
+
+        // The biome must not grow back into the POI. The merge writes the
+        // POI's tiles straight into the surface grid, so the biome has to be
+        // told that this area is settled, otherwise it would regenerate its
+        // own lava and rock over the POI's floor. This has to happen after
+        // the merge, because the reservation only takes effect for tiles
+        // that actually exist.
+        ReserveBiomeArea(mapUid, poiBounds);
+
+        // The merged grid must not keep shuttle physics any more, it is plain
+        // planet geometry now.
+        RemComp<ShuttleComponent>(mapUid);
+        if (TryComp<PhysicsComponent>(mapUid, out var physics))
+            _physics.SetBodyType(mapUid, BodyType.Static, body: physics);
+
+        // Leave a marker behind so the POI stays identifiable now that its
+        // grid entity is gone. The marker sits at the POI's centre, so it
+        // also answers "where is this POI" without a grid of its own.
+        var marker = Spawn(null, new EntityCoordinates(mapUid, poiBounds.Center));
+        var markerComp = EnsureComp<LavalandPoiMarkerComponent>(marker);
+        markerComp.Name = name;
+        markerComp.FaxName = faxName;
+        markerComp.Unique = unique;
+        markerComp.Bounds = poiBounds;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Tells the planet's biome that the given area is settled, so it cannot
+    /// regenerate its own terrain over the POI's floor.
+    /// </summary>
+    private void ReserveBiomeArea(EntityUid mapUid, Box2 bounds)
+    {
+        if (!TryComp<BiomeComponent>(mapUid, out var biome))
+            return;
+
+        if (!TryComp<MapGridComponent>(mapUid, out var surfaceGrid))
+            return;
+
+        // The biome works on its own chunk size, which is unrelated to the
+        // grid's, so the reservation has to go through the biome's own API.
+        _biome.ReserveTiles(mapUid, bounds, new List<(Vector2i, Tile)>(), biome, surfaceGrid);
+    }
+
+    /// <summary>
+    /// Folds a child grid into its parent grid, preserving tile alignment.
+    /// </summary>
+    private bool IntegrateChild(
+        EntityUid parentGrid,
+        Entity<MapGridComponent> child,
+        EntityUid hostGrid)
+    {
+        if (!TryComp(parentGrid, out TransformComponent? parentXform))
+            return false;
+
+        if (!TryComp(child, out TransformComponent? childXform))
+            return false;
+
+        // Children are localised in the parent's own coordinate space, so the
+        // world transform has to be projected back into the parent.
+        var parentInvMatrix = Matrix3Helpers.CreateInverseTransform(
+            parentXform.LocalPosition, parentXform.LocalRotation);
+
+        var childMatrix = Matrix3Helpers.CreateTransform(
+            childXform.LocalPosition, childXform.LocalRotation);
+
+        var combined = childMatrix * parentInvMatrix;
+
+        var offset = combined.Translation.Floored();
+        var rotation = combined.Rotation();
+
+        _fixtures.Merge(
+            parentGrid,
+            child,
+            offset,
+            rotation);
+
+        return true;
+    }
+
+    /// <summary>
+    /// Removes the planet's own scenery from the area the POI takes over.
+    /// The planet generates rocks, lava and flora on its surface tiles, and
+    /// those would otherwise end up embedded in the POI's walls.
+    /// </summary>
+    private void ClearSurfaceEntities(EntityUid mapUid, Box2 bounds)
+    {
+        if (!TryComp<MapGridComponent>(mapUid, out var grid))
+            return;
+
+        var min = _map.TileIndicesFor(mapUid, grid, new EntityCoordinates(mapUid, bounds.BottomLeft));
+        var max = _map.TileIndicesFor(mapUid, grid, new EntityCoordinates(mapUid, bounds.TopRight));
+
+        for (var x = min.X; x <= max.X; x++)
+        {
+            for (var y = min.Y; y <= max.Y; y++)
+            {
+                var indices = new Vector2i(x, y);
+                var anchored = _map.GetAnchoredEntities(mapUid, grid, indices);
+                while (anchored.MoveNext(out var entity))
+                {
+                    if (!TryComp<MetaDataComponent>(entity, out var meta))
+                        continue;
+
+                    var id = meta.EntityPrototype?.ID;
+                    if (id == "FloorLavaEntity" ||
+                        id?.StartsWith("AsteroidRock", StringComparison.Ordinal) == true ||
+                        id?.StartsWith("WallRock", StringComparison.Ordinal) == true ||
+                        id?.StartsWith("FloraRock", StringComparison.Ordinal) == true)
+                    {
+                        QueueDel(entity);
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Removes the surface tiles that the given POI covers, so the POI's own
+    /// tiles replace them instead of overlapping.
+    /// </summary>
+    private void ClearSurfaceTiles(
+        MapGridComponent surfaceGrid,
+        MapGridComponent poiGrid,
+        Vector2i offsetTile,
+        Angle rotation)
+    {
+        var matrix = Matrix3Helpers.CreateTransform(offsetTile, rotation);
+
+        var cleared = 0;
+        var empty = new Tile(0);
+
+        foreach (var tileRef in _map.GetAllTiles(poiGrid.Owner, poiGrid))
+        {
+            var mergedTile = Vector2.Transform(
+                new Vector2(tileRef.GridIndices.X, tileRef.GridIndices.Y) + surfaceGrid.TileSizeHalfVector,
+                matrix);
+
+            var indices = mergedTile.Floored();
+            if (!_map.TryGetTile(surfaceGrid, indices, out _))
+                continue;
+
+            _map.SetTile(surfaceGrid.Owner, surfaceGrid, indices, empty);
+            cleared++;
+        }
+
+        if (cleared > 0)
+            Log.Debug($"Cleared {cleared} surface tiles for Lavaland POI integration.");
+    }
+
+    /// <summary>
+    /// Moves every cable (or other entity that would self-destruct on
+    /// unanchoring) off the POI grid and onto the surface grid at its
+    /// target tile, before the engine merge runs.
+    ///
+    /// The engine's <see cref="GridFixtureSystem.Merge"/> re-anchors snapgrid
+    /// entries by calling <c>Unanchor</c> first, which fires
+    /// <c>AnchorStateChangedEvent</c> with anchored=false. CableSystem reacts
+    /// to that event by deleting the cable and spawning a cable item in its
+    /// place, so any cable that the merge would touch would be turned into
+    /// a loose item the moment the merge starts.
+    ///
+    /// We reparent each cable manually with <c>unanchor: false</c> and drop
+    /// it from the POI's snapgrid. The merge then sees no cables on the POI's
+    /// snapgrid and leaves them alone, while still transferring the tiles
+    /// and other anchored entities as it normally would.
+    ///
+    /// The caller must invoke <see cref="ReanchorCableSnapshots"/> after the
+    /// merge has written the POI's tiles onto the surface, so the cables can
+    /// be re-registered on the surface's snapgrid and have their NodeGroup
+    /// reflooded against the new grid.
+    /// </summary>
+    private List<CableSnapshot> PreserveCableNodes(
+        EntityUid poiGrid,
+        MapGridComponent poiGridComp,
+        EntityUid mapUid,
+        MapGridComponent surfaceGrid,
+        Vector2i offsetTile,
+        Angle rotation)
+    {
+        var matrix = Matrix3Helpers.CreateTransform(offsetTile, rotation);
+        var surfaceHalfVec = surfaceGrid.TileSizeHalfVector;
+
+        // Materialise the list up-front. SetCoordinates below mutates the
+        // parent-child relationship, and a live EntityQueryEnumerator would
+        // not survive that.
+        var snapshots = new List<CableSnapshot>();
+        var query = EntityQueryEnumerator<CableComponent, TransformComponent>();
+        while (query.MoveNext(out var cableUid, out _, out var cableXform))
+        {
+            if (cableXform.ParentUid != poiGrid)
+                continue;
+
+            snapshots.Add(new CableSnapshot {Uid = cableUid});
+        }
+
+        foreach (var snapshot in snapshots)
+        {
+            if (!TryComp(snapshot.Uid, out TransformComponent? cableXform))
+                continue;
+
+            if (!cableXform.Anchored)
+                continue;
+
+            if (!TryComp(snapshot.Uid, out MetaDataComponent? meta))
+                continue;
+
+            // The merge matrix maps POI tile indices to surface tile indices
+            // the same way the engine merge does.
+            var localTile = _map.TileIndicesFor(poiGrid, poiGridComp, cableXform.Coordinates);
+            var targetTile = (Vector2.Transform(new Vector2(localTile.X, localTile.Y) + surfaceHalfVec, matrix)).Floored();
+
+            var worldPos = cableXform.WorldPosition;
+            var worldRot = cableXform.WorldRotation;
+
+            // Drop the cable from the POI's snapgrid and lift it out of the
+            // POI's child set without firing AnchorStateChangedEvent. We have
+            // to use unanchor: false, otherwise the standard SetCoordinates
+            // path calls Unanchor and CableSystem destroys the cable.
+            _map.RemoveFromSnapGridCell(poiGrid, poiGridComp, localTile, snapshot.Uid);
+            _transform.SetCoordinates(
+                (snapshot.Uid, cableXform, meta),
+                new EntityCoordinates(mapUid, worldPos),
+                worldRot,
+                unanchor: false);
+
+            snapshot.TargetTile = targetTile;
+            snapshot.WorldPosition = worldPos;
+            snapshot.WorldRotation = worldRot;
+        }
+
+        return snapshots;
+    }
+
+    /// <summary>
+    /// Finalises the cables that <see cref="PreserveCableNodes"/> moved onto
+    /// the surface grid. Registers each one on the surface's snapgrid (now
+    /// possible because the merge has just written the POI's tiles onto the
+    /// surface), fires <see cref="AnchorStateChangedEvent"/> with
+    /// <c>Anchored = true</c> to replay the standard anchoring side-effects
+    /// we deliberately bypassed in <see cref="PreserveCableNodes"/>, and then
+    /// forces a synchronous NodeGroup reflood so the power network is
+    /// rebuilt against the new grid in this same tick.
+    /// </summary>
+    private void ReanchorCableSnapshots(List<CableSnapshot> snapshots)
+    {
+        if (snapshots.Count == 0)
+            return;
+
+        // The surface grid component is resolved from the first snapshot's
+        // current parent, which is the map entity (the surface grid) after
+        // PreserveCableNodes reparented every cable onto it.
+        if (!TryComp(Transform(snapshots[0].Uid).GridUid, out MapGridComponent? surfaceGrid))
+            return;
+
+        var surfaceUid = surfaceGrid.Owner;
+
+        foreach (var snapshot in snapshots)
+        {
+            if (!Exists(snapshot.Uid))
+                continue;
+
+            if (!TryComp(snapshot.Uid, out TransformComponent? cableXform))
+                continue;
+
+            // AddToSnapGridCell requires a non-empty tile. The merge's first
+            // loop has now written the POI's tiles onto the surface, so the
+            // tile at the cable's target position is non-empty as long as the
+            // POI itself had a tile there. Cables were authored to sit on
+            // solid tiles, so this is the only case we care about.
+            _map.AddToSnapGridCell(surfaceUid, surfaceGrid, snapshot.TargetTile, snapshot.Uid);
+
+            // PreserveCableNodes reparented the cable with unanchor: false so
+            // CableSystem would not turn it into a stack of cable items the
+            // moment its anchoring state briefly flipped. The flip never
+            // happened, so the anchoring side-effects that drive the rest of
+            // the power subsystem were also skipped. Fire the event now with
+            // the steady-state anchored=true value to let
+            // NodeContainerSystem queue a reflood, ExtensionCableSystem
+            // re-scan for nearby receivers, and PowerMonitoringConsoleSystem
+            // rebuild its cable chunk map. CableSystem.OnAnchorChanged sees
+            // Anchored=true and returns early, so the cable is not destroyed.
+            var anchorEv = new AnchorStateChangedEvent(snapshot.Uid, cableXform, detaching: false);
+            RaiseLocalEvent(snapshot.Uid, ref anchorEv, broadcast: true);
+        }
+
+        // NodeContainerSystem.OnAnchorStateChanged queued a reflood for every
+        // cable node through the event above. ForceUpdate drains the queue
+        // synchronously so any caller that asserts on power-network state
+        // right after Integrate sees a consistent graph instead of a
+        // one-tick stale one.
+        _nodeGroupSystem.ForceUpdate();
+    }
+
+    /// <summary>
+    /// Carries the data that <see cref="PreserveCableNodes"/> collected for
+    /// each cable and that <see cref="ReanchorCableSnapshots"/> finalises
+    /// after the merge.
+    /// </summary>
+    private sealed class CableSnapshot
+    {
+        public EntityUid Uid;
+        public Vector2i TargetTile;
+        public Vector2 WorldPosition;
+        public Angle WorldRotation;
+    }
+}
