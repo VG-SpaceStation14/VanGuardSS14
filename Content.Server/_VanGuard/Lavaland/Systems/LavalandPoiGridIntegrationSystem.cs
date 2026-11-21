@@ -170,6 +170,48 @@ public sealed partial class LavalandPoiGridIntegrationSystem : EntitySystem
         // those would end up embedded in the POI's walls.
         ClearSurfaceEntities(mapUid, poiBounds);
 
+        // The engine's merge reparents entities that fall inside any tile of
+        // grid B (via GetLocalEntitiesIntersecting). Any direct child of the
+        // POI grid that sits outside that range would stay parented to grid
+        // B and trip the [Conditional("DEBUG")] assert on xformB.ChildCount
+        // inside GridFixtureSystem.Merge under DebugOpt. Detach them now by
+        // reparenting each one to the surface grid while keeping its world
+        // coordinates, so grid B is empty of children by the time Merge runs.
+        //
+        // The set of children has to be materialised before any of them are
+        // reparented, because SetCoordinates mutates the parent's child list
+        // and would invalidate the enumerator mid-loop.
+        var reparentTargets = new List<(EntityUid Uid, Vector2 WorldPos, Angle WorldRot)>();
+        var childQuery = EntityQueryEnumerator<TransformComponent>();
+        while (childQuery.MoveNext(out var childUid, out var childXform))
+        {
+            if (childUid == poiGrid || childUid == mapUid)
+                continue;
+
+            if (childXform.ParentUid != poiGrid)
+                continue;
+
+            // Skip nested grids; those are folded by IntegrateChild above so
+            // that their tile contents land on the surface grid, not lost.
+            if (HasComp<MapGridComponent>(childUid))
+                continue;
+
+            reparentTargets.Add((childUid, childXform.WorldPosition, childXform.WorldRotation));
+        }
+
+        var reparented = 0;
+        foreach (var target in reparentTargets)
+        {
+            _transform.SetCoordinates(
+                target.Uid,
+                new EntityCoordinates(mapUid, target.WorldPos));
+            _transform.SetWorldRotation(target.Uid, target.WorldRot);
+            reparented++;
+        }
+
+        if (reparented > 0)
+            Log.Debug($"Reparented {reparented} POI children onto the surface grid before merge.");
+
         // Now fold the POI in. The engine transfers the tiles, re-anchors the
         // anchored entities onto the matching surface tile, moves the
         // unanchored ones while keeping their world position, and deletes the
