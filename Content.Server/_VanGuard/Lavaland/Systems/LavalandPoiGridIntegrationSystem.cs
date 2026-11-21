@@ -171,19 +171,20 @@ public sealed partial class LavalandPoiGridIntegrationSystem : EntitySystem
         ClearSurfaceEntities(mapUid, poiBounds);
 
         // The engine's merge reparents entities that fall inside any tile of
-        // grid B (via GetLocalEntitiesIntersecting). Any direct child of the
-        // POI grid that sits outside that range would stay parented to grid
-        // B and trip the [Conditional("DEBUG")] assert on xformB.ChildCount
-        // inside GridFixtureSystem.Merge under DebugOpt. Detach them now by
-        // reparenting each one to the surface grid while keeping its world
-        // coordinates, so grid B is empty of children by the time Merge runs.
+        // grid B (via GetLocalEntitiesIntersecting) or any anchor on a tile
+        // (via ReAnchor). Children whose local position lies outside the
+        // grid's tile AABB are unreachable through that lookup, so they
+        // would stay parented to grid B and trip the [Conditional("DEBUG")]
+        // assert on xformB.ChildCount inside GridFixtureSystem.Merge under
+        // DebugOpt. Re-anchor those leftovers only, leaving the engine to
+        // handle anchoring and in-bounds placement as it normally would.
         //
         // The set of children has to be materialised before any of them are
         // reparented, because SetCoordinates mutates the parent's child list
         // and would invalidate the enumerator mid-loop.
-        var reparentTargets = new List<(EntityUid Uid, Vector2 WorldPos, Angle WorldRot)>();
-        var childQuery = EntityQueryEnumerator<TransformComponent>();
-        while (childQuery.MoveNext(out var childUid, out var childXform))
+        var leftoverTargets = new List<(EntityUid Uid, Vector2 WorldPos, Angle WorldRot)>();
+        var leftoverQuery = EntityQueryEnumerator<TransformComponent>();
+        while (leftoverQuery.MoveNext(out var childUid, out var childXform))
         {
             if (childUid == poiGrid || childUid == mapUid)
                 continue;
@@ -196,11 +197,19 @@ public sealed partial class LavalandPoiGridIntegrationSystem : EntitySystem
             if (HasComp<MapGridComponent>(childUid))
                 continue;
 
-            reparentTargets.Add((childUid, childXform.WorldPosition, childXform.WorldRotation));
+            // The engine's own loop iterates the tiles of grid B and asks the
+            // broadphase for entities intersecting each tile's bounds. A
+            // child whose local position lies outside every tile's bounds
+            // (i.e. outside the grid's local AABB) is invisible to that
+            // lookup and would remain parented to grid B after Merge.
+            if (poiGridComp.LocalAABB.Contains(childXform.LocalPosition))
+                continue;
+
+            leftoverTargets.Add((childUid, childXform.WorldPosition, childXform.WorldRotation));
         }
 
         var reparented = 0;
-        foreach (var target in reparentTargets)
+        foreach (var target in leftoverTargets)
         {
             _transform.SetCoordinates(
                 target.Uid,
@@ -210,7 +219,7 @@ public sealed partial class LavalandPoiGridIntegrationSystem : EntitySystem
         }
 
         if (reparented > 0)
-            Log.Debug($"Reparented {reparented} POI children onto the surface grid before merge.");
+            Log.Debug($"Reparented {reparented} POI children outside the tile AABB onto the surface grid before merge.");
 
         // Now fold the POI in. The engine transfers the tiles, re-anchors the
         // anchored entities onto the matching surface tile, moves the
