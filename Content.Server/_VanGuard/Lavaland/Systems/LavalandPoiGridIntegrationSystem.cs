@@ -1,7 +1,10 @@
 using System.Linq;
 using System.Numerics;
 using Content.Server._VanGuard.Lavaland.Components;
+using Content.Server.NodeContainer;
+using Content.Server.NodeContainer.EntitySystems;
 using Content.Server.Parallax;
+using Content.Shared.NodeContainer;
 using Content.Shared.Parallax;
 using Content.Shared.Parallax.Biomes;
 using Content.Shared.Power.Components;
@@ -44,6 +47,7 @@ public sealed partial class LavalandPoiGridIntegrationSystem : EntitySystem
     [Dependency] private GridFixtureSystem _fixtures = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private BiomeSystem _biome = default!;
+    [Dependency] private NodeGroupSystem _nodeGroupSystem = default!;
 
     /// <summary>
     /// Integrates <paramref name="poiGrid"/> into the planet surface grid of
@@ -240,14 +244,16 @@ public sealed partial class LavalandPoiGridIntegrationSystem : EntitySystem
         // merge starts.
         //
         // Move the cables onto the surface grid ourselves before the merge
-        // runs, snapping each one to its target tile and registering it on
-        // the surface's snapgrid. The merge then sees no cables on the
-        // POI's snapgrid and leaves them alone, while still transferring
-        // the tiles and other anchored entities as it normally would.
+        // runs and finish registering them on the surface's snapgrid after
+        // the merge has set the POI's tiles, then queue a NodeGroup reflood
+        // so each CableNode recomputes its reachable neighbours against the
+        // new grid. Without the reflood the cached ReachableNodes still
+        // point at the POI's neighbours and the cables draw as isolated
+        // dots instead of connected lines.
         var preservedCables = PreserveCableNodes(poiGrid, poiGridComp, mapUid, surfaceGrid, offsetTile, mergeRotation);
 
-        if (preservedCables > 0)
-            Log.Debug($"Moved {preservedCables} cable nodes off the POI before merge.");
+        if (preservedCables.Count > 0)
+            Log.Debug($"Moved {preservedCables.Count} cable nodes off the POI before merge.");
 
         // Now fold the POI in. The engine transfers the tiles, re-anchors the
         // anchored entities onto the matching surface tile, moves the
@@ -262,6 +268,16 @@ public sealed partial class LavalandPoiGridIntegrationSystem : EntitySystem
             poiGridComp,
             surfaceXform,
             poiXform);
+
+        // The merge's first loop has now written the POI's tiles onto the
+        // surface, so the target tiles the cables are sitting on are
+        // non-empty and AddToSnapGridCell can register the cables. Queuing a
+        // reflood on each CableNode then makes NodeGroupSystem rebuild the
+        // power network against the new grid in the very next tick, instead
+        // of leaving the cables with the stale ReachableNodes that were
+        // computed against their POI neighbours.
+        if (preservedCables.Count > 0)
+            ReanchorCableSnapshots(preservedCables);
 
         // The biome must not grow back into the POI. The merge writes the
         // POI's tiles straight into the surface grid, so the biome has to be
@@ -425,13 +441,17 @@ public sealed partial class LavalandPoiGridIntegrationSystem : EntitySystem
     /// place, so any cable that the merge would touch would be turned into
     /// a loose item the moment the merge starts.
     ///
-    /// We reparent each cable manually with <c>unanchor: false</c>, drop it
-    /// from the POI's snapgrid and re-register it on the surface's snapgrid
-    /// at the matching target tile. The merge then sees no cables on the
-    /// POI's snapgrid and leaves them alone, while still transferring the
-    /// tiles and other anchored entities as it normally would.
+    /// We reparent each cable manually with <c>unanchor: false</c> and drop
+    /// it from the POI's snapgrid. The merge then sees no cables on the POI's
+    /// snapgrid and leaves them alone, while still transferring the tiles
+    /// and other anchored entities as it normally would.
+    ///
+    /// The caller must invoke <see cref="ReanchorCableSnapshots"/> after the
+    /// merge has written the POI's tiles onto the surface, so the cables can
+    /// be re-registered on the surface's snapgrid and have their NodeGroup
+    /// reflooded against the new grid.
     /// </summary>
-    private int PreserveCableNodes(
+    private List<CableSnapshot> PreserveCableNodes(
         EntityUid poiGrid,
         MapGridComponent poiGridComp,
         EntityUid mapUid,
@@ -445,26 +465,25 @@ public sealed partial class LavalandPoiGridIntegrationSystem : EntitySystem
         // Materialise the list up-front. SetCoordinates below mutates the
         // parent-child relationship, and a live EntityQueryEnumerator would
         // not survive that.
-        var cables = new List<EntityUid>();
+        var snapshots = new List<CableSnapshot>();
         var query = EntityQueryEnumerator<CableComponent, TransformComponent>();
         while (query.MoveNext(out var cableUid, out _, out var cableXform))
         {
             if (cableXform.ParentUid != poiGrid)
                 continue;
 
-            cables.Add(cableUid);
+            snapshots.Add(new CableSnapshot {Uid = cableUid});
         }
 
-        var moved = 0;
-        foreach (var cableUid in cables)
+        foreach (var snapshot in snapshots)
         {
-            if (!TryComp(cableUid, out TransformComponent? cableXform))
+            if (!TryComp(snapshot.Uid, out TransformComponent? cableXform))
                 continue;
 
             if (!cableXform.Anchored)
                 continue;
 
-            if (!TryComp(cableUid, out MetaDataComponent? meta))
+            if (!TryComp(snapshot.Uid, out MetaDataComponent? meta))
                 continue;
 
             // The merge matrix maps POI tile indices to surface tile indices
@@ -479,23 +498,88 @@ public sealed partial class LavalandPoiGridIntegrationSystem : EntitySystem
             // POI's child set without firing AnchorStateChangedEvent. We have
             // to use unanchor: false, otherwise the standard SetCoordinates
             // path calls Unanchor and CableSystem destroys the cable.
-            _map.RemoveFromSnapGridCell(poiGrid, poiGridComp, localTile, cableUid);
+            _map.RemoveFromSnapGridCell(poiGrid, poiGridComp, localTile, snapshot.Uid);
             _transform.SetCoordinates(
-                (cableUid, cableXform, meta),
+                (snapshot.Uid, cableXform, meta),
                 new EntityCoordinates(mapUid, worldPos),
                 worldRot,
                 unanchor: false);
 
-            // AddToSnapGridCell requires a non-empty tile. The merge has not
-            // run yet so the surface may still have empty tiles where the
-            // POI will land. If the tile is still empty there is nothing to
-            // anchor on, but the cable is now a child of the surface grid at
-            // the right world position and will be re-anchored by the engine
-            // once the merge sets its tile.
-            _map.AddToSnapGridCell(mapUid, surfaceGrid, targetTile, cableUid);
-            moved++;
+            snapshot.TargetTile = targetTile;
+            snapshot.WorldPosition = worldPos;
+            snapshot.WorldRotation = worldRot;
         }
 
-        return moved;
+        return snapshots;
+    }
+
+    /// <summary>
+    /// Finalises the cables that <see cref="PreserveCableNodes"/> moved onto
+    /// the surface grid. Registers each one on the surface's snapgrid (now
+    /// possible because the merge has just written the POI's tiles onto the
+    /// surface) and queues a NodeGroup reflood on each of its
+    /// <see cref="NodeContainerComponent"/> nodes so the power network is
+    /// rebuilt against the new grid instead of staying frozen on the
+    /// already-deleted POI neighbours.
+    /// </summary>
+    private void ReanchorCableSnapshots(List<CableSnapshot> snapshots)
+    {
+        if (!TryComp<MapGridComponent>(snapshots.Count > 0
+                ? Transform(snapshots[0].Uid).GridUid ?? EntityUid.Invalid
+                : EntityUid.Invalid, out var surfaceGrid))
+        {
+            // Fall back to querying the grid directly if the snapshot has
+            // been deleted since preserve. The caller's grid still exists.
+            if (snapshots.Count == 0)
+                return;
+
+            if (!TryComp(Transform(snapshots[0].Uid).GridUid, out surfaceGrid))
+                return;
+        }
+
+        var surfaceUid = surfaceGrid.Owner;
+
+        foreach (var snapshot in snapshots)
+        {
+            if (!Exists(snapshot.Uid))
+                continue;
+
+            // AddToSnapGridCell requires a non-empty tile. The merge's first
+            // loop has now written the POI's tiles onto the surface, so the
+            // tile at the cable's target position is non-empty as long as the
+            // POI itself had a tile there. Cables were authored to sit on
+            // solid tiles, so this is the only case we care about.
+            _map.AddToSnapGridCell(surfaceUid, surfaceGrid, snapshot.TargetTile, snapshot.Uid);
+
+            if (!TryComp(snapshot.Uid, out NodeContainerComponent? container))
+                continue;
+
+            // QueueReflood rebuilds ReachableNodes from CableNode.GetReachableNodes,
+            // which walks the snapgrid of the cable's NEW grid. Without this
+            // each cable keeps the neighbour list it had on the POI and the
+            // cables draw as isolated dots instead of connected lines.
+            foreach (var node in container.Nodes.Values)
+            {
+                _nodeGroupSystem.QueueReflood(node);
+            }
+        }
+
+        // Force the reflood to run synchronously so any caller that asserts
+        // on power-network state right after Integrate sees a consistent
+        // graph instead of a one-tick stale one.
+        _nodeGroupSystem.ForceUpdate();
+    }
+
+    /// <summary>
+    /// Carries the data that <see cref="PreserveCableNodes"/> collected for
+    /// each cable and that <see cref="ReanchorCableSnapshots"/> finalises
+    /// after the merge.
+    /// </summary>
+    private sealed class CableSnapshot
+    {
+        public EntityUid Uid;
+        public Vector2i TargetTile;
+        public Vector2 WorldPosition;
+        public Angle WorldRotation;
     }
 }
