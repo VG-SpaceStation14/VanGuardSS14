@@ -517,31 +517,31 @@ public sealed partial class LavalandPoiGridIntegrationSystem : EntitySystem
     /// Finalises the cables that <see cref="PreserveCableNodes"/> moved onto
     /// the surface grid. Registers each one on the surface's snapgrid (now
     /// possible because the merge has just written the POI's tiles onto the
-    /// surface) and queues a NodeGroup reflood on each of its
-    /// <see cref="NodeContainerComponent"/> nodes so the power network is
-    /// rebuilt against the new grid instead of staying frozen on the
-    /// already-deleted POI neighbours.
+    /// surface), fires <see cref="AnchorStateChangedEvent"/> with
+    /// <c>Anchored = true</c> to replay the standard anchoring side-effects
+    /// we deliberately bypassed in <see cref="PreserveCableNodes"/>, and then
+    /// forces a synchronous NodeGroup reflood so the power network is
+    /// rebuilt against the new grid in this same tick.
     /// </summary>
     private void ReanchorCableSnapshots(List<CableSnapshot> snapshots)
     {
-        if (!TryComp<MapGridComponent>(snapshots.Count > 0
-                ? Transform(snapshots[0].Uid).GridUid ?? EntityUid.Invalid
-                : EntityUid.Invalid, out var surfaceGrid))
-        {
-            // Fall back to querying the grid directly if the snapshot has
-            // been deleted since preserve. The caller's grid still exists.
-            if (snapshots.Count == 0)
-                return;
+        if (snapshots.Count == 0)
+            return;
 
-            if (!TryComp(Transform(snapshots[0].Uid).GridUid, out surfaceGrid))
-                return;
-        }
+        // The surface grid component is resolved from the first snapshot's
+        // current parent, which is the map entity (the surface grid) after
+        // PreserveCableNodes reparented every cable onto it.
+        if (!TryComp(Transform(snapshots[0].Uid).GridUid, out MapGridComponent? surfaceGrid))
+            return;
 
         var surfaceUid = surfaceGrid.Owner;
 
         foreach (var snapshot in snapshots)
         {
             if (!Exists(snapshot.Uid))
+                continue;
+
+            if (!TryComp(snapshot.Uid, out TransformComponent? cableXform))
                 continue;
 
             // AddToSnapGridCell requires a non-empty tile. The merge's first
@@ -551,22 +551,25 @@ public sealed partial class LavalandPoiGridIntegrationSystem : EntitySystem
             // solid tiles, so this is the only case we care about.
             _map.AddToSnapGridCell(surfaceUid, surfaceGrid, snapshot.TargetTile, snapshot.Uid);
 
-            if (!TryComp(snapshot.Uid, out NodeContainerComponent? container))
-                continue;
-
-            // QueueReflood rebuilds ReachableNodes from CableNode.GetReachableNodes,
-            // which walks the snapgrid of the cable's NEW grid. Without this
-            // each cable keeps the neighbour list it had on the POI and the
-            // cables draw as isolated dots instead of connected lines.
-            foreach (var node in container.Nodes.Values)
-            {
-                _nodeGroupSystem.QueueReflood(node);
-            }
+            // PreserveCableNodes reparented the cable with unanchor: false so
+            // CableSystem would not turn it into a stack of cable items the
+            // moment its anchoring state briefly flipped. The flip never
+            // happened, so the anchoring side-effects that drive the rest of
+            // the power subsystem were also skipped. Fire the event now with
+            // the steady-state anchored=true value to let
+            // NodeContainerSystem queue a reflood, ExtensionCableSystem
+            // re-scan for nearby receivers, and PowerMonitoringConsoleSystem
+            // rebuild its cable chunk map. CableSystem.OnAnchorChanged sees
+            // Anchored=true and returns early, so the cable is not destroyed.
+            var anchorEv = new AnchorStateChangedEvent(snapshot.Uid, cableXform, detaching: false);
+            RaiseLocalEvent(snapshot.Uid, ref anchorEv, broadcast: true);
         }
 
-        // Force the reflood to run synchronously so any caller that asserts
-        // on power-network state right after Integrate sees a consistent
-        // graph instead of a one-tick stale one.
+        // NodeContainerSystem.OnAnchorStateChanged queued a reflood for every
+        // cable node through the event above. ForceUpdate drains the queue
+        // synchronously so any caller that asserts on power-network state
+        // right after Integrate sees a consistent graph instead of a
+        // one-tick stale one.
         _nodeGroupSystem.ForceUpdate();
     }
 
