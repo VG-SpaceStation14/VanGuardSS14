@@ -245,8 +245,13 @@ public sealed class LavalandMapTest : GameTest
                 }
             }
             Assert.That(poiCount, Is.GreaterThanOrEqualTo(1), "No POIs were spawned.");
+            // The fax is sent via Timer.Spawn(3s) plus a 2.3s printing animation,
+            // so the test has to advance wall-clock time for the report to land.
+            // RunSeconds also drives system updates, which is what actually drains
+            // the fax printing queue.
             Server.System<BiomeSystem>().Preload(mapUid, statsBiome, new Box2(-160, -160, 160, 160));
             await Pair.RunTicksSync(60);
+            await Pair.RunSeconds(7f);
 
             // Every tendril, from the POI spawner and from the biome feature
             // layer, must stand on a real floor tile that is neither lava nor a
