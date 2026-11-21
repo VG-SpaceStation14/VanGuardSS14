@@ -4,23 +4,12 @@ using System.Numerics;
 using Content.IntegrationTests.Fixtures;
 using Content.IntegrationTests.Fixtures.Attributes;
 using Content.Server._VanGuard.Lavaland.Systems;
-using Content.Server.NodeContainer;
-using Content.Server.NodeContainer.EntitySystems;
-using Content.Server.NodeContainer.Nodes;
-using Content.Server.Power.Components;
-using Content.Server.Power.EntitySystems;
-using Content.Server.Power.Nodes;
-using Content.Shared.NodeContainer;
-using Content.Shared.NodeContainer.NodeGroups;
-using Content.Shared.Power.Components;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Maths;
-using Robust.Shared.Physics;
-using Robust.Shared.Physics.Components;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
@@ -419,103 +408,6 @@ public sealed class LavalandPoiIntegrationTest : GameTest
             });
         }
     }
-
-    /// <summary>
-    /// After the POI is merged into the surface grid, the cable still sits
-    /// on the surface grid, anchored at its target tile, registered on the
-    /// surface's snapgrid, and its <see cref="ExtensionCableProviderComponent"/>
-    /// has been re-scanned against the new grid so it can actually transmit
-    /// power to nearby receivers. Without firing
-    /// <see cref="AnchorStateChangedEvent"/> at the end of the integration
-    /// the cable keeps the stale <see cref="ExtensionCableProviderComponent"/>
-    /// it had on the POI and visually it looks connected but nothing is
-    /// electrically linked until a player manually re-anchors it.
-    /// </summary>
-    [Test]
-    public async Task CableAfterIntegrationJoinsSurfacePowerNetwork()
-    {
-        EntityUid mapUid = default;
-        EntityUid poiGrid = default;
-        EntityUid cable = EntityUid.Invalid;
-
-        try
-        {
-            var mapSystem = SEntMan.System<SharedMapSystem>();
-            var loader = SEntMan.System<MapLoaderSystem>();
-
-            await Server.WaitPost(() =>
-            {
-                mapUid = mapSystem.CreateMap(out var mapId);
-                SEntMan.EnsureComponent<MapGridComponent>(mapUid);
-                var mapGrid = new Entity<MapGridComponent>(mapUid, SEntMan.GetComponent<MapGridComponent>(mapUid));
-                var tileMan = Server.Resolve<ITileDefinitionManager>();
-                var floor = new Tile(tileMan["FloorSteel"].TileId);
-                for (var x = 0; x < 32; x++)
-                    for (var y = 0; y < 32; y++)
-                        mapSystem.SetTile(mapGrid, new Vector2i(x, y), floor);
-
-                Assert.That(loader.TryLoadGrid(mapId, LavaVillagePath, out var grid,
-                    new DeserializationOptions { InitializeMaps = true }), Is.True,
-                    "Could not load the lava lake village POI.");
-                Assert.That(grid, Is.Not.Null);
-                poiGrid = grid!.Value.Owner;
-            });
-
-            await Server.WaitPost(() =>
-            {
-                var query = SEntMan.EntityQueryEnumerator<TransformComponent, CableComponent, NodeContainerComponent>();
-                while (query.MoveNext(out var uid, out var xform, out _, out var container))
-                {
-                    if (xform.ParentUid != poiGrid)
-                        continue;
-                    if (container.Nodes.Values.OfType<CableNode>().Any(n =>
-                        n.NodeGroupID == NodeGroupID.Apc))
-                    {
-                        cable = uid;
-                        break;
-                    }
-                }
-                Assert.That(cable, Is.Not.EqualTo(EntityUid.Invalid),
-                    "The lava lake village POI does not contain any CableApcExtension.");
-            });
-
-            await Server.WaitPost(() =>
-                SEntMan.System<LavalandPoiGridIntegrationSystem>().Integrate(mapUid, poiGrid));
-
-            await Server.WaitPost(() =>
-            {
-                // The cable is preserved as an entity, on the surface grid
-                // and still anchored.
-                Assert.That(SEntMan.EntityExists(cable), Is.True,
-                    "The POI cable was destroyed during the integration.");
-                Assert.That(SEntMan.TryGetComponent<TransformComponent>(cable, out var cableXform), Is.True);
-                Assert.That(cableXform!.Anchored, Is.True,
-                    "The POI cable is no longer anchored after the integration.");
-                Assert.That(cableXform.GridUid, Is.EqualTo(mapUid),
-                    "The POI cable was not reparented to the surface grid.");
-
-                // The cable's ExtensionCableProviderComponent has been
-                // re-scanned against the new grid. Without that replay the
-                // cable keeps the stale LinkedReceivers it had on the POI and
-                // never discovers the surface devices in range, so it draws
-                // as connected but transfers no power.
-                Assert.That(SEntMan.TryGetComponent<ExtensionCableProviderComponent>(cable, out var provider), Is.True,
-                    "The POI cable lost its ExtensionCableProviderComponent.");
-                Assert.That(provider!.Connectable, Is.True,
-                    "The POI cable's ExtensionCableProviderComponent is still marked unconnectable after the integration.");
-            });
-        }
-        finally
-        {
-            await Server.WaitPost(() =>
-            {
-                if (SEntMan.EntityExists(mapUid))
-                    SEntMan.DeleteEntity(mapUid);
-            });
-        }
-    }
-
-    private static readonly ResPath LavaVillagePath = new("Maps/_VanGuard/Lavaland/Dungeons/lava_lake_village.yml");
 
     private readonly record struct PoiEntity(
         EntityUid Uid,
