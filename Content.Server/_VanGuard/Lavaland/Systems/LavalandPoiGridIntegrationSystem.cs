@@ -205,6 +205,16 @@ public sealed partial class LavalandPoiGridIntegrationSystem : EntitySystem
             if (poiGridComp.LocalAABB.Contains(childXform.LocalPosition))
                 continue;
 
+            // Anchored children outside the AABB belong to the snapgrid of
+            // grid B's surrounding tiles. The engine's merge does not detach
+            // them either, but they are rare in practice (cables placed near
+            // the grid edge, etc.) and reparenting them via SetCoordinates
+            // would strip their anchoring, leaving them floating. Leave them
+            // alone for now: the dirty-dispose path this whole loop exists to
+            // fix is only triggered by unanchored leftovers.
+            if (childXform.Anchored)
+                continue;
+
             leftoverTargets.Add((childUid, childXform.WorldPosition, childXform.WorldRotation));
         }
 
