@@ -4,6 +4,7 @@ using Content.Server._VanGuard.Lavaland.Components;
 using Content.Server.Parallax;
 using Content.Shared.Parallax;
 using Content.Shared.Parallax.Biomes;
+using Content.Shared.Power.Components;
 using Content.Shared.Shuttles.Components;
 using Robust.Server.Physics;
 using Robust.Shared.GameObjects;
@@ -231,6 +232,23 @@ public sealed partial class LavalandPoiGridIntegrationSystem : EntitySystem
         if (reparented > 0)
             Log.Debug($"Reparented {reparented} POI children outside the tile AABB onto the surface grid before merge.");
 
+        // GridFixtureSystem.Merge re-anchors anchored entities by calling
+        // Unanchor first and AnchorEntityResolved second. CableSystem reacts
+        // to the brief unanchoring by deleting the cable entity and
+        // spawning a cable item in its place, so any cable that the merge
+        // would touch would be turned into a loose item the moment the
+        // merge starts.
+        //
+        // Move the cables onto the surface grid ourselves before the merge
+        // runs, snapping each one to its target tile and registering it on
+        // the surface's snapgrid. The merge then sees no cables on the
+        // POI's snapgrid and leaves them alone, while still transferring
+        // the tiles and other anchored entities as it normally would.
+        var preservedCables = PreserveCableNodes(poiGrid, poiGridComp, mapUid, surfaceGrid, offsetTile, mergeRotation);
+
+        if (preservedCables > 0)
+            Log.Debug($"Moved {preservedCables} cable nodes off the POI before merge.");
+
         // Now fold the POI in. The engine transfers the tiles, re-anchors the
         // anchored entities onto the matching surface tile, moves the
         // unanchored ones while keeping their world position, and deletes the
@@ -393,5 +411,91 @@ public sealed partial class LavalandPoiGridIntegrationSystem : EntitySystem
 
         if (cleared > 0)
             Log.Debug($"Cleared {cleared} surface tiles for Lavaland POI integration.");
+    }
+
+    /// <summary>
+    /// Moves every cable (or other entity that would self-destruct on
+    /// unanchoring) off the POI grid and onto the surface grid at its
+    /// target tile, before the engine merge runs.
+    ///
+    /// The engine's <see cref="GridFixtureSystem.Merge"/> re-anchors snapgrid
+    /// entries by calling <c>Unanchor</c> first, which fires
+    /// <c>AnchorStateChangedEvent</c> with anchored=false. CableSystem reacts
+    /// to that event by deleting the cable and spawning a cable item in its
+    /// place, so any cable that the merge would touch would be turned into
+    /// a loose item the moment the merge starts.
+    ///
+    /// We reparent each cable manually with <c>unanchor: false</c>, drop it
+    /// from the POI's snapgrid and re-register it on the surface's snapgrid
+    /// at the matching target tile. The merge then sees no cables on the
+    /// POI's snapgrid and leaves them alone, while still transferring the
+    /// tiles and other anchored entities as it normally would.
+    /// </summary>
+    private int PreserveCableNodes(
+        EntityUid poiGrid,
+        MapGridComponent poiGridComp,
+        EntityUid mapUid,
+        MapGridComponent surfaceGrid,
+        Vector2i offsetTile,
+        Angle rotation)
+    {
+        var matrix = Matrix3Helpers.CreateTransform(offsetTile, rotation);
+        var surfaceHalfVec = surfaceGrid.TileSizeHalfVector;
+
+        // Materialise the list up-front. SetCoordinates below mutates the
+        // parent-child relationship, and a live EntityQueryEnumerator would
+        // not survive that.
+        var cables = new List<EntityUid>();
+        var query = EntityQueryEnumerator<CableComponent, TransformComponent>();
+        while (query.MoveNext(out var cableUid, out _, out var cableXform))
+        {
+            if (cableXform.ParentUid != poiGrid)
+                continue;
+
+            cables.Add(cableUid);
+        }
+
+        var moved = 0;
+        foreach (var cableUid in cables)
+        {
+            if (!TryComp<TransformComponent>(cableUid, out var cableXform))
+                continue;
+
+            if (!cableXform.Anchored)
+                continue;
+
+            if (!TryComp<MetaDataComponent>(cableUid, out var meta))
+                continue;
+
+            // The merge matrix maps POI tile indices to surface tile indices
+            // the same way the engine merge does.
+            var localTile = _map.TileIndicesFor(poiGrid, poiGridComp, cableXform.Coordinates);
+            var targetTile = (Vector2.Transform(new Vector2(localTile.X, localTile.Y) + surfaceHalfVec, matrix)).Floored();
+
+            var worldPos = cableXform.WorldPosition;
+            var worldRot = cableXform.WorldRotation;
+
+            // Drop the cable from the POI's snapgrid and lift it out of the
+            // POI's child set without firing AnchorStateChangedEvent. We have
+            // to use unanchor: false, otherwise the standard SetCoordinates
+            // path calls Unanchor and CableSystem destroys the cable.
+            _map.RemoveFromSnapGridCell(poiGrid, poiGridComp, localTile, cableUid);
+            _transform.SetCoordinates(
+                (cableUid, cableXform, meta),
+                new EntityCoordinates(mapUid, worldPos),
+                worldRot,
+                unanchor: false);
+
+            // AddToSnapGridCell requires a non-empty tile. The merge has not
+            // run yet so the surface may still have empty tiles where the
+            // POI will land. If the tile is still empty there is nothing to
+            // anchor on, but the cable is now a child of the surface grid at
+            // the right world position and will be re-anchored by the engine
+            // once the merge sets its tile.
+            _map.AddToSnapGridCell(mapUid, surfaceGrid, targetTile, cableUid);
+            moved++;
+        }
+
+        return moved;
     }
 }
