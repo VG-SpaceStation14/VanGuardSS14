@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Content.IntegrationTests.Fixtures;
-using Content.IntegrationTests.Fixtures.Attributes;
 using Content.Server._VanGuard.Lavaland.Systems;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.EntitySerialization.Systems;
@@ -25,23 +24,11 @@ public sealed class LavalandPoiIntegrationTest : GameTest
     private static readonly ResPath LavaRiverPath = new("Maps/_VanGuard/Lavaland/Dungeons/lava_river.yml");
 
     /// <summary>
-    /// Pool settings that force the manager to create a brand-new server-client
-    /// pair for the test instead of recycling one from the pool. This test
-    /// asserts on the post-integration contents of the surface grid and
-    /// specifically counts the entity count coming out of the merge. A
-    /// recycled pair can carry leftover entities from a previous test that
-    /// leaked through the clean-up, and those leftovers would otherwise be
-    /// double-counted and fail the equality check non-deterministically.
-    /// </summary>
-    private static PoolSettings FreshPair => new() { Connected = true, Fresh = true };
-
-    /// <summary>
     /// A POI grid is merged into the surface grid: its tiles end up on the
     /// surface, its entities are re-parented to the surface grid, and the
     /// temporary grid entity is gone.
     /// </summary>
     [Test]
-    [PairConfig(nameof(FreshPair))]
     public async Task PoiGridIsMergedIntoSurfaceGrid()
     {
         EntityUid mapUid = default;
