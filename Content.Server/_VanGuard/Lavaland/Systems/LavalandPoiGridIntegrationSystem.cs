@@ -458,13 +458,13 @@ public sealed partial class LavalandPoiGridIntegrationSystem : EntitySystem
         var moved = 0;
         foreach (var cableUid in cables)
         {
-            if (!TryComp<TransformComponent>(cableUid, out var cableXform))
+            if (!TryComp(cableUid, out TransformComponent? cableXform))
                 continue;
 
             if (!cableXform.Anchored)
                 continue;
 
-            if (!TryComp<MetaDataComponent>(cableUid, out var meta))
+            if (!TryComp(cableUid, out MetaDataComponent? meta))
                 continue;
 
             // The merge matrix maps POI tile indices to surface tile indices
