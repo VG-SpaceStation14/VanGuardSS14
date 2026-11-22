@@ -435,6 +435,24 @@ public sealed partial class PathfindingSystem
                 tileEntities.Clear();
                 var available = _lookup.GetLocalEntitiesIntersecting(tile, flags: LookupFlags.Dynamic | LookupFlags.Static);
 
+                // VG-Tweak: check hazard tiles (lava, chasms) with a separate,
+                // broader lookup. Their fixtures are soft (hard: false) and
+                // IsBodyRelevant skips them in the main loop below, and the
+                // default lookup flags do not return soft fixtures at all.
+                // LookupFlags.Sensors lets soft fixtures through, so lava and
+                // chasm tiles are found and flagged before the poly is built.
+                var hazardMatches = _lookup.GetLocalEntitiesIntersecting(tile,
+                    flags: LookupFlags.Dynamic | LookupFlags.Static | LookupFlags.Sensors | LookupFlags.Sundries);
+
+                foreach (var ent in hazardMatches)
+                {
+                    if (_hazardQuery.HasComponent(ent))
+                    {
+                        flags |= PathfindingBreadcrumbFlag.Hazardous;
+                        break;
+                    }
+                }
+
                 foreach (var ent in available)
                 {
                     // Irrelevant for pathfinding
@@ -540,6 +558,13 @@ public sealed partial class PathfindingSystem
                             if (_climbableQuery.HasComponent(ent))
                             {
                                 flags |= PathfindingBreadcrumbFlag.Climb;
+                            }
+
+                            // VG-Tweak: flag hazard tiles (lava, chasms) so ground NPCs
+                            // path around them unless PathFlags.Hazards is set.
+                            if (_hazardQuery.HasComponent(ent))
+                            {
+                                flags |= PathfindingBreadcrumbFlag.Hazardous;
                             }
 
                             if (_destructibleQuery.TryGetComponent(ent, out var damageable))

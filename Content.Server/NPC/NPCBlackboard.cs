@@ -320,6 +320,11 @@ public sealed partial class NPCBlackboard : IEnumerable<KeyValuePair<string, obj
     public const string NavClimb = "NavClimb";
 
     /// <summary>
+    /// VG-Tweak: Can the NPC walk over hazardous tiles (lava, chasms) for steering.
+    /// </summary>
+    public const string NavHazards = "NavHazards";
+
+    /// <summary>
     /// Default key storage for a movement pathfind.
     /// </summary>
     public const string PathfindKey = "MovementPathfind";
