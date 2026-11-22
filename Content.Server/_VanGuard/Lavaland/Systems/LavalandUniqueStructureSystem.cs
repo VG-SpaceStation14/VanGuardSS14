@@ -241,10 +241,11 @@ public sealed partial class LavalandUniqueStructureSystem : EntitySystem
         foreach (var child in children)
         {
             if (Exists(child))
-                QueueDel(child);
+                Del(child);
         }
 
-        QueueDel(grid);
+        // VG-Tweak: immediate delete, see LavalandPoiSpawnerSystem.DeleteGridTree.
+        Del(grid);
     }
 
     private void SealHoles(EntityUid grid, MapGridComponent gridComp)
