@@ -368,7 +368,7 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
             if (node == outpost)
                 return true;
 
-            if (!TryComp<TransformComponent>(node, out var xform))
+            if (!TryComp(node, out TransformComponent? xform))
                 return false;
 
             node = xform.ParentUid;
