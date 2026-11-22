@@ -40,6 +40,7 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private LavalandFeatureSystem _features = default!;
     [Dependency] private LavalandUniqueStructureSystem _unique = default!;
+    [Dependency] private LavalandPoiGridIntegrationSystem _integration = default!;
 
     public void SpawnPois(Entity<LavalandPoiSpawnerComponent> spawner, EntityUid mapUid, Vector2 origin, Box2 outpostBounds)
     {
@@ -47,6 +48,7 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
             return;
 
         var positions = new List<LavalandPoi>();
+        var occupied = new List<Box2> { outpostBounds };
 
         // A tendril is only created on a tile that the biome will actually
         // generate as safe basalt and that currently has no lava, chasm or
@@ -78,11 +80,15 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
                 _features.PrepareSpawnTile(mapUid, mapGrid, indices, tile);
                 Spawn(prototype, coordinates);
                 positions.Add(new LavalandPoi(chosenOffset, "lavaland-poi-tendril", "lavaland-poi-tendril-fax", true, true));
+
+                // A dungeon may not be built on top of a tendril. The dungeon's
+                // own lava would end up under the tendril once the dungeon is
+                // merged into the planet grid.
+                occupied.Add(new Box2(chosenOffset + origin, chosenOffset + origin));
                 break;
             }
         }
 
-        var occupied = new List<Box2> { outpostBounds };
         foreach (var dungeon in spawner.Comp.Dungeons)
         {
             var placed = false;
@@ -127,9 +133,19 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
                     _physics.SetBodyType(grid.Value.Owner, BodyType.Static, body: physics);
                     _physics.SetAngularVelocity(grid.Value.Owner, 0f, body: physics);
                 }
+                // Fold the dungeon into the planet's surface grid. The dungeon
+                // was loaded as its own grid entity; merging it into the
+                // surface grid makes its tiles, entities and physics part of
+                // the planet itself, so nothing is left floating above the
+                // ground and NPCs can walk in and out of the POI.
                 var gridName = GetDungeonName(dungeon);
-                _meta.SetEntityName(grid.Value.Owner, Loc.GetString(gridName));
-                _shuttle.AddIFFFlag(grid.Value.Owner, IFFFlags.Hide);
+                if (!_integration.Integrate(mapUid, grid.Value.Owner, gridName, GetDungeonFaxName(dungeon)))
+                {
+                    Log.Warning($"Could not integrate Lavaland dungeon {dungeon} into the planet grid.");
+                    DeleteGridTree(grid.Value.Owner);
+                    continue;
+                }
+
                 occupied.Add(placementBounds);
                 positions.Add(new LavalandPoi(offset, gridName, GetDungeonFaxName(dungeon), true, false));
                 placed = true;
