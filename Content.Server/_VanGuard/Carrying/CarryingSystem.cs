@@ -471,8 +471,14 @@ public sealed partial class CarryingSystem : EntitySystem
             !_mobState.IsIncapacitated(targetToStand))
         {
             _standing.Stand(targetToStand, force: true);
-            _blocker.UpdateCanMove(targetToStand);
         }
+
+        // While carried, UpdateCanMoveEvent was cancelled so InputMoverComponent.CanMove stayed
+        // false. Re-evaluate movement for every released target, not only for the ones stood up
+        // above: a target that legitimately stays down (knocked down, asleep) must still get its
+        // movement back, e.g. to crawl away or to stand up once the knockdown ends.
+        if (carried is { } targetToMove && !TerminatingOrDeleted(targetToMove))
+            _blocker.UpdateCanMove(targetToMove);
 
         if (!TerminatingOrDeleted(carrier))
         {
