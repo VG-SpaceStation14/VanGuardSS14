@@ -1,5 +1,9 @@
 using Content.Server.Fluids.Components;
 using Content.Server.Spreader;
+// VG-Tweak Start
+// Own VanGuardSS14 change: prevent liquids from spreading onto chasm tiles.
+using Content.Shared.Chasm;
+// VG-Tweak End
 using Content.Shared.Chemistry;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
@@ -36,6 +40,10 @@ public sealed partial class PuddleSystem : SharedPuddleSystem
 
     [Dependency] private EntityQuery<PuddleComponent> _puddleQuery = default!;
     [Dependency] private EntityQuery<EvaporationSparkleComponent> _evaporationSparklesQuery = default!;
+    // VG-Tweak Start
+    // Own VanGuardSS14 change: chasm tiles must not accept liquid.
+    [Dependency] private EntityQuery<ChasmComponent> _chasmQuery = default!;
+    // VG-Tweak End
 
     /*
      * TODO: Need some sort of way to do blood slash / vomit solution spill on its own
@@ -489,6 +497,19 @@ public sealed partial class PuddleSystem : SharedPuddleSystem
             return false;
         }
 
+        // VG-Tweak Start
+        // Own VanGuardSS14 change: liquid must not spread onto chasm tiles.
+        // Puddles are only created and refilled through this method, so the
+        // early exit here covers both the initial spill and any subsequent
+        // overflow of neighbouring puddles, which also routes through
+        // TrySpillAt.
+        if (IsChasmTile(tileRef))
+        {
+            puddleUid = EntityUid.Invalid;
+            return false;
+        }
+        // VG-Tweak End
+
         // Let's not spill to invalid grids.
         var gridId = tileRef.GridUid;
         if (!TryComp<MapGridComponent>(gridId, out var mapGrid))
@@ -545,6 +566,28 @@ public sealed partial class PuddleSystem : SharedPuddleSystem
 
         return true;
     }
+
+    // VG-Tweak Start
+    // Own VanGuardSS14 change: check whether the tile holds a chasm.
+    /// <summary>
+    ///     Whether a tile holds a chasm entity (<see cref="ChasmComponent"/>), i.e. it is a
+    ///     bottomless hole. Liquids must not pool or spread onto these tiles.
+    /// </summary>
+    private bool IsChasmTile(TileRef tileRef)
+    {
+        if (!TryComp<MapGridComponent>(tileRef.GridUid, out var mapGrid))
+            return false;
+
+        var anchored = _map.GetAnchoredEntities(tileRef.GridUid, mapGrid, tileRef.GridIndices);
+        while (anchored.MoveNext(out var ent))
+        {
+            if (_chasmQuery.HasComponent(ent.Value))
+                return true;
+        }
+
+        return false;
+    }
+    // VG-Tweak End
 
     #endregion
 
