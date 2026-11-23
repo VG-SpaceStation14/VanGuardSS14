@@ -71,7 +71,7 @@
           - id: SurvivalKnife
             weight: 0.35
           - id: WeaponCursedKatana
-            weight: 0.02
+            weight: 0.12
           - id: MineralScanner
             weight: 0.25
           - id: OreBag
@@ -81,11 +81,11 @@
           - id: WeaponProtoKineticAccelerator
             weight: 0.02
           - id: LavalandWeaponStaffHealing
-            weight: 0.03
+            weight: 0.10
         - id: LavalandBookOfBabel
-          prob: 0.05
+          prob: 0.15
         - id: LavalandResurrectionCrystal
-          prob: 0.05
+          prob: 0.15
 
 - type: entity
   parent: LavalandTendril
@@ -169,15 +169,15 @@
           - id: MedkitBruteFilled
             weight: 0.20
           - id: WeaponCursedKatana
-            weight: 0.02
+            weight: 0.12
           - id: SpaceCash1000
             weight: 0.15
         - id: MaterialGoliathHide1
           prob: 0.35
         - id: LavalandBookOfBabel
-          prob: 0.05
+          prob: 0.15
         - id: LavalandResurrectionCrystal
-          prob: 0.05
+          prob: 0.15
 
 - type: entity
   parent: CrateGenericSteel
@@ -219,15 +219,15 @@
           - id: MedkitBurnFilled
             weight: 0.20
           - id: WeaponCursedKatana
-            weight: 0.02
+            weight: 0.12
           - id: SpaceCash1000
             weight: 0.10
         - id: SpaceCash100
           prob: 0.4
         - id: LavalandBookOfBabel
-          prob: 0.05
+          prob: 0.15
         - id: LavalandResurrectionCrystal
-          prob: 0.05
+          prob: 0.15
 
 - type: entity
   parent: LavalandTendril
