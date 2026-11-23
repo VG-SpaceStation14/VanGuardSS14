@@ -61,11 +61,18 @@ public sealed partial class ChasmFallingVisualsSystem : EntitySystem
         _originalRotations[entity] = sprite.Rotation;
         // VG-Tweak End
 
-        if (!_animationPlayerQuery.TryComp(entity, out var player) ||
-            _anim.HasRunningAnimation(player, ChasmFallAnimationKey))
+        // VG-Tweak Start
+        // Own VanGuardSS14 change: the animation is meant for every entity
+        // falling into the chasm, but AnimationPlayerComponent only exists on
+        // some prototypes (mobs species base, a handful of items/effects), so
+        // items and animals without it used to get no animation at all. Get
+        // one on the client here, the same way other visualizers do.
+        EnsureComp<AnimationPlayerComponent>(entity.Owner, out var player);
+        if (_anim.HasRunningAnimation(player, ChasmFallAnimationKey))
         {
             return;
         }
+        // VG-Tweak End
 
         _anim.Play((entity, player), GetFallingAnimation(entity.Owner, entity.Comp), ChasmFallAnimationKey);
     }
