@@ -11,7 +11,8 @@ using ClientBuckleSystem = Content.Client.Buckle.BuckleSystem;
 namespace Content.IntegrationTests.Tests._VanGuard.Buckle;
 
 /// <summary>
-///     Characters lie on top of beds and rollerbeds, and blankets render above them.
+///     Characters lie on top of beds and rollerbeds, while blankets render below every mob
+///     but still above the bed and items.
 /// </summary>
 [TestFixture]
 public sealed class BedPerspectiveSortingTest : InteractionTest
@@ -66,7 +67,7 @@ public sealed class BedPerspectiveSortingTest : InteractionTest
     }
 
     [Test]
-    public async Task BlanketRendersAboveCharacter()
+    public async Task BlanketRendersBelowCharacter()
     {
         EntityUid mob = default;
         EntityUid blanket = default;
@@ -85,10 +86,10 @@ public sealed class BedPerspectiveSortingTest : InteractionTest
             var mobSprite = CEntMan.GetComponent<SpriteComponent>(ToClientUid(mob));
             var blanketSprite = CEntMan.GetComponent<SpriteComponent>(ToClientUid(blanket));
 
-            Assert.That(blanketSprite.DrawDepth, Is.EqualTo((int) ContentDrawDepth.OverMobs),
-                "a bedsheet should render above mobs");
-            Assert.That(blanketSprite.DrawDepth, Is.GreaterThan(mobSprite.DrawDepth),
-                "the blanket should render above the character");
+            Assert.That(blanketSprite.DrawDepth, Is.EqualTo((int) ContentDrawDepth.BelowMobs),
+                "a bedsheet should render below mobs");
+            Assert.That(blanketSprite.DrawDepth, Is.LessThan(mobSprite.DrawDepth),
+                "the blanket should not cover the standing character");
         });
     }
 }

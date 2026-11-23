@@ -12,8 +12,9 @@
   - type: Sprite
     sprite: Objects/Misc/bedsheets.rsi
     noRot: true
-    # VG-Tweak Start: a blanket must render above the character lying on the bed.
-    drawdepth: OverMobs
+    # VG-Tweak Start: a blanket must render above the bed and items, but below every mob
+    # so it does not cover standing characters.
+    drawdepth: BelowMobs
     # VG-Tweak End
   - type: Item
     size: Small
