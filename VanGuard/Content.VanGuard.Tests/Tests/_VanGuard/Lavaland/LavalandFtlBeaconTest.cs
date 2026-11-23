@@ -27,11 +27,15 @@ namespace Content.IntegrationTests.Tests._VanGuard.Lavaland;
 [NonParallelizable]
 public sealed class LavalandFtlBeaconTest : GameTest
 {
+    // Dirty is enough here: it forces a full Recycle (FlushEntities +
+    // RestartRound) between tests, which is what the Lavaland round generation
+    // needs to not leak into the next test. Fresh additionally threw away the
+    // pair and booted a brand-new server/client (~30s for the RSI preload) on
+    // every run, which does not buy any extra isolation over Dirty.
     public override PoolSettings PoolSettings => new()
     {
         Connected = true,
         DummyTicker = false,
-        Fresh = true,
         Dirty = true,
     };
 

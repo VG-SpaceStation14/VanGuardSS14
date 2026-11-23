@@ -51,11 +51,16 @@ public sealed class MiningShuttleTest : GameTest
     private const string ShuttlePath = "/Maps/_VanGuard/Shuttles/NT - Mining.yml";
     private const string OutpostPath = "/Maps/_VanGuard/Lavaland/mining_outpost.yml";
 
+    // Dirty = true forces a full Recycle between tests (FlushEntities,
+    // RestartRound, ApplySettings, RevertModifiedCvars), which is what these
+    // tests actually need to stay isolated. Fresh additionally threw the pair
+    // away and booted a brand-new server/client (about 30s per pair to preload
+    // the RSI atlas) for every single one of the 10 tests here. Dirty alone is
+    // enough to stop state leaking between them.
     public override PoolSettings PoolSettings => new()
     {
         Connected = true,
         DummyTicker = false,
-        Fresh = true,
         Dirty = true,
     };
 

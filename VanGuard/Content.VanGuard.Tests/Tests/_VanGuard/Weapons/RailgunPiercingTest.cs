@@ -19,9 +19,10 @@ namespace Content.IntegrationTests.Tests._VanGuard.Weapons;
 public sealed class RailgunPiercingTest : GameTest
 {
     // These tests spawn living mobs on the shared test map. A fast-recycled pair can still carry
-    // deferred work from a previous test, which then surfaces during our teardown. Use a fresh pair
-    // so no state from another fixture can leak into the railgun spawn/cleanup cycle.
-    public override PoolSettings PoolSettings => new() { Connected = true, Dirty = true, Fresh = true };
+    // deferred work from a previous test, which then surfaces during our teardown. Dirty = true
+    // forces the full recycle (FlushEntities + RestartRound) between tests, which removes that
+    // deferred work; a brand-new pair per test is not needed for this.
+    public override PoolSettings PoolSettings => new() { Connected = true, Dirty = true };
 
     [Test]
     [TestCase("AsteroidRock")]
