@@ -5,6 +5,7 @@ using Content.Shared.Chasm;
 using Robust.Client.Animations;
 using Robust.Client.GameObjects;
 using Robust.Shared.Animations;
+using Robust.Shared.Random;
 
 namespace Content.Client.Chasm;
 
@@ -15,6 +16,17 @@ public sealed partial class ChasmFallingVisualsSystem : EntitySystem
 {
     [Dependency] private AnimationPlayerSystem _anim = default!;
     [Dependency] private SpriteSystem _sprite = default!;
+    // VG-Tweak Start
+    // Own VanGuardSS14 change: pick a fresh spin for every fall so the
+    // animation never looks identical twice.
+    [Dependency] private IRobustRandom _random = default!;
+    // VG-Tweak End
+
+    // VG-Tweak Start
+    // Remembers the sprite rotation for the duration of the animation so it
+    // can be restored if the fall is cancelled before the entity is deleted.
+    private readonly Dictionary<EntityUid, Angle> _originalRotations = new();
+    // VG-Tweak End
 
     [Dependency] private EntityQuery<AnimationPlayerComponent> _animationPlayerQuery;
     [Dependency] private EntityQuery<SpriteComponent> _spriteQuery;
@@ -45,17 +57,39 @@ public sealed partial class ChasmFallingVisualsSystem : EntitySystem
         entity.Comp.OriginalScale = SanitizeScale(entity.Comp.OriginalScale);
         // VG-Tweak End
 
-        if (!_animationPlayerQuery.TryComp(entity, out var player) ||
-            _anim.HasRunningAnimation(player, ChasmFallAnimationKey))
+        // VG-Tweak Start
+        _originalRotations[entity] = sprite.Rotation;
+        // VG-Tweak End
+
+        // VG-Tweak Start
+        // Own VanGuardSS14 change: the animation is meant for every entity
+        // falling into the chasm, but AnimationPlayerComponent only exists on
+        // some prototypes (mobs species base, a handful of items/effects), so
+        // items and animals without it used to get no animation at all. Get
+        // one on the client here, the same way other visualizers do.
+        EnsureComp<AnimationPlayerComponent>(entity.Owner, out var player);
+        if (_anim.HasRunningAnimation(player, ChasmFallAnimationKey))
         {
             return;
         }
+        // VG-Tweak End
 
-        _anim.Play((entity, player), GetFallingAnimation(entity.Comp), ChasmFallAnimationKey);
+        _anim.Play((entity, player), GetFallingAnimation(entity.Owner, entity.Comp), ChasmFallAnimationKey);
     }
 
     private void OnComponentRemove(Entity<ChasmFallingComponent> entity, ref ComponentRemove args)
     {
+        // VG-Tweak Start
+        // Restore the original rotation first, then fall through to the
+        // generic sprite handling below; the dictionary entry is dropped in
+        // every case, including the early returns.
+        if (_originalRotations.Remove(entity, out var originalRotation) &&
+            _spriteQuery.TryComp(entity, out var rotatedSprite))
+        {
+            _sprite.SetRotation((entity, rotatedSprite), originalRotation);
+        }
+        // VG-Tweak End
+
         if (!_spriteQuery.TryComp(entity, out var sprite))
         {
             return;
@@ -74,10 +108,16 @@ public sealed partial class ChasmFallingVisualsSystem : EntitySystem
         _anim.Stop((entity, player), ChasmFallAnimationKey);
     }
 
-    private static Animation GetFallingAnimation(ChasmFallingComponent component)
+    private Animation GetFallingAnimation(EntityUid uid, ChasmFallingComponent component)
     {
         // VG-Tweak Start
         var originalScale = SanitizeScale(component.OriginalScale);
+        var originalRotation = _originalRotations.GetValueOrDefault(uid, Angle.Zero);
+        // Falling into the chasm is a "swirl down the shaft": the sprite is
+        // spun by one to two full turns in a random direction, as if the pit
+        // were pulling it in. Both direction and magnitude are rolled per fall.
+        var direction = _random.Next(2) == 0 ? 1f : -1f;
+        var totalRotation = _random.NextFloat(360f, 720f) * direction;
         // VG-Tweak End
         return new Animation
         {
@@ -95,6 +135,21 @@ public sealed partial class ChasmFallingVisualsSystem : EntitySystem
                     },
                     InterpolationMode = AnimationInterpolationMode.Cubic,
                 },
+                // VG-Tweak Start
+                // Own VanGuardSS14 change: spin while shrinking so the fall
+                // reads as a tumble down the shaft, not just a zoom-out.
+                new AnimationTrackComponentProperty
+                {
+                    ComponentType = typeof(SpriteComponent),
+                    Property = nameof(SpriteComponent.Rotation),
+                    KeyFrames =
+                    {
+                        new AnimationTrackProperty.KeyFrame(originalRotation, 0.0f),
+                        new AnimationTrackProperty.KeyFrame(originalRotation + Angle.FromDegrees(totalRotation), component.AnimationTime.Seconds),
+                    },
+                    InterpolationMode = AnimationInterpolationMode.Linear,
+                },
+                // VG-Tweak End
             },
         };
     }
