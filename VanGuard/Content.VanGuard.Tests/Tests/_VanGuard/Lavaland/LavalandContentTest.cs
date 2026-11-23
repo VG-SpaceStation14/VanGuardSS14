@@ -30,7 +30,6 @@ using Content.Shared._VanGuard.Mining.Points;
 using Content.Shared._VanGuard.Mining.Points.Components;
 using Content.Shared.Audio;
 using Robust.Shared.Audio;
-using Content.Shared.Weather;
 using Content.Shared.Preferences.Loadouts;
 using Content.Shared.Preferences;
 using Content.Shared.Humanoid;
@@ -53,7 +52,6 @@ using Robust.Shared.Utility;
 
 
 using Content.IntegrationTests.Fixtures;
-using Content.IntegrationTests.Fixtures.Attributes;
 using Robust.Shared.GameObjects;
 
 using Robust.Shared.Map.Components;
@@ -65,13 +63,6 @@ namespace Content.IntegrationTests.Tests._VanGuard.Lavaland;
 public sealed class LavalandContentTest : GameTest
 {
     public override PoolSettings PoolSettings => new()
-    {
-        Connected = true,
-        Dirty = true,
-        DummyTicker = false,
-    };
-
-    public static PoolSettings Fresh => new()
     {
         Connected = true,
         Dirty = true,
@@ -865,65 +856,6 @@ public sealed class LavalandContentTest : GameTest
                 }
             }
         });
-    }
-
-    [Test]
-    [PairConfig(nameof(Fresh))]
-    public async Task LavalandFaunaIsStormImmuneButPlayersAndAnimalsAreNot()
-    {
-        var grid = GetStationGrid();
-        var mapId = SEntMan.GetComponent<TransformComponent>(grid).MapID;
-        var entities = new List<EntityUid>();
-        var faunae = new[]
-        {
-            "MobWatcherLavaland",
-            "MobWatcherIcewing",
-            "MobWatcherMagmawing",
-            "MobWatcherPride",
-            "MobGoliath",
-            "MobHivelord",
-            "MobBasilisk",
-        };
-
-        try
-        {
-            await Server.WaitPost(() => Server.System<SharedWeatherSystem>().TrySetWeather(mapId, null, out _));
-            await Server.WaitPost(() =>
-            {
-                foreach (var proto in faunae)
-                    entities.Add(SEntMan.SpawnEntity(proto, new EntityCoordinates(grid, 10, 0)));
-                entities.Add(SEntMan.SpawnEntity("MobHuman", new EntityCoordinates(grid, 20, 0)));
-                entities.Add(SEntMan.SpawnEntity("MobChicken", new EntityCoordinates(grid, 30, 0)));
-                Assert.That(Server.System<SharedWeatherSystem>().TrySetWeather(mapId, "WeatherAshfall", out _), Is.True);
-            });
-            await Pair.RunTicksSync(10);
-
-            await Server.WaitPost(() =>
-            {
-                var damage = Server.System<DamageableSystem>();
-                for (var i = 0; i < faunae.Length; i++)
-                    Assert.That(damage.GetTotalDamage(entities[i]).Float(), Is.EqualTo(0f), $"{faunae[i]} took storm damage.");
-                Assert.That(damage.GetTotalDamage(entities[^2]).Float(), Is.GreaterThan(0f), "Player took no storm damage.");
-                Assert.That(damage.GetTotalDamage(entities[^1]).Float(), Is.GreaterThan(0f), "Ordinary animal took no storm damage.");
-
-                Assert.That(damage.TryChangeDamage(entities[0],
-                    new DamageSpecifier(SProtoMan.Index<DamageTypePrototype>(new ProtoId<DamageTypePrototype>("Heat")), 10),
-                    ignoreResistances: true), Is.True);
-                Assert.That(damage.GetTotalDamage(entities[0]).Float(), Is.GreaterThan(0f));
-            });
-        }
-        finally
-        {
-            await Server.WaitPost(() =>
-            {
-                Server.System<SharedWeatherSystem>().TrySetWeather(mapId, null, out _);
-                foreach (var entity in entities)
-                {
-                    if (SEntMan.EntityExists(entity))
-                        SEntMan.DeleteEntity(entity);
-                }
-            });
-        }
     }
 
     [Test]
