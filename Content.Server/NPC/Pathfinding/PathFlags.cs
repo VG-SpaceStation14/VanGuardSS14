@@ -29,4 +29,11 @@ public enum PathFlags : byte
     /// Can we open stuff that requires interaction (e.g. click-open doors).
     /// </summary>
     Interact = 1 << 4,
+
+    /// <summary>
+    /// VG-Tweak: Can we walk over <see cref="Content.Shared.NPC.PathfindingHazardComponent"/>
+    /// tiles such as lava or chasms without being harmed. Grants access to
+    /// <see cref="Content.Shared.NPC.PathfindingBreadcrumbFlag.Hazardous"/> nodes.
+    /// </summary>
+    Hazards = 1 << 5,
 }

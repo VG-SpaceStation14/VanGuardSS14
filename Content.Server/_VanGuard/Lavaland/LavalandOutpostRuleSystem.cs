@@ -135,17 +135,17 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
         if (TryComp<LavalandPoiSpawnerComponent>(ent.Owner, out var poi))
             _poi.SpawnPois((ent.Owner, poi), mapUid, origin, outpostBounds);
 
-        // Phase C — defer outpost loading until the next tick. By then
-        // EntityManager.ProcessQueueudDeletions has already removed every
-        // dungeon grid that the spawner rejected, and PhysicsSystem.TickUpdate
-        // has already run for the current tick. The outpost will then be the
-        // only grid in its area, so there is no possibility of physical
-        // contact between it and a discarded dungeon grid.
-        EntityManager.EventBus.QueueEvent(EventSource.Local, new LavalandOutpostSpawnerFinishedEvent(
-            mapUid,
-            args.Map,
-            origin,
-            outpostBounds));
+        // Phase C — VG-Tweak: the outpost is now the very last generation
+        // step, running synchronously after POIs, dungeon merges, unique
+        // structures and the shuttle-physics sweep have all finished. Earlier
+        // versions deferred this to the next tick via a queued event, which
+        // let biome chunks, physics and other tick work start before the
+        // outpost existed; because the outpost is large enough to briefly
+        // share world space with a transient dungeon grid that had not been
+        // deleted yet, its contents ended up reparented onto those extra
+        // grids and vanished. Running it here, with the transient grids
+        // already deleted and the footprint cleared, removes that window.
+        LoadOutpostGrid(ent, mapUid, origin, outpostBounds);
 
         var destination = EnsureComp<FTLDestinationComponent>(mapUid);
         destination.Enabled = true;
@@ -167,11 +167,11 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
         // Measure the outpost's LocalAABB by loading it into a throwaway map
         // that is deleted before the function returns. The grid never exists
         // in any visible map.
-        var measureMapUid = _map.CreateMap(out _);
+        var measureMapUid = _map.CreateMap(out var measureMapId);
         try
         {
             if (!_loader.TryLoadGrid(
-                    Transform(measureMapUid).MapID,
+                    measureMapId,
                     ent.Comp.GridPath,
                     out var loaded,
                     new DeserializationOptions { InitializeMaps = false }))
@@ -192,7 +192,15 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
         }
         finally
         {
-            _map.QueueDeleteMap(Transform(measureMapUid).MapID);
+            // VG-Tweak: delete the measurement map immediately, not via
+            // QueueDeleteMap. The queued delete only lands at the start of the
+            // next tick, so the throwaway grid is still alive and still in the
+            // broadphase while the real outpost is being loaded below. The
+            // outpost is large enough to briefly share world space with it,
+            // which is how outpost content ends up parented to an extra
+            // throwaway grid. DeleteMap goes through Del -> DeleteEntity
+            // immediately, so nothing is left to collide with.
+            _map.DeleteMap(measureMapId);
         }
     }
 
@@ -217,6 +225,14 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
         // Phase D — load the outpost grid for real. By now every rejected
         // dungeon grid has been deleted and the next physics tick has not yet
         // had a chance to interact with the outpost.
+        //
+        // VG-Tweak: clear the footprint first. The outpost is large enough to
+        // briefly share world space with any leftover grid or straggler that
+        // a previous generation step left behind, and content loaded on top
+        // of such a grid can be reparented onto it. Guaranteeing the area is
+        // empty removes that whole class of bugs.
+        ClearOutpostFootprint(mapUid, outpostBounds);
+
         if (!_loader.TryLoadGrid(
                 ent.Comp.MapId ?? Transform(mapUid).MapID,
                 ent.Comp.GridPath,
@@ -272,6 +288,93 @@ public sealed partial class LavalandOutpostRuleSystem : EntitySystem
         var finalCorrection = outpostXform.LocalPosition + outpost.Comp.LocalAABB.Center;
         _transform.SetLocalPosition(outpost.Owner, outpostXform.LocalPosition - finalCorrection, outpostXform);
         ReserveOutpostArea(mapUid, outpost, outpostXform, ent.Comp.ClearRadius);
+
+        // VG-Tweak: verify that the outpost content landed on the outpost grid
+        // and not on any leftover grid in the footprint area. A single missing
+        // thing in this list means a runtime error in TryLoadGrid or in
+        // entity parenting.
+        VerifyOutpostContent(outpost, ent.Comp.GridPath);
+    }
+
+    /// <summary>
+    ///     VG-Tweak: removes leftover grids that intersect the outpost's
+    ///     future footprint. The outpost is too large to load on top of
+    ///     anything else; if a stray grid is left there from an earlier
+    ///     generation step, the loader will happily reparent outpost content
+    ///     onto it and the content ends up in the wrong place.
+    /// </summary>
+    private void ClearOutpostFootprint(EntityUid mapUid, Box2 footprint)
+    {
+        var strays = new List<EntityUid>();
+        var gridQuery = EntityQueryEnumerator<MapGridComponent, TransformComponent>();
+        while (gridQuery.MoveNext(out var gridUid, out var grid, out var xform))
+        {
+            if (xform.MapID != Transform(mapUid).MapID || gridUid == mapUid)
+                continue;
+
+            if (!footprint.Intersects(grid.LocalAABB.Translated(xform.LocalPosition)))
+                continue;
+
+            strays.Add(gridUid);
+        }
+
+        foreach (var stray in strays)
+        {
+            Log.Warning($"Lavaland outpost footprint overlaps grid {stray}; removing it before loading the outpost.");
+            Del(stray);
+        }
+    }
+
+    /// <summary>
+    /// Checks that the freshly loaded outpost is in a consistent state: every
+    /// entity in the footprint is parented to the outpost grid, has a valid
+    /// GridUid and carries its essential components. Logs a warning on any
+    /// deviation so the CI and dev consoles surface it immediately.
+    /// </summary>
+    private void VerifyOutpostContent(Entity<MapGridComponent> outpost, ResPath gridPath)
+    {
+        var orphaned = 0;
+        var total = 0;
+        var query = EntityQueryEnumerator<TransformComponent>();
+        while (query.MoveNext(out var uid, out var xform))
+        {
+            if (uid == outpost.Owner)
+                continue;
+
+            // The verification is limited to entities whose GridUid is the
+            // outpost or whose direct parent is the outpost. Anything deeper
+            // (containers, storage) is not checked here.
+            if (xform.GridUid != outpost.Owner)
+                continue;
+
+            total++;
+            if (xform.ParentUid != outpost.Owner &&
+                !IsOutpostAncestor(outpost.Owner, xform.ParentUid))
+            {
+                orphaned++;
+                Log.Warning($"Lavaland outpost content {uid} at {xform.WorldPosition} is parented to {xform.ParentUid} instead of the outpost grid ({gridPath}).");
+            }
+        }
+
+        if (orphaned > 0)
+            Log.Warning($"Lavaland outpost {gridPath}: {orphaned} of {total} contents are parented to a foreign grid.");
+    }
+
+    private bool IsOutpostAncestor(EntityUid outpost, EntityUid node)
+    {
+        var depth = 0;
+        while (node.IsValid() && depth++ < 8)
+        {
+            if (node == outpost)
+                return true;
+
+            if (!TryComp(node, out TransformComponent? xform))
+                return false;
+
+            node = xform.ParentUid;
+        }
+
+        return false;
     }
 
     private void ApplyMarkerLayers(EntityUid mapUid, LavalandOutpostRuleComponent component)

@@ -75,7 +75,6 @@ public sealed class LavalandContentTest : GameTest
     {
         Connected = true,
         Dirty = true,
-        Fresh = true,
         DummyTicker = false,
     };
 

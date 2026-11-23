@@ -42,6 +42,15 @@ public sealed partial class PathfindingSystem
     {
         var modifier = 1f;
 
+        // VG-Tweak: treat hazardous tiles (lava, chasms) as impassable for
+        // walkers without the Hazards flag. The A* frontier simply stops
+        // expanding into them and the mob never enters such a tile.
+        if ((end.Data.Flags & PathfindingBreadcrumbFlag.Hazardous) != 0x0 &&
+            (request.Flags & PathFlags.Hazards) == 0x0)
+        {
+            return 0f;
+        }
+
         // TODO
         if ((end.Data.Flags & PathfindingBreadcrumbFlag.Space) != 0x0)
         {

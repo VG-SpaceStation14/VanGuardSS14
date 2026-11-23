@@ -10,6 +10,7 @@ using Content.Shared.Access.Components;
 using Content.Shared.Administration;
 using Content.Shared.Climbing.Components;
 using Content.Shared.Doors.Components;
+using Content.Shared.Movement.Components;
 using Content.Shared.NPC;
 using Robust.Server.Player;
 using Robust.Shared.Enums;
@@ -57,6 +58,9 @@ namespace Content.Server.NPC.Pathfinding
         [Dependency] private EntityQuery<DestructibleComponent> _destructibleQuery = default!;
         [Dependency] private EntityQuery<DoorComponent> _doorQuery = default!;
         [Dependency] private EntityQuery<ClimbableComponent> _climbableQuery = default!;
+        // VG-Tweak: lava / chasm tiles are hazards for ground NPC navigation.
+        [Dependency] private EntityQuery<PathfindingHazardComponent> _hazardQuery = default!;
+        [Dependency] private EntityQuery<CanMoveInAirComponent> _airborneQuery = default!;
         [Dependency] private EntityQuery<FixturesComponent> _fixturesQuery = default!;
         [Dependency] private EntityQuery<MapGridComponent> _mapGridQuery = default!;
 
@@ -435,7 +439,17 @@ namespace Content.Server.NPC.Pathfinding
                 return PathFlags.None;
             }
 
-            return GetFlags(npc.Blackboard);
+            var flags = GetFlags(npc.Blackboard);
+
+            // VG-Tweak: airborne mobs (e.g. FlyingMobBase) safely cross lava
+            // and chasms, so let their pathfinder do the same. Anything else
+            // must opt in via the NavHazards blackboard key or PathFlags.Hazards.
+            if (_airborneQuery.HasComponent(uid))
+            {
+                flags |= PathFlags.Hazards;
+            }
+
+            return flags;
         }
 
         public PathFlags GetFlags(NPCBlackboard blackboard)
@@ -460,6 +474,12 @@ namespace Content.Server.NPC.Pathfinding
             if (blackboard.TryGetValue<bool>(NPCBlackboard.NavInteract, out var interact, EntityManager) && interact)
             {
                 flags |= PathFlags.Interact;
+            }
+
+            // VG-Tweak: NPCs that can safely cross lava / chasms opt in via NavHazards.
+            if (blackboard.TryGetValue<bool>(NPCBlackboard.NavHazards, out var hazards, EntityManager) && hazards)
+            {
+                flags |= PathFlags.Hazards;
             }
 
             return flags;

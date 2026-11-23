@@ -288,10 +288,17 @@ public sealed partial class LavalandPoiSpawnerSystem : EntitySystem
         foreach (var child in children)
         {
             if (Exists(child))
-                QueueDel(child);
+                Del(child);
         }
 
-        QueueDel(grid);
+        // VG-Tweak: delete immediately rather than via QueueDel. The outpost
+        // now loads synchronously in the same tick, right after the spawner
+        // has rejected this grid, so a queued delete would leave the grid
+        // alive and in the broadphase while the outpost is being loaded.
+        // Because the outpost is large enough to share world space with a
+        // rejected dungeon grid, its contents could get reparented onto it
+        // before the delete lands.
+        Del(grid);
     }
 
     private static LocId GetDungeonName(ResPath dungeon)

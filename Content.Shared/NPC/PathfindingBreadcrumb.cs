@@ -120,4 +120,11 @@ public enum PathfindingBreadcrumbFlag : ushort
     /// Is there climbing involved
     /// </summary>
     Climb = 1 << 4,
+
+    /// <summary>
+    /// VG-Tweak: Is there a <see cref="PathfindingHazardComponent"/> entity on this tile
+    /// (e.g. lava or a chasm). Mobs that cannot walk over such hazards have
+    /// their path cut off here unless <see cref="Content.Server.NPC.Pathfinding.PathFlags.Hazards"/> is set.
+    /// </summary>
+    Hazardous = 1 << 5,
 }
