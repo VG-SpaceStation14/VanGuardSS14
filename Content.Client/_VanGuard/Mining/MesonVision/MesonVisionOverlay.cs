@@ -35,6 +35,12 @@ public sealed partial class MesonVisionOverlay : Overlay
         _container = _entity.System<ContainerSystem>();
         _spriteQuery = _entity.GetEntityQuery<SpriteComponent>();
         _xformQuery = _entity.GetEntityQuery<TransformComponent>();
+
+        // Overlays sharing an OverlaySpace are drawn sorted by ZIndex, and ties are drawn in
+        // arbitrary order. This overlay repaints walls and doors on top of the scene, so it must
+        // be drawn before the ore scanner markers (ZIndex 0) to keep them visible on top of the
+        // walls instead of being painted over by this overlay.
+        ZIndex = -1;
     }
 
     protected override void Draw(in OverlayDrawArgs args)
