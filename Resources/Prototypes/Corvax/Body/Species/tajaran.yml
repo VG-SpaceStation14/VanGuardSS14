@@ -112,6 +112,17 @@
           32:
             sprite: Corvax/Mobs/Species/displacement.rsi
             state: shoes
+      # VG-Tweak Start
+      # Own VanGuardSS14 change: ClientClothingSystem replaces the default displacement map
+      # with the gender-specific one for the whole slot lookup, so a slot missing here falls
+      # back to no displacement at all. Without this entry female tajaran lost the hardsuit
+      # leg displacement and showed straight human legs in suits.
+      outerClothing:
+        sizeMaps:
+          32:
+            sprite: Corvax/Mobs/Species/displacement.rsi
+            state: outerclothing
+      # VG-Tweak End
     displacements:
       jumpsuit:
         sizeMaps:
