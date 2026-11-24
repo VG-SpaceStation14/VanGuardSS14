@@ -15,6 +15,10 @@ public sealed class BankAtmBoundUserInterface(EntityUid owner, Enum uiKey) : Bou
         _window.OnEject += () => SendMessage(new BankAtmEjectMessage());
         _window.OnEndSession += () => SendMessage(new BankAtmEndSessionMessage());
         _window.OnRequest += request => SendMessage(new BankAtmTransactionMessage(request));
+        // Closing the window with its X button must close the bound UI as well.
+        // Otherwise the server never learns about it and keeps the
+        // ActivatableUI single-user lock on the ATM until the user walks away.
+        _window.OnClose += Close;
         _window.OpenCentered();
     }
 
@@ -26,6 +30,8 @@ public sealed class BankAtmBoundUserInterface(EntityUid owner, Enum uiKey) : Bou
 
     protected override void Dispose(bool disposing)
     {
+        if (_window != null)
+            _window.OnClose -= Close;
         _window?.Close();
         base.Dispose(disposing);
     }
