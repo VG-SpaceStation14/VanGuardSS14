@@ -1235,9 +1235,11 @@ public sealed class CarryingTest : GameTest
     {
         var (carrier, target, _) = await CreatePair();
         var system = Server.System<CarryingSystem>();
+        var stun = Server.System<SharedStunSystem>();
         await StartCarry(carrier, target);
 
-        await Server.WaitPost(() => SEntMan.AddComponent<KnockedDownComponent>(target));
+        await Server.WaitPost(() => Assert.That(
+            stun.TryCrawling(target, TimeSpan.FromSeconds(5), autoStand: false, drop: false, force: true), Is.True));
         await Server.WaitPost(() => Assert.That(system.TryEndCarry(carrier, carrier), Is.True));
         await Pair.RunTicksSync(10);
 
@@ -1245,6 +1247,30 @@ public sealed class CarryingTest : GameTest
         {
             Assert.That(SEntMan.HasComponent<KnockedDownComponent>(target), Is.True);
             Assert.That(SEntMan.GetComponent<StandingStateComponent>(target).Standing, Is.False);
+        });
+    }
+
+    [Test]
+    public async Task KnockedDownTargetCanMoveAfterRelease()
+    {
+        var (carrier, target, _) = await CreatePair();
+        var system = Server.System<CarryingSystem>();
+        var stun = Server.System<SharedStunSystem>();
+        var blocker = SEntMan.System<ActionBlockerSystem>();
+        await StartCarry(carrier, target);
+
+        await Server.WaitPost(() => Assert.That(
+            stun.TryCrawling(target, TimeSpan.FromSeconds(5), autoStand: false, drop: false, force: true), Is.True));
+        await Server.WaitPost(() => Assert.That(system.TryEndCarry(carrier, carrier), Is.True));
+        await Pair.RunTicksSync(10);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.HasComponent<CarriedComponent>(target), Is.False);
+            Assert.That(SEntMan.GetComponent<StandingStateComponent>(target).Standing, Is.False,
+                "a knocked-down target must stay down on release");
+            Assert.That(blocker.CanMove(target), Is.True,
+                "a released knocked-down target must keep its movement, not stay frozen in place");
         });
     }
 
