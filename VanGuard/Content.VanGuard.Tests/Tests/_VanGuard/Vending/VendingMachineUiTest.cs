@@ -70,7 +70,7 @@ public sealed class VendingMachineUiTest : InteractionTest
                 new(InventoryType.Regular, new EntProtoId("DrinkColaCan"), 3) { Price = 5 },
                 new(InventoryType.Regular, new EntProtoId("DrinkGrapeCan"), 2) { Price = 4 },
             };
-            menu.Populate(entries, true, false);
+            menu.Populate(entries, [], true, false);
             UiMan.StateRoot.AddChild(menu);
         });
 
