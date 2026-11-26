@@ -21,6 +21,13 @@
         <!-- Search -->
         <LineEdit Name="SearchBar" PlaceHolder="{Loc 'vending-machine-ui-search'}" Margin="6 6 6 2" />
 
+        <!-- Category tabs -->
+        <PanelContainer Name="CategoryPanel" Visible="False" Margin="6 2 6 2">
+            <ScrollContainer HScrollEnabled="False">
+                <controls:TabBar Name="CategoryTabs" Orientation="Horizontal" SeparationOverride="2" />
+            </ScrollContainer>
+        </PanelContainer>
+
         <!-- Item grid -->
         <ScrollContainer VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False" Margin="4 2 4 2">
             <GridContainer Name="ItemGrid" Columns="4" HorizontalExpand="True" HorizontalAlignment="Center" Margin="4" HSeparationOverride="4" VSeparationOverride="4" />

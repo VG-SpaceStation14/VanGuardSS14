@@ -2,8 +2,6 @@ using Content.Client.UserInterface.Controls;
 using Content.Client.VendingMachines.UI;
 using Content.Shared.VendingMachines;
 using Robust.Client.UserInterface;
-using Robust.Shared.Input;
-using System.Linq;
 using Content.Shared.VendingMachines.Components;
 using Content.Client._VanGuard.VendingMachines.UI; // VG-Tweak: VanGuard vending window
 using Content.Shared._VanGuard.VendingMachines; // VG-Tweak: VanGuard vending window
@@ -37,23 +35,19 @@ public sealed class VendingMachineBoundUserInterface(EntityUid owner, Enum uiKey
 
     public void Refresh()
     {
-        var enabled = EntMan.TryGetComponent(Owner, out VendingMachineEjectComponent? eject) && !eject.Ejecting;
-
         var system = EntMan.System<VendingMachineSystem>();
         _cachedInventory = system.GetAllInventory(Owner);
 
         var allForFree = EntMan.TryGetComponent(Owner, out VendingMachineComponent? vend) && vend.AllForFree;
 
-        _menu?.Populate(_cachedInventory, enabled, allForFree);
+        _menu?.Populate(_cachedInventory, system.GetInventoryCategories(Owner), system.IsUiEnabled(Owner), allForFree);
     }
 
     public void UpdateAmounts()
     {
-        var enabled = EntMan.TryGetComponent(Owner, out VendingMachineEjectComponent? eject) && !eject.Ejecting;
-
         var system = EntMan.System<VendingMachineSystem>();
         _cachedInventory = system.GetAllInventory(Owner);
-        _menu?.UpdateAmounts(_cachedInventory, enabled);
+        _menu?.UpdateAmounts(_cachedInventory, system.IsUiEnabled(Owner));
     }
 
     // VG-Tweak Start: the compact cards select whole entries instead of list rows
