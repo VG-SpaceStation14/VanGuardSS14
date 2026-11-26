@@ -85,7 +85,7 @@ public sealed class TraitorRuleTest : GameTest
         await Server.WaitAssertion(() =>
         {
             _sTicker.ClearGameRules();
-            _sTicker.SetGamePreset((GamePresetPrototype) null);
+            _sTicker.SetGamePreset((GamePresetPrototype?) null);
         });
         // VG-Tweak End
 
