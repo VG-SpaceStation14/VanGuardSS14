@@ -207,6 +207,13 @@ public sealed class VendingMachineUiTest : InteractionTest
             Assert.That(categoryPanel.Visible, Is.True,
                 "the category tab bar must show for an inventory with more than one category");
 
+            // The tab bar must actually occupy space in the layout: a collapsed
+            // zero-height panel renders nothing even though it is "visible".
+            Assert.That(categoryPanel.PixelSize.Y, Is.GreaterThan(0),
+                "the category tab bar must have a non-zero height in the layout");
+            Assert.That(categoryTabs.PixelSize.Y, Is.GreaterThan(0),
+                "the category tabs must have a non-zero height in the layout");
+
             // An "All" tab plus one tab per visible category.
             Assert.That(categoryTabs.ChildCount, Is.EqualTo(3),
                 "expected an 'All' tab and one tab per category");
@@ -258,6 +265,43 @@ public sealed class VendingMachineUiTest : InteractionTest
                 "the category tab bar must stay hidden when only one category is visible");
             Assert.That(searchBar.PlaceHolder, Is.EqualTo(Loc.GetString("vending-machine-component-search-filter")),
                 "the search placeholder must fall back to the plain filter text");
+        });
+    }
+
+    /// <summary>
+    ///     Regression test: opening a real multi-category vendor (SecTech) must show
+    ///     the category tab bar with a non-zero height below the search bar, not a
+    ///     collapsed panel with no visible tabs.
+    /// </summary>
+    [Test]
+    public async Task OpenWindowShowsCategoryTabs()
+    {
+        await SpawnTarget("VendingMachineSec");
+
+        // The machine needs grid power before it opens its UI on activation.
+        await SpawnEntity("APCBasic", SEntMan.GetCoordinates(TargetCoords));
+        await RunTicksSync(1);
+
+        await Activate();
+        Assert.That(IsUiOpen(VendingMachineUiKey.Key), "vending BUI failed to open.");
+
+        await RunTicksSync(5);
+
+        var menu = GetWindow<FancyVendingMachineMenu>();
+
+        await RunTicksSync(5);
+
+        await Client.WaitAssertion(() =>
+        {
+            var categoryPanel = menu.FindControl<PanelContainer>("CategoryPanel");
+            var categoryTabs = menu.FindControl<TabBar>("CategoryTabs");
+
+            Assert.That(categoryPanel.Visible, Is.True,
+                "SecTech stocks several categories, so the category tab bar must show");
+            Assert.That(categoryPanel.PixelSize.Y, Is.GreaterThan(0),
+                "the category tab bar must have a non-zero height in the layout");
+            Assert.That(categoryTabs.ChildCount, Is.GreaterThanOrEqualTo(3),
+                "expected an 'All' tab and one tab per SecTech category");
         });
     }
 }

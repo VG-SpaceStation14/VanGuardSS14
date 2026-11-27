@@ -22,8 +22,8 @@
         <LineEdit Name="SearchBar" PlaceHolder="{Loc 'vending-machine-component-search-filter'}" Margin="6 6 6 2" />
 
         <!-- Category tabs -->
-        <PanelContainer Name="CategoryPanel" Visible="False" Margin="6 2 6 2">
-            <ScrollContainer HScrollEnabled="False">
+        <PanelContainer Name="CategoryPanel" Visible="False" Margin="6 2 6 2" MinHeight="64">
+            <ScrollContainer HScrollEnabled="True" VScrollEnabled="False">
                 <controls:TabBar Name="CategoryTabs" StyleClasses="VendingCategoryTabBar" Orientation="Horizontal" SeparationOverride="2" />
             </ScrollContainer>
         </PanelContainer>
