@@ -12,7 +12,9 @@
 
     <TextureRect Access="Public" VerticalExpand="True" HorizontalExpand="True" Name="Background" Stretch="KeepAspectCovered" />
 
-    <Control Access="Public" Visible="False" Name="CharacterSetupState" VerticalExpand="True" HorizontalExpand="True" />
+    <!-- Character setup state. Kept inset from the screen edges like the other
+         lobby interfaces instead of stretching edge to edge. -->
+    <Control Access="Public" Visible="False" Name="CharacterSetupState" VerticalExpand="True" HorizontalExpand="True" Margin="25 25 25 25" />
 
     <Control Name="MainContainer" Access="Public" VerticalExpand="True" HorizontalExpand="True">
 

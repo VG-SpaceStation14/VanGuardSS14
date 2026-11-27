@@ -135,6 +135,9 @@ public sealed partial class HumanoidProfileEditor
 
         departments.Sort(DepartmentUIComparer.Instance);
 
+        var resourceCache = IoCManager.Resolve<IResourceCache>();
+        var gearTexturePath = "/Textures/Interface/VerbIcons/settings.svg.192dpi.png";
+
         var items = new[]
         {
                 ("humanoid-profile-editor-job-priority-never-button", (int) JobPriority.Never),
@@ -163,10 +166,15 @@ public sealed partial class HumanoidProfileEditor
                 }
                 else
                 {
-                    category.AddChild(new Control
+                    // VG-Tweak Start: the separator between department sections must
+                    // stay outside the colored department panel. Inside it showed up as
+                    // dead space above the department name, pushing the contents of
+                    // every block except the first one down.
+                    JobList.AddChild(new Control
                     {
                         MinSize = new Vector2(0, 23),
                     });
+                    // VG-Tweak End
                 }
 
                 // VG-Tweak Start: department header and panel in the VanGuard style.
@@ -294,16 +302,12 @@ public sealed partial class HumanoidProfileEditor
                     ToolTip = Loc.GetString("lobby-character-preview-panel-character-setup-button"),
                 };
 
-                var resourceCache = IoCManager.Resolve<IResourceCache>();
-                if (resourceCache.TryGetResource<TextureResource>("/Textures/Interface/VerbIcons/settings.svg.192dpi.png", out var gearTexture))
+                if (resourceCache.TryGetResource<TextureResource>(gearTexturePath, out var gearTexture))
                     loadoutWindowBtn.TextureNormal = gearTexture;
                 // VG-Tweak End
 
-                var collection = IoCManager.Instance!;
-                var protoManager = collection.Resolve<IPrototypeManager>();
-
                 // If no loadout found then disabled button
-                if (!protoManager.TryIndex<RoleLoadoutPrototype>(LoadoutSystem.GetJobPrototype(job.ID), out var roleLoadoutProto))
+                if (!_prototypeManager.TryIndex<RoleLoadoutPrototype>(LoadoutSystem.GetJobPrototype(job.ID), out var roleLoadoutProto))
                 {
                     loadoutWindowBtn.Disabled = true;
                 }
