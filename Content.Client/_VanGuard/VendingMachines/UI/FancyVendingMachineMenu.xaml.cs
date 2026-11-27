@@ -181,6 +181,12 @@ public sealed partial class FancyVendingMachineMenu : FancyWindow
 
     private void RebuildGrid()
     {
+        // Upstream parity: the search placeholder names the selected category.
+        var categoryName = _selectedCategory?.Name ?? "vending-machine-category-all";
+        SearchBar.PlaceHolder = CategoryPanel.Visible
+            ? Loc.GetString("vending-machine-component-search-category-filter", ("category", Loc.GetString(categoryName)))
+            : Loc.GetString("vending-machine-component-search-filter");
+
         foreach (var (_, card) in _cards)
         {
             ItemGrid.RemoveChild(card);
