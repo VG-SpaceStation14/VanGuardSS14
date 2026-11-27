@@ -24,11 +24,12 @@ namespace Content.VanGuard.Tests.Tests._VanGuard.Lavaland;
 /// </summary>
 /// <remarks>
 /// The shared test pool disables <see cref="CCVars.PathfindingEnabled"/> for
-/// performance (upstream "Add CVar to disable pathfinding"), so these tests
-/// turn the pathfinding graph back on for themselves.
+/// performance (upstream "Add CVar to disable pathfinding"), so the tests
+/// that actually query the pathfinding graph turn it back on for themselves.
+/// Keep the opt-in limited to those tests: running with the graph enabled is
+/// expensive and would slow down tests that only need physics.
 /// </remarks>
 [TestFixture]
-[EnsureCVar(Side.Server, typeof(CCVars), nameof(CCVars.PathfindingEnabled), true)]
 public sealed class LavalandUnifiedGridNavigationTest : GameTest
 {
     private static readonly ResPath ArenaPath = new("Maps/_VanGuard/Lavaland/Dungeons/bloodminerarena.yml");
@@ -39,6 +40,7 @@ public sealed class LavalandUnifiedGridNavigationTest : GameTest
     /// portal is needed to get there.
     /// </summary>
     [Test]
+    [EnsureCVar(Side.Server, typeof(CCVars), nameof(CCVars.PathfindingEnabled), true)]
     public async Task PathIsBuiltAcrossTheFormerPoiBoundary()
     {
         EntityUid mapUid = default;

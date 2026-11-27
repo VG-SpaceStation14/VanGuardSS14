@@ -21,11 +21,12 @@ namespace Content.VanGuard.Tests.Tests._VanGuard.Lavaland;
 /// </summary>
 /// <remarks>
 /// The shared test pool disables <see cref="CCVars.PathfindingEnabled"/> for
-/// performance (upstream "Add CVar to disable pathfinding"), so these tests
-/// turn the pathfinding graph back on for themselves.
+/// performance (upstream "Add CVar to disable pathfinding"), so the tests
+/// that actually query the pathfinding graph turn it back on for themselves.
+/// Keep the opt-in limited to those tests: running with the graph enabled is
+/// expensive and would slow down tests that only need physics or flags.
 /// </remarks>
 [TestFixture]
-[EnsureCVar(Side.Server, typeof(CCVars), nameof(CCVars.PathfindingEnabled), true)]
 public sealed class LavalandHazardNavigationTest : GameTest
 {
     /// <summary>
@@ -34,6 +35,7 @@ public sealed class LavalandHazardNavigationTest : GameTest
     /// tile is impassable and the A* frontier stops expanding into it.
     /// </summary>
     [Test]
+    [EnsureCVar(Side.Server, typeof(CCVars), nameof(CCVars.PathfindingEnabled), true)]
     public async Task GroundMobPathDoesNotCrossLava()
     {
         await AssertHazardIsImpassable("FloorLavaEntity");
@@ -44,6 +46,7 @@ public sealed class LavalandHazardNavigationTest : GameTest
     /// a mob would fall in and be deleted, so no path may lead through it.
     /// </summary>
     [Test]
+    [EnsureCVar(Side.Server, typeof(CCVars), nameof(CCVars.PathfindingEnabled), true)]
     public async Task GroundMobPathDoesNotCrossChasm()
     {
         await AssertHazardIsImpassable("FloorChasmEntity");
@@ -56,6 +59,7 @@ public sealed class LavalandHazardNavigationTest : GameTest
     /// actually immune.
     /// </summary>
     [Test]
+    [EnsureCVar(Side.Server, typeof(CCVars), nameof(CCVars.PathfindingEnabled), true)]
     public async Task HazardCapableMobPathStillCrosses()
     {
         var results = await BuildPathAcrossHazard("FloorLavaEntity", PathFlags.Hazards, "MobBee");

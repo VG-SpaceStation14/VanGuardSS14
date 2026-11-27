@@ -88,17 +88,31 @@ namespace Content.Server.GameTicking
                     if (firstConnection)
                     {
                         // VG-Tweak Start
-                        // Play the alert sound at join time. Audio playback spawns a
-                        // server-side audio entity, so it must not be deferred behind
-                        // the unbounded auth API call below: a late response would
-                        // create entities long after the player joined (and after test
-                        // pair cleanup, which surfaces them as leaked entities).
-                        var clients = _adminManager.ActiveAdmins
-                            .Where(admin => _adminManager.GetAdminData(admin)?.Flags.HasFlag(AdminFlags.Adminchat) == true)
-                            .Select(p => p.Channel).ToList();
-
-                        if (clients.Count > 0)
+                        // Play the alert sound through a timer instead of inline:
+                        // this handler runs inside the player connection
+                        // handshake, and audio playback spawns a server-side
+                        // audio entity and touches PVS, which must not happen on
+                        // that stack. The timer keeps it on the game loop and is
+                        // bounded to the next tick, unlike the unbounded auth API
+                        // call below: deferring the sound behind that call spawns
+                        // entities long after the join (e.g. after test pair
+                        // cleanup, which reports them as leaked entities).
+                        Timer.Spawn(0, () =>
                         {
+                            if (args.Session.Status == SessionStatus.Disconnected
+                                || !_playerManager.TryGetSessionById(args.Session.UserId, out var sessionNow)
+                                || sessionNow != args.Session)
+                            {
+                                return;
+                            }
+
+                            var clients = _adminManager.ActiveAdmins
+                                .Where(admin => _adminManager.GetAdminData(admin)?.Flags.HasFlag(AdminFlags.Adminchat) == true)
+                                .Select(p => p.Channel).ToList();
+
+                            if (clients.Count == 0)
+                                return;
+
                             var filter = Filter.Empty();
                             foreach (var client in clients)
                             {
@@ -110,7 +124,7 @@ namespace Content.Server.GameTicking
                             var soundPath = new SoundPathSpecifier("/Audio/Misc/bluealert.ogg");
                             var audioParams = AudioParams.Default.WithVolume(-8f);
                             Audio.PlayGlobal(soundPath, filter, false, audioParams);
-                        }
+                        });
 
                         var accountCreatedDate = await AuthApiHelper.GetAccountCreationDateAsync(
                             args.Session.UserId.ToString());
