@@ -2,9 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Content.IntegrationTests.Fixtures;
+using Content.IntegrationTests.Fixtures.Attributes;
 using Content.Server._VanGuard.Lavaland.Components;
 using Content.Server._VanGuard.Lavaland.Systems;
 using Content.Server.NPC.Pathfinding;
+using Content.Shared.CCVar;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.GameObjects;
@@ -20,7 +22,13 @@ namespace Content.VanGuard.Tests.Tests._VanGuard.Lavaland;
 /// Covers navigation across the former POI boundary, after the POI was
 /// folded into the planet's surface grid.
 /// </summary>
+/// <remarks>
+/// The shared test pool disables <see cref="CCVars.PathfindingEnabled"/> for
+/// performance (upstream "Add CVar to disable pathfinding"), so these tests
+/// turn the pathfinding graph back on for themselves.
+/// </remarks>
 [TestFixture]
+[EnsureCVar(Side.Server, typeof(CCVars), nameof(CCVars.PathfindingEnabled), true)]
 public sealed class LavalandUnifiedGridNavigationTest : GameTest
 {
     private static readonly ResPath ArenaPath = new("Maps/_VanGuard/Lavaland/Dungeons/bloodminerarena.yml");

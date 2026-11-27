@@ -63,8 +63,12 @@ public sealed partial class TestPair
             return;
 
         await RunUntilSynced();
-        await Server.WaitAssertion(() => Assert.That(Server.EntMan.EntityCount, Is.Zero,
-            "Server entities remained after pair cleanup"));
+        await Server.WaitAssertion(() =>
+        {
+            var leftovers = Server.EntMan.GetEntities().ToArray();
+            Assert.That(leftovers.Length, Is.Zero,
+                $"Server entities remained after pair cleanup: {string.Join(", ", leftovers.Select(uid => Server.EntMan.ToPrettyString(uid)))}");
+        });
         await Client.WaitAssertion(() => Assert.That(Client.EntMan.EntityCount, Is.Zero,
             "Client entities remained after pair cleanup"));
     }

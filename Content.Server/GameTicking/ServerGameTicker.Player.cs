@@ -88,6 +88,30 @@ namespace Content.Server.GameTicking
                     if (firstConnection)
                     {
                         // VG-Tweak Start
+                        // Play the alert sound at join time. Audio playback spawns a
+                        // server-side audio entity, so it must not be deferred behind
+                        // the unbounded auth API call below: a late response would
+                        // create entities long after the player joined (and after test
+                        // pair cleanup, which surfaces them as leaked entities).
+                        var clients = _adminManager.ActiveAdmins
+                            .Where(admin => _adminManager.GetAdminData(admin)?.Flags.HasFlag(AdminFlags.Adminchat) == true)
+                            .Select(p => p.Channel).ToList();
+
+                        if (clients.Count > 0)
+                        {
+                            var filter = Filter.Empty();
+                            foreach (var client in clients)
+                            {
+                                var sessionAdmin = _playerManager.GetSessionByChannel(client);
+                                filter.AddPlayer(sessionAdmin);
+                            }
+
+                            // VG-Tweak: use the shared GameTicker audio system (upstream moved it there).
+                            var soundPath = new SoundPathSpecifier("/Audio/Misc/bluealert.ogg");
+                            var audioParams = AudioParams.Default.WithVolume(-8f);
+                            Audio.PlayGlobal(soundPath, filter, false, audioParams);
+                        }
+
                         var accountCreatedDate = await AuthApiHelper.GetAccountCreationDateAsync(
                             args.Session.UserId.ToString());
 
@@ -113,25 +137,6 @@ namespace Content.Server.GameTicking
                             flagWhitelist: null
                         );
                         // VG-Tweak End
-
-                        var clients = _adminManager.ActiveAdmins
-                            .Where(admin => _adminManager.GetAdminData(admin)?.Flags.HasFlag(AdminFlags.Adminchat) == true)
-                            .Select(p => p.Channel).ToList();
-
-                        if (clients.Count > 0)
-                        {
-                            var filter = Filter.Empty();
-                            foreach (var client in clients)
-                            {
-                                var sessionAdmin = _playerManager.GetSessionByChannel(client);
-                                filter.AddPlayer(sessionAdmin);
-                            }
-
-                            // VG-Tweak: use the shared GameTicker audio system (upstream moved it there).
-                            var soundPath = new SoundPathSpecifier("/Audio/Misc/bluealert.ogg");
-                            var audioParams = AudioParams.Default.WithVolume(-8f);
-                            Audio.PlayGlobal(soundPath, filter, false, audioParams);
-                        }
                     }
                     else
                     {

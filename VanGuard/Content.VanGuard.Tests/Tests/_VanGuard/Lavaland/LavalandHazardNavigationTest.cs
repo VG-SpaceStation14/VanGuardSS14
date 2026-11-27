@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Content.IntegrationTests.Fixtures;
+using Content.IntegrationTests.Fixtures.Attributes;
 using Content.Server.NPC.Pathfinding;
+using Content.Shared.CCVar;
 using Content.Shared.NPC;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
@@ -17,7 +19,13 @@ namespace Content.VanGuard.Tests.Tests._VanGuard.Lavaland;
 /// walkers, while mobs that can fly (or otherwise opt in) cross them
 /// freely.
 /// </summary>
+/// <remarks>
+/// The shared test pool disables <see cref="CCVars.PathfindingEnabled"/> for
+/// performance (upstream "Add CVar to disable pathfinding"), so these tests
+/// turn the pathfinding graph back on for themselves.
+/// </remarks>
 [TestFixture]
+[EnsureCVar(Side.Server, typeof(CCVars), nameof(CCVars.PathfindingEnabled), true)]
 public sealed class LavalandHazardNavigationTest : GameTest
 {
     /// <summary>
