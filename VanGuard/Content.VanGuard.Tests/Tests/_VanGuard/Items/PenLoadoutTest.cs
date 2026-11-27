@@ -379,16 +379,29 @@ public sealed class PenLoadoutTest : GameTest
             var states = new HashSet<Robust.Client.Graphics.RSI.StateId>();
             foreach (var id in PortedPens.Keys)
             {
-                var proto = CProtoMan.Index<EntityPrototype>(id);
-                Assert.That(proto.TryComp<SpriteComponent>(out var sprite, CEntMan.ComponentFactory), Is.True,
-                    $"{id} should have a sprite");
+                // RobustToolbox no longer materializes prototype sprite layers in tests
+                // (sprite preloading is disabled since RT #7220), so a prototype's
+                // SpriteComponent has no runtime layers. Spawn a client-side entity
+                // instead: SpriteSystem builds the layers when the component is added.
+                var pen = CSpawn(id);
+                try
+                {
+                    Assert.That(CEntMan.TryGetComponent(pen, out SpriteComponent? sprite), Is.True,
+                        $"{id} should have a sprite");
+                    Assert.That(sprite!.LayerData, Is.Not.Empty,
+                        $"{id} should have at least one sprite layer");
 
-                var state = sprite!.LayerData[0].State;
-                Assert.That(rsi.RSI.TryGetState(state, out _), Is.True,
-                    $"{id} references the missing sprite state {state}");
+                    var state = sprite.LayerData[0].State;
+                    Assert.That(rsi.RSI.TryGetState(state, out _), Is.True,
+                        $"{id} references the missing sprite state {state}");
 
-                Assert.That(states.Add(state), Is.True,
-                    $"{id} must not share its sprite with another ported pen");
+                    Assert.That(states.Add(state), Is.True,
+                        $"{id} must not share its sprite with another ported pen");
+                }
+                finally
+                {
+                    CDeleteNow(pen);
+                }
             }
         });
     }

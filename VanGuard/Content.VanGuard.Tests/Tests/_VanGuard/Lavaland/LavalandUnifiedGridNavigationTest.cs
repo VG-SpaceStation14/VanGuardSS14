@@ -2,9 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Content.IntegrationTests.Fixtures;
+using Content.IntegrationTests.Fixtures.Attributes;
 using Content.Server._VanGuard.Lavaland.Components;
 using Content.Server._VanGuard.Lavaland.Systems;
 using Content.Server.NPC.Pathfinding;
+using Content.Shared.CCVar;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.GameObjects;
@@ -20,6 +22,13 @@ namespace Content.VanGuard.Tests.Tests._VanGuard.Lavaland;
 /// Covers navigation across the former POI boundary, after the POI was
 /// folded into the planet's surface grid.
 /// </summary>
+/// <remarks>
+/// The shared test pool disables <see cref="CCVars.PathfindingEnabled"/> for
+/// performance (upstream "Add CVar to disable pathfinding"), so the tests
+/// that actually query the pathfinding graph turn it back on for themselves.
+/// Keep the opt-in limited to those tests: running with the graph enabled is
+/// expensive and would slow down tests that only need physics.
+/// </remarks>
 [TestFixture]
 public sealed class LavalandUnifiedGridNavigationTest : GameTest
 {
@@ -31,6 +40,7 @@ public sealed class LavalandUnifiedGridNavigationTest : GameTest
     /// portal is needed to get there.
     /// </summary>
     [Test]
+    [EnsureCVar(Side.Server, typeof(CCVars), nameof(CCVars.PathfindingEnabled), true)]
     public async Task PathIsBuiltAcrossTheFormerPoiBoundary()
     {
         EntityUid mapUid = default;

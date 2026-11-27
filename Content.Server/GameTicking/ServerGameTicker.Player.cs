@@ -88,6 +88,44 @@ namespace Content.Server.GameTicking
                     if (firstConnection)
                     {
                         // VG-Tweak Start
+                        // Play the alert sound through a timer instead of inline:
+                        // this handler runs inside the player connection
+                        // handshake, and audio playback spawns a server-side
+                        // audio entity and touches PVS, which must not happen on
+                        // that stack. The timer keeps it on the game loop and is
+                        // bounded to the next tick, unlike the unbounded auth API
+                        // call below: deferring the sound behind that call spawns
+                        // entities long after the join (e.g. after test pair
+                        // cleanup, which reports them as leaked entities).
+                        Timer.Spawn(0, () =>
+                        {
+                            if (args.Session.Status == SessionStatus.Disconnected
+                                || !_playerManager.TryGetSessionById(args.Session.UserId, out var sessionNow)
+                                || sessionNow != args.Session)
+                            {
+                                return;
+                            }
+
+                            var clients = _adminManager.ActiveAdmins
+                                .Where(admin => _adminManager.GetAdminData(admin)?.Flags.HasFlag(AdminFlags.Adminchat) == true)
+                                .Select(p => p.Channel).ToList();
+
+                            if (clients.Count == 0)
+                                return;
+
+                            var filter = Filter.Empty();
+                            foreach (var client in clients)
+                            {
+                                var sessionAdmin = _playerManager.GetSessionByChannel(client);
+                                filter.AddPlayer(sessionAdmin);
+                            }
+
+                            // VG-Tweak: use the shared GameTicker audio system (upstream moved it there).
+                            var soundPath = new SoundPathSpecifier("/Audio/Misc/bluealert.ogg");
+                            var audioParams = AudioParams.Default.WithVolume(-8f);
+                            Audio.PlayGlobal(soundPath, filter, false, audioParams);
+                        });
+
                         var accountCreatedDate = await AuthApiHelper.GetAccountCreationDateAsync(
                             args.Session.UserId.ToString());
 
@@ -113,25 +151,6 @@ namespace Content.Server.GameTicking
                             flagWhitelist: null
                         );
                         // VG-Tweak End
-
-                        var clients = _adminManager.ActiveAdmins
-                            .Where(admin => _adminManager.GetAdminData(admin)?.Flags.HasFlag(AdminFlags.Adminchat) == true)
-                            .Select(p => p.Channel).ToList();
-
-                        if (clients.Count > 0)
-                        {
-                            var filter = Filter.Empty();
-                            foreach (var client in clients)
-                            {
-                                var sessionAdmin = _playerManager.GetSessionByChannel(client);
-                                filter.AddPlayer(sessionAdmin);
-                            }
-
-                            // VG-Tweak: use the shared GameTicker audio system (upstream moved it there).
-                            var soundPath = new SoundPathSpecifier("/Audio/Misc/bluealert.ogg");
-                            var audioParams = AudioParams.Default.WithVolume(-8f);
-                            Audio.PlayGlobal(soundPath, filter, false, audioParams);
-                        }
                     }
                     else
                     {

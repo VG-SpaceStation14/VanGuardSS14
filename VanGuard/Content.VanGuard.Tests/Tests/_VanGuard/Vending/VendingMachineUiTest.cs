@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Content.Client._VanGuard.VendingMachines.UI;
+using Content.Client.UserInterface.Controls;
 using Content.IntegrationTests.Tests.Interaction;
 using Content.Shared.VendingMachines;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
+using Robust.Shared.Localization;
 using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
 
@@ -21,6 +23,25 @@ namespace Content.IntegrationTests.Tests._VanGuard.Vending;
 public sealed class VendingMachineUiTest : InteractionTest
 {
     private FancyVendingMachineItemCard? _card;
+
+    private const string CategoryPrototypeId = "TestVendingCategories";
+
+    private static readonly ProtoId<VendingMachineInventoryPrototype> TestVendingCategories = CategoryPrototypeId;
+
+    [TestPrototypes]
+    private const string CategoryPrototypes = @$"
+- type: vendingMachineInventory
+  id: {CategoryPrototypeId}
+  categories:
+  - name: vending-machine-category-snacks
+    icon: {{ entity: FoodSnackChocolate }}
+    startingInventory:
+      DrinkColaCan: 3
+  - name: vending-machine-category-soft-drinks
+    icon: {{ entity: DrinkColaCan }}
+    startingInventory:
+      DrinkGrapeCan: 2
+";
 
     private record struct TextControl(string? Text, Control Control);
 
@@ -70,7 +91,7 @@ public sealed class VendingMachineUiTest : InteractionTest
                 new(InventoryType.Regular, new EntProtoId("DrinkColaCan"), 3) { Price = 5 },
                 new(InventoryType.Regular, new EntProtoId("DrinkGrapeCan"), 2) { Price = 4 },
             };
-            menu.Populate(entries, true, false);
+            menu.Populate(entries, [], true, false);
             UiMan.StateRoot.AddChild(menu);
         });
 
@@ -147,5 +168,140 @@ public sealed class VendingMachineUiTest : InteractionTest
 
         foreach (var child in control.Children)
             CollectTextControls(child, result);
+    }
+
+    /// <summary>
+    ///     Upstream vending categories parity: a multi-category inventory shows a tab
+    ///     bar with an "All" tab plus one tab per visible category, lists every entry
+    ///     before a category is selected, and names the selected category in the
+    ///     search placeholder.
+    /// </summary>
+    [Test]
+    public async Task CategoryTabsAppearForMultiCategoryInventory()
+    {
+        FancyVendingMachineMenu? menu = null;
+
+        await Client.WaitPost(() =>
+        {
+            menu = new FancyVendingMachineMenu();
+            var categories = ProtoMan.Index(TestVendingCategories).Categories;
+            var entries = new List<VendingMachineInventoryEntry>
+            {
+                new(InventoryType.Regular, new EntProtoId("DrinkColaCan"), 3),
+                new(InventoryType.Regular, new EntProtoId("DrinkGrapeCan"), 2),
+            };
+            menu.Populate(entries, categories, true, false);
+            UiMan.StateRoot.AddChild(menu);
+        });
+
+        await RunTicksSync(5);
+
+        await Client.WaitAssertion(() =>
+        {
+            Assert.That(menu, Is.Not.Null);
+            var categoryPanel = menu!.FindControl<PanelContainer>("CategoryPanel");
+            var categoryTabs = menu.FindControl<TabBar>("CategoryTabs");
+            var itemGrid = menu.FindControl<GridContainer>("ItemGrid");
+            var searchBar = menu.FindControl<LineEdit>("SearchBar");
+
+            Assert.That(categoryPanel.Visible, Is.True,
+                "the category tab bar must show for an inventory with more than one category");
+
+            // The tab bar must actually occupy space in the layout: a collapsed
+            // zero-height panel renders nothing even though it is "visible".
+            Assert.That(categoryPanel.PixelSize.Y, Is.GreaterThan(0),
+                "the category tab bar must have a non-zero height in the layout");
+            Assert.That(categoryTabs.PixelSize.Y, Is.GreaterThan(0),
+                "the category tabs must have a non-zero height in the layout");
+
+            // An "All" tab plus one tab per visible category.
+            Assert.That(categoryTabs.ChildCount, Is.EqualTo(3),
+                "expected an 'All' tab and one tab per category");
+
+            // Everything is listed before a category is selected.
+            Assert.That(itemGrid.ChildCount, Is.EqualTo(2),
+                "expected one card per inventory entry while no category is selected");
+
+            // The search placeholder names the selected category, like upstream.
+            var expectedPlaceholder = Loc.GetString("vending-machine-component-search-category-filter",
+                ("category", Loc.GetString("vending-machine-category-all")));
+            Assert.That(searchBar.PlaceHolder, Is.EqualTo(expectedPlaceholder),
+                "the search placeholder must name the selected category");
+        });
+    }
+
+    /// <summary>
+    ///     Upstream vending categories parity: the tab bar is hidden when at most one
+    ///     category has entries, and the search placeholder falls back to the plain
+    ///     filter text.
+    /// </summary>
+    [Test]
+    public async Task SingleVisibleCategoryHidesTabBar()
+    {
+        FancyVendingMachineMenu? menu = null;
+
+        await Client.WaitPost(() =>
+        {
+            menu = new FancyVendingMachineMenu();
+            var categories = ProtoMan.Index(TestVendingCategories).Categories;
+            // Only the snacks category has an entry in stock, so only it is visible.
+            var entries = new List<VendingMachineInventoryEntry>
+            {
+                new(InventoryType.Regular, new EntProtoId("DrinkColaCan"), 3),
+            };
+            menu.Populate(entries, categories, true, false);
+            UiMan.StateRoot.AddChild(menu);
+        });
+
+        await RunTicksSync(5);
+
+        await Client.WaitAssertion(() =>
+        {
+            Assert.That(menu, Is.Not.Null);
+            var categoryPanel = menu!.FindControl<PanelContainer>("CategoryPanel");
+            var searchBar = menu.FindControl<LineEdit>("SearchBar");
+
+            Assert.That(categoryPanel.Visible, Is.False,
+                "the category tab bar must stay hidden when only one category is visible");
+            Assert.That(searchBar.PlaceHolder, Is.EqualTo(Loc.GetString("vending-machine-component-search-filter")),
+                "the search placeholder must fall back to the plain filter text");
+        });
+    }
+
+    /// <summary>
+    ///     Regression test: opening a real multi-category vendor (SecTech) must show
+    ///     the category tab bar with a non-zero height below the search bar, not a
+    ///     collapsed panel with no visible tabs.
+    /// </summary>
+    [Test]
+    public async Task OpenWindowShowsCategoryTabs()
+    {
+        await SpawnTarget("VendingMachineSec");
+
+        // The machine needs grid power before it opens its UI on activation.
+        await SpawnEntity("APCBasic", SEntMan.GetCoordinates(TargetCoords));
+        await RunTicksSync(1);
+
+        await Activate();
+        Assert.That(IsUiOpen(VendingMachineUiKey.Key), "vending BUI failed to open.");
+
+        await RunTicksSync(5);
+
+        var menu = GetWindow<FancyVendingMachineMenu>();
+
+        await RunTicksSync(5);
+
+        await Client.WaitAssertion(() =>
+        {
+            var categoryPanel = menu.FindControl<PanelContainer>("CategoryPanel");
+            var categoryTabs = menu.FindControl<TabBar>("CategoryTabs");
+
+            Assert.That(categoryPanel.Visible, Is.True,
+                "SecTech stocks several categories, so the category tab bar must show");
+            Assert.That(categoryPanel.PixelSize.Y, Is.GreaterThan(0),
+                "the category tab bar must have a non-zero height in the layout");
+            Assert.That(categoryTabs.ChildCount, Is.GreaterThanOrEqualTo(3),
+                "expected an 'All' tab and one tab per SecTech category");
+        });
     }
 }

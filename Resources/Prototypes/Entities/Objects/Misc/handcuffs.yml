@@ -1,8 +1,7 @@
 - type: entity
-  name: handcuffs
-  description: Used to detain criminals and other assholes.
-  id: Handcuffs
+  id: BaseHandcuffs
   parent: [BaseCorvaxContraband432DepartmentsSecurity, BaseItem, BaseSecurityCommandContraband] # Corvax-Contraband
+  abstract: true
   components:
   # VG-Tweak Start
   - type: EmitSoundOnPickup
@@ -43,10 +42,19 @@
     delay: 3
 
 - type: entity
+  name: handcuffs
+  description: Used to detain criminals and other assholes.
+  id: Handcuffs
+  parent: BaseHandcuffs
+  components:
+  - type: UseDelay
+    delay: 15
+
+- type: entity
   name: makeshift handcuffs
   description: Homemade handcuffs crafted from spare cables.
   id: Cablecuffs
-  parent: Handcuffs
+  parent: BaseHandcuffs
   components:
   - type: Handcuff
     breakoutTime: 3
@@ -85,7 +93,7 @@
   name: zipties
   description: Tough single-use plastic zipties, ideal for restraining rowdy prisoners.
   id: Zipties
-  parent: Handcuffs
+  parent: BaseHandcuffs
   components:
   - type: Item
     size: Tiny
@@ -154,7 +162,7 @@
           color: forestgreen
 
 - type: entity
-  parent: Handcuffs
+  parent: BaseHandcuffs
   id: ClothingOuterStraightjacket
   name: straitjacket
   description: Used to restrain those who may cause harm to themselves or others.

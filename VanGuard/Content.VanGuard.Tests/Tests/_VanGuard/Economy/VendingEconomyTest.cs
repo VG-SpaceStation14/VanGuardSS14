@@ -39,9 +39,12 @@ public sealed class VendingEconomyTest : InteractionTest
 
 - type: vendingMachineInventory
   id: VendingEconomyTestInventory
-  startingInventory:
-    {PaidItemProtoId}: 3
-    {FreeItemProtoId}: 2
+  categories:
+  - name: vending-machine-category-equipment
+    icon: {{ entity: {PaidItemProtoId} }}
+    startingInventory:
+      {PaidItemProtoId}: 3
+      {FreeItemProtoId}: 2
 
 - type: entity
   id: {VendingProtoId}
